@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#F64F59</color>
-    <color name="colorPrimaryDark">#9E9E9E</color>
+    <color name="colorPrimaryDark">#F64F59</color>
     <color name="colorAccent">#F64F59</color>
 
 
     // colors
     <color name="lightRed">#F64F59</color>
+    <color name="lightRed_a30">#30F64F59</color>
+
     <color name="lightOrange">#FF8B57</color>
+    <color name="lightOrange_a30">#30FF8B57</color>
 
     <color name="grey1">#D6D6D6</color>
     <color name="grey2">#9E9E9E</color>
@@ -16,5 +19,6 @@
 
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="white_a50">#50FFFFFF</color>
 
 </resources>

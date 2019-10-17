@@ -25,18 +25,15 @@ public class Splash extends AppCompatActivity {
     @BindView(R.id.tv_takeaction)
     TextView tvTakeAction;
 
-
-
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
 
-        YoYo.with(Techniques.FadeInLeft).duration(500).repeat(1).playOn(tvPlan);
-        YoYo.with(Techniques.FadeInDown).duration(500).repeat(1).delay(500).playOn(tvPlan);
-        YoYo.with(Techniques.FadeInRight).duration(500).repeat(1).delay(1000).playOn(tvPlan);
+        YoYo.with(Techniques.SlideInLeft).duration(1000).playOn(tvPlan);
+        YoYo.with(Techniques.SlideInLeft).duration(1000).delay(500).playOn(tvPrio);
+        YoYo.with(Techniques.SlideInLeft).duration(1000).delay(1000).playOn(tvTakeAction);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

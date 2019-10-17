@@ -1,11 +1,51 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    // ripple style
+    <style name="SelectedBackground">
+        <item name="colorControlHighlight">@color/lightRed_a30</item>
+    </style>
+
+    <style name="ripple_background">
+        <item name="android:theme">@style/SelectedBackground</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="ripple_background_bordered">
+        <item name="android:theme">@style/SelectedBackground</item>
+        <item name="android:background">?selectableItemBackground</item>
+    </style>
+
+    <style name="ripple_foreground">
+        <item name="android:theme">@style/SelectedBackground</item>
+        <item name="android:foreground">?selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="ripple_foreground_boredered">
+        <item name="android:theme">@style/SelectedBackground</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+    </style>
+
+    <style name="SelectedBackgroundWhite">
+        <item name="colorControlHighlight">@color/white_a50</item>
+    </style>
+
+    <style name="ripple_background_white">
+        <item name="android:theme">@style/SelectedBackgroundWhite</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="ripple_foreground_boredered_white">
+        <item name="android:theme">@style/SelectedBackgroundWhite</item>
+        <item name="android:foreground">?selectableItemBackground</item>
     </style>
 
 </resources>
