@@ -41,8 +41,15 @@ dependencies {
     implementation 'com.karumi:dexter:5.0.0' // runtime permission
     implementation 'com.wdullaer:materialdatetimepicker:4.2.2' // date picker
 
+    //views
+    implementation 'com.fxn769:ariana:1.0'
+
+
     // animation library
     implementation 'com.daimajia.easing:library:2.0@aar'
     implementation 'com.daimajia.androidanimations:library:2.3@aar'
+    implementation 'com.airbnb.android:lottie:3.0.7' // lottie
+    implementation 'com.skyfishjy.ripplebackground:library:1.0.1' // ripple animation
+
 
 }

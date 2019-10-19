@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.MainViewPagerAdapter;
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.vp_main)
     ViewPager mainViewPager;
+
+    @BindView(R.id.tv_tab1_name)
+    TextView tvToday;
+
 
     MainViewPagerAdapter viewPagerAdapter;
     MainTabs mainTabs;
@@ -91,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         imgDayNight.setImageResource(R.drawable.ic_day_off);
         imgTasks.setImageResource(R.drawable.ic_tasks_off);
+        tvToday.setTextColor(getResources().getColor(R.color.grey2));
 
         if (isNight) {
             imgDayNight.setImageResource(R.drawable.ic_night_off);
@@ -99,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         switch (tabs) {
             case TODAY:
                 imgDayNight.setImageResource(R.drawable.ic_day_on);
+                tvToday.setTextColor(getResources().getColor(R.color.black));
                 if (isNight) {
                     imgDayNight.setImageResource(R.drawable.ic_night_on);
                 }
@@ -109,6 +116,4 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
-
 }
