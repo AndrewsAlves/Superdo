@@ -29,6 +29,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
+                android:id="@+id/ib_buckets"
                 android:layout_width="25dp"
                 android:layout_height="23dp"
                 android:scaleType="fitXY"
@@ -87,5 +88,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_bucket_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 
 </RelativeLayout>
