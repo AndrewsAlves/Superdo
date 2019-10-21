@@ -71,6 +71,67 @@
 
     </androidx.cardview.widget.CardView>
 
+    <RelativeLayout
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="50dp">
+
+        <com.kuassivi.component.RipplePulseRelativeLayout
+            android:id="@+id/pulseLayout"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:pulse_layout_RippleStartRadiusPercent="0"
+            app:pulse_layout_RippleEndRadiusPercent="200"
+            app:pulse_layout_ShowPreview="true"
+            app:pulse_layout_PulseType="fill"
+            app:pulse_layout_RippleColor="@color/lightOrange"
+            app:pulse_layout_PulseDuration="2000"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="-25dp"
+            android:layout_marginBottom="-25dp"
+            android:layout_alignParentBottom="true">
+
+        </com.kuassivi.component.RipplePulseRelativeLayout>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/tv_today_msg"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Great! you dont have any tasks ?"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"/>
+
+        <RelativeLayout
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/bg_oval_gradient"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="-25dp"
+            android:layout_marginBottom="-25dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add"
+                android:layout_margin="40dp"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
     <FrameLayout
         android:id="@+id/fl_fragment_container"
         android:layout_width="match_parent"

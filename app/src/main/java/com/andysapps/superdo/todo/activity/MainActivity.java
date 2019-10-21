@@ -13,6 +13,7 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.manager.TimeManager;
+import com.kuassivi.component.RipplePulseRelativeLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.tv_tab1_name)
     TextView tvToday;
 
+    @BindView(R.id.tv_today_msg)
+    TextView tvMsg;
+
+    @BindView(R.id.pulseLayout)
+    RipplePulseRelativeLayout rippleBackground;
 
     MainViewPagerAdapter viewPagerAdapter;
     MainTabs mainTabs;
@@ -60,9 +66,11 @@ public class MainActivity extends AppCompatActivity {
                 switch (i) {
                     case 0:
                         mainTabs = MainTabs.TODAY;
+                        rippleBackground.startPulse();
                         break;
                     case 1:
                         mainTabs = MainTabs.TASKS;
+                        rippleBackground.stopPulse();
                         break;
                 }
 
@@ -97,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
         imgDayNight.setImageResource(R.drawable.ic_day_off);
         imgTasks.setImageResource(R.drawable.ic_tasks_off);
         tvToday.setTextColor(getResources().getColor(R.color.grey2));
+
+        tvMsg.setText(" ");
 
         if (isNight) {
             imgDayNight.setImageResource(R.drawable.ic_night_off);

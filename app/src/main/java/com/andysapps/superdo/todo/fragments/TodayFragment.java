@@ -16,6 +16,8 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.model.Todo;
 import com.fxn.ariana.Ariana;
 import com.fxn.ariana.GradientAngle;
+import com.kuassivi.component.RipplePulseRelativeLayout;
+import com.skyfishjy.library.RippleBackground;
 
 import java.util.ArrayList;
 
@@ -30,17 +32,12 @@ public class TodayFragment extends Fragment {
     @BindView(R.id.tv_todaytitle)
     TextView tvTitle;
 
-    @BindView(R.id.tv_today_msg)
-    TextView tvMsg;
-
     @BindView(R.id.ll_notasks)
     LinearLayout linearNoTasks;
 
     int[] gradientColor = new int[2];
 
     public ArrayList<Todo> todoList;
-
-
 
     public TodayFragment() {
         // Required empty public constructor
@@ -64,11 +61,9 @@ public class TodayFragment extends Fragment {
 
         gradientColor[0] = Color.parseColor( "#F64F59");
         gradientColor[1] = Color.parseColor( "#FF8B57");
-       // Ariana.setGradient(tvTitle,gradientColor, GradientAngle.LEFT_TOP_TO_RIGHT_BOTTOM);
 
         if (todoList.isEmpty()) {
             linearNoTasks.setVisibility(View.VISIBLE);
-            tvMsg.setText(" ");
         }
 
     }
