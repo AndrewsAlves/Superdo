@@ -14,6 +14,14 @@
         <item name="colorControlHighlight">@color/lightRed_a30</item>
     </style>
 
+    <style name="SelectedBackground_grey">
+        <item name="colorControlHighlight">@color/black</item>
+    </style>
+
+    ////////////////////
+    ////// BACKGROUD
+    ///////////////////
+
     <style name="ripple_background">
         <item name="android:theme">@style/SelectedBackground</item>
         <item name="android:background">?selectableItemBackgroundBorderless</item>
@@ -23,6 +31,20 @@
         <item name="android:theme">@style/SelectedBackground</item>
         <item name="android:background">?selectableItemBackground</item>
     </style>
+
+    <style name="ripple_background_grey">
+        <item name="android:theme">@style/SelectedBackground_grey</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="ripple_background_bordered_grey">
+        <item name="android:theme">@style/SelectedBackground_grey</item>
+        <item name="android:background">?selectableItemBackground</item>
+    </style>
+
+    ////////////////
+    //// FOREGROUND
+    ///////////////
 
     <style name="ripple_foreground">
         <item name="android:theme">@style/SelectedBackground</item>
