@@ -29,11 +29,23 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
+                android:id="@+id/ib_profile"
+                style="@style/ripple_background"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_profile"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ib_buckets"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
                 android:id="@+id/ib_buckets"
                 android:layout_width="25dp"
                 android:layout_height="23dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_group_list"
+                android:src="@drawable/ic_bucket_list"
                 android:layout_marginEnd="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

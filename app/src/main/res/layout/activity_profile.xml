@@ -9,7 +9,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="280dp"
+        android:background="@color/white">
 
         <ImageButton
             android:id="@+id/imageButton2"
@@ -120,6 +121,12 @@
             app:layout_constraintGuide_percent="0.5"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_account_bottom"></LinearLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
