@@ -13,11 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.model.Todo;
-import com.fxn.ariana.Ariana;
-import com.fxn.ariana.GradientAngle;
-import com.kuassivi.component.RipplePulseRelativeLayout;
-import com.skyfishjy.library.RippleBackground;
+import com.andysapps.superdo.todo.model.Task;
 
 import java.util.ArrayList;
 
@@ -37,7 +33,7 @@ public class TodayFragment extends Fragment {
 
     int[] gradientColor = new int[2];
 
-    public ArrayList<Todo> todoList;
+    public ArrayList<Task> todoList;
 
     public TodayFragment() {
         // Required empty public constructor
