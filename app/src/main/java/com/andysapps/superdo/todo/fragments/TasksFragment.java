@@ -20,12 +20,9 @@ import butterknife.OnClick;
  */
 public class TasksFragment extends Fragment {
 
-
-
     public TasksFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

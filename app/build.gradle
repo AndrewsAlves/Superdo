@@ -35,7 +35,13 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
+    // google / firebase
+    implementation 'com.google.firebase:firebase-database:16.0.4'
+    implementation 'com.google.firebase:firebase-auth:19.0.0'
+    implementation 'com.google.firebase:firebase-firestore:21.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 
+    // utils
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
@@ -44,7 +50,6 @@ dependencies {
 
     //views
     implementation 'com.fxn769:ariana:1.0'
-
 
     // animation library
     implementation 'com.daimajia.easing:library:2.0@aar'

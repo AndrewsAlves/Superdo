@@ -18,7 +18,7 @@
             android:layout_height="130dp">
 
             <com.andysapps.superdo.todo.views.GradientTextView
-                android:id="@+id/tv_todaytitle"
+                android:id="@+id/tv_bucket_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
@@ -83,7 +83,7 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/recyclerView_bucket_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

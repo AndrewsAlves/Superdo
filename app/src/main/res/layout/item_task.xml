@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="2dp"
+        android:src="@drawable/bg_oval_grey_stroke"/>
+
+    <TextView
+        android:id="@+id/tv_tasks_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="This is a task"
+        android:textSize="16sp"
+        android:fontFamily="@font/montserrat_medium"
+        android:textColor="@color/grey4"
+        android:layout_marginStart="20dp" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_due_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Month 00"
+        android:fontFamily="@font/montserrat_regular"
+        android:textSize="12sp"
+        android:textColor="@color/grey2"
+        android:layout_marginStart="5dp"/>
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/iv_repeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_mini_repeat"
+        android:layout_marginStart="10dp"/>
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/iv_sub_tasks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_mini_subtasks"
+        android:layout_marginStart="10dp"/>
+
+</LinearLayout>
