@@ -28,7 +28,24 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <EditText
+                android:visibility="gone"
+                android:id="@+id/et_bucket_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="All Tasks"
+                android:textSize="28sp"
+                android:background="@android:color/transparent"
+                android:textColor="@color/lightOrange"
+                android:layout_marginStart="40dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
             <ImageButton
+                android:visibility="gone"
                 android:id="@+id/ib_profile"
                 style="@style/ripple_background"
                 android:layout_width="25dp"
@@ -41,6 +58,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
+                android:visibility="gone"
                 android:id="@+id/ib_buckets"
                 android:layout_width="25dp"
                 android:layout_height="23dp"
@@ -51,6 +69,34 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 style="@style/ripple_background"/>
+
+            <TextView
+                android:id="@+id/tv_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="SAVE"
+                android:textColor="@color/lightOrange"
+                android:textSize="16sp"
+                android:visibility="visible"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ib_close_editing_bucket"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/ib_close_editing_bucket"
+                style="@style/ripple_background"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:scaleType="fitXY"
+                android:padding="3dp"
+                android:src="@drawable/ic_close"
+                android:layout_marginEnd="40dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -68,6 +114,7 @@
                 android:src="@drawable/ic_desc" />
 
             <EditText
+                android:id="@+id/et_bucket_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -102,18 +149,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="100dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:alpha="0.5"
-                    android:src="@drawable/img_sloth" />
+                    android:src="@drawable/ic_empty_box" />
 
                 <TextView
                     android:id="@+id/tv_no_tasks"
@@ -121,19 +168,23 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginTop="10dp"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Great! you dont have \nany tasks Today"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textColor="@color/grey2"
+                    android:text="Your bucket list is empty"
                     android:textAlignment="center"
                     android:textSize="16sp" />
 
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/recyclerView_task_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"/>
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

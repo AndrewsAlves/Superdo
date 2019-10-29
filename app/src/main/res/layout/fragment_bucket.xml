@@ -50,7 +50,7 @@
             android:layout_weight="1">
 
             <LinearLayout
-                android:id="@+id/ll_notasks"
+                android:id="@+id/ll_noBuckets"
                 android:gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -63,11 +63,11 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:alpha="0.5"
-                    android:src="@drawable/img_sloth" />
+                    android:src="@drawable/img_bucket_center" />
 
                 <TextView
                     android:id="@+id/tv_no_tasks"
@@ -75,10 +75,11 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginTop="10dp"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Great! you dont have \nany tasks Today"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textColor="@color/grey2"
+                    android:text="Create bucket or project for your Work, \nhouse, Gym, Health etc"
                     android:textAlignment="center"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 

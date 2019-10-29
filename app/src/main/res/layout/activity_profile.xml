@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_profile"
+            android:src="@drawable/ic_profile_round"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -141,7 +141,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:gravity="center_vertical">
 
                 <ImageView
@@ -164,7 +164,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:gravity="center_vertical">
 
                 <ImageView
@@ -187,7 +187,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:gravity="center_vertical">
 
                 <ImageView
@@ -210,7 +210,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:gravity="center_vertical">
 
                 <ImageView
@@ -233,7 +233,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:gravity="center_vertical">
 
                 <ImageView
@@ -255,7 +255,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:gravity="center_vertical">
 
                 <ImageView

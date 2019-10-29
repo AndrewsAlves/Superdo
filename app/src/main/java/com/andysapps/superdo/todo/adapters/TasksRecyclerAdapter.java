@@ -13,9 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.model.Task;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.truckio.findtrucks.R;
-import com.truckio.findtrucks.events.PlaceSelectedEvent;
 
 import java.util.List;
 
@@ -28,12 +25,12 @@ import butterknife.ButterKnife;
 
 public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdapter.PlaceViewHolder> {
 
-    private List<Task> placesList;
+    private List<Task> taskList;
 
     private Context context;
 
-    public TasksRecyclerAdapter(Context context, List<Task> placesList) {
-        this.placesList = placesList;
+    public TasksRecyclerAdapter(Context context, List<Task> taskList) {
+        this.taskList = taskList;
         this.context = context;
     }
 
@@ -48,7 +45,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     public void onBindViewHolder(@NonNull PlaceViewHolder holder, int i) {
         final int position = i;
 
-        Task task = placesList.get(position);
+        Task task = taskList.get(position);
 
         holder.tvTaskName.setText(task.getName());
 
@@ -70,7 +67,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return placesList.size();
+        return taskList.size();
     }
 
     public class PlaceViewHolder extends RecyclerView.ViewHolder {
