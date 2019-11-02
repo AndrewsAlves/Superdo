@@ -46,10 +46,10 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.karumi:dexter:5.0.0' // runtime permission
-    implementation 'com.wdullaer:materialdatetimepicker:4.2.2' // date picker
 
     //views
     implementation 'com.fxn769:ariana:1.0'
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.2' // date picker
 
     // animation library
     implementation 'com.daimajia.easing:library:2.0@aar'

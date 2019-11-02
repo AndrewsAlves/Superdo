@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.model.Bucket;
 
@@ -58,12 +59,13 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
         Bucket bucket;
 
         if (position == 0) {
-            bucket = getAllTasksBucket();
+            bucket = FirestoreManager.getAllTasksBucket(context);
         } else {
             bucket = bucketList.get(position);
         }
 
         holder.tvBucketName.setText(bucket.getName());
+        holder.tvBucketName.setTextColor(Color.parseColor(bucket.getTagColor()));
         holder.ivHaveDesc.setVisibility(View.VISIBLE);
         holder.ivTag.getDrawable().setColorFilter(Color.parseColor(bucket.getTagColor()), PorterDuff.Mode.SRC_IN);
 
@@ -104,14 +106,5 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
             item = itemView;
             ButterKnife.bind(this,itemView);
         }
-    }
-
-    public Bucket getAllTasksBucket() {
-        Bucket bucket = new Bucket();
-        bucket.setName("All Tasks");
-        bucket.setDescription(SharedPrefsManager.getDescAllTasks(context));
-        bucket.setTagColor("#303030");
-
-        return bucket;
     }
 }

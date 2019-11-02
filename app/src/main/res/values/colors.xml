@@ -20,5 +20,6 @@
     <color name="black_a20">#20000000</color>
     <color name="white">#FFFFFF</color>
     <color name="white_a50">#50FFFFFF</color>
+    <color name="transparent">#00ffffff</color>
 
 </resources>

@@ -29,6 +29,43 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="@+id/tv_todaytitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_todaytitle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Today"
+                    android:textColor="@color/lightRed" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Tomorrow"
+                    android:textColor="@color/grey2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="Someday"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textColor="@color/grey2" />
+
+
+            </LinearLayout>
+
             <RelativeLayout
                 android:layout_width="50dp"
                 android:layout_height="50dp"

@@ -22,9 +22,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.activity.ProfileActivity;
 import com.andysapps.superdo.todo.adapters.BucketsRecyclerAdapter;
 import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
+import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 
@@ -56,7 +58,7 @@ public class TasksFragment extends Fragment {
     TextView tvSave;
 
     @BindView(R.id.ib_close_editing_bucket)
-    TextView ibClose;
+    ImageButton ibClose;
 
     @BindView(R.id.ll_notasks)
     LinearLayout llNoTasks;
@@ -84,19 +86,43 @@ public class TasksFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_tasks, container, false);
         ButterKnife.bind(this, v);
 
-        updateUi();
+        bucket = FirestoreManager.getAllTasksBucket(getContext());
 
         taskList = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new TasksRecyclerAdapter(getContext(), taskList);
         recyclerView.setAdapter(adapter);
 
+        updateUi();
+
         return v;
+
     }
 
     public void updateUi() {
 
+        etBucketName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+            }
+        });
+
+        etBucketDesc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    etBucketName.setVisibility(View.VISIBLE);
+                    tvBucketName.setVisibility(View.GONE);
+
+                    isEditing = true;
+                    updateUi();
+                }
+            }
+        });
+
         tvBucketName.setText(bucket.getName());
+        etBucketName.setText(bucket.getName());
         etBucketDesc.setText(bucket.getDescription());
 
         if (isEditing) {
@@ -105,10 +131,20 @@ public class TasksFragment extends Fragment {
             ibProfile.setVisibility(View.GONE);
             ibBuckets.setVisibility(View.GONE);
         } else {
+
+            Utils.hideKeyboard(getContext(), etBucketDesc);
+            Utils.hideKeyboard(getContext(), etBucketName);
+
+            etBucketDesc.clearFocus();
+            etBucketName.clearFocus();
+
             tvSave.setVisibility(View.GONE);
             ibClose.setVisibility(View.GONE);
             ibProfile.setVisibility(View.VISIBLE);
             ibBuckets.setVisibility(View.VISIBLE);
+
+            tvBucketName.setVisibility(View.VISIBLE);
+            etBucketName.setVisibility(View.GONE);
         }
 
         if(taskList.isEmpty()) {
@@ -122,16 +158,7 @@ public class TasksFragment extends Fragment {
         etBucketName.setVisibility(View.VISIBLE);
         tvBucketName.setVisibility(View.GONE);
 
-        showSoftKeyboard(etBucketName);
-
-        isEditing = true;
-        updateUi();
-    }
-
-    @OnClick(R.id.et_bucket_desc)
-    public void clickBucketDescription() {
-        etBucketName.setVisibility(View.VISIBLE);
-        tvBucketName.setVisibility(View.GONE);
+        Utils.showSoftKeyboard(getContext(), etBucketName);
 
         isEditing = true;
         updateUi();
@@ -151,11 +178,8 @@ public class TasksFragment extends Fragment {
 
     @OnClick(R.id.ib_close_editing_bucket)
     public void clickClose() {
-
-        tvSave.setVisibility(View.GONE);
-        ibClose.setVisibility(View.GONE);
-        ibProfile.setVisibility(View.VISIBLE);
-        ibBuckets.setVisibility(View.VISIBLE);
+        isEditing = false;
+        updateUi();
     }
 
     @OnClick(R.id.ib_profile)
@@ -173,11 +197,5 @@ public class TasksFragment extends Fragment {
     }
 
 
-    public void showSoftKeyboard(View view) {
-        if (view.requestFocus()) {
-            InputMethodManager imm = (InputMethodManager)
-                   getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-        }
-    }
+
 }

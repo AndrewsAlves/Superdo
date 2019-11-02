@@ -1,5 +1,7 @@
 package com.andysapps.superdo.todo.model;
 
+import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.enums.TaskListing;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
@@ -15,8 +17,12 @@ public class Task {
 
     String description;
 
+    TaskListing listedIn;
+
+    // DD MM YYYY
     int[] dueDate;
 
+    // HH MM
     int[] time;
 
     String repeat;
@@ -153,5 +159,26 @@ public class Task {
 
     public void setRepeat(String repeat) {
         this.repeat = repeat;
+    }
+
+    public TaskListing getListedIn() {
+        return listedIn;
+    }
+
+    public void setListedIn(TaskListing listedIn) {
+        this.listedIn = listedIn;
+    }
+
+    public String getDueDateString() {
+
+        if (dueDate == null) {
+            return null;
+        }
+
+        String duedate;
+
+        duedate = Utils.getMonthString(dueDate[1]) + " "+ dueDate[0];
+
+        return duedate;
     }
 }

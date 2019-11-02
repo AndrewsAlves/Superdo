@@ -115,6 +115,7 @@
             android:layout_centerVertical="true"/>
 
         <RelativeLayout
+            android:id="@+id/btn_add_task"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:background="@drawable/bg_oval_gradient"
@@ -136,5 +137,11 @@
         android:id="@+id/fl_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:layout_alignParentBottom="true"
+        android:id="@+id/fl_add_task_frag_container"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"/>
 
 </RelativeLayout>

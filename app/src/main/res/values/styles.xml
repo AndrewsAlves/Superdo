@@ -9,13 +9,23 @@
     </style>
 
 
+    ////////
+    /// BOTTOM SHEET STYLE
+    ////////
+
+    <style name="BottomDialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+
     // ripple style
     <style name="SelectedBackground">
         <item name="colorControlHighlight">@color/lightRed_a30</item>
     </style>
 
     <style name="SelectedBackground_grey">
-        <item name="colorControlHighlight">@color/black</item>
+        <item name="colorControlHighlight">@color/grey2</item>
     </style>
 
     ////////////////////

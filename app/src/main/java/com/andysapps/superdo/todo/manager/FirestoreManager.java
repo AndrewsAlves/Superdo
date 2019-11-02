@@ -32,4 +32,13 @@ public class FirestoreManager {
         return taskList;
     }
 
+    public static Bucket getAllTasksBucket(Context context) {
+        Bucket bucket = new Bucket();
+        bucket.setName("All Tasks");
+        bucket.setDescription(SharedPrefsManager.getDescAllTasks(context));
+        bucket.setTagColor("#F64F59"); // light red
+
+        return bucket;
+    }
+
 }

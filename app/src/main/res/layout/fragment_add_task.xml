@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="140dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
         android:gravity="center_vertical">
 
         <EditText
+            android:id="@+id/et_add_task"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/black"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/grey4"
             android:hint="Add task"
             android:textColorHint="@color/grey1"
             android:layout_marginStart="20dp"
             android:background="@android:color/transparent"/>
 
         <ImageButton
+            android:id="@+id/ib_add_task"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="10dp"
@@ -30,7 +33,93 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="35dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:id="@+id/btn_today"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_dot_today"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/bg_oval_grey"/>
+
+            <TextView
+                android:id="@+id/tv_today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today"
+                android:textSize="16sp"
+                android:textColor="@color/grey2"
+                android:fontFamily="@font/montserrat_medium"
+                android:layout_marginStart="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_tomorrow"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_dot_tomorrow"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/bg_oval_grey"/>
+
+            <TextView
+                android:id="@+id/tv_tomorrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tomorrow"
+                android:textSize="16sp"
+                android:textColor="@color/grey2"
+                android:fontFamily="@font/montserrat_medium"
+                android:layout_marginStart="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_someday"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_dot_someday"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/bg_oval_grey"/>
+
+            <TextView
+                android:id="@+id/tv_someday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Someday"
+                android:textSize="16sp"
+                android:textColor="@color/grey2"
+                android:fontFamily="@font/montserrat_medium"
+                android:layout_marginStart="10dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
@@ -42,42 +131,48 @@
             android:gravity="center">
 
             <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:src="@drawable/bg_oval_light_red"/>
-
-            <TextView
+                android:id="@+id/iv_due_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Today"
-                android:textSize="16sp"
-                android:fontFamily="@font/montserrat_medium"
-                android:layout_marginStart="10dp"/>
+                android:src="@drawable/ic_duedate_off"/>
+
+            <LinearLayout
+                android:id="@+id/ll_bg_duedate"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                style="@style/ripple_foreground_boredered_white"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/bg_light_orange">
+
+                <TextView
+                    android:id="@+id/tv_due_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="No deadline"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/montserrat_medium" />
+
+                <ImageButton
+                    android:id="@+id/ib_clearDeadLine"
+                    android:alpha="0.5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close_mini_white"
+                    android:layout_marginStart="10dp"
+                    style="@style/ripple_background_grey"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:src="@drawable/bg_oval_grey"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tomorrow"
-                android:textSize="16sp"
-                android:fontFamily="@font/montserrat_medium"
-                android:layout_marginStart="10dp"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+            android:id="@+id/btn_buckets"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
@@ -85,44 +180,26 @@
             android:gravity="center">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_calender_mini"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Due \nDate"
-                android:textSize="12sp"
-                android:fontFamily="@font/montserrat_medium"
-                android:layout_marginStart="10dp"/>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <ImageView
+                android:id="@+id/iv_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_tag"/>
 
             <TextView
+                android:id="@+id/bucket_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bucket name"
+                android:text="All Tasks"
+                android:textColor="@color/grey3"
                 android:maxLines="2"
                 android:textSize="12sp"
+                android:textAlignment="center"
                 android:fontFamily="@font/montserrat_medium"
                 android:layout_marginStart="10dp"/>
 
         </LinearLayout>
 
     </LinearLayout>
+
 
 </LinearLayout>

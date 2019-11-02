@@ -1,10 +1,50 @@
 package com.andysapps.superdo.todo;
 
+import android.app.Activity;
+import android.content.Context;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
+import com.andysapps.superdo.todo.manager.SharedPrefsManager;
+import com.andysapps.superdo.todo.model.Bucket;
+
+import java.util.Calendar;
+
 /**
  * Created by Andrews on 20,August,2019
  */
 
 public class Utils {
+
+
+    public static void showSoftKeyboard(Context context, View view) {
+        if (view.requestFocus()) {
+            InputMethodManager imm = (InputMethodManager)
+                    context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    public static void hideKeyboard(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static Calendar getStartDate() {
+        Calendar output = Calendar.getInstance();
+        output.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+        output.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        output.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH));
+        return output;
+    }
+
+    public static Calendar getEndDate() {
+        Calendar output2 = Calendar.getInstance();
+        output2.set(Calendar.YEAR, 2020);
+        output2.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        output2.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH));
+        return output2;
+    }
 
     public static String getMonthString(int month) {
         switch (month) {

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
+import com.andysapps.superdo.todo.fragments.AddTaskFragment;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.kuassivi.component.RipplePulseRelativeLayout;
 
@@ -98,6 +99,12 @@ public class MainActivity extends AppCompatActivity {
         mainTabs = MainTabs.TASKS;
         mainViewPager.setCurrentItem(1);
         updateTabUi(mainTabs);
+    }
+
+    @OnClick(R.id.btn_add_task)
+    public void clickAddTask() {
+        AddTaskFragment bottomSheetFragment = new AddTaskFragment();
+        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
     }
 
     public void updateTabUi(MainTabs tabs) {
