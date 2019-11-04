@@ -4,6 +4,7 @@ import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -177,7 +178,11 @@ public class Task {
 
         String duedate;
 
-        duedate = Utils.getMonthString(dueDate[1]) + " "+ dueDate[0];
+        if (dueDate[2] != Calendar.YEAR) {
+            duedate = Utils.getMonthString(dueDate[1]) + " "+ dueDate[0] + " - " + dueDate[2];
+        } else {
+            duedate = Utils.getMonthString(dueDate[1]) + " "+ dueDate[0];
+        }
 
         return duedate;
     }

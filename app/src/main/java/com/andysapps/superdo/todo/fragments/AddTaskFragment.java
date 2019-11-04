@@ -127,6 +127,14 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
         switch (task.getListedIn()) {
 
+
+            case TODAY:
+
+            default:
+                ivDotToday.setImageResource(R.drawable.bg_oval_light_red);
+                tvToday.setTextColor(getResources().getColor(R.color.lightRed));
+                break;
+
             case TOMORROW:
                 ivDotTomorrow.setImageResource(R.drawable.bg_oval_light_red);
                 tvTomorrow.setTextColor(getResources().getColor(R.color.lightRed));
@@ -137,18 +145,13 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
                 tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
                 break;
 
-            case TODAY:
-
-            default:
-                    ivDotToday.setImageResource(R.drawable.bg_oval_light_red);
-                    tvToday.setTextColor(getResources().getColor(R.color.lightRed));
-                    break;
         }
 
         if (task.getDueDateString() == null) {
 
             ivDueDate.setImageResource(R.drawable.ic_duedate_off);
             tvDueDate.setText("No deadline");
+            tvDueDate.setTextColor(getResources().getColor(R.color.grey2));
 
             btnBgDuedate.setBackgroundResource(R.color.transparent);
             btnClearDeadLine.setVisibility(View.GONE);
@@ -157,15 +160,16 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
             ivDueDate.setImageResource(R.drawable.ic_duedate_on);
             tvDueDate.setText(task.getDueDateString());
+            tvDueDate.setTextColor(getResources().getColor(R.color.white));
 
-            btnBgDuedate.setBackgroundResource(R.drawable.bg_light_orange);
+            btnBgDuedate.setBackgroundResource(R.drawable.bg_light_red);
             btnClearDeadLine.setVisibility(View.VISIBLE);
         }
 
         if (task.getBucketId() == null) {
             ivTag.getDrawable().setColorFilter(getResources().getColor(R.color.lightRed), PorterDuff.Mode.SRC_IN);
             bucketName.setText("All Tasks");
-            bucketName.setTextColor(getResources().getColor(R.color.grey3));
+            bucketName.setTextColor(getResources().getColor(R.color.lightRed));
         } else {
             ivTag.getDrawable().setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_IN);
             bucketName.setText(task.getBucketName());
@@ -183,7 +187,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
                 now.get(Calendar.DAY_OF_MONTH)
         );
 
-        dpd.setAccentColor(getResources().getColor(R.color.lightOrange));
+        dpd.setAccentColor(getResources().getColor(R.color.lightRed));
         dpd.setMinDate(Utils.getStartDate());
         dpd.setMaxDate(Utils.getEndDate());
         dpd.show(getFragmentManager(), "Datepickerdialog");
@@ -192,21 +196,30 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @OnClick(R.id.btn_today)
     public void clickToday() {
         task.setListedIn(TaskListing.TODAY);
+        updateUi();
     }
 
     @OnClick(R.id.btn_tomorrow)
     public void clickTomorrow() {
         task.setListedIn(TaskListing.TOMORROW);
+        updateUi();
     }
 
     @OnClick(R.id.btn_someday)
     public void clickSomeday() {
         task.setListedIn(TaskListing.SOMEDAY);
+        updateUi();
     }
 
     @OnClick(R.id.ll_bg_duedate)
     public void clickDuedate() {
         showDatePicker();
+    }
+
+    @OnClick(R.id.ib_clearDeadLine)
+    public void clickClearDeadLine() {
+        task.setDueDate(null);
+        updateUi();
     }
 
     @OnClick(R.id.btn_buckets)

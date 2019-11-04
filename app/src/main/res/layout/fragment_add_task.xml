@@ -14,7 +14,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:fontFamily="@font/montserrat_regular"
+            android:fontFamily="@font/montserrat_medium"
             android:textColor="@color/grey4"
             android:hint="Add task"
             android:textColorHint="@color/grey1"
@@ -23,10 +23,10 @@
 
         <ImageButton
             android:id="@+id/ib_add_task"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="10dp"
-            style="@style/ripple_background_grey"
+            style="@style/ripple_background_bordered_grey"
             android:src="@drawable/ic_add_color"/>
 
     </LinearLayout>
@@ -145,7 +145,7 @@
                 android:paddingEnd="8dp"
                 style="@style/ripple_foreground_boredered_white"
                 android:layout_marginStart="10dp"
-                android:background="@drawable/bg_light_orange">
+                android:background="@drawable/bg_light_red">
 
                 <TextView
                     android:id="@+id/tv_due_date"
