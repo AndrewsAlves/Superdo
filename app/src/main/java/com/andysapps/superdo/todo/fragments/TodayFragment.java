@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
+
 public class TodayFragment extends Fragment {
 
     @BindView(R.id.tv_todaytitle)
@@ -38,7 +39,6 @@ public class TodayFragment extends Fragment {
     public TodayFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

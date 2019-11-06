@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -196,6 +197,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @OnClick(R.id.btn_today)
     public void clickToday() {
         task.setListedIn(TaskListing.TODAY);
+        task.setDoDate(Calendar.getInstance().getTime());
         updateUi();
     }
 
@@ -225,6 +227,17 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @OnClick(R.id.btn_buckets)
     public void clickBuckets() {
 
+    }
+
+    @OnClick(R.id.btn_add_task)
+    public void clickAddTask() {
+        if (validate()) {
+            FirestoreManager.getInstance().uploadTask(task);
+        }
+    }
+
+    public boolean validate() {
+        return true;
     }
 
     @Override

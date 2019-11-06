@@ -14,11 +14,15 @@ import java.util.List;
 
 public class Task {
 
+    String userId;
+
     String name;
 
     String description;
 
     TaskListing listedIn;
+
+    Date doDate;
 
     // DD MM YYYY
     int[] dueDate;
@@ -170,6 +174,22 @@ public class Task {
         this.listedIn = listedIn;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public Date getDoDate() {
+        return doDate;
+    }
+
+    public void setDoDate(Date doDate) {
+        this.doDate = doDate;
+    }
+
     public String getDueDateString() {
 
         if (dueDate == null) {
@@ -179,11 +199,15 @@ public class Task {
         String duedate;
 
         if (dueDate[2] != Calendar.YEAR) {
-            duedate = Utils.getMonthString(dueDate[1]) + " "+ dueDate[0] + " - " + dueDate[2];
+            duedate = Utils.getMonthString(dueDate[1]) + " "+ dueDate[0] + ", " + dueDate[2];
         } else {
             duedate = Utils.getMonthString(dueDate[1]) + " "+ dueDate[0];
         }
 
         return duedate;
     }
+
+
+
+
 }
