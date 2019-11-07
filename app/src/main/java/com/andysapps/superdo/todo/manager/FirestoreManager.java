@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.andysapps.superdo.todo.events.firestore.FetchUserDataFailureEvent;
+import com.andysapps.superdo.todo.events.firestore.FetchUserDataSuccessEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskFailureEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskSuccessEvent;
 import com.andysapps.superdo.todo.model.Bucket;
@@ -20,6 +22,7 @@ import com.google.firebase.firestore.Source;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +43,7 @@ public class FirestoreManager {
     List<Bucket> bucketList;
     List<Task> taskList;
 
-    public String userId;
+    public String userId = "test_user";
 
     FirebaseFirestore firestore;
 
@@ -50,6 +53,7 @@ public class FirestoreManager {
 
     private FirestoreManager(Context context) {
         firestore =  FirebaseFirestore.getInstance();
+        fetchUserData();
     }
 
     public static void intialize(Context context) {
@@ -69,16 +73,44 @@ public class FirestoreManager {
         return bucket;
     }
 
-    public void fetchUserTasks() {
+    public void fetchUserData() {
 
         Source source = Source.DEFAULT;
 
-        Query query = firestore.collection(DB_USER).whereEqualTo("userId", userId);
+        Query queryTask = firestore.collection(DB_TASKS).whereEqualTo("userId", userId);
 
-        query.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        queryTask.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
+                taskList = new ArrayList<>();
+
+                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
+                    if (documentSnapshot == null) {
+                        continue;
+                    }
+
+                    taskList.add(documentSnapshot.toObject(Task.class));
+                }
+
+                TaskOrganiser.getInstance().organiseAllTasks();
+                EventBus.getDefault().post(new FetchUserDataSuccessEvent());
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                EventBus.getDefault().post(new FetchUserDataFailureEvent());
+            }
+        });
+
+        Query queryBucket = firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId);
+
+        queryBucket.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                TaskOrganiser.getInstance().organiseAllTasks();
             }
 
         }).addOnFailureListener(new OnFailureListener() {
@@ -87,6 +119,7 @@ public class FirestoreManager {
 
             }
         });
+
     }
 
     public void uploadTask(Task task) {

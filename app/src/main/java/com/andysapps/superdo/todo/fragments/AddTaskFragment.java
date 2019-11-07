@@ -41,7 +41,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     private static final String TAG = "Add Task Fragment";
     @BindView(R.id.et_add_task)
-    EditText etAddTask;
+    EditText etTaskName;
 
     @BindView(R.id.ib_add_task)
     ImageButton ibAddTask;
@@ -106,7 +106,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         View v = inflater.inflate(R.layout.fragment_add_task, container, false);
         ButterKnife.bind(this, v);
 
-        Utils.showSoftKeyboard(getContext(), etAddTask);
+        Utils.showSoftKeyboard(getContext(), etTaskName);
 
         task = new Task();
         task.setListedIn(TaskListing.TODAY);
@@ -229,14 +229,19 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     }
 
-    @OnClick(R.id.btn_add_task)
+    @OnClick(R.id.ib_add_task)
     public void clickAddTask() {
         if (validate()) {
+            task.setUserId(FirestoreManager.getInstance().userId);
+            task.setName(etTaskName.getText().toString());
             FirestoreManager.getInstance().uploadTask(task);
         }
     }
 
     public boolean validate() {
+        if (etTaskName.getText().toString().isEmpty()) {
+            return false;
+        }
         return true;
     }
 

@@ -41,6 +41,12 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         return new PlaceViewHolder(view);
     }
 
+    public void updateList(List<Task> taskList) {
+        this.taskList.clear();
+        this.taskList.addAll(taskList);
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull PlaceViewHolder holder, int i) {
         final int position = i;

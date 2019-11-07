@@ -38,27 +38,30 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_todaytitle">
 
                 <TextView
+                    android:id="@+id/btn_today"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="10dp"
                     android:fontFamily="@font/montserrat_bold"
                     android:text="Today"
                     android:textColor="@color/lightRed" />
 
                 <TextView
+                    android:id="@+id/btn_tomorrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:fontFamily="@font/montserrat_regular"
                     android:text="Tomorrow"
                     android:textColor="@color/grey2" />
 
                 <TextView
+                    android:id="@+id/btn_someday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:text="Someday"
                     android:fontFamily="@font/montserrat_regular"
                     android:textColor="@color/grey2" />
@@ -134,9 +137,11 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/recyclerView_today"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

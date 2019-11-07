@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+
 
 android {
     compileSdkVersion 28
@@ -58,6 +60,4 @@ dependencies {
     implementation 'com.airbnb.android:lottie:3.0.7' // lottie
     implementation 'com.skyfishjy.ripplebackground:library:1.0.1' // ripple animation
     implementation 'com.kuassivi.android.view:ripple-pulse-layout:0.1.9' // ripple animation
-
-
 }

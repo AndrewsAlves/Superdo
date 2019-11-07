@@ -1,5 +1,7 @@
 package com.andysapps.superdo.todo.manager;
 
+import android.util.Log;
+
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.Task;
 
@@ -13,6 +15,7 @@ import java.util.List;
  */
 public class TaskOrganiser {
 
+    private static final String TAG = "TaskOrganiser";
     private static TaskOrganiser ourInstance = new TaskOrganiser();
 
     public List<Task> todayTaskList;
@@ -26,6 +29,9 @@ public class TaskOrganiser {
     }
 
     private TaskOrganiser() {
+        todayTaskList = new ArrayList<>();
+        tomorrowTaskList = new ArrayList<>();
+        someDayTaskList = new ArrayList<>();
     }
 
     public void organiseAllTasks() {
@@ -34,9 +40,11 @@ public class TaskOrganiser {
         tomorrowTaskList = new ArrayList<>();
         someDayTaskList = new ArrayList<>();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
         List<Task> allTasks = FirestoreManager.getInstance().getAllTasks();
+
+        if (allTasks == null) {
+            return;
+        }
 
         for (Task task : allTasks) {
 
@@ -46,6 +54,7 @@ public class TaskOrganiser {
 
             if (task.getListedIn() == TaskListing.TOMORROW) {
 
+                // add all tomorrow task to today if thier timestamp is less than current timestamp
                 if (task.getDoDate().getTime() < Calendar.getInstance().getTime().getTime()) {
 
                     todayTaskList.add(task);
@@ -66,10 +75,12 @@ public class TaskOrganiser {
 
         }
 
-        for (int i = 0 ; i < allTasks.size() ; i++) {
-            if (allTasks)
-        }
+        Log.e(TAG, "organiseAllTasks: tasks size : " + todayTaskList.size());
+    }
 
+    public List<Task> getTodayTaskList() {
+        Log.e(TAG, "getTodayList: tasks size : " + todayTaskList.size());
+        return todayTaskList;
     }
 
     public int getDateFromTimeStamp(long timestamp) {
@@ -80,6 +91,5 @@ public class TaskOrganiser {
 
         return Integer.parseInt(dateParts[0]);
     }
-
 
 }
