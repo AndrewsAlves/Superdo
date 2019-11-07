@@ -58,6 +58,7 @@ dependencies {
     implementation 'com.daimajia.easing:library:2.0@aar'
     implementation 'com.daimajia.androidanimations:library:2.3@aar'
     implementation 'com.airbnb.android:lottie:3.0.7' // lottie
-    implementation 'com.skyfishjy.ripplebackground:library:1.0.1' // ripple animation
     implementation 'com.kuassivi.android.view:ripple-pulse-layout:0.1.9' // ripple animation
+    implementation 'com.github.florent37:viewanimator:1.1.0'
+
 }

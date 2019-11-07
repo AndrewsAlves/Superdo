@@ -2,8 +2,10 @@ package com.andysapps.superdo.todo.fragments;
 
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,7 @@ import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.firestore.FetchUserDataSuccessEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
+import com.github.florent37.viewanimator.ViewAnimator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -62,7 +65,12 @@ public class TodayFragment extends Fragment {
 
     public List<Task> taskList;
 
+    Typeface fontBold;
+    Typeface fontRegular;
+
     TaskListing listing = TaskListing.TODAY;
+
+    TaskListing lasttaskListing;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -74,6 +82,9 @@ public class TodayFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_today, container, false);
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
+
+        fontBold = ResourcesCompat.getFont(getContext(), R.font.montserrat_bold);
+        fontRegular = ResourcesCompat.getFont(getContext(), R.font.montserrat_regular);
 
 
         taskList = new ArrayList<>();
@@ -97,24 +108,26 @@ public class TodayFragment extends Fragment {
         gradientColor[0] = Color.parseColor( "#F64F59");
         gradientColor[1] = Color.parseColor( "#FF8B57");
 
-        tvToday.setTextColor(getResources().getColor(R.color.grey2));
-        tvTomorrow.setTextColor(getResources().getColor(R.color.grey2));
-        tvSomeday.setTextColor(getResources().getColor(R.color.grey2));
+        //tvToday.setTextColor(getResources().getColor(R.color.lightRed));
+        //tvTomorrow.setTextColor(getResources().getColor(R.color.lightRed));
+        //tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
 
         switch (listing) {
             case TODAY:
-                tvToday.setTextColor(getResources().getColor(R.color.lightRed));
+              //  tvToday.setTextColor(getResources().getColor(R.color.lightRed));
                 taskList = TaskOrganiser.getInstance().getTodayTaskList();
                 break;
             case TOMORROW:
-                tvTomorrow.setTextColor(getResources().getColor(R.color.lightRed));
+              //  tvTomorrow.setTextColor(getResources().getColor(R.color.lightRed));
                 taskList = TaskOrganiser.getInstance().tomorrowTaskList;
                 break;
             case SOMEDAY:
-                tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
+              //  tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
                 taskList = TaskOrganiser.getInstance().someDayTaskList;
                 break;
         }
+
+        animateTodayViews();
 
         if (taskList == null || taskList.isEmpty()) {
             linearNoTasks.setVisibility(View.VISIBLE);
@@ -146,5 +159,63 @@ public class TodayFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(FetchUserDataSuccessEvent event) {
         updateUi();
+    }
+
+    /////////////////////
+    /////// ANIMATION
+    ////////////////////
+
+    public void animateTodayViews() {
+
+        float red =  1.0f;
+        float grey =  0.3f;
+
+        if (lasttaskListing != null && listing != lasttaskListing) {
+            switch (lasttaskListing) {
+                case TODAY:
+                    zoomAnimation(1.2f, 1.0f, tvToday, grey);
+                    break;
+                case TOMORROW:
+                    zoomAnimation(1.2f, 1.0f, tvTomorrow, grey);
+                    break;
+                case SOMEDAY:
+                    zoomAnimation(1.2f, 1.0f, tvSomeday, grey);
+                    break;
+            }
+        }
+
+        if (listing != lasttaskListing) {
+            switch (listing) {
+                case TODAY:
+                    zoomAnimation(1.0f, 1.2f, tvToday, red);
+                    break;
+                case TOMORROW:
+                    zoomAnimation(1.0f, 1.2f, tvTomorrow, red);
+                    break;
+                case SOMEDAY:
+                    zoomAnimation(1.0f, 1.2f, tvSomeday, red);
+                    break;
+            }
+        }
+
+        lasttaskListing = listing;
+
+    }
+
+    public void zoomAnimation(float start, float end, View view, float alpha) {
+        ViewAnimator
+                .animate(view)
+                .scale(start, end)
+                .alpha(alpha)
+                .decelerate()
+                .duration(200)
+                .start();
+
+       /* ViewAnimator
+                .animate(view)
+                .textColor(color)
+                .decelerate()
+                .duration(1000)
+                .start();*/
     }
 }

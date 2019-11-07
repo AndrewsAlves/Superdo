@@ -30,8 +30,9 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="35dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="@+id/tv_todaytitle"
@@ -40,31 +41,35 @@
                 <TextView
                     android:id="@+id/btn_today"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_marginStart="48dp"
                     android:fontFamily="@font/montserrat_bold"
                     android:text="Today"
+                    android:textSize="16sp"
                     android:textColor="@color/lightRed" />
 
                 <TextView
                     android:id="@+id/btn_tomorrow"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:fontFamily="@font/montserrat_regular"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_marginStart="30dp"
+                    android:fontFamily="@font/montserrat_bold"
                     android:text="Tomorrow"
-                    android:textColor="@color/grey2" />
+                    android:textSize="16sp"
+                    android:textColor="@color/middleRedOrange" />
 
                 <TextView
                     android:id="@+id/btn_someday"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:text="Someday"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/grey2" />
+                    android:textSize="16sp"
+                    android:layout_marginStart="30dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:textColor="@color/lightOrange" />
 
 
             </LinearLayout>
@@ -140,6 +145,7 @@
                 android:id="@+id/recyclerView_today"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"/>
 

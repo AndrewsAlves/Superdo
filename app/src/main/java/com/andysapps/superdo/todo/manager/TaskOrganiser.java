@@ -22,8 +22,6 @@ public class TaskOrganiser {
     public List<Task> tomorrowTaskList;
     public List<Task> someDayTaskList;
 
-
-
     public static TaskOrganiser getInstance() {
         return ourInstance;
     }
@@ -52,15 +50,16 @@ public class TaskOrganiser {
                 todayTaskList.add(task);
             }
 
+            if (task.getListedIn() == TaskListing.SOMEDAY) {
+                someDayTaskList.add(task);
+            }
+
             if (task.getListedIn() == TaskListing.TOMORROW) {
 
                 // add all tomorrow task to today if thier timestamp is less than current timestamp
                 if (task.getDoDate().getTime() < Calendar.getInstance().getTime().getTime()) {
-
                     todayTaskList.add(task);
-
                 } else {
-
                     int taskDate = getDateFromTimeStamp(task.getDoDate().getTime());
                     int todayDate = Calendar.getInstance().get(Calendar.DATE);
 
@@ -69,9 +68,9 @@ public class TaskOrganiser {
                     } else {
                         tomorrowTaskList.add(task);
                     }
-
                 }
             }
+
 
         }
 

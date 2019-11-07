@@ -3,9 +3,11 @@ package com.andysapps.superdo.todo.fragments;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -27,7 +29,9 @@ import com.andysapps.superdo.todo.model.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,6 +91,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     TextView bucketName;
 
     Task task;
+
 
 
     public AddTaskFragment() {
@@ -179,6 +184,16 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     }
 
+    public Date getTomorrow() {
+        Date dt = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.add(Calendar.DATE, 1);
+        dt = c.getTime();
+
+        return dt;
+    }
+
     public void showDatePicker() {
         Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
@@ -204,6 +219,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @OnClick(R.id.btn_tomorrow)
     public void clickTomorrow() {
         task.setListedIn(TaskListing.TOMORROW);
+        task.setDoDate(getTomorrow());
         updateUi();
     }
 
