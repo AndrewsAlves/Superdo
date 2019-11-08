@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,9 +22,11 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.firestore.FetchUserDataSuccessEvent;
+import com.andysapps.superdo.todo.events.firestore.UpdateListEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
 import com.github.florent37.viewanimator.ViewAnimator;
+import com.thesurix.gesturerecycler.GestureManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -68,7 +72,7 @@ public class TodayFragment extends Fragment {
     Typeface fontBold;
     Typeface fontRegular;
 
-    TaskListing listing = TaskListing.TODAY;
+    TaskListing listing;
 
     TaskListing lasttaskListing;
 
@@ -86,12 +90,49 @@ public class TodayFragment extends Fragment {
         fontBold = ResourcesCompat.getFont(getContext(), R.font.montserrat_bold);
         fontRegular = ResourcesCompat.getFont(getContext(), R.font.montserrat_regular);
 
-
         taskList = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new TasksRecyclerAdapter(getContext(), taskList);
+        adapter.setData(taskList, new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return 0;
+            }
+
+            @Override
+            public int getNewListSize() {
+                return 0;
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return false;
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return false;
+            }
+        });
+
         recyclerView.setAdapter(adapter);
 
+
+        GestureManager manager = new GestureManager.Builder(recyclerView)
+                // Enable swipe
+                .setSwipeEnabled(false)
+                // Enable long press drag and drop
+                .setLongPressDragEnabled(true)
+                // Enable manual drag from the beginning, you need to provide View inside your GestureViewHolder
+                .setManualDragEnabled(true)
+                // Use custom gesture flags
+                // Do not use those methods if you want predefined flags for RecyclerView layout manager
+                .build();
+
+        listing= TaskListing.TODAY;
+        lasttaskListing = TaskListing.TOMORROW;
+        updateUi();
+        lasttaskListing = TaskListing.SOMEDAY;
         updateUi();
 
         return v;
@@ -158,6 +199,11 @@ public class TodayFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(FetchUserDataSuccessEvent event) {
+        updateUi();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(UpdateListEvent event) {
         updateUi();
     }
 

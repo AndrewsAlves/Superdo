@@ -1,16 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:layout_width="match_parent"
     android:layout_height="50dp">
 
-    <ImageView
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="2dp"
-        android:src="@drawable/bg_oval_grey_stroke"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_check_task"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_centerInParent="true"
+            android:alpha="0.5"
+            android:visibility="visible"
+            android:src="@drawable/ic_check_store"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_check_view"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerInParent="true"
+            app:lottie_fileName="anim_check2.json"
+            app:lottie_autoPlay="false" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_tasks_name"
