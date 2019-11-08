@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo.model;
 
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Calendar;
@@ -13,6 +14,9 @@ import java.util.List;
  */
 
 public class Task {
+
+    @DocumentId
+    String documentId;
 
     String userId;
 
@@ -188,6 +192,14 @@ public class Task {
 
     public void setDoDate(Date doDate) {
         this.doDate = doDate;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
     public String getDueDateString() {

@@ -8,6 +8,7 @@ import com.andysapps.superdo.todo.model.Task;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -38,13 +39,13 @@ public class TaskOrganiser {
         tomorrowTaskList = new ArrayList<>();
         someDayTaskList = new ArrayList<>();
 
-        List<Task> allTasks = FirestoreManager.getInstance().getAllTasks();
+        HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
 
         if (allTasks == null) {
             return;
         }
 
-        for (Task task : allTasks) {
+        for (Task task : allTasks.values()) {
 
             if (task.getListedIn() == TaskListing.TODAY) {
                 todayTaskList.add(task);
@@ -58,20 +59,23 @@ public class TaskOrganiser {
 
                 // add all tomorrow task to today if thier timestamp is less than current timestamp
                 if (task.getDoDate().getTime() < Calendar.getInstance().getTime().getTime()) {
+                    task.setListedIn(TaskListing.TODAY);
                     todayTaskList.add(task);
+                    FirestoreManager.getInstance().updateTask(task); // update tomorrow task to today
                 } else {
+
                     int taskDate = getDateFromTimeStamp(task.getDoDate().getTime());
                     int todayDate = Calendar.getInstance().get(Calendar.DATE);
 
                     if (taskDate <= todayDate) {
+                        task.setListedIn(TaskListing.TODAY);
                         todayTaskList.add(task);
+                        FirestoreManager.getInstance().updateTask(task); // update tomorrow task to today
                     } else {
                         tomorrowTaskList.add(task);
                     }
                 }
             }
-
-
         }
 
         Log.e(TAG, "organiseAllTasks: tasks size : " + todayTaskList.size());

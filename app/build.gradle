@@ -53,6 +53,8 @@ dependencies {
     //views
     implementation 'com.fxn769:ariana:1.0'
     implementation 'com.wdullaer:materialdatetimepicker:4.2.2' // date picker
+    implementation 'com.thesurix.gesturerecycler:gesture-recycler:1.9.0' // reorder Recyclerview
+
 
     // animation library
     implementation 'com.daimajia.easing:library:2.0@aar'

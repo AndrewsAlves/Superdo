@@ -24,10 +24,15 @@ import android.widget.TextView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.events.ui.TaskAddedEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -92,8 +97,6 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     Task task;
 
-
-
     public AddTaskFragment() {
         // Required empty public constructor
     }
@@ -110,6 +113,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_add_task, container, false);
         ButterKnife.bind(this, v);
+        EventBus.getDefault().register(this);
 
         Utils.showSoftKeyboard(getContext(), etTaskName);
 
@@ -119,6 +123,12 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         updateUi();
         // Inflate the layout for this fragment
         return v;
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
     }
 
     public void updateUi() {
@@ -268,4 +278,18 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         updateUi();
         Log.e(TAG, "onDateSet: " + monthOfYear + " : " + dayOfMonth + " : " + year);
     }
+
+    /////////////
+    ////// EVENTS
+    /////////////
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(TaskAddedEvent event) {
+        TaskListing lastTaskListing = task.getListedIn();
+        task = new Task();
+        task.setListedIn(lastTaskListing);
+        etTaskName.getText().clear();
+        updateUi();
+    }
+
 }
