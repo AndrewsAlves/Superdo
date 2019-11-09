@@ -13,16 +13,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Task;
+import com.google.firebase.firestore.DocumentChange;
 import com.thesurix.gesturerecycler.GestureAdapter;
 import com.thesurix.gesturerecycler.GestureViewHolder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,7 +36,7 @@ import butterknife.ButterKnife;
  * Created by Andrews on 15,August,2019
  */
 
-public class TasksRecyclerAdapter extends GestureAdapter<Task, TasksRecyclerAdapter.PlaceViewHolder> {
+public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdapter.PlaceViewHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = "TasksRecyclerAdapter";
     private List<Task> taskList;
@@ -51,66 +55,92 @@ public class TasksRecyclerAdapter extends GestureAdapter<Task, TasksRecyclerAdap
         return new PlaceViewHolder(view);
     }
 
+    public void updateList(List<Task> taskList, DocumentChange.Type updateType) {
+        Log.e(TAG, "updateList: data size" + this.taskList.size());
+
+        this.taskList.clear();
+        this.taskList.addAll(taskList);
+
+        if (updateType == null) {
+            notifyDataSetChanged();
+            return;
+        }
+
+        switch (updateType) {
+            case ADDED:
+                notifyItemInserted(taskList.size() - 1);
+                break;
+            case REMOVED:
+                notifyItemRemoved(0);
+                break;
+            case MODIFIED:
+                break;
+        }
+    }
+
     public void updateList(List<Task> taskList) {
-        setData(new ArrayList<>(taskList));
-        Log.e(TAG, "updateList: data size" + getDataCount() );
+
+        Log.e(TAG, "updateList: data size" + this.taskList.size());
+
+        this.taskList.clear();
+        this.taskList.addAll(taskList);
+        notifyDataSetChanged();
     }
 
     @Override
-    public void onBindViewHolder(PlaceViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
+    public void onBindViewHolder(PlaceViewHolder h, int position) {
 
         Task task = taskList.get(position);
 
-        holder.isChecked = task.isTaskCompleted();
+        h.isChecked = task.isTaskCompleted();
 
-        holder.tvTaskName.setText(task.getName());
+        if (h.isChecked) {
+            h.lottieCheckView.setProgress(1.0f);
+        } else {
+            h.lottieCheckView.setProgress(0.0f);
+        }
 
-        holder.ivCheck.getDrawable().setColorFilter(context.getResources().getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP);
+        h.tvTaskName.setText(task.getName());
+
+        h.ivCheck.getDrawable().setColorFilter(context.getResources().getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP);
 
         if (task.getBucketColor() != null) {
-            holder.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC);
+            h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC);
         }
 
         if (task.getDueDate() != null) {
             String dueDate = task.getDueDate()[1] + " " + Utils.getMonthString(task.getDueDate()[1]);
-            holder.tvDueDate.setText(dueDate);
+            h.tvDueDate.setText(dueDate);
 
-            holder.tvDueDate.setVisibility(View.VISIBLE);
+            h.tvDueDate.setVisibility(View.VISIBLE);
         }
 
         if (task.getRepeat() != null) {
-            holder.ivRepeat.setVisibility(View.VISIBLE);
+            h.ivRepeat.setVisibility(View.VISIBLE);
         }
 
         if (task.getSubTasks() != null && !task.getSubTasks().isEmpty()) {
-            holder.ivSubtasks.setVisibility(View.VISIBLE);
+            h.ivSubtasks.setVisibility(View.VISIBLE);
         }
 
-        holder.lottieCheckView.setOnClickListener(new View.OnClickListener() {
+        h.lottieCheckView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (holder.isChecked) {
-                    holder.lottieCheckView.setSpeed(-2f);
-                    holder.isChecked = false;
+                if (h.isChecked) {
+                    h.lottieCheckView.setSpeed(-2f);
+                    h.isChecked = false;
                 } else {
-                    holder.lottieCheckView.setSpeed(1.5f);
-                    holder.isChecked = true;
+                    h.lottieCheckView.setSpeed(1.5f);
+                    h.isChecked = true;
                 }
 
-                holder.lottieCheckView.playAnimation();
+                task.setTaskCompleted(h.isChecked);
+                FirestoreManager.getInstance().updateTask(task);
+
+                h.lottieCheckView.playAnimation();
             }
         });
-    }
-
-    @Override
-    public List<Task> getData() {
-        return super.getData();
-    }
-
-    public int getDataCount() {
-        return getData().size();
     }
 
     @Override
@@ -118,7 +148,26 @@ public class TasksRecyclerAdapter extends GestureAdapter<Task, TasksRecyclerAdap
         return taskList.size();
     }
 
-    public class PlaceViewHolder extends GestureViewHolder<Task> {
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(taskList, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(taskList, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+
+    }
+
+    public class PlaceViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.lottie_check_view)
         LottieAnimationView lottieCheckView;
@@ -150,14 +199,5 @@ public class TasksRecyclerAdapter extends GestureAdapter<Task, TasksRecyclerAdap
             lottieCheckView.setAnimation("anim_check2.json");
         }
 
-        @Override
-        public boolean canDrag() {
-            return false;
-        }
-
-        @Override
-        public boolean canSwipe() {
-            return false;
-        }
     }
 }

@@ -8,23 +8,20 @@ import androidx.annotation.Nullable;
 
 import com.andysapps.superdo.todo.events.firestore.FetchUserDataFailureEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchUserDataSuccessEvent;
-import com.andysapps.superdo.todo.events.firestore.UpdateListEvent;
+import com.andysapps.superdo.todo.events.firestore.NotifyDataUpdate;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskFailureEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskSuccessEvent;
 import com.andysapps.superdo.todo.events.ui.TaskAddedEvent;
-import com.andysapps.superdo.todo.fragments.AddTaskFragment;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
@@ -33,7 +30,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Andrews on 29,October,2019
@@ -105,30 +101,38 @@ public class FirestoreManager {
                     return;
                 }
 
+
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+
+                    DocumentChange.Type changeType = null;
+
                     switch (dc.getType()) {
                         case ADDED:
                             taskHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Task.class));
                             EventBus.getDefault().post(new TaskAddedEvent());
+                            changeType = DocumentChange.Type.ADDED;
                             Log.d(TAG, "New Request: " + dc.getDocument().getData());
                             break;
                         case MODIFIED:
-
                             if(taskHashMap.containsKey(dc.getDocument().getId())) {
                                 taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
+                                changeType = DocumentChange.Type.MODIFIED;
                             }
                             Log.d(TAG, "Modified Request: " + dc.getDocument().getData());
 
                             break;
                         case REMOVED:
-                            taskHashMap.remove(dc.getDocument().getId());
+                            if(taskHashMap.containsKey(dc.getDocument().getId())) {
+                                taskHashMap.remove(dc.getDocument().getId());
+                                changeType = DocumentChange.Type.REMOVED;
+                            }
                             Log.d(TAG, "Removed Request: " + dc.getDocument().getData());
                             break;
                     }
-                }
 
-                TaskOrganiser.getInstance().organiseAllTasks();
-                EventBus.getDefault().post(new UpdateListEvent());
+                    TaskOrganiser.getInstance().organiseAllTasks();
+                    EventBus.getDefault().post(new NotifyDataUpdate(changeType));
+                }
             }
         });
 
@@ -212,6 +216,10 @@ public class FirestoreManager {
                         Log.e(TAG, "Error uploading task", e);
                     }
                 });
+    }
+
+    public void updateTaskComepleted() {
+
     }
 
 }

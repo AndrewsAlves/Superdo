@@ -19,6 +19,7 @@ public class TaskOrganiser {
     private static final String TAG = "TaskOrganiser";
     private static TaskOrganiser ourInstance = new TaskOrganiser();
 
+    public List<Task> allTaskList;
     public List<Task> todayTaskList;
     public List<Task> tomorrowTaskList;
     public List<Task> someDayTaskList;
@@ -35,11 +36,14 @@ public class TaskOrganiser {
 
     public void organiseAllTasks() {
 
+        allTaskList = new ArrayList<>();
         todayTaskList = new ArrayList<>();
         tomorrowTaskList = new ArrayList<>();
         someDayTaskList = new ArrayList<>();
 
         HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
+
+        allTaskList.addAll(allTasks.values());
 
         if (allTasks == null) {
             return;
@@ -84,6 +88,20 @@ public class TaskOrganiser {
     public List<Task> getTodayTaskList() {
         Log.e(TAG, "getTodayList: tasks size : " + todayTaskList.size());
         return todayTaskList;
+    }
+
+    public List<Task> getTasks(TaskListing listing) {
+
+        switch (listing) {
+            case TODAY:
+                return todayTaskList;
+            case TOMORROW:
+                return tomorrowTaskList;
+            case SOMEDAY:
+                return someDayTaskList;
+        }
+
+        return allTaskList;
     }
 
     public int getDateFromTimeStamp(long timestamp) {

@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,14 +18,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback;
 import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.firestore.FetchUserDataSuccessEvent;
-import com.andysapps.superdo.todo.events.firestore.UpdateListEvent;
+import com.andysapps.superdo.todo.events.firestore.NotifyDataUpdate;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
 import com.github.florent37.viewanimator.ViewAnimator;
-import com.thesurix.gesturerecycler.GestureManager;
+import com.google.firebase.firestore.DocumentChange;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -93,41 +93,11 @@ public class TodayFragment extends Fragment {
         taskList = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new TasksRecyclerAdapter(getContext(), taskList);
-        adapter.setData(taskList, new DiffUtil.Callback() {
-            @Override
-            public int getOldListSize() {
-                return 0;
-            }
 
-            @Override
-            public int getNewListSize() {
-                return 0;
-            }
-
-            @Override
-            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return false;
-            }
-
-            @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                return false;
-            }
-        });
-
+        ItemTouchHelper.Callback callback = new LongItemTouchHelperCallback(adapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(adapter);
-
-
-        GestureManager manager = new GestureManager.Builder(recyclerView)
-                // Enable swipe
-                .setSwipeEnabled(false)
-                // Enable long press drag and drop
-                .setLongPressDragEnabled(true)
-                // Enable manual drag from the beginning, you need to provide View inside your GestureViewHolder
-                .setManualDragEnabled(true)
-                // Use custom gesture flags
-                // Do not use those methods if you want predefined flags for RecyclerView layout manager
-                .build();
 
         listing= TaskListing.TODAY;
         lasttaskListing = TaskListing.TOMORROW;
@@ -149,25 +119,7 @@ public class TodayFragment extends Fragment {
         gradientColor[0] = Color.parseColor( "#F64F59");
         gradientColor[1] = Color.parseColor( "#FF8B57");
 
-        //tvToday.setTextColor(getResources().getColor(R.color.lightRed));
-        //tvTomorrow.setTextColor(getResources().getColor(R.color.lightRed));
-        //tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
-
-        switch (listing) {
-            case TODAY:
-              //  tvToday.setTextColor(getResources().getColor(R.color.lightRed));
-                taskList = TaskOrganiser.getInstance().getTodayTaskList();
-                break;
-            case TOMORROW:
-              //  tvTomorrow.setTextColor(getResources().getColor(R.color.lightRed));
-                taskList = TaskOrganiser.getInstance().tomorrowTaskList;
-                break;
-            case SOMEDAY:
-              //  tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
-                taskList = TaskOrganiser.getInstance().someDayTaskList;
-                break;
-        }
-
+        taskList = TaskOrganiser.getInstance().getTasks(listing);
         animateTodayViews();
 
         if (taskList == null || taskList.isEmpty()) {
@@ -177,6 +129,11 @@ public class TodayFragment extends Fragment {
         }
 
         adapter.updateList(taskList);
+    }
+
+    public void updateList(DocumentChange.Type chageType) {
+        taskList = TaskOrganiser.getInstance().getTasks(listing);
+        adapter.updateList(taskList, chageType);
     }
 
     @OnClick(R.id.btn_today)
@@ -203,8 +160,8 @@ public class TodayFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(UpdateListEvent event) {
-        updateUi();
+    public void onMessageEvent(NotifyDataUpdate event) {
+        updateList(event.changeType);
     }
 
     /////////////////////
