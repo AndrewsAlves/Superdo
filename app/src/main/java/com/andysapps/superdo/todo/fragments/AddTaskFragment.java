@@ -11,6 +11,8 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,7 @@ import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.ui.TaskAddedEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -46,7 +49,6 @@ import butterknife.OnClick;
  * A simple {@link Fragment} subclass.
  */
 public class AddTaskFragment extends BottomSheetDialogFragment implements  DatePickerDialog.OnDateSetListener {
-
 
     private static final String TAG = "Add Task Fragment";
     @BindView(R.id.et_add_task)
@@ -120,6 +122,8 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         task = new Task();
         task.setListedIn(TaskListing.TODAY);
 
+
+
         updateUi();
         // Inflate the layout for this fragment
         return v;
@@ -178,7 +182,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
             tvDueDate.setText(task.getDueDateString());
             tvDueDate.setTextColor(getResources().getColor(R.color.white));
 
-            btnBgDuedate.setBackgroundResource(R.drawable.bg_light_red);
+            btnBgDuedate.setBackgroundResource(R.drawable.bg_grey4);
             btnClearDeadLine.setVisibility(View.VISIBLE);
         }
 
@@ -260,6 +264,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         if (validate()) {
             task.setUserId(FirestoreManager.getInstance().userId);
             task.setName(etTaskName.getText().toString());
+            task.setTaskIndex(TaskOrganiser.getInstance().getTaskIndex(task.getListedIn()));
             FirestoreManager.getInstance().uploadTask(task);
         }
     }

@@ -26,6 +26,8 @@ public class Task {
 
     TaskListing listedIn;
 
+    int taskIndex;
+
     Date doDate;
 
     // DD MM YYYY
@@ -36,7 +38,7 @@ public class Task {
 
     String repeat;
 
-    String priority;
+    int priority;
 
     String bucketId;
 
@@ -90,11 +92,11 @@ public class Task {
         this.time = time;
     }
 
-    public String getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
@@ -202,10 +204,18 @@ public class Task {
         this.documentId = documentId;
     }
 
+    public int getTaskIndex() {
+        return taskIndex;
+    }
+
+    public void setTaskIndex(int taskIndex) {
+        this.taskIndex = taskIndex;
+    }
+
     public String getDueDateString() {
 
         if (dueDate == null) {
-            return null;
+            return "No deadline";
         }
 
         String duedate;
@@ -217,6 +227,27 @@ public class Task {
         }
 
         return duedate;
+    }
+
+    public String getTimeString() {
+
+        if (time == null) {
+            time = new int[3];
+            time[0] = 12;
+            time[1] = 0;
+            time[2] = 0;
+            return "Time";
+        }
+
+        String timeString;
+
+        if (time[2] == 0) {
+            timeString = time[0] + " : " + time[1] + " am";
+        } else {
+            timeString = time[0] + " : " + time[1] + " pm";
+        }
+
+        return timeString;
     }
 
 

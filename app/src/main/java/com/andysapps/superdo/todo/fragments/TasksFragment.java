@@ -192,7 +192,7 @@ public class TasksFragment extends Fragment {
     public void clickBuckets() {
         BucketFragment fragment = new BucketFragment();
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fl_bucket_fragment_container, fragment);
+        ft.replace(R.id.fl_fragment_container, fragment);
         ft.commitAllowingStateLoss(); // save the changes
     }
 

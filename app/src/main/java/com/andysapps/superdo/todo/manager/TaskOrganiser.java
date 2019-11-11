@@ -8,6 +8,9 @@ import com.andysapps.superdo.todo.model.Task;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,6 +52,8 @@ public class TaskOrganiser {
             return;
         }
 
+        // Divided the tasks based on listing
+
         for (Task task : allTasks.values()) {
 
             if (task.getListedIn() == TaskListing.TODAY) {
@@ -82,7 +87,30 @@ public class TaskOrganiser {
             }
         }
 
-        Log.e(TAG, "organiseAllTasks: tasks size : " + todayTaskList.size());
+        // Sort the task by indexing
+
+        Collections.sort(todayTaskList, new Comparator<Task>() {
+                    @Override
+                    public int compare(Task o1, Task o2) {
+                        return o1.getTaskIndex() - o2.getTaskIndex();
+                    }
+                });
+
+        Collections.sort(tomorrowTaskList, new Comparator<Task>() {
+            @Override
+            public int compare(Task o1, Task o2) {
+                return o1.getTaskIndex() - o2.getTaskIndex();
+            }
+        });
+
+        Collections.sort(someDayTaskList, new Comparator<Task>() {
+            @Override
+            public int compare(Task o1, Task o2) {
+                return o1.getTaskIndex() - o2.getTaskIndex();
+            }
+        });
+
+        Log.e(TAG, "organiseAllTasks: tasks size : " + allTasks.size());
     }
 
     public List<Task> getTodayTaskList() {
@@ -102,6 +130,20 @@ public class TaskOrganiser {
         }
 
         return allTaskList;
+    }
+
+    public int getTaskIndex(TaskListing listing) {
+
+        switch (listing) {
+            case TODAY:
+                return todayTaskList.size();
+            case TOMORROW:
+                return tomorrowTaskList.size();
+            case SOMEDAY:
+                return someDayTaskList.size();
+        }
+
+        return allTaskList.size();
     }
 
     public int getDateFromTimeStamp(long timestamp) {

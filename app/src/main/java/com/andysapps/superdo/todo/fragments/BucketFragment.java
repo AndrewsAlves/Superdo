@@ -74,7 +74,7 @@ public class BucketFragment extends Fragment {
     public void clickClose() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
-        if (fragmentManager.findFragmentById(R.id.fl_bucket_fragment_container) != null) {
+        if (fragmentManager.findFragmentById(R.id.fl_fragment_container) != null) {
 
             fragmentManager.beginTransaction().
                     remove(fragmentManager.findFragmentById(R.id.fl_bucket_fragment_container))

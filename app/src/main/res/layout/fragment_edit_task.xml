@@ -1,278 +1,331 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="130dp">
+            android:layout_height="100dp">
 
-            <com.andysapps.superdo.todo.views.GradientTextView
-                android:id="@+id/tv_todaytitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
-                android:text="Edit Super task"
-                android:textSize="20sp"
-                android:textColor="@color/lightRed"
+            <EditText
+                android:id="@+id/editTask_et_taskName"
+                android:layout_height="60dp"
+                android:layout_width="match_parent"
+                android:layout_marginEnd="110dp"
                 android:layout_marginStart="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@android:color/transparent"
+                android:fontFamily="@font/montserrat_medium"
+                android:hint="Do something..."
+                android:textColor="@color/black"
+                android:layout_marginTop="40dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/ib_profile"
+                android:id="@+id/editTask_deleteTask"
                 style="@style/ripple_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="30dp"
-                android:scaleType="fitXY"
+                android:layout_marginStart="40dp"
+                android:layout_marginBottom="20dp"
                 android:src="@drawable/ic_delete_task"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ib_buckets"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toStartOf="@+id/editTask_close"
+                android:layout_marginEnd="30dp"/>
 
             <ImageButton
-                android:id="@+id/ib_buckets"
+                android:id="@+id/editTask_close"
+                style="@style/ripple_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_close"
                 android:layout_marginEnd="40dp"
+                android:layout_marginBottom="20dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_close_mini"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                style="@style/ripple_background"/>
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
-            android:hint="Do something..."
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/black"
-            android:background="@android:color/transparent"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginStart="40dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="40dp">
 
             <ImageView
+                android:id="@+id/editTask_iv_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_marginTop="3dp"
                 android:src="@drawable/ic_desc" />
 
             <EditText
+                android:id="@+id/editTask_et_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="About your task"
-                android:textSize="14sp"
                 android:layout_marginStart="45dp"
+                android:background="@android:color/transparent"
+                android:fontFamily="@font/montserrat_regular"
+                android:hint="About your task"
                 android:maxLines="20"
-                android:fontFamily="@font/montserrat_regular"/>
+                android:textSize="14sp" />
 
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginStart="40dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="40dp">
 
             <RelativeLayout
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:layout_height="match_parent">
+                android:gravity="center_vertical">
 
                 <ImageView
+                    android:id="@+id/editTask_iv_deadline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_calender_mini"/>
+                    android:src="@drawable/ic_calender_mini" />
 
                 <TextView
+                    android:id="@+id/editTask_tv_deadline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Due date"
+                    android:layout_marginStart="45dp"
+                    android:ellipsize="end"
                     android:fontFamily="@font/montserrat_medium"
-                    android:textColor="@color/grey2"
-                    android:layout_marginStart="45dp"/>
+                    android:maxLines="1"
+                    android:text="no deadline"
+                    android:textColor="@color/grey2" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:layout_height="match_parent">
+                android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_time_off"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Time"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:textColor="@color/grey2"
-                    android:layout_marginStart="45dp"/>
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp">
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_repeat_off"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Repeat"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:textColor="@color/grey2"
-                    android:layout_marginStart="45dp"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_priority_low"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Priority low"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:textColor="@color/grey2"
-                    android:layout_marginStart="45dp"/>
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp">
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_tag"/>
-
-                <TextView
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:text="Bucket"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:textColor="@color/grey2"
-                    android:layout_marginStart="45dp"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent">
-
-                <CheckBox
+                    android:id="@+id/editTask_iv_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_time_off" />
 
                 <TextView
+                    android:id="@+id/editTask_tv_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Remind"
-                    android:layout_centerVertical="true"
+                    android:layout_marginStart="45dp"
+                    android:ellipsize="end"
                     android:fontFamily="@font/montserrat_medium"
-                    android:textColor="@color/grey2"
-                    android:layout_marginStart="45dp"/>
+                    android:maxLines="1"
+                    android:text="Time"
+                    android:textColor="@color/grey2" />
 
             </RelativeLayout>
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="40dp">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/editTask_iv_repeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_repeat_off" />
+
+                <TextView
+                    android:id="@+id/editTask_tv_repeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="45dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:maxLines="1"
+                    android:text="Repeat"
+                    android:textColor="@color/grey2" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <CheckBox
+                    android:id="@+id/editTask_cb_remind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/editTask_tv_remind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="45dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:maxLines="1"
+                    android:text="Remind"
+                    android:textColor="@color/grey2" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="40dp">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/editTask_iv_bucket"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_tag" />
+
+                <TextView
+                    android:id="@+id/editTask_tv_bucketName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="45dp"
+                    android:layout_marginEnd="10dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:maxLines="1"
+                    android:text="Bucket"
+                    android:textColor="@color/grey2" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/editTask_iv_priority"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_priority_low" />
+
+                <TextView
+                    android:id="@+id/editTask_tv_priority"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="45dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:maxLines="1"
+                    android:text="Priority low"
+                    android:textColor="@color/grey2" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
             android:layout_marginStart="40dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="40dp">
 
             <ImageView
+                android:id="@+id/editTask_iv_subtasks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_sub_tasks_off" />
 
             <TextView
+                android:id="@+id/editTask_tv_subtasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:text="Sub Tasks"
                 android:layout_marginStart="45dp"
-                android:fontFamily="@font/montserrat_regular"/>
+                android:fontFamily="@font/montserrat_regular"
+                android:text="Sub Tasks"
+                android:textSize="14sp" />
 
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="80dp"
+            android:id="@+id/editTask_rv_subtasks"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="20dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_add_task" />
+
+            <TextView
+                android:id="@+id/tv_tasks_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="Add subtask"
+                android:textColor="@color/grey2"
+                android:textSize="16sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
+
+
     <TextView
+        android:id="@+id/editTask_tv_createdOn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_regular"
@@ -281,12 +334,11 @@
         android:textSize="14sp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="-5dp"
-        app:layout_constraintBottom_toTopOf="@id/tv_created_date"
+        app:layout_constraintBottom_toTopOf="@id/editTask_tv_createdDate"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
     <TextView
-        android:id="@+id/tv_created_date"
+        android:id="@+id/editTask_tv_createdDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_bold"
@@ -296,7 +348,5 @@
         android:layout_margin="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

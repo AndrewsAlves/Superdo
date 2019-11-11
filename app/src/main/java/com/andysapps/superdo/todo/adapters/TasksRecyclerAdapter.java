@@ -19,11 +19,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.firebase.firestore.DocumentChange;
 import com.thesurix.gesturerecycler.GestureAdapter;
 import com.thesurix.gesturerecycler.GestureViewHolder;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,6 +103,8 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             h.lottieCheckView.setProgress(0.0f);
         }
 
+        h.lottieCheckView.pauseAnimation();
+
         h.tvTaskName.setText(task.getName());
 
         h.ivCheck.getDrawable().setColorFilter(context.getResources().getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP);
@@ -139,6 +144,13 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 FirestoreManager.getInstance().updateTask(task);
 
                 h.lottieCheckView.playAnimation();
+            }
+        });
+
+        h.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new OpenEditTaskEvent(task));
             }
         });
     }

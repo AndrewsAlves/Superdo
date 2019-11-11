@@ -1,6 +1,7 @@
 package com.andysapps.superdo.todo.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
@@ -12,9 +13,16 @@ import android.widget.TextView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
+import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.fragments.AddTaskFragment;
+import com.andysapps.superdo.todo.fragments.BucketFragment;
+import com.andysapps.superdo.todo.fragments.EditTaskFragment;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.kuassivi.component.RipplePulseRelativeLayout;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
+        EventBus.getDefault().register(this);
         viewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
         mainViewPager.setAdapter(viewPagerAdapter);
 
@@ -81,10 +89,14 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int i) { }
         });
 
-
-
         clickToday();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     @OnClick(R.id.tab_1)
@@ -132,5 +144,17 @@ public class MainActivity extends AppCompatActivity {
                 imgTasks.setImageResource(R.drawable.ic_tasks_on);
                 break;
         }
+    }
+
+    //////////////////////
+    /////// EVENTS
+    /////////////////////
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(OpenEditTaskEvent event) {
+        EditTaskFragment fragment = EditTaskFragment.Companion.instance(event.getTask());
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fl_fragment_container, fragment);
+        ft.commitAllowingStateLoss(); // save the changes
     }
 }

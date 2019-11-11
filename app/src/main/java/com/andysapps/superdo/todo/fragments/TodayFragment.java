@@ -23,6 +23,9 @@ import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.firestore.FetchUserDataSuccessEvent;
 import com.andysapps.superdo.todo.events.firestore.NotifyDataUpdate;
+import com.andysapps.superdo.todo.events.ui.TaskAddedEvent;
+import com.andysapps.superdo.todo.events.ui.TaskDeletedEvent;
+import com.andysapps.superdo.todo.events.ui.TaskModifedEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
 import com.github.florent37.viewanimator.ViewAnimator;
@@ -136,6 +139,11 @@ public class TodayFragment extends Fragment {
         adapter.updateList(taskList, chageType);
     }
 
+    public void updateList(Task task, DocumentChange.Type chageType) {
+        taskList = TaskOrganiser.getInstance().getTasks(listing);
+        adapter.updateList(taskList, chageType);
+    }
+
     @OnClick(R.id.btn_today)
     public void clickToday() {
         listing = TaskListing.TODAY;
@@ -160,8 +168,34 @@ public class TodayFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(NotifyDataUpdate event) {
-        updateList(event.changeType);
+    public void onMessageEvent(TaskAddedEvent event) {
+
+        if (event.task.getListedIn() == listing){
+            updateList(DocumentChange.Type.ADDED);
+        } else {
+            listing = event.task.getListedIn();
+            updateUi();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(TaskModifedEvent event) {
+        if (event.task.getListedIn() == listing){
+            updateList(DocumentChange.Type.MODIFIED);
+        } else {
+            listing = event.task.getListedIn();
+            updateUi();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(TaskDeletedEvent event) {
+        if (event.task.getListedIn() == listing){
+            updateList(DocumentChange.Type.REMOVED);
+        } else {
+            listing = event.task.getListedIn();
+            updateUi();
+        }
     }
 
     /////////////////////
@@ -202,7 +236,6 @@ public class TodayFragment extends Fragment {
         }
 
         lasttaskListing = listing;
-
     }
 
     public void zoomAnimation(float start, float end, View view, float alpha) {

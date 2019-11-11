@@ -12,6 +12,8 @@ import com.andysapps.superdo.todo.events.firestore.NotifyDataUpdate;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskFailureEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskSuccessEvent;
 import com.andysapps.superdo.todo.events.ui.TaskAddedEvent;
+import com.andysapps.superdo.todo.events.ui.TaskDeletedEvent;
+import com.andysapps.superdo.todo.events.ui.TaskModifedEvent;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -101,37 +103,32 @@ public class FirestoreManager {
                     return;
                 }
 
-
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-
-                    DocumentChange.Type changeType = null;
 
                     switch (dc.getType()) {
                         case ADDED:
                             taskHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Task.class));
-                            EventBus.getDefault().post(new TaskAddedEvent());
-                            changeType = DocumentChange.Type.ADDED;
+                            TaskOrganiser.getInstance().organiseAllTasks();
+                            EventBus.getDefault().post(new TaskAddedEvent(taskHashMap.get(dc.getDocument().getId())));
                             Log.d(TAG, "New Request: " + dc.getDocument().getData());
                             break;
                         case MODIFIED:
                             if(taskHashMap.containsKey(dc.getDocument().getId())) {
                                 taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
-                                changeType = DocumentChange.Type.MODIFIED;
+                                TaskOrganiser.getInstance().organiseAllTasks();
+                                EventBus.getDefault().post(new TaskModifedEvent(taskHashMap.get(dc.getDocument().getId())));
                             }
                             Log.d(TAG, "Modified Request: " + dc.getDocument().getData());
-
                             break;
                         case REMOVED:
                             if(taskHashMap.containsKey(dc.getDocument().getId())) {
                                 taskHashMap.remove(dc.getDocument().getId());
-                                changeType = DocumentChange.Type.REMOVED;
+                                TaskOrganiser.getInstance().organiseAllTasks();
+                                EventBus.getDefault().post(new TaskDeletedEvent(dc.getDocument().toObject(Task.class)));
                             }
                             Log.d(TAG, "Removed Request: " + dc.getDocument().getData());
                             break;
                     }
-
-                    TaskOrganiser.getInstance().organiseAllTasks();
-                    EventBus.getDefault().post(new NotifyDataUpdate(changeType));
                 }
             }
         });

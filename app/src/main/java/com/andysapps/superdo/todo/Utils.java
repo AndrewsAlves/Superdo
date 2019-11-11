@@ -8,7 +8,9 @@ import android.view.inputmethod.InputMethodManager;
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.model.Bucket;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Andrews on 20,August,2019
@@ -76,6 +78,10 @@ public class Utils {
                 default:
                     return "   ";
         }
+    }
+
+    public static String getDateString(Date date) {
+        return new SimpleDateFormat("dd.MM.yyyy").format(date);
     }
 
 
