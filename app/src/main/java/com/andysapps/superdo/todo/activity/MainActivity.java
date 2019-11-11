@@ -1,6 +1,7 @@
 package com.andysapps.superdo.todo.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
@@ -14,6 +15,7 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
+import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
 import com.andysapps.superdo.todo.fragments.AddTaskFragment;
 import com.andysapps.superdo.todo.fragments.BucketFragment;
 import com.andysapps.superdo.todo.fragments.EditTaskFragment;
@@ -144,11 +146,26 @@ public class MainActivity extends AppCompatActivity {
                 imgTasks.setImageResource(R.drawable.ic_tasks_on);
                 break;
         }
+
+        onMessageEvent(new RemoveFragmentEvents()); // occupied fragments
     }
+
 
     //////////////////////
     /////// EVENTS
     /////////////////////
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(RemoveFragmentEvents events) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        if (fragmentManager.findFragmentById(R.id.fl_fragment_container) != null) {
+
+            fragmentManager.beginTransaction().
+                    remove(fragmentManager.findFragmentById(R.id.fl_fragment_container))
+                    .commitAllowingStateLoss();
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(OpenEditTaskEvent event) {

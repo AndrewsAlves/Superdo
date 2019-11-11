@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.BucketsRecyclerAdapter;
 import com.andysapps.superdo.todo.events.ClickBucketEvent;
+import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
 import com.andysapps.superdo.todo.model.Bucket;
 
 import org.greenrobot.eventbus.EventBus;
@@ -72,14 +73,7 @@ public class BucketFragment extends Fragment {
 
     @OnClick(R.id.ib_close)
     public void clickClose() {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-
-        if (fragmentManager.findFragmentById(R.id.fl_fragment_container) != null) {
-
-            fragmentManager.beginTransaction().
-                    remove(fragmentManager.findFragmentById(R.id.fl_bucket_fragment_container))
-                    .commitAllowingStateLoss();
-        }
+        EventBus.getDefault().post(new RemoveFragmentEvents());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

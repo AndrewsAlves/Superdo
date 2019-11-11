@@ -167,7 +167,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
         }
 
-        if (task.getDueDateString() == null) {
+        if (task.getDueDate() == null) {
 
             ivDueDate.setImageResource(R.drawable.ic_duedate_off);
             tvDueDate.setText("No deadline");

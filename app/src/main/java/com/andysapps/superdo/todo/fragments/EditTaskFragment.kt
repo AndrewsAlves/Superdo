@@ -16,8 +16,10 @@ import butterknife.OnClick
 
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
+import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
 import com.andysapps.superdo.todo.model.Task
 import kotlinx.android.synthetic.main.fragment_edit_task.*
+import org.greenrobot.eventbus.EventBus
 
 /**
  * A simple [Fragment] subclass.
@@ -147,6 +149,11 @@ class EditTaskFragment : Fragment() , TextWatcher {
         // Task created date
         editTask_tv_createdDate.text = Utils.getDateString(task.created)
 
+    }
+
+    @OnClick(R.id.editTask_close)
+    fun clickClose() {
+        EventBus.getDefault().post(RemoveFragmentEvents())
     }
 
     override fun afterTextChanged(s: Editable?) {

@@ -81,7 +81,13 @@ public class Utils {
     }
 
     public static String getDateString(Date date) {
-        return new SimpleDateFormat("dd.MM.yyyy").format(date);
+
+        String dateString = new SimpleDateFormat("dd-MM-yyyy").format(date);
+        String[] splits = dateString.split("-");
+
+        return splits[0] + " "
+                + getMonthString(Integer.parseInt(splits[1])) + " "
+                + splits[2];
     }
 
 
