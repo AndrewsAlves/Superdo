@@ -114,7 +114,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         }
 
         if (task.getDueDate() != null) {
-            String dueDate = task.getDueDate()[1] + " " + Utils.getMonthString(task.getDueDate()[1]);
+            String dueDate = task.getDueDate().getDate() + " " + task.getDueDate().getMonthString();
             h.tvDueDate.setText(dueDate);
 
             h.tvDueDate.setVisibility(View.VISIBLE);

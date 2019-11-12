@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.andysapps.superdo.todo.model.SuperDate;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -88,6 +89,20 @@ public class Utils {
         return splits[0] + " "
                 + getMonthString(Integer.parseInt(splits[1])) + " "
                 + splits[2];
+    }
+
+    public static SuperDate getSuperdateFromTimeStamp(long timestamp) {
+        SuperDate superDate = new SuperDate(timestamp);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String dateString  = dateFormat.format(timestamp);
+        String[] dateParts = dateString.split("-");
+
+        superDate.setDate(Integer.parseInt(dateParts[0]));
+        superDate.setMonth(Integer.parseInt(dateParts[1]));
+        superDate.setYear(Integer.parseInt(dateParts[2]));
+
+        return superDate;
     }
 
 

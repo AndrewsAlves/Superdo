@@ -67,13 +67,13 @@ public class TaskOrganiser {
             if (task.getListedIn() == TaskListing.TOMORROW) {
 
                 // add all tomorrow task to today if thier timestamp is less than current timestamp
-                if (task.getDoDate().getTime() < Calendar.getInstance().getTime().getTime()) {
+                if (task.getDoDate().getTimestamp().getTime() < Calendar.getInstance().getTime().getTime()) {
                     task.setListedIn(TaskListing.TODAY);
                     todayTaskList.add(task);
                     FirestoreManager.getInstance().updateTask(task); // update tomorrow task to today
                 } else {
 
-                    int taskDate = getDateFromTimeStamp(task.getDoDate().getTime());
+                    int taskDate = task.getDoDate().getDate();
                     int todayDate = Calendar.getInstance().get(Calendar.DATE);
 
                     if (taskDate <= todayDate) {
@@ -146,13 +146,6 @@ public class TaskOrganiser {
         return allTaskList.size();
     }
 
-    public int getDateFromTimeStamp(long timestamp) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String dateString  = dateFormat.format(timestamp);
 
-        String[] dateParts = dateString.split("-");
-
-        return Integer.parseInt(dateParts[0]);
-    }
 
 }

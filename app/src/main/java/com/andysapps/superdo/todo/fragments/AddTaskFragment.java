@@ -3,16 +3,12 @@ package com.andysapps.superdo.todo.fragments;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +25,7 @@ import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.ui.TaskAddedEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
+import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -37,7 +34,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -78,16 +74,14 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @BindView(R.id.tv_someday)
     TextView tvSomeday;
 
-    @BindView(R.id.iv_due_date)
-    ImageView ivDueDate;
-    @BindView(R.id.ll_bg_duedate)
-    LinearLayout btnBgDuedate;
-    @BindView(R.id.ib_clearDeadLine)
-    ImageButton btnClearDeadLine;
+    @BindView(R.id.iv_do_date)
+    ImageView ivDoDate;
+    @BindView(R.id.ll_bg_do_date)
+    LinearLayout bgDoDate;
 
+    @BindView(R.id.tv_do_date)
+    TextView tvDoDate;
 
-    @BindView(R.id.tv_due_date)
-    TextView tvDueDate;
     @BindView(R.id.btn_buckets)
     LinearLayout btnBuckets;
 
@@ -120,11 +114,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         Utils.showSoftKeyboard(getContext(), etTaskName);
 
         task = new Task();
-        task.setListedIn(TaskListing.TODAY);
-
-
-
-        updateUi();
+        clickToday();
         // Inflate the layout for this fragment
         return v;
     }
@@ -147,7 +137,6 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
         switch (task.getListedIn()) {
 
-
             case TODAY:
 
             default:
@@ -167,23 +156,16 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
         }
 
-        if (task.getDueDate() == null) {
-
-            ivDueDate.setImageResource(R.drawable.ic_duedate_off);
-            tvDueDate.setText("No deadline");
-            tvDueDate.setTextColor(getResources().getColor(R.color.grey2));
-
-            btnBgDuedate.setBackgroundResource(R.color.transparent);
-            btnClearDeadLine.setVisibility(View.GONE);
-
+        if (task.getDoDate() == null) {
+            ivDoDate.setImageResource(R.drawable.ic_duedate_off);
+            tvDoDate.setText("No Date");
+            tvDoDate.setTextColor(getResources().getColor(R.color.grey2));
+            bgDoDate.setBackground(null);
         } else {
-
-            ivDueDate.setImageResource(R.drawable.ic_duedate_on);
-            tvDueDate.setText(task.getDueDateString());
-            tvDueDate.setTextColor(getResources().getColor(R.color.white));
-
-            btnBgDuedate.setBackgroundResource(R.drawable.bg_grey4);
-            btnClearDeadLine.setVisibility(View.VISIBLE);
+            ivDoDate.setImageResource(R.drawable.ic_duedate_on_red);
+            tvDoDate.setText(task.getDoDateString());
+            tvDoDate.setTextColor(getResources().getColor(R.color.white));
+            bgDoDate.setBackgroundResource(R.drawable.bg_light_red);
         }
 
         if (task.getBucketId() == null) {
@@ -198,14 +180,12 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     }
 
-    public Date getTomorrow() {
+    public Calendar getTomorrow() {
         Date dt = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(dt);
         c.add(Calendar.DATE, 1);
-        dt = c.getTime();
-
-        return dt;
+        return c;
     }
 
     public void showDatePicker() {
@@ -226,32 +206,36 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @OnClick(R.id.btn_today)
     public void clickToday() {
         task.setListedIn(TaskListing.TODAY);
-        task.setDoDate(Calendar.getInstance().getTime());
+        SuperDate date = new SuperDate(Calendar.getInstance().getTime());
+        date.setDate(Calendar.getInstance().get(Calendar.DATE));
+        date.setMonth(Calendar.getInstance().get(Calendar.MONTH));
+        date.setYear(Calendar.getInstance().get(Calendar.YEAR));
+        task.setDoDate(date);
         updateUi();
     }
 
     @OnClick(R.id.btn_tomorrow)
     public void clickTomorrow() {
         task.setListedIn(TaskListing.TOMORROW);
-        task.setDoDate(getTomorrow());
+        Calendar tomorrow = getTomorrow();
+        SuperDate date = new SuperDate(tomorrow.getTime());
+        date.setDate(tomorrow.get(Calendar.DATE));
+        date.setMonth(tomorrow.get(Calendar.MONTH));
+        date.setYear(tomorrow.get(Calendar.YEAR));
+        task.setDoDate(date);
         updateUi();
     }
 
     @OnClick(R.id.btn_someday)
     public void clickSomeday() {
         task.setListedIn(TaskListing.SOMEDAY);
+        task.setDoDate(null);
         updateUi();
     }
 
-    @OnClick(R.id.ll_bg_duedate)
+    @OnClick(R.id.tv_do_date)
     public void clickDuedate() {
         showDatePicker();
-    }
-
-    @OnClick(R.id.ib_clearDeadLine)
-    public void clickClearDeadLine() {
-        task.setDueDate(null);
-        updateUi();
     }
 
     @OnClick(R.id.btn_buckets)
@@ -278,10 +262,9 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        int[] date = {dayOfMonth, monthOfYear + 1, year};
-        task.setDueDate(date);
+        SuperDate date = new SuperDate(dayOfMonth, monthOfYear + 1, year);
+        task.setDoDate(date);
         updateUi();
-        Log.e(TAG, "onDateSet: " + monthOfYear + " : " + dayOfMonth + " : " + year);
     }
 
     /////////////

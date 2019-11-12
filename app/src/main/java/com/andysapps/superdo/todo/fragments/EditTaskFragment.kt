@@ -100,22 +100,21 @@ class EditTaskFragment : Fragment() , TextWatcher {
             editTask_iv_deadline.setImageResource(R.drawable.ic_duedate_on)
             editTask_tv_deadline.text = task.dueDateString
             editTask_tv_deadline.setTextColor(resources.getColor(R.color.grey4))
+
+            editTask_iv_time.setImageResource(R.drawable.ic_time_on)
+            editTask_tv_time.text = task.getTimeString(task.dueDate)
+            editTask_tv_time.setTextColor(resources.getColor(R.color.grey4))
+
         } else {
             editTask_iv_deadline.setImageResource(R.drawable.ic_duedate_off)
             editTask_tv_deadline.text = task.dueDateString
             editTask_tv_deadline.setTextColor(resources.getColor(R.color.grey2))
-        }
 
-        // set Time
-        if (task.time != null) {
-            editTask_iv_time.setImageResource(R.drawable.ic_time_on)
-            editTask_tv_time.text = task.timeString
-            editTask_tv_time.setTextColor(resources.getColor(R.color.grey4))
-        } else {
             editTask_iv_time.setImageResource(R.drawable.ic_time_off)
-            editTask_tv_time.text = task.timeString
+            editTask_tv_time.text = task.getTimeString(task.dueDate)
             editTask_tv_time.setTextColor(resources.getColor(R.color.grey2))
         }
+
 
         // set bucket name
         if (task.bucketId == null) {

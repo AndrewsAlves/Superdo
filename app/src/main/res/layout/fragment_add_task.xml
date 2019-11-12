@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:background="@color/white"
-    android:layout_height="140dp">
+    android:layout_height="150dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,6 +58,8 @@
                 android:text="Today"
                 android:textSize="16sp"
                 android:textColor="@color/grey2"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:fontFamily="@font/montserrat_medium"
                 android:layout_marginStart="10dp"/>
 
@@ -84,6 +86,8 @@
                 android:text="Tomorrow"
                 android:textSize="16sp"
                 android:textColor="@color/grey2"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:fontFamily="@font/montserrat_medium"
                 android:layout_marginStart="10dp"/>
 
@@ -109,6 +113,8 @@
                 android:layout_height="wrap_content"
                 android:text="Someday"
                 android:textSize="16sp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textColor="@color/grey2"
                 android:fontFamily="@font/montserrat_medium"
                 android:layout_marginStart="10dp"/>
@@ -125,19 +131,46 @@
 
         <LinearLayout
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/editTask_iv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_time_off"
+                android:layout_marginStart="30dp"/>
+
+            <TextView
+                android:id="@+id/editTask_tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="Time"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/grey2" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center">
 
             <ImageView
-                android:id="@+id/iv_due_date"
+                android:id="@+id/iv_do_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_duedate_off"/>
+                android:src="@drawable/ic_duedate_on_red"/>
 
             <LinearLayout
-                android:id="@+id/ll_bg_duedate"
+                android:id="@+id/ll_bg_do_date"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:gravity="center_vertical"
@@ -148,24 +181,17 @@
                 android:background="@drawable/bg_light_red">
 
                 <TextView
-                    android:id="@+id/tv_due_date"
+                    android:id="@+id/tv_do_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="No deadline"
+                    android:text="No date"
                     android:textSize="12sp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:fontFamily="@font/montserrat_medium" />
-
-                <ImageButton
-                    android:id="@+id/ib_clearDeadLine"
-                    android:alpha="0.5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_close_mini_white"
-                    android:layout_marginStart="10dp"
-                    style="@style/ripple_background_grey"/>
 
             </LinearLayout>
 
@@ -191,7 +217,8 @@
                 android:layout_height="wrap_content"
                 android:text="All Tasks"
                 android:textColor="@color/grey3"
-                android:maxLines="2"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textSize="12sp"
                 android:textAlignment="center"
                 android:fontFamily="@font/montserrat_medium"

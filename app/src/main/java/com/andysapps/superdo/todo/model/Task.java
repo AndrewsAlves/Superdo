@@ -28,13 +28,9 @@ public class Task {
 
     int taskIndex;
 
-    Date doDate;
+    SuperDate doDate;
 
-    // DD MM YYYY
-    int[] dueDate;
-
-    // HH MM
-    int[] time;
+    SuperDate dueDate;
 
     String repeat;
 
@@ -76,20 +72,12 @@ public class Task {
         this.description = description;
     }
 
-    public int[] getDueDate() {
+    public SuperDate getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(int[] dueDate) {
+    public void setDueDate(SuperDate dueDate) {
         this.dueDate = dueDate;
-    }
-
-    public int[] getTime() {
-        return time;
-    }
-
-    public void setTime(int[] time) {
-        this.time = time;
     }
 
     public int getPriority() {
@@ -188,11 +176,11 @@ public class Task {
         this.userId = userId;
     }
 
-    public Date getDoDate() {
+    public SuperDate getDoDate() {
         return doDate;
     }
 
-    public void setDoDate(Date doDate) {
+    public void setDoDate(SuperDate doDate) {
         this.doDate = doDate;
     }
 
@@ -220,31 +208,40 @@ public class Task {
 
         String duedate;
 
-        if (dueDate[2] != Calendar.YEAR) {
-            duedate = Utils.getMonthString(dueDate[1]) + " "+ dueDate[0] + ", " + dueDate[2];
+        if (dueDate.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
+            duedate = dueDate.getMonthString() + " "+ dueDate.getDate() + ", " + dueDate.getYear();
         } else {
-            duedate = Utils.getMonthString(dueDate[1]) + " "+ dueDate[0];
+            duedate = dueDate.getMonthString() + " "+ dueDate.getDate();
         }
 
         return duedate;
     }
 
-    public String getTimeString() {
+    public String getDoDateString() {
 
-        if (time == null) {
-            time = new int[3];
-            time[0] = 12;
-            time[1] = 0;
-            time[2] = 0;
-            return "Time";
+        if (doDate == null) {
+            return "No Date";
         }
+
+        String duedate;
+
+        if (doDate.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
+            duedate = doDate.getMonthString() + " "+ doDate.getDate() + ", " + doDate.getYear();
+        } else {
+            duedate = doDate.getMonthString() + " "+ doDate.getDate();
+        }
+
+        return duedate;
+    }
+
+    public String getTimeString(SuperDate date) {
 
         String timeString;
 
-        if (time[2] == 0) {
-            timeString = time[0] + " : " + time[1] + " am";
+        if (date.hours > 12) {
+            timeString = date.hours + " : " + date.minutes + " pm";
         } else {
-            timeString = time[0] + " : " + time[1] + " pm";
+            timeString = date.hours + " : " + date.minutes + " am";
         }
 
         return timeString;
