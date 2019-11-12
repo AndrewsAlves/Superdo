@@ -3,6 +3,7 @@ package com.andysapps.superdo.todo.fragments;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -29,11 +30,13 @@ import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -44,7 +47,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddTaskFragment extends BottomSheetDialogFragment implements  DatePickerDialog.OnDateSetListener {
+public class AddTaskFragment extends BottomSheetDialogFragment implements  DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String TAG = "Add Task Fragment";
     @BindView(R.id.et_add_task)
@@ -79,6 +82,13 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @BindView(R.id.ll_bg_do_date)
     LinearLayout bgDoDate;
 
+    @BindView(R.id.add_task_tv_time)
+    TextView tvTime;
+
+    @BindView(R.id.add_task_iv_time)
+    ImageView ivTime;
+
+
     @BindView(R.id.tv_do_date)
     TextView tvDoDate;
 
@@ -92,6 +102,8 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     TextView bucketName;
 
     Task task;
+
+    boolean isTimeSet = false;
 
     public AddTaskFragment() {
         // Required empty public constructor
@@ -178,6 +190,27 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
             bucketName.setTextColor(Color.parseColor(task.getBucketColor()));
         }
 
+       if (task.getDoDate() != null) {
+           int hours = task.getDoDate().getHours();
+           String meridien = " am";
+
+           if (task.getDoDate().getHours() > 12) {
+               hours = task.getDoDate().getHours() - 12;
+               meridien = " pm";
+           }
+
+           // format to two decimal
+           String hour =  new DecimalFormat("00").format(hours);
+           String min =  new DecimalFormat("00").format(task.getDoDate().getMinutes());
+           String time = hour + ":" + min + meridien;
+
+           tvTime.setText(time);
+           ivTime.setImageResource(Utils.getTimeIcon(task.getDoDate().getHours()));
+       } else {
+           tvTime.setText("No Time");
+           ivTime.setImageResource(R.drawable.ic_time_off);
+       }
+
     }
 
     public Calendar getTomorrow() {
@@ -203,6 +236,21 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         dpd.show(getFragmentManager(), "Datepickerdialog");
     }
 
+    public void showTimePicker() {
+        Date date = new Date();
+        date.getTime();
+        Calendar now = Calendar.getInstance();
+        TimePickerDialog dpd = TimePickerDialog.newInstance(
+                AddTaskFragment.this,
+                now.get(Calendar.HOUR),
+                now.get(Calendar.MINUTE),
+                false
+        );
+
+        dpd.setAccentColor(getResources().getColor(R.color.lightRed));
+        dpd.show(getFragmentManager(), "Datepickerdialog");
+    }
+
     @OnClick(R.id.btn_today)
     public void clickToday() {
         task.setListedIn(TaskListing.TODAY);
@@ -210,6 +258,9 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         date.setDate(Calendar.getInstance().get(Calendar.DATE));
         date.setMonth(Calendar.getInstance().get(Calendar.MONTH));
         date.setYear(Calendar.getInstance().get(Calendar.YEAR));
+        if (!isTimeSet) {
+            date.setTime(Utils.getDefaultTime(task.getListedIn()), 0);
+        }
         task.setDoDate(date);
         updateUi();
     }
@@ -222,6 +273,9 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         date.setDate(tomorrow.get(Calendar.DATE));
         date.setMonth(tomorrow.get(Calendar.MONTH));
         date.setYear(tomorrow.get(Calendar.YEAR));
+        if (!isTimeSet) {
+            date.setTime(Utils.getDefaultTime(task.getListedIn()), 0);
+        }
         task.setDoDate(date);
         updateUi();
     }
@@ -236,6 +290,15 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @OnClick(R.id.tv_do_date)
     public void clickDuedate() {
         showDatePicker();
+    }
+
+    @OnClick(R.id.add_task_ll_time_btn)
+    public void clickTime() {
+        if (task.getDoDate() == null) {
+            showDatePicker();
+            return;
+        }
+        showTimePicker();
     }
 
     @OnClick(R.id.btn_buckets)
@@ -265,6 +328,20 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         SuperDate date = new SuperDate(dayOfMonth, monthOfYear + 1, year);
         task.setDoDate(date);
         updateUi();
+
+
+        Utils.showSoftKeyboard(getContext(), etTaskName);
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        isTimeSet = true;
+        task.getDoDate().setTime(hourOfDay, minute);
+        updateUi();
+
+        Utils.showSoftKeyboard(getContext(), etTaskName);
+
+
     }
 
     /////////////
@@ -279,5 +356,6 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         etTaskName.getText().clear();
         updateUi();
     }
+
 
 }

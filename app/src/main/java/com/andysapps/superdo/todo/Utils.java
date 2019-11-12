@@ -5,9 +5,11 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.SuperDate;
+import com.andysapps.superdo.todo.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -103,6 +105,40 @@ public class Utils {
         superDate.setYear(Integer.parseInt(dateParts[2]));
 
         return superDate;
+    }
+
+    public static int getDefaultTime(TaskListing listing) {
+
+        switch (listing) {
+            case TODAY:
+                if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 9 ) {
+                    return 9;
+                } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 12) {
+                    return 12;
+                } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 15) {
+                    return 15;
+                } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 18) {
+                    return 18;
+                }
+                break;
+            case TOMORROW:
+            case SOMEDAY:
+                return 9;
+        }
+
+        return 9;
+    }
+
+    public static int getTimeIcon(int hours) {
+        if (hours <= 12) {
+            return R.drawable.ic_morning;
+        } else if (hours <= 17) {
+            return R.drawable.ic_afternoon;
+        } else if (hours <= 24 ) {
+            return R.drawable.ic_night;
+        }
+
+        return R.drawable.ic_time_off;
     }
 
 

@@ -81,6 +81,11 @@ public class SuperDate {
         return timestamp;
     }
 
+    public void setTime(int hour, int minutes) {
+        this.setHours(hour);
+        this.setMinutes(minutes);
+    }
+
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
