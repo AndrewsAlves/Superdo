@@ -58,7 +58,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         return new PlaceViewHolder(view);
     }
 
-    public void updateList(List<Task> taskList, DocumentChange.Type updateType) {
+    public void updateList(List<Task> taskList, DocumentChange.Type updateType, Task task) {
         Log.e(TAG, "updateList: data size" + this.taskList.size());
 
         this.taskList.clear();
@@ -74,9 +74,10 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 notifyItemInserted(taskList.size() - 1);
                 break;
             case REMOVED:
-                notifyItemRemoved(0);
+                notifyItemRemoved(task.getTaskIndex());
                 break;
             case MODIFIED:
+                notifyDataSetChanged();
                 break;
         }
     }

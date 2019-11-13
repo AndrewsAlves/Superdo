@@ -134,14 +134,10 @@ public class TodayFragment extends Fragment {
         adapter.updateList(taskList);
     }
 
-    public void updateList(DocumentChange.Type chageType) {
-        taskList = TaskOrganiser.getInstance().getTasks(listing);
-        adapter.updateList(taskList, chageType);
-    }
 
     public void updateList(Task task, DocumentChange.Type chageType) {
         taskList = TaskOrganiser.getInstance().getTasks(listing);
-        adapter.updateList(taskList, chageType);
+        adapter.updateList(taskList, chageType, task);
     }
 
     @OnClick(R.id.btn_today)
@@ -171,7 +167,7 @@ public class TodayFragment extends Fragment {
     public void onMessageEvent(TaskAddedEvent event) {
 
         if (event.task.getListedIn() == listing){
-            updateList(DocumentChange.Type.ADDED);
+            updateList(event.task, DocumentChange.Type.ADDED);
         } else {
             listing = event.task.getListedIn();
             updateUi();
@@ -181,7 +177,7 @@ public class TodayFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskModifedEvent event) {
         if (event.task.getListedIn() == listing){
-            updateList(DocumentChange.Type.MODIFIED);
+            updateList(event.task, DocumentChange.Type.MODIFIED);
         } else {
             listing = event.task.getListedIn();
             updateUi();
@@ -191,7 +187,7 @@ public class TodayFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskDeletedEvent event) {
         if (event.task.getListedIn() == listing){
-            updateList(DocumentChange.Type.REMOVED);
+            updateList(event.task, DocumentChange.Type.REMOVED);
         } else {
             listing = event.task.getListedIn();
             updateUi();

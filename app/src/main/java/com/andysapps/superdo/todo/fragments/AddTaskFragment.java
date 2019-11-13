@@ -213,14 +213,6 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     }
 
-    public Calendar getTomorrow() {
-        Date dt = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(dt);
-        c.add(Calendar.DATE, 1);
-        return c;
-    }
-
     public void showDatePicker() {
         Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
@@ -268,7 +260,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @OnClick(R.id.btn_tomorrow)
     public void clickTomorrow() {
         task.setListedIn(TaskListing.TOMORROW);
-        Calendar tomorrow = getTomorrow();
+        Calendar tomorrow = Utils.getTomorrow();
         SuperDate date = new SuperDate(tomorrow.getTime());
         date.setDate(tomorrow.get(Calendar.DATE));
         date.setMonth(tomorrow.get(Calendar.MONTH));

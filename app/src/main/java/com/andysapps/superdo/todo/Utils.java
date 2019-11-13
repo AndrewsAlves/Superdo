@@ -51,6 +51,14 @@ public class Utils {
         return output2;
     }
 
+    public static Calendar getTomorrow() {
+        Date dt = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.add(Calendar.DATE, 1);
+        return c;
+    }
+
     public static String getMonthString(int month) {
         switch (month) {
             case 1:
@@ -91,6 +99,19 @@ public class Utils {
         return splits[0] + " "
                 + getMonthString(Integer.parseInt(splits[1])) + " "
                 + splits[2];
+    }
+
+    public static String getTimeString(SuperDate date) {
+
+        String timeString;
+
+        if (date.hours > 12) {
+            timeString = date.hours + " : " + date.minutes + " pm";
+        } else {
+            timeString = date.hours + " : " + date.minutes + " am";
+        }
+
+        return timeString;
     }
 
     public static SuperDate getSuperdateFromTimeStamp(long timestamp) {
@@ -140,7 +161,5 @@ public class Utils {
 
         return R.drawable.ic_time_off;
     }
-
-
 
 }

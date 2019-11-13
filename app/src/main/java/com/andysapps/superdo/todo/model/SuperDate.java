@@ -10,12 +10,12 @@ import java.util.Date;
  */
 public class SuperDate {
 
-    int hours;
-    int minutes;
+    public int hours;
+    public int minutes;
 
-    int date;
-    int month;
-    int year;
+    public int date;
+    public int month;
+    public int year;
 
     Date timestamp;
 

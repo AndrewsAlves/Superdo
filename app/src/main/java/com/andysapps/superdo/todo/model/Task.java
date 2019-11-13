@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Andrews on 19,October,2019
  */
 
-public class Task {
+public class Task implements Cloneable {
 
     @DocumentId
     String documentId;
@@ -54,6 +54,11 @@ public class Task {
     boolean isDeleted;
 
     public Task() {
+    }
+
+    @Override
+    public Task clone() throws CloneNotSupportedException {
+        return (Task) super.clone();
     }
 
     public String getName() {
@@ -234,20 +239,44 @@ public class Task {
         return duedate;
     }
 
-    public String getTimeString(SuperDate date) {
+    public String getDoDateString2() {
+
+        if (doDate == null) {
+            return "No Date";
+        }
+
+        String duedate;
+
+        if (doDate.getDate() == Calendar.getInstance().get(Calendar.DATE)) {
+            return "Do Today";
+        } else if (doDate.getDate() == Utils.getTomorrow().get(Calendar.DATE)) {
+            return "Do Tomorrow";
+        }
+
+        if (doDate.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
+            duedate = doDate.getMonthString() + " "+ doDate.getDate() + ", " + doDate.getYear();
+        } else {
+            duedate = doDate.getMonthString() + " "+ doDate.getDate();
+        }
+
+        return duedate;
+    }
+
+    public  String getTimeString() {
+
+        if (doDate == null) {
+            return "No Time";
+        }
 
         String timeString;
 
-        if (date.hours > 12) {
-            timeString = date.hours + " : " + date.minutes + " pm";
+        if (doDate.hours > 12) {
+            timeString = doDate.hours + " : " + doDate.minutes + " pm";
         } else {
-            timeString = date.hours + " : " + date.minutes + " am";
+            timeString = doDate.hours + " : " + doDate.minutes + " am";
         }
 
         return timeString;
     }
-
-
-
 
 }

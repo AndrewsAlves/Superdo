@@ -56,6 +56,8 @@ public class TaskOrganiser {
 
         for (Task task : allTasks.values()) {
 
+            if (task.isDeleted()) continue;
+
             if (task.getListedIn() == TaskListing.TODAY) {
                 todayTaskList.add(task);
             }
