@@ -4,34 +4,27 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.andysapps.superdo.todo.events.firestore.FetchUserDataFailureEvent;
-import com.andysapps.superdo.todo.events.firestore.FetchUserDataSuccessEvent;
-import com.andysapps.superdo.todo.events.firestore.NotifyDataUpdate;
+import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
+import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
+import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
+import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskFailureEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskSuccessEvent;
-import com.andysapps.superdo.todo.events.ui.TaskAddedEvent;
-import com.andysapps.superdo.todo.events.ui.TaskDeletedEvent;
-import com.andysapps.superdo.todo.events.ui.TaskModifedEvent;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Andrews on 29,October,2019
@@ -48,9 +41,10 @@ public class FirestoreManager {
     public static final String DB_BUCKETS = "buckets";
 
     HashMap<String, Task> taskHashMap;
+    HashMap<String, Bucket> bucketHashMap;
 
-    List<Bucket> bucketList;
-    List<Task> taskList;
+    Query taskQuery;
+    Query bucketQuery;
 
     public String userId = "test_user";
 
@@ -64,6 +58,7 @@ public class FirestoreManager {
         firestore =  FirebaseFirestore.getInstance();
         fetchUserData();
         taskHashMap = new HashMap<>();
+        bucketHashMap = new HashMap<>();
     }
 
     public static void intialize(Context context) {
@@ -74,11 +69,15 @@ public class FirestoreManager {
         return taskHashMap;
     }
 
+    public HashMap<String, Bucket> getHasMapBucket() {
+        return bucketHashMap;
+    }
+
     public static Bucket getAllTasksBucket(Context context) {
         Bucket bucket = new Bucket();
         bucket.setName("All Tasks");
         bucket.setDescription(SharedPrefsManager.getDescAllTasks(context));
-        bucket.setTagColor("#F64F59"); // light red
+        bucket.setTagColor("#F64F59"); // light Red
 
         return bucket;
     }
@@ -87,57 +86,14 @@ public class FirestoreManager {
 
         Source source = Source.DEFAULT;
 
-        Query queryTask = firestore.collection(DB_TASKS).whereEqualTo("userId", userId);
+        taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", userId);
+        bucketQuery = firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId);
 
-        queryTask.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+        initQuerySnapshots();
 
-                if (e != null) {
-                    Log.w(TAG, "Listen failed.", e);
-                    return;
-                }
-
-                if (queryDocumentSnapshots == null) {
-                    Log.e(TAG, "Query snapshot null : " + taskList);
-                    return;
-                }
-
-                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-
-                    switch (dc.getType()) {
-                        case ADDED:
-                            taskHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Task.class));
-                            TaskOrganiser.getInstance().organiseAllTasks();
-                            EventBus.getDefault().post(new TaskAddedEvent(taskHashMap.get(dc.getDocument().getId())));
-                            Log.d(TAG, "New Request: " + dc.getDocument().getData());
-                            break;
-                        case MODIFIED:
-                            if(taskHashMap.containsKey(dc.getDocument().getId())) {
-                                taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
-                                TaskOrganiser.getInstance().organiseAllTasks();
-                                EventBus.getDefault().post(new TaskModifedEvent(taskHashMap.get(dc.getDocument().getId())));
-                            }
-                            Log.d(TAG, "Modified Request: " + dc.getDocument().getData());
-                            break;
-                        case REMOVED:
-                            if(taskHashMap.containsKey(dc.getDocument().getId())) {
-                                taskHashMap.remove(dc.getDocument().getId());
-                                TaskOrganiser.getInstance().organiseAllTasks();
-                                EventBus.getDefault().post(new TaskDeletedEvent(dc.getDocument().toObject(Task.class)));
-                            }
-                            Log.d(TAG, "Removed Request: " + dc.getDocument().getData());
-                            break;
-                    }
-                }
-            }
-        });
-
-        queryTask.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        taskQuery.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                taskList = new ArrayList<>();
 
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
@@ -146,35 +102,140 @@ public class FirestoreManager {
                     }
 
                     taskHashMap.put(documentSnapshot.getId(), documentSnapshot.toObject(Task.class));
-                    taskList.add(documentSnapshot.toObject(Task.class));
                 }
 
                 TaskOrganiser.getInstance().organiseAllTasks();
-                EventBus.getDefault().post(new FetchUserDataSuccessEvent());
+                EventBus.getDefault().post(new FetchTasksEvent(true));
             }
 
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                EventBus.getDefault().post(new FetchUserDataFailureEvent());
+                EventBus.getDefault().post(new FetchTasksEvent(false));
             }
         });
 
-        Query queryBucket = firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId);
-
-        queryBucket.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        bucketQuery.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
+                    if (documentSnapshot == null) {
+                        continue;
+                    }
+                    bucketHashMap.put(documentSnapshot.getId(), documentSnapshot.toObject(Bucket.class));
+                }
+
                 TaskOrganiser.getInstance().organiseAllTasks();
+                EventBus.getDefault().post(new FetchBucketEvent(true));
             }
 
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                EventBus.getDefault().post(new FetchBucketEvent(false));
+            }
+        });
+    }
 
+    public void initQuerySnapshots() {
+
+        taskQuery.addSnapshotListener((queryDocumentSnapshots, e) -> {
+
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e);
+                return;
+            }
+
+            if (queryDocumentSnapshots == null) {
+                Log.e(TAG, "Query snapshot null : " + taskHashMap);
+                return;
+            }
+
+            for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+
+                Task task = dc.getDocument().toObject(Task.class);
+                String documentId = dc.getDocument().getId();
+
+                switch (dc.getType()) {
+                    case ADDED:
+                        taskHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Task.class));
+                        updateTaskList(DocumentChange.Type.ADDED,taskHashMap.get(dc.getDocument().getId()));
+                        break;
+                  /*  case MODIFIED:
+                        if(taskHashMap.containsKey(documentId)) {
+                            // only the task completed task update
+                            if (taskHashMap.get(documentId).isTaskCompleted() != task.isTaskCompleted()) {
+                                taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
+                                TaskOrganiser.getInstance().organiseAllTasks();
+                                Log.e(TAG, "Query snapshot only Checking :");
+                            } else {
+                                taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
+                                updateTaskList(DocumentChange.Type.MODIFIED,taskHashMap.get(dc.getDocument().getId()));
+                            }
+                        }
+                        break;
+                    case REMOVED:
+                        if(taskHashMap.containsKey(dc.getDocument().getId())) {
+                            taskHashMap.remove(dc.getDocument().getId());
+                            updateTaskList(DocumentChange.Type.REMOVED,taskHashMap.get(dc.getDocument().getId()));
+                        }
+                        break;*/
+                }
             }
         });
 
+        //////
+        /// bucket query
+        //////
+
+        bucketQuery.addSnapshotListener((queryDocumentSnapshots, e) -> {
+
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e);
+                return;
+            }
+
+            if (queryDocumentSnapshots == null) {
+                Log.e(TAG, "Query snapshot null : " + bucketHashMap);
+                return;
+            }
+
+            for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+
+                Log.e(TAG, "Query snapshot buckets: ");
+
+                switch (dc.getType()) {
+                    case ADDED:
+                        bucketHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Bucket.class));
+                        updateBucketList(DocumentChange.Type.ADDED,bucketHashMap.get(dc.getDocument().getId()));
+                        break;
+                    /*case MODIFIED:
+                        if(bucketHashMap.containsKey(dc.getDocument().getId())) {
+                            bucketHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Bucket.class));
+                            updateBucketList(DocumentChange.Type.MODIFIED,bucketHashMap.get(dc.getDocument().getId()));
+                        }
+                        break;
+                    case REMOVED:
+                        if(bucketHashMap.containsKey(dc.getDocument().getId())) {
+                            bucketHashMap.remove(dc.getDocument().getId());
+                            updateBucketList(DocumentChange.Type.REMOVED,bucketHashMap.get(dc.getDocument().getId()));
+                        }
+                        break;*/
+
+                }
+            }
+        });
+    }
+
+    public void updateBucketList(DocumentChange.Type change, Bucket bucket) {
+        TaskOrganiser.getInstance().organiseAllTasks();
+        EventBus.getDefault().post(new BucketUpdatedEvent(change, bucket));
+    }
+
+    public void updateTaskList(DocumentChange.Type change, Task task) {
+        TaskOrganiser.getInstance().organiseAllTasks();
+        EventBus.getDefault().post(new TaskUpdatedEvent(change, task));
     }
 
     public void uploadTask(Task task) {
@@ -215,8 +276,21 @@ public class FirestoreManager {
                 });
     }
 
-    public void updateTaskComepleted() {
+    public void uploadBucket(Bucket bucket) {
 
+        firestore.collection(DB_BUCKETS).document()
+                .set(bucket)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error uploading bucket", e);
+                    }
+                });
     }
-
 }

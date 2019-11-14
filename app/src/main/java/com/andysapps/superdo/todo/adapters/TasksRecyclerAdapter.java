@@ -73,12 +73,12 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             case ADDED:
                 notifyItemInserted(taskList.size() - 1);
                 break;
-            case REMOVED:
+            /*case REMOVED:
                 notifyItemRemoved(task.getTaskIndex());
                 break;
             case MODIFIED:
                 notifyDataSetChanged();
-                break;
+                break;*/
         }
     }
 
@@ -108,10 +108,10 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         h.tvTaskName.setText(task.getName());
 
-        h.ivCheck.getDrawable().setColorFilter(context.getResources().getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP);
+        h.ivCheck.getDrawable().setColorFilter(context.getResources().getColor(R.color.grey3), PorterDuff.Mode.SRC_ATOP);
 
         if (task.getBucketColor() != null) {
-            h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC);
+            h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
         }
 
         if (task.getDueDate() != null) {

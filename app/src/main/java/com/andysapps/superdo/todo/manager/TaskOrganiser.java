@@ -3,12 +3,11 @@ package com.andysapps.superdo.todo.manager;
 import android.util.Log;
 
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -26,6 +25,8 @@ public class TaskOrganiser {
     public List<Task> todayTaskList;
     public List<Task> tomorrowTaskList;
     public List<Task> someDayTaskList;
+
+    public List<Bucket> bucketList;
 
     public static TaskOrganiser getInstance() {
         return ourInstance;
@@ -46,7 +47,7 @@ public class TaskOrganiser {
 
         HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
 
-        allTaskList.addAll(allTasks.values());
+        allTaskList.addAll(FirestoreManager.getInstance().getHasMapTask().values());
 
         if (allTasks == null) {
             return;
@@ -112,7 +113,21 @@ public class TaskOrganiser {
             }
         });
 
+        organiseBuckets();
+
         Log.e(TAG, "organiseAllTasks: tasks size : " + allTasks.size());
+    }
+
+    public void organiseBuckets() {
+
+        bucketList = new ArrayList<>();
+
+        for (Bucket bucket : FirestoreManager.getInstance().getHasMapBucket().values()) {
+            if (bucket.isDeleted()) {
+                continue;
+            }
+            bucketList.add(bucket);
+        }
     }
 
     public List<Task> getTodayTaskList() {

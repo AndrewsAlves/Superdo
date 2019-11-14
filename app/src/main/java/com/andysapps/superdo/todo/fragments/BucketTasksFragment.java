@@ -1,7 +1,6 @@
 package com.andysapps.superdo.todo.fragments;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,12 +9,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -24,11 +20,13 @@ import android.widget.TextView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.activity.ProfileActivity;
-import com.andysapps.superdo.todo.adapters.BucketsRecyclerAdapter;
 import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
+import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +38,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TasksFragment extends Fragment {
+public class BucketTasksFragment extends Fragment {
 
     @BindView(R.id.recyclerView_task_list)
     RecyclerView recyclerView;
@@ -48,17 +46,8 @@ public class TasksFragment extends Fragment {
     @BindView(R.id.tv_bucket_name)
     TextView tvBucketName;
 
-    @BindView(R.id.ib_profile)
-    ImageButton ibProfile;
-
-    @BindView(R.id.ib_buckets)
-    ImageButton ibBuckets;
-
     @BindView(R.id.tv_save)
     TextView tvSave;
-
-    @BindView(R.id.ib_close_editing_bucket)
-    ImageButton ibClose;
 
     @BindView(R.id.ll_notasks)
     LinearLayout llNoTasks;
@@ -76,14 +65,14 @@ public class TasksFragment extends Fragment {
 
     List<Task> taskList;
 
-    public TasksFragment() {
+    public BucketTasksFragment() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_tasks, container, false);
+        View v = inflater.inflate(R.layout.fragment_bucket_tasks, container, false);
         ButterKnife.bind(this, v);
 
         bucket = FirestoreManager.getAllTasksBucket(getContext());
@@ -127,9 +116,6 @@ public class TasksFragment extends Fragment {
 
         if (isEditing) {
             tvSave.setVisibility(View.VISIBLE);
-            ibClose.setVisibility(View.VISIBLE);
-            ibProfile.setVisibility(View.GONE);
-            ibBuckets.setVisibility(View.GONE);
         } else {
 
             Utils.hideKeyboard(getContext(), etBucketDesc);
@@ -139,9 +125,6 @@ public class TasksFragment extends Fragment {
             etBucketName.clearFocus();
 
             tvSave.setVisibility(View.GONE);
-            ibClose.setVisibility(View.GONE);
-            ibProfile.setVisibility(View.VISIBLE);
-            ibBuckets.setVisibility(View.VISIBLE);
 
             tvBucketName.setVisibility(View.VISIBLE);
             etBucketName.setVisibility(View.GONE);
@@ -176,25 +159,20 @@ public class TasksFragment extends Fragment {
         updateUi();
     }
 
-    @OnClick(R.id.ib_close_editing_bucket)
+    @OnClick(R.id.ib_close_bucket_tasks)
     public void clickClose() {
         isEditing = false;
         updateUi();
+        EventBus.getDefault().post(new RemoveFragmentEvents());
     }
 
-    @OnClick(R.id.ib_profile)
-    public void clickProfile() {
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
-        startActivity(intent);
-    }
-
-    @OnClick(R.id.ib_buckets)
+    /*@OnClick(R.id.ib_buckets)
     public void clickBuckets() {
         BucketFragment fragment = new BucketFragment();
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fl_fragment_container, fragment);
         ft.commitAllowingStateLoss(); // save the changes
-    }
+    }*/
 
 
 

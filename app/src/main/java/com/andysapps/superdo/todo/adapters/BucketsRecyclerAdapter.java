@@ -3,6 +3,7 @@ package com.andysapps.superdo.todo.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,17 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
+import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
+import com.andysapps.superdo.todo.fragments.AddBucketFragment;
+import com.andysapps.superdo.todo.fragments.BucketTasksFragment;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.andysapps.superdo.todo.model.Task;
+import com.google.firebase.firestore.DocumentChange;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -30,6 +39,7 @@ import butterknife.ButterKnife;
 
 public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecyclerAdapter.PlaceViewHolder> {
 
+    private static final String TAG = "BucketRecyclerAdapter";
     private List<Bucket> bucketList;
 
     private Context context;
@@ -46,34 +56,67 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
         return new PlaceViewHolder(view);
     }
 
+    public void updateList(List<Bucket> taskList, DocumentChange.Type updateType, Bucket task) {
+
+        Log.e(TAG, "updateList: data size" + this.bucketList.size());
+
+        this.bucketList.clear();
+        this.bucketList.addAll(taskList);
+
+        if (updateType == null) {
+            notifyDataSetChanged();
+            return;
+        }
+
+        switch (updateType) {
+            case ADDED:
+                notifyItemInserted(taskList.size() - 1);
+                break;
+           /* case REMOVED:
+                break;
+            case MODIFIED:
+                notifyDataSetChanged();
+                break;*/
+        }
+    }
+
+    public void updateList(List<Bucket> taskList) {
+
+        Log.e(TAG, "updateList: data size" + this.bucketList.size());
+
+        this.bucketList.clear();
+        this.bucketList.addAll(taskList);
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull PlaceViewHolder holder, int i) {
         final int position = i;
-
-        if (position == getItemCount() - 1) {
-            holder.createBucket.setVisibility(View.VISIBLE);
-            holder.parentView.setVisibility(View.GONE);
-            return;
-        }
 
         Bucket bucket;
 
         if (position == 0) {
             bucket = FirestoreManager.getAllTasksBucket(context);
         } else {
-            bucket = bucketList.get(position);
+            bucket = bucketList.get(position - 1);
         }
 
         holder.tvBucketName.setText(bucket.getName());
         holder.tvBucketName.setTextColor(Color.parseColor(bucket.getTagColor()));
         holder.ivHaveDesc.setVisibility(View.VISIBLE);
-        holder.ivTag.getDrawable().setColorFilter(Color.parseColor(bucket.getTagColor()), PorterDuff.Mode.SRC_IN);
+        holder.ivTag.getDrawable().mutate().setColorFilter(Color.parseColor(bucket.getTagColor()), PorterDuff.Mode.SRC_IN);
 
+        holder.parentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new OpenFragmentEvent(new BucketTasksFragment()));
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return bucketList.size() + 2;
+        return bucketList.size() + 1;
     }
 
     public class PlaceViewHolder extends RecyclerView.ViewHolder {

@@ -1,5 +1,6 @@
 package com.andysapps.superdo.todo.model;
 
+import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
@@ -9,6 +10,11 @@ import java.util.Date;
  */
 
 public class Bucket {
+
+    @DocumentId
+    String documentId;
+
+    String userId;
 
     String id;
 
@@ -20,13 +26,30 @@ public class Bucket {
 
     boolean isFavorite;
 
-    @ServerTimestamp
     Date created;
 
     @ServerTimestamp
     Date lastEdited;
 
+    boolean isDeleted;
+
     public Bucket() {
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getId() {
@@ -83,5 +106,13 @@ public class Bucket {
 
     public void setLastEdited(Date lastEdited) {
         this.lastEdited = lastEdited;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

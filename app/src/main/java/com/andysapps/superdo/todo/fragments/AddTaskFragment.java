@@ -3,14 +3,12 @@ package com.andysapps.superdo.todo.fragments;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +21,13 @@ import android.widget.TextView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
-import com.andysapps.superdo.todo.events.ui.TaskAddedEvent;
+import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.firestore.DocumentChange;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -321,7 +320,6 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         task.setDoDate(date);
         updateUi();
 
-
         Utils.showSoftKeyboard(getContext(), etTaskName);
     }
 
@@ -341,7 +339,10 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     /////////////
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(TaskAddedEvent event) {
+    public void onMessageEvent(TaskUpdatedEvent event) {
+        if (event.getDocumentChange() != DocumentChange.Type.ADDED) {
+            return;
+        }
         TaskListing lastTaskListing = task.getListedIn();
         task = new Task();
         task.setListedIn(lastTaskListing);

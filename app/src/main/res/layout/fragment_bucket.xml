@@ -14,6 +14,7 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constrain"
             android:layout_width="match_parent"
             android:layout_height="130dp">
 
@@ -30,16 +31,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/ib_close"
+                android:visibility="visible"
+                android:id="@+id/ib_profile"
+                style="@style/ripple_background"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_close"
                 android:layout_marginEnd="40dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_profile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                style="@style/ripple_background"/>
+                app:layout_constraintTop_toTopOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -88,7 +91,12 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                tools:listitem="@layout/item_bucket"/>
+                android:layout_marginBottom="100dp"
+                android:requiresFadingEdge="vertical"
+                android:fadingEdgeLength="50dp"
+                tools:listitem="@layout/item_bucket"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

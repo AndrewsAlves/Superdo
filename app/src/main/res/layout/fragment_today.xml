@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginStart="48dp"
+                    android:layout_marginStart="40dp"
                     android:fontFamily="@font/montserrat_bold"
                     android:text="Today"
                     android:textSize="16sp"
@@ -71,20 +71,19 @@
                     android:fontFamily="@font/montserrat_bold"
                     android:textColor="@color/lightOrange" />
 
-
             </LinearLayout>
 
             <RelativeLayout
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginEnd="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.airbnb.lottie.LottieAnimationView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     app:lottie_fileName="lottie_bell_ring.json"
                     app:lottie_autoPlay="true"
                     app:lottie_repeatCount="5" />
@@ -95,9 +94,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:text="3"
-                    android:textSize="12sp"
+                    android:textSize="10sp"
                     android:textColor="@color/lightOrange"
-                    android:fontFamily="@font/montserrat_bold"/>
+                    android:fontFamily="@font/montserrat_regular"/>
 
             </RelativeLayout>
 

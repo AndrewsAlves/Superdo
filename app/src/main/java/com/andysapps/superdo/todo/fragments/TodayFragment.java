@@ -21,11 +21,8 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback;
 import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
-import com.andysapps.superdo.todo.events.firestore.FetchUserDataSuccessEvent;
-import com.andysapps.superdo.todo.events.firestore.NotifyDataUpdate;
-import com.andysapps.superdo.todo.events.ui.TaskAddedEvent;
-import com.andysapps.superdo.todo.events.ui.TaskDeletedEvent;
-import com.andysapps.superdo.todo.events.ui.TaskModifedEvent;
+import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
+import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
 import com.github.florent37.viewanimator.ViewAnimator;
@@ -159,37 +156,16 @@ public class TodayFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(FetchUserDataSuccessEvent event) {
+    public void onMessageEvent(FetchTasksEvent event) {
         updateUi();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(TaskAddedEvent event) {
-
-        if (event.task.getListedIn() == listing){
-            updateList(event.task, DocumentChange.Type.ADDED);
+    public void onMessageEvent(TaskUpdatedEvent event) {
+        if (event.getTask().getListedIn() == listing){
+            updateList(event.getTask(), event.getDocumentChange());
         } else {
-            listing = event.task.getListedIn();
-            updateUi();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(TaskModifedEvent event) {
-        if (event.task.getListedIn() == listing){
-            updateList(event.task, DocumentChange.Type.MODIFIED);
-        } else {
-            listing = event.task.getListedIn();
-            updateUi();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(TaskDeletedEvent event) {
-        if (event.task.getListedIn() == listing){
-            updateList(event.task, DocumentChange.Type.REMOVED);
-        } else {
-            listing = event.task.getListedIn();
+            listing = event.getTask().getListedIn();
             updateUi();
         }
     }
@@ -237,7 +213,7 @@ public class TodayFragment extends Fragment {
     public void zoomAnimation(float start, float end, View view, float alpha) {
         ViewAnimator
                 .animate(view)
-                .scale(start, end)
+                //.scale(start, end)
                 .alpha(alpha)
                 .decelerate()
                 .duration(200)

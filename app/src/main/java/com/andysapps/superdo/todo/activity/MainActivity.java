@@ -15,6 +15,7 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
+import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
 import com.andysapps.superdo.todo.fragments.AddTaskFragment;
 import com.andysapps.superdo.todo.fragments.BucketFragment;
@@ -172,6 +173,13 @@ public class MainActivity extends AppCompatActivity {
         EditTaskFragment fragment = EditTaskFragment.Companion.instance(event.getTask());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fl_fragment_container, fragment);
+        ft.commitAllowingStateLoss(); // save the changes
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(OpenFragmentEvent event) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fl_fragment_container, event.fragment);
         ft.commitAllowingStateLoss(); // save the changes
     }
 }

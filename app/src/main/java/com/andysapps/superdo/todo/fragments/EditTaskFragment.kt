@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.fragment.app.DialogFragment
 import butterknife.ButterKnife
 
 import com.andysapps.superdo.todo.R
@@ -23,7 +22,6 @@ import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.Task
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus
-import android.R.id.message
 import com.andysapps.superdo.todo.events.DeleteTaskEvent
 import org.greenrobot.eventbus.Subscribe
 
@@ -161,25 +159,26 @@ class EditTaskFragment : Fragment() {
 
     }
 
-    fun initClicks() {
+    private fun initClicks() {
 
         editTask_deleteTask.setOnClickListener {
             DeleteTaskDialog().show(fragmentManager!!, "deleteTask")
         }
 
         editTask_close.setOnClickListener {
-            validate()
-            FirestoreManager.getInstance().updateTask(task);
+            if (shouldUpdate()) {
+                FirestoreManager.getInstance().updateTask(task)
+            }
             EventBus.getDefault().post(RemoveFragmentEvents())
         }
     }
 
-    fun validate() {
+    private fun shouldUpdate() : Boolean {
         if (task.name.isEmpty()) {
             task.name = nonEditedTask.name
-            Log.e(TAG, "edited task name: ${task.name}")
-            Log.e(TAG, "non edited task name: ${nonEditedTask.name}")
+            return true
         }
+        return false
     }
 
     ///////////

@@ -1,6 +1,7 @@
 package com.andysapps.superdo.todo.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,10 +16,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.activity.ProfileActivity;
 import com.andysapps.superdo.todo.adapters.BucketsRecyclerAdapter;
 import com.andysapps.superdo.todo.events.ClickBucketEvent;
+import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
+import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
+import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
+import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.google.firebase.firestore.DocumentChange;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -60,6 +68,7 @@ public class BucketFragment extends Fragment {
         EventBus.getDefault().register(this);
 
         bucketList = new ArrayList<>();
+        bucketList.addAll(TaskOrganiser.getInstance().bucketList);
         if (bucketList.isEmpty()) {
             llNoTasks.setVisibility(View.VISIBLE);
         }
@@ -70,15 +79,45 @@ public class BucketFragment extends Fragment {
 
         return v;
     }
+    
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
+    }
 
-    @OnClick(R.id.ib_close)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(FetchBucketEvent event) {
+        if (event.isSuccess()) {
+            adapter.updateList(TaskOrganiser.getInstance().bucketList);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(BucketUpdatedEvent event) {
+       if (event.getDocumentChange() == DocumentChange.Type.ADDED) {
+           adapter.updateList(TaskOrganiser.getInstance().bucketList,
+                   DocumentChange.Type.ADDED,
+                   event.getBucket());
+       } else {
+           adapter.updateList(TaskOrganiser.getInstance().bucketList);
+       }
+    }
+
+    @OnClick(R.id.ib_profile)
     public void clickClose() {
-        EventBus.getDefault().post(new RemoveFragmentEvents());
+        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        startActivity(intent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ClickBucketEvent event) {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(OpenAddBucketFragmentEvent event) {
+        new AddBucketFragment().show(getFragmentManager(), "add bucket");
     }
 
 }

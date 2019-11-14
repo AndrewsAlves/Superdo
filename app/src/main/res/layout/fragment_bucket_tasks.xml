@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.TasksFragment">
+    tools:context=".fragments.BucketTasksFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,8 +39,13 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:textSize="28sp"
-                android:maxLines="1"
                 android:hint="Name"
+                android:ellipsize="end"
+                android:minLines="1"
+                android:maxLines="1"
+                android:inputType="text"
+                android:scrollHorizontally="true"
+                android:imeOptions="actionDone"
                 android:textColorHint="@color/grey1"
                 android:background="@null"
                 android:textColor="@color/lightOrange"
@@ -47,32 +54,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:visibility="visible"
-                android:id="@+id/ib_profile"
-                style="@style/ripple_background"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginEnd="30dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_profile"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ib_buckets"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:visibility="visible"
-                android:id="@+id/ib_buckets"
-                android:layout_width="25dp"
-                android:layout_height="23dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_bucket_list"
-                android:layout_marginEnd="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                style="@style/ripple_background"/>
-
             <TextView
                 android:id="@+id/tv_save"
                 android:layout_width="wrap_content"
@@ -80,21 +61,21 @@
                 android:fontFamily="@font/montserrat_bold"
                 android:text="SAVE"
                 android:textColor="@color/lightOrange"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:visibility="gone"
                 android:layout_marginEnd="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ib_close_editing_bucket"
+                app:layout_constraintEnd_toStartOf="@+id/ib_close_bucket_tasks"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/ib_close_editing_bucket"
+                android:id="@+id/ib_close_bucket_tasks"
                 style="@style/ripple_background"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:scaleType="fitXY"
-                android:padding="3dp"
-                android:visibility="gone"
+                android:padding="2dp"
+                android:visibility="visible"
                 android:src="@drawable/ic_close"
                 android:layout_marginEnd="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
