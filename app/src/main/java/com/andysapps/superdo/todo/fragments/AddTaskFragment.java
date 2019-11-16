@@ -302,7 +302,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         if (validate()) {
             task.setUserId(FirestoreManager.getInstance().userId);
             task.setName(etTaskName.getText().toString());
-            task.setTaskIndex(TaskOrganiser.getInstance().getTaskIndex(task.getListedIn()));
+            task.setTaskIndex(TaskOrganiser.getInstance().getTaskSize(task.getListedIn()));
             FirestoreManager.getInstance().uploadTask(task);
         }
     }

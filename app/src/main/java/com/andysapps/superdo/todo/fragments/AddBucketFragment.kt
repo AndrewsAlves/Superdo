@@ -17,7 +17,6 @@ import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.Bucket
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.firestore.DocumentChange
-import kotlinx.android.synthetic.main.fragment_add_bucket.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -26,10 +25,10 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class AddBucketFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class AddBucketFragment : BottomSheetDialogFragment() {
 
 
-    var bucketColor : BucketColors = BucketColors.Red
+   /* var bucketColor : BucketColors = BucketColors.Red
 
     // this method is important to show full bottom sheet
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,5 +119,5 @@ class AddBucketFragment : BottomSheetDialogFragment(), View.OnClickListener {
             dismiss()
         }
     }
-
+*/
 }

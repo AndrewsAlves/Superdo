@@ -149,7 +149,7 @@ public class TaskOrganiser {
         return allTaskList;
     }
 
-    public int getTaskIndex(TaskListing listing) {
+    public int getTaskSize(TaskListing listing) {
 
         switch (listing) {
             case TODAY:
@@ -161,6 +161,22 @@ public class TaskOrganiser {
         }
 
         return allTaskList.size();
+    }
+
+    public List<Task> getTasksInBucket(Bucket bucket) {
+        List<Task> bucketList = new ArrayList<>();
+
+        if (bucket.getId().equals("all_tasks")) {
+            return allTaskList;
+        }
+
+        for (Task task : allTaskList) {
+            if (task.getBucketId() != null && task.getBucketId().equals( bucket.getId())) {
+                bucketList.add(task);
+            }
+        }
+
+        return bucketList;
     }
 
 

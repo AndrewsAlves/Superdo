@@ -26,7 +26,7 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return new TodayFragment();
             case 1:
-                return new BucketFragment();
+                return new BucketTasksFragment();
         }
 
         return null;

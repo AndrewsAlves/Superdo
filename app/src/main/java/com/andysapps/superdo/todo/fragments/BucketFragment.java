@@ -1,11 +1,9 @@
 package com.andysapps.superdo.todo.fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,16 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.activity.ProfileActivity;
 import com.andysapps.superdo.todo.adapters.BucketsRecyclerAdapter;
 import com.andysapps.superdo.todo.events.ClickBucketEvent;
 import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
-import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
@@ -104,10 +99,9 @@ public class BucketFragment extends Fragment {
        }
     }
 
-    @OnClick(R.id.ib_profile)
+    @OnClick(R.id.ib_close_buckets)
     public void clickClose() {
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
-        startActivity(intent);
+        EventBus.getDefault().post(new RemoveFragmentEvents());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

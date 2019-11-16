@@ -65,22 +65,50 @@
                 android:visibility="gone"
                 android:layout_marginEnd="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ib_close_bucket_tasks"
+                app:layout_constraintEnd_toStartOf="@+id/ib_close_buckets"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/ib_close_bucket_tasks"
+                android:visibility="visible"
+                android:id="@+id/ib_profile"
+                style="@style/ripple_background"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_profile"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ib_bucketList"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:visibility="visible"
+                android:id="@+id/ib_bucketList"
+                style="@style/ripple_background"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="40dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_bucket_list"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/ib_close_bucket_list"
                 style="@style/ripple_background"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:scaleType="fitXY"
                 android:padding="2dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:src="@drawable/ic_close"
                 android:layout_marginEnd="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

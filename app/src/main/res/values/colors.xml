@@ -24,12 +24,11 @@
     <color name="white_a50">#50FFFFFF</color>
     <color name="transparent">#00ffffff</color>
 
-
     ///// bucket color pallet
     <color name="yellow">#F0F64F</color>
     <color name="green">#4FF660</color>
     <color name="skyblue">#4FD4F6</color>
-    <color name="inkBlue">#4F55F6</color>
+    <color name="inkBlue">#2D2E51</color>
     <color name="rose">#F64FF6</color>
     <color name="orange">#FF8B57</color>
 

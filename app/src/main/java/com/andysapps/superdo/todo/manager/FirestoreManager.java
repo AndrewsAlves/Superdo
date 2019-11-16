@@ -75,6 +75,7 @@ public class FirestoreManager {
 
     public static Bucket getAllTasksBucket(Context context) {
         Bucket bucket = new Bucket();
+        bucket.setId("all_tasks");
         bucket.setName("All Tasks");
         bucket.setDescription(SharedPrefsManager.getDescAllTasks(context));
         bucket.setTagColor("#F64F59"); // light Red

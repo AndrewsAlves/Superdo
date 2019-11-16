@@ -6,19 +6,20 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
+import com.andysapps.superdo.todo.enums.MoonButtonType;
+import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
+import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
 import com.andysapps.superdo.todo.fragments.AddTaskFragment;
-import com.andysapps.superdo.todo.fragments.BucketFragment;
+import com.andysapps.superdo.todo.fragments.CreateNewBucketFragment;
 import com.andysapps.superdo.todo.fragments.EditTaskFragment;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.kuassivi.component.RipplePulseRelativeLayout;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
     MainViewPagerAdapter viewPagerAdapter;
     MainTabs mainTabs;
+
+    public static MoonButtonType moonButtonType = MoonButtonType.ADD_TASK;
 
     boolean isNight = false;
 
@@ -118,8 +121,19 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_add_task)
     public void clickAddTask() {
-        AddTaskFragment bottomSheetFragment = new AddTaskFragment();
-        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+        switch (moonButtonType) {
+            case ADD_TASK:
+                AddTaskFragment bottomSheetFragment = new AddTaskFragment();
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+                break;
+            case ADD_BUCKET:
+                onMessageEvent(new OpenFragmentEvent(new CreateNewBucketFragment(), true));
+                break;
+            case SAVE_BUCKET:
+                EventBus.getDefault().post(new AddNewBucketEvent());
+                break;
+        }
+
     }
 
     public void updateTabUi(MainTabs tabs) {
@@ -166,6 +180,18 @@ public class MainActivity extends AppCompatActivity {
                     remove(fragmentManager.findFragmentById(R.id.fl_fragment_container))
                     .commitAllowingStateLoss();
         }
+
+        if (fragmentManager.findFragmentById(R.id.fl_fragment_container_behind_add) != null) {
+
+            fragmentManager.beginTransaction().
+                    remove(fragmentManager.findFragmentById(R.id.fl_fragment_container_behind_add))
+                    .commitAllowingStateLoss();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(UpdateMoonButtonType event) {
+        this.moonButtonType = event.moonButtonType;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -179,7 +205,15 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(OpenFragmentEvent event) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fl_fragment_container, event.fragment);
+        if (event.behindMoonButton) {
+            ft.replace(R.id.fl_fragment_container_behind_add, event.fragment);
+        } else {
+            ft.replace(R.id.fl_fragment_container, event.fragment);
+        }
         ft.commitAllowingStateLoss(); // save the changes
     }
+
+
+
+
 }

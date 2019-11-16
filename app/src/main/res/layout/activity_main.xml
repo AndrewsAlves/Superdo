@@ -97,6 +97,11 @@
 
     </RelativeLayout>
 
+    <FrameLayout
+        android:id="@+id/fl_fragment_container_behind_add"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

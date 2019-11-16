@@ -1,5 +1,6 @@
 package com.andysapps.superdo.todo.model;
 
+import com.andysapps.superdo.todo.enums.BucketType;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -24,6 +25,8 @@ public class Bucket {
 
     String tagColor;
 
+    BucketType bucketType;
+
     boolean isFavorite;
 
     Date created;
@@ -34,6 +37,14 @@ public class Bucket {
     boolean isDeleted;
 
     public Bucket() {
+    }
+
+    public BucketType getBucketType() {
+        return bucketType;
+    }
+
+    public void setBucketType(BucketType bucketType) {
+        this.bucketType = bucketType;
     }
 
     public String getDocumentId() {

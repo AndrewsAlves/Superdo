@@ -21,12 +21,19 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.activity.ProfileActivity;
 import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
+import com.andysapps.superdo.todo.enums.MoonButtonType;
+import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
+import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
+import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +45,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
+
 public class BucketTasksFragment extends Fragment {
 
     @BindView(R.id.recyclerView_task_list)
@@ -46,8 +54,17 @@ public class BucketTasksFragment extends Fragment {
     @BindView(R.id.tv_bucket_name)
     TextView tvBucketName;
 
+    @BindView(R.id.ib_profile)
+    ImageButton ibProfile;
+
+    @BindView(R.id.ib_bucketList)
+    ImageButton ibBuckets;
+
     @BindView(R.id.tv_save)
     TextView tvSave;
+
+    @BindView(R.id.ib_close_bucket_list)
+    ImageButton ibClose;
 
     @BindView(R.id.ll_notasks)
     LinearLayout llNoTasks;
@@ -69,15 +86,24 @@ public class BucketTasksFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static BucketTasksFragment getInstance(Bucket bucket) {
+        BucketTasksFragment fragment = new BucketTasksFragment();
+        fragment.bucket = bucket;
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_bucket_tasks, container, false);
         ButterKnife.bind(this, v);
 
-        bucket = FirestoreManager.getAllTasksBucket(getContext());
+        if (bucket == null) {
+            bucket = FirestoreManager.getAllTasksBucket(getContext());
+        }
 
         taskList = new ArrayList<>();
+        taskList = TaskOrganiser.getInstance().getTasksInBucket(bucket);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new TasksRecyclerAdapter(getContext(), taskList);
         recyclerView.setAdapter(adapter);
@@ -116,6 +142,9 @@ public class BucketTasksFragment extends Fragment {
 
         if (isEditing) {
             tvSave.setVisibility(View.VISIBLE);
+            ibClose.setVisibility(View.VISIBLE);
+            ibProfile.setVisibility(View.GONE);
+            ibBuckets.setVisibility(View.GONE);
         } else {
 
             Utils.hideKeyboard(getContext(), etBucketDesc);
@@ -125,6 +154,9 @@ public class BucketTasksFragment extends Fragment {
             etBucketName.clearFocus();
 
             tvSave.setVisibility(View.GONE);
+            ibClose.setVisibility(View.GONE);
+            ibProfile.setVisibility(View.VISIBLE);
+            ibBuckets.setVisibility(View.VISIBLE);
 
             tvBucketName.setVisibility(View.VISIBLE);
             etBucketName.setVisibility(View.GONE);
@@ -159,21 +191,28 @@ public class BucketTasksFragment extends Fragment {
         updateUi();
     }
 
-    @OnClick(R.id.ib_close_bucket_tasks)
+    @OnClick(R.id.ib_close_bucket_list)
     public void clickClose() {
         isEditing = false;
         updateUi();
-        EventBus.getDefault().post(new RemoveFragmentEvents());
     }
 
-    /*@OnClick(R.id.ib_buckets)
-    public void clickBuckets() {
-        BucketFragment fragment = new BucketFragment();
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fl_fragment_container, fragment);
-        ft.commitAllowingStateLoss(); // save the changes
-    }*/
+    @OnClick(R.id.ib_profile)
+    public void clickProfile() {
+        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        startActivity(intent);
+    }
 
+    @OnClick(R.id.ib_bucketList)
+    public void clickBucket() {
+        EventBus.getDefault().post(new OpenFragmentEvent(new BucketFragment(), true));
+        EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_BUCKET));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(SetBucketTaskListEvent event) {
+
+    }
 
 
 }

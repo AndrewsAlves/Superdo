@@ -74,7 +74,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 notifyItemInserted(taskList.size() - 1);
                 break;
             /*case REMOVED:
-                notifyItemRemoved(task.getTaskIndex());
+                notifyItemRemoved(task.getTaskSize());
                 break;
             case MODIFIED:
                 notifyDataSetChanged();

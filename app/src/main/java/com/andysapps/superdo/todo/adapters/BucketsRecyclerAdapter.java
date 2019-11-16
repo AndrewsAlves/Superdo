@@ -102,14 +102,14 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
         }
 
         holder.tvBucketName.setText(bucket.getName());
-        holder.tvBucketName.setTextColor(Color.parseColor(bucket.getTagColor()));
+        //holder.tvBucketName.setTextColor(Color.parseColor(bucket.getTagColor()));
         holder.ivHaveDesc.setVisibility(View.VISIBLE);
         holder.ivTag.getDrawable().mutate().setColorFilter(Color.parseColor(bucket.getTagColor()), PorterDuff.Mode.SRC_IN);
 
         holder.parentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new OpenFragmentEvent(new BucketTasksFragment()));
+
             }
         });
     }
