@@ -79,9 +79,9 @@ public class FirestoreManager {
         Bucket bucket = new Bucket();
         bucket.setId("all_tasks");
         bucket.setName("All Tasks");
-        bucket.setBucketType(BucketType.Tasks);
+        bucket.setBucketType(BucketType.Tasks.toString());
         bucket.setDescription(SharedPrefsManager.getDescAllTasks(context));
-        bucket.setTagColor(BucketColors.Red); // light Red
+        bucket.setTagColor(BucketColors.Red.toString()); // light Red
 
         return bucket;
     }

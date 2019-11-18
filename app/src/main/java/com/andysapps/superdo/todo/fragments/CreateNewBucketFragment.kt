@@ -1,7 +1,6 @@
 package com.andysapps.superdo.todo.fragments
 
 
-import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -41,8 +40,8 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         EventBus.getDefault().register(this)
         MainActivity.moonButtonType = MoonButtonType.SAVE_BUCKET
         initUi()
-        bucket.tagColor = BucketColors.Red
-        bucket.bucketType = BucketType.Tasks
+        bucket.tagColor = BucketColors.Red.name
+        bucket.bucketType = BucketType.Tasks.name
         updateUI()
     }
 
@@ -54,35 +53,35 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
     override fun onClick(v: View?) {
         when (v!!.id) {
             bucket_icon_1.id -> {
-                bucket.bucketType = BucketType.Tasks
+                bucket.bucketType = BucketType.Tasks.name
             }
             bucket_icon_2.id -> {
-                bucket.bucketType = BucketType.Personal
+                bucket.bucketType = BucketType.Personal.name
             }
             bucket_icon_3.id -> {
-                bucket.bucketType = BucketType.Gym
+                bucket.bucketType = BucketType.Gym.name
             }
             bucket_icon_4.id -> {
-                bucket.bucketType = BucketType.Work
+                bucket.bucketType = BucketType.Work.name
             }
             bucket_icon_5.id -> {
-                bucket.bucketType = BucketType.House
+                bucket.bucketType = BucketType.House.name
             }
 
             bucket_color_1.id -> {
-                bucket.tagColor = BucketColors.Red
+                bucket.tagColor = BucketColors.Red.name
             }
             bucket_color_2.id -> {
-                bucket.tagColor = BucketColors.Sky_blue
+                bucket.tagColor = BucketColors.SkyBlue.name
             }
             bucket_color_3.id -> {
-                bucket.tagColor = BucketColors.Green
+                bucket.tagColor = BucketColors.Green.name
             }
             bucket_color_4.id -> {
-                bucket.tagColor = BucketColors.Ink_blue
+                bucket.tagColor = BucketColors.InkBlue.name
             }
             bucket_color_5.id -> {
-                bucket.tagColor = BucketColors.Orange
+                bucket.tagColor = BucketColors.Orange.name
             }
             ib_close_create_bucket.id -> {
                 activity!!.supportFragmentManager.popBackStack();
@@ -128,7 +127,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         bg_bucket_color_4.visibility = View.GONE
         bg_bucket_color_5.visibility = View.GONE
 
-        when(bucket.bucketType) {
+        when(BucketType.valueOf(bucket.bucketType)) {
             BucketType.Tasks -> {
                 bucket_icon_1.setImageResource(R.drawable.ic_bc_tasks_on)
                 bg_bucket_icon_1.visibility = View.VISIBLE
@@ -151,11 +150,11 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
             }
         }
 
-        when(bucket.tagColor) {
+        when(BucketColors.valueOf(bucket.tagColor)) {
             BucketColors.Red -> bg_bucket_color_1.visibility = View.VISIBLE
-            BucketColors.Sky_blue -> bg_bucket_color_2.visibility = View.VISIBLE
+            BucketColors.SkyBlue -> bg_bucket_color_2.visibility = View.VISIBLE
             BucketColors.Green -> bg_bucket_color_3.visibility = View.VISIBLE
-            BucketColors.Ink_blue -> bg_bucket_color_4.visibility = View.VISIBLE
+            BucketColors.InkBlue -> bg_bucket_color_4.visibility = View.VISIBLE
             BucketColors.Orange -> bg_bucket_color_5.visibility = View.VISIBLE
         }
     }
@@ -163,7 +162,6 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event : AddNewBucketEvent) {
         if (et_create_bucket_name.text.isNotEmpty()) {
-            var bucket = Bucket()
             bucket.name = et_create_bucket_name.text.toString()
             bucket.userId = FirestoreManager.getInstance().userId
             bucket.created = Calendar.getInstance().time

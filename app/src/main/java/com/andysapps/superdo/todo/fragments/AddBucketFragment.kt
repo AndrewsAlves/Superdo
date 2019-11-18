@@ -80,8 +80,8 @@ class AddBucketFragment : BottomSheetDialogFragment() {
             BucketColors.Red -> color1.alpha = 1.0f
             BucketColors.Yellow -> color2.alpha = 1.0f
             BucketColors.Green -> color3.alpha = 1.0f
-            BucketColors.Sky_blue -> color4.alpha = 1.0f
-            BucketColors.Ink_blue -> color5.alpha = 1.0f
+            BucketColors.SkyBlue -> color4.alpha = 1.0f
+            BucketColors.InkBlue -> color5.alpha = 1.0f
             BucketColors.Rosa -> color6.alpha = 1.0f
             BucketColors.Orange -> color7.alpha = 1.0f
         }
@@ -92,8 +92,8 @@ class AddBucketFragment : BottomSheetDialogFragment() {
             color1.id -> bucketColor = BucketColors.Red
             color2.id -> bucketColor = BucketColors.Yellow
             color3.id -> bucketColor = BucketColors.Green
-            color4.id -> bucketColor = BucketColors.Sky_blue
-            color5.id -> bucketColor = BucketColors.Ink_blue
+            color4.id -> bucketColor = BucketColors.SkyBlue
+            color5.id -> bucketColor = BucketColors.InkBlue
             color6.id -> bucketColor = BucketColors.Rosa
             color7.id -> bucketColor = BucketColors.Orange
 

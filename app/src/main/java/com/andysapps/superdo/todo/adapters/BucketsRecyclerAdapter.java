@@ -16,6 +16,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.enums.BucketColors;
+import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.fragments.AddBucketFragment;
@@ -103,17 +105,17 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
 
         holder.tvBucketName.setText(bucket.getName());
 
-        switch (bucket.getTagColor()) {
+        switch (BucketColors.valueOf(bucket.getTagColor())) {
             case Red:
                 holder.ivTag.setImageResource(R.drawable.img_oval_light_red_mini);
                 break;
             case Green:
                 holder.ivTag.setImageResource(R.drawable.img_oval_light_green_mini);
                 break;
-            case Sky_blue:
+            case SkyBlue:
                 holder.ivTag.setImageResource(R.drawable.img_oval_light_skyblue_mini);
                 break;
-            case Ink_blue:
+            case InkBlue:
                 holder.ivTag.setImageResource(R.drawable.img_oval_light_inkblue_mini);
                 break;
             case Orange:
@@ -121,7 +123,7 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
                 break;
         }
 
-        switch (bucket.getBucketType()) {
+        switch (BucketType.valueOf(bucket.getBucketType())) {
             case Tasks:
                 holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_tasks_on);
                 break;

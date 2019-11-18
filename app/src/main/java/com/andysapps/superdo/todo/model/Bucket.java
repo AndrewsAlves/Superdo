@@ -24,9 +24,11 @@ public class Bucket {
 
     String description;
 
-    BucketColors tagColor;
+    // enum BucketColor
+    String tagColor;
 
-    BucketType bucketType;
+    // enum BucketType
+    String bucketType;
 
     boolean isFavorite;
 
@@ -40,13 +42,6 @@ public class Bucket {
     public Bucket() {
     }
 
-    public BucketType getBucketType() {
-        return bucketType;
-    }
-
-    public void setBucketType(BucketType bucketType) {
-        this.bucketType = bucketType;
-    }
 
     public String getDocumentId() {
         return documentId;
@@ -88,14 +83,6 @@ public class Bucket {
         this.description = description;
     }
 
-    public BucketColors getTagColor() {
-        return tagColor;
-    }
-
-    public void setTagColor(BucketColors tagColor) {
-        this.tagColor = tagColor;
-    }
-
     public boolean isFavorite() {
         return isFavorite;
     }
@@ -126,5 +113,27 @@ public class Bucket {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public String getTagColor() {
+        if (tagColor == null) {
+            return BucketColors.Red.name();
+        }
+        return tagColor;
+    }
+
+    public void setTagColor(String tagColor) {
+        this.tagColor = tagColor;
+    }
+
+    public String getBucketType() {
+        if (bucketType == null) {
+            return BucketType.Tasks.name();
+        }
+        return bucketType;
+    }
+
+    public void setBucketType(String bucketType) {
+        this.bucketType = bucketType;
     }
 }
