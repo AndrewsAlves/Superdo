@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,7 +23,6 @@ import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
-import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
 import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
@@ -63,7 +61,7 @@ public class BucketTasksFragment extends Fragment {
     @BindView(R.id.tv_save)
     TextView tvSave;
 
-    @BindView(R.id.ib_close_bucket_list)
+    @BindView(R.id.ib_close_edit_bucket_list)
     ImageButton ibClose;
 
     @BindView(R.id.ll_notasks)
@@ -191,7 +189,7 @@ public class BucketTasksFragment extends Fragment {
         updateUi();
     }
 
-    @OnClick(R.id.ib_close_bucket_list)
+    @OnClick(R.id.ib_close_edit_bucket_list)
     public void clickClose() {
         isEditing = false;
         updateUi();

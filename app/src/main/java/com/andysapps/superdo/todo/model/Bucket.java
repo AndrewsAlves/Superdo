@@ -1,5 +1,6 @@
 package com.andysapps.superdo.todo.model;
 
+import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
@@ -23,7 +24,7 @@ public class Bucket {
 
     String description;
 
-    String tagColor;
+    BucketColors tagColor;
 
     BucketType bucketType;
 
@@ -87,11 +88,11 @@ public class Bucket {
         this.description = description;
     }
 
-    public String getTagColor() {
+    public BucketColors getTagColor() {
         return tagColor;
     }
 
-    public void setTagColor(String tagColor) {
+    public void setTagColor(BucketColors tagColor) {
         this.tagColor = tagColor;
     }
 

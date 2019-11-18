@@ -102,9 +102,42 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
         }
 
         holder.tvBucketName.setText(bucket.getName());
-        //holder.tvBucketName.setTextColor(Color.parseColor(bucket.getTagColor()));
-        holder.ivHaveDesc.setVisibility(View.VISIBLE);
-        holder.ivTag.getDrawable().mutate().setColorFilter(Color.parseColor(bucket.getTagColor()), PorterDuff.Mode.SRC_IN);
+
+        switch (bucket.getTagColor()) {
+            case Red:
+                holder.ivTag.setImageResource(R.drawable.img_oval_light_red_mini);
+                break;
+            case Green:
+                holder.ivTag.setImageResource(R.drawable.img_oval_light_green_mini);
+                break;
+            case Sky_blue:
+                holder.ivTag.setImageResource(R.drawable.img_oval_light_skyblue_mini);
+                break;
+            case Ink_blue:
+                holder.ivTag.setImageResource(R.drawable.img_oval_light_inkblue_mini);
+                break;
+            case Orange:
+                holder.ivTag.setImageResource(R.drawable.img_oval_light_orange_mini);
+                break;
+        }
+
+        switch (bucket.getBucketType()) {
+            case Tasks:
+                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_tasks_on);
+                break;
+            case Personal:
+                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_personal_on);
+                break;
+            case Gym:
+                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_gym_on);
+                break;
+            case Work:
+                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_briefcase_on);
+                break;
+            case House:
+                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_house_on);
+                break;
+        }
 
         holder.parentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,20 +154,14 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
 
     public class PlaceViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.rl_create_bucket)
-        public RelativeLayout createBucket;
-
         @BindView(R.id.cv_parentview)
         public CardView parentView;
 
         @BindView(R.id.tv_bucket_name)
         public TextView tvBucketName;
 
-        @BindView(R.id.iv_have_desc)
-        public ImageView ivHaveDesc;
-
-        @BindView(R.id.iv_tasks_tick)
-        public ImageView ivTaskTick;
+        @BindView(R.id.iv_bucket_icon_1)
+        ImageView ivBucketIcon;
 
         @BindView(R.id.tv_no_tasks_done)
         public TextView tvNoTasks;

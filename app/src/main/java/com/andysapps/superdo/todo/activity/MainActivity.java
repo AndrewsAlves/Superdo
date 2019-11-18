@@ -210,7 +210,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             ft.replace(R.id.fl_fragment_container, event.fragment);
         }
-        ft.commitAllowingStateLoss(); // save the changes
+        ft.addToBackStack(event.fragment.getClass().getName());
+        ft.commitAllowingStateLoss(); // save the change
     }
 
 

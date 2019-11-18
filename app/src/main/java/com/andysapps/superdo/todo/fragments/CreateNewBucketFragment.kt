@@ -41,7 +41,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         EventBus.getDefault().register(this)
         MainActivity.moonButtonType = MoonButtonType.SAVE_BUCKET
         initUi()
-        bucket.tagColor = BucketColors.Red.toString()
+        bucket.tagColor = BucketColors.Red
         bucket.bucketType = BucketType.Tasks
         updateUI()
     }
@@ -70,19 +70,23 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
             }
 
             bucket_color_1.id -> {
-                bucket.tagColor = BucketColors.Red.toString()
+                bucket.tagColor = BucketColors.Red
             }
             bucket_color_2.id -> {
-                bucket.tagColor = BucketColors.Sky_blue.toString()
+                bucket.tagColor = BucketColors.Sky_blue
             }
             bucket_color_3.id -> {
-                bucket.tagColor = BucketColors.Green.toString()
+                bucket.tagColor = BucketColors.Green
             }
             bucket_color_4.id -> {
-                bucket.tagColor = BucketColors.Ink_blue.toString()
+                bucket.tagColor = BucketColors.Ink_blue
             }
             bucket_color_5.id -> {
-                bucket.tagColor = BucketColors.Orange.toString()
+                bucket.tagColor = BucketColors.Orange
+            }
+            ib_close_create_bucket.id -> {
+                activity!!.supportFragmentManager.popBackStack();
+                //EventBus.getDefault().post(RemoveFragmentEvents())
             }
 
         }
@@ -101,6 +105,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         bucket_color_3.setOnClickListener(this)
         bucket_color_4.setOnClickListener(this)
         bucket_color_5.setOnClickListener(this)
+        ib_close_create_bucket.setOnClickListener(this)
     }
 
     fun updateUI() {
@@ -147,11 +152,11 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         }
 
         when(bucket.tagColor) {
-            BucketColors.Red.toString() -> bg_bucket_color_1.visibility = View.VISIBLE
-            BucketColors.Sky_blue.toString() -> bg_bucket_color_2.visibility = View.VISIBLE
-            BucketColors.Green.toString() -> bg_bucket_color_3.visibility = View.VISIBLE
-            BucketColors.Ink_blue.toString() -> bg_bucket_color_4.visibility = View.VISIBLE
-            BucketColors.Orange.toString() -> bg_bucket_color_5.visibility = View.VISIBLE
+            BucketColors.Red -> bg_bucket_color_1.visibility = View.VISIBLE
+            BucketColors.Sky_blue -> bg_bucket_color_2.visibility = View.VISIBLE
+            BucketColors.Green -> bg_bucket_color_3.visibility = View.VISIBLE
+            BucketColors.Ink_blue -> bg_bucket_color_4.visibility = View.VISIBLE
+            BucketColors.Orange -> bg_bucket_color_5.visibility = View.VISIBLE
         }
     }
 
@@ -165,9 +170,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
             FirestoreManager.getInstance().uploadBucket(bucket)
             EventBus.getDefault().post(RemoveFragmentEvents())
             MainActivity.moonButtonType = MoonButtonType.ADD_BUCKET
-
         }
     }
-
 
 }

@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.andysapps.superdo.todo.enums.BucketColors;
+import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
@@ -77,8 +79,9 @@ public class FirestoreManager {
         Bucket bucket = new Bucket();
         bucket.setId("all_tasks");
         bucket.setName("All Tasks");
+        bucket.setBucketType(BucketType.Tasks);
         bucket.setDescription(SharedPrefsManager.getDescAllTasks(context));
-        bucket.setTagColor("#F64F59"); // light Red
+        bucket.setTagColor(BucketColors.Red); // light Red
 
         return bucket;
     }

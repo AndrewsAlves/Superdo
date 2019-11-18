@@ -40,7 +40,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/ib_close_bucket_list"
+                android:id="@+id/ib_close_create_bucket"
                 style="@style/ripple_background"
                 android:layout_width="25dp"
                 android:layout_height="25dp"

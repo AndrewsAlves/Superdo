@@ -4,6 +4,7 @@ package com.andysapps.superdo.todo.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -101,7 +102,7 @@ public class BucketFragment extends Fragment {
 
     @OnClick(R.id.ib_close_buckets)
     public void clickClose() {
-        EventBus.getDefault().post(new RemoveFragmentEvents());
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

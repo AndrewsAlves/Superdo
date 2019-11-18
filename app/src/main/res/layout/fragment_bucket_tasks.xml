@@ -65,7 +65,7 @@
                 android:visibility="gone"
                 android:layout_marginEnd="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ib_close_buckets"
+                app:layout_constraintEnd_toStartOf="@+id/ib_close_edit_bucket_list"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
@@ -95,7 +95,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/ib_close_bucket_list"
+                android:id="@+id/ib_close_edit_bucket_list"
                 style="@style/ripple_background"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
@@ -107,8 +107,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
