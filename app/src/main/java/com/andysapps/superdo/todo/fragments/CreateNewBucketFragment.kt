@@ -25,9 +25,20 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
+
 class CreateNewBucketFragment : Fragment() , View.OnClickListener {
 
     var bucket : Bucket = Bucket()
+    var isEditing : Boolean = false
+
+    companion object {
+        fun instance(bucket : Bucket, isEditing: Boolean) : Fragment {
+            val fragment = CreateNewBucketFragment()
+            fragment.bucket = bucket
+            fragment.isEditing = isEditing
+            return fragment
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -40,8 +51,12 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         EventBus.getDefault().register(this)
         MainActivity.moonButtonType = MoonButtonType.SAVE_BUCKET
         initUi()
-        bucket.tagColor = BucketColors.Red.name
-        bucket.bucketType = BucketType.Tasks.name
+        if (!isEditing) {
+            bucket.tagColor = BucketColors.Red.name
+            bucket.bucketType = BucketType.Tasks.name
+        } else {
+            et_create_bucket_name.setText(bucket.name)
+        }
         updateUI()
     }
 
@@ -165,8 +180,12 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
             bucket.name = et_create_bucket_name.text.toString()
             bucket.userId = FirestoreManager.getInstance().userId
             bucket.created = Calendar.getInstance().time
-            FirestoreManager.getInstance().uploadBucket(bucket)
-            EventBus.getDefault().post(RemoveFragmentEvents())
+            if (isEditing) {
+                FirestoreManager.getInstance().updateBucket(bucket)
+            } else {
+                FirestoreManager.getInstance().uploadBucket(bucket)
+            }
+            activity!!.supportFragmentManager.popBackStack()
             MainActivity.moonButtonType = MoonButtonType.ADD_BUCKET
         }
     }

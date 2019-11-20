@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
+import com.andysapps.superdo.todo.enums.BucketUpdateType;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
@@ -17,12 +18,14 @@ import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
+import com.google.firebase.firestore.core.OrderBy;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -91,7 +94,7 @@ public class FirestoreManager {
         Source source = Source.DEFAULT;
 
         taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", userId);
-        bucketQuery = firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId);
+        bucketQuery = firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId).orderBy("created", Query.Direction.DESCENDING);
 
         initQuerySnapshots();
 
@@ -127,6 +130,7 @@ public class FirestoreManager {
                     if (documentSnapshot == null) {
                         continue;
                     }
+
                     bucketHashMap.put(documentSnapshot.getId(), documentSnapshot.toObject(Bucket.class));
                 }
 
@@ -157,9 +161,6 @@ public class FirestoreManager {
             }
 
             for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-
-                Task task = dc.getDocument().toObject(Task.class);
-                String documentId = dc.getDocument().getId();
 
                 switch (dc.getType()) {
                     case ADDED:
@@ -193,7 +194,10 @@ public class FirestoreManager {
         /// bucket query
         //////
 
-        bucketQuery.addSnapshotListener((queryDocumentSnapshots, e) -> {
+        firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId)
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+
+            Log.e(TAG, "Query snapshot executed  : " + queryDocumentSnapshots);
 
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e);
@@ -205,6 +209,8 @@ public class FirestoreManager {
                 return;
             }
 
+            Log.e(TAG, "Query snapshot not null : " + queryDocumentSnapshots);
+
             for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
 
                 Log.e(TAG, "Query snapshot buckets: ");
@@ -212,15 +218,15 @@ public class FirestoreManager {
                 switch (dc.getType()) {
                     case ADDED:
                         bucketHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Bucket.class));
-                        updateBucketList(DocumentChange.Type.ADDED,bucketHashMap.get(dc.getDocument().getId()));
+                        updateBucketList(BucketUpdateType.Added,bucketHashMap.get(dc.getDocument().getId()));
                         break;
-                    /*case MODIFIED:
+                    case MODIFIED:
                         if(bucketHashMap.containsKey(dc.getDocument().getId())) {
                             bucketHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Bucket.class));
-                            updateBucketList(DocumentChange.Type.MODIFIED,bucketHashMap.get(dc.getDocument().getId()));
+                            updateBucketList(BucketUpdateType.Modified,bucketHashMap.get(dc.getDocument().getId()));
                         }
                         break;
-                    case REMOVED:
+                    /*case REMOVED:
                         if(bucketHashMap.containsKey(dc.getDocument().getId())) {
                             bucketHashMap.remove(dc.getDocument().getId());
                             updateBucketList(DocumentChange.Type.REMOVED,bucketHashMap.get(dc.getDocument().getId()));
@@ -232,7 +238,7 @@ public class FirestoreManager {
         });
     }
 
-    public void updateBucketList(DocumentChange.Type change, Bucket bucket) {
+    public void updateBucketList(BucketUpdateType change, Bucket bucket) {
         TaskOrganiser.getInstance().organiseAllTasks();
         EventBus.getDefault().post(new BucketUpdatedEvent(change, bucket));
     }
@@ -294,6 +300,24 @@ public class FirestoreManager {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e(TAG, "Error uploading bucket", e);
+                    }
+                });
+    }
+
+    public void updateBucket(Bucket bucket) {
+
+        firestore.collection(DB_BUCKETS).document(bucket.getDocumentId())
+                .set(bucket)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error uploading task", e);
                     }
                 });
     }

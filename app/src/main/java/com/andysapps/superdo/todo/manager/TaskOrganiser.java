@@ -179,6 +179,11 @@ public class TaskOrganiser {
         return bucketList;
     }
 
-
-
+    public void deleteTask(Bucket bucket) {
+        if (FirestoreManager.getInstance().getHasMapBucket().containsKey(bucket.getDocumentId())) {
+            Bucket bucket1 = FirestoreManager.getInstance().getHasMapBucket().get(bucket.getDocumentId());
+            bucket1.setDeleted(true);
+            FirestoreManager.getInstance().updateBucket(bucket1);
+        }
+    }
 }

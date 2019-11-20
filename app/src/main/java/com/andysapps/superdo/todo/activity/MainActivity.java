@@ -13,6 +13,7 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
+import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
@@ -22,6 +23,7 @@ import com.andysapps.superdo.todo.fragments.AddTaskFragment;
 import com.andysapps.superdo.todo.fragments.CreateNewBucketFragment;
 import com.andysapps.superdo.todo.fragments.EditTaskFragment;
 import com.andysapps.superdo.todo.manager.TimeManager;
+import com.andysapps.superdo.todo.model.Bucket;
 import com.kuassivi.component.RipplePulseRelativeLayout;
 
 import org.greenrobot.eventbus.EventBus;
@@ -127,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                 break;
             case ADD_BUCKET:
-                onMessageEvent(new OpenFragmentEvent(new CreateNewBucketFragment(), true));
+                onMessageEvent(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(new Bucket(), false), true));
                 break;
             case SAVE_BUCKET:
                 EventBus.getDefault().post(new AddNewBucketEvent());
@@ -212,6 +214,11 @@ public class MainActivity extends AppCompatActivity {
         }
         ft.addToBackStack(event.fragment.getClass().getName());
         ft.commitAllowingStateLoss(); // save the change
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(OpenBottomFragmentEvent event) {
+       event.getFragment().show(getSupportFragmentManager(), event.getFragment().getClass().getName());
     }
 
 

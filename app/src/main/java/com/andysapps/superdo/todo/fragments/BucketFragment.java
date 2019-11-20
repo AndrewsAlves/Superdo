@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.BucketsRecyclerAdapter;
+import com.andysapps.superdo.todo.enums.BucketUpdateType;
 import com.andysapps.superdo.todo.events.ClickBucketEvent;
 import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
@@ -91,10 +92,10 @@ public class BucketFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BucketUpdatedEvent event) {
-       if (event.getDocumentChange() == DocumentChange.Type.ADDED) {
-           adapter.updateList(TaskOrganiser.getInstance().bucketList,
-                   DocumentChange.Type.ADDED,
-                   event.getBucket());
+       if (event.getDocumentChange() == BucketUpdateType.Added) {
+           adapter.notifyBucketAdded(TaskOrganiser.getInstance().bucketList);
+       } else if (event.getDocumentChange() == BucketUpdateType.Deleted){
+           adapter.notifyBucketRemoved(event.getBucket());
        } else {
            adapter.updateList(TaskOrganiser.getInstance().bucketList);
        }
@@ -107,7 +108,6 @@ public class BucketFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ClickBucketEvent event) {
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -115,4 +115,16 @@ public class BucketFragment extends Fragment {
         new AddBucketFragment().show(getFragmentManager(), "add bucket");
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent() {
+
+    }
+
 }
+
+enum BucketActions {
+    Edit,
+    Delete
+}
+
+

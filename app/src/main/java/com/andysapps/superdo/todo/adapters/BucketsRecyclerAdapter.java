@@ -16,9 +16,12 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.dialog.BucketBottomDialog;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
+import com.andysapps.superdo.todo.enums.BucketUpdateType;
 import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
+import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.fragments.AddBucketFragment;
 import com.andysapps.superdo.todo.fragments.BucketTasksFragment;
@@ -58,27 +61,19 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
         return new PlaceViewHolder(view);
     }
 
-    public void updateList(List<Bucket> taskList, DocumentChange.Type updateType, Bucket task) {
-
-        Log.e(TAG, "updateList: data size" + this.bucketList.size());
-
+    public void notifyBucketAdded(List<Bucket> bucketList) {
         this.bucketList.clear();
-        this.bucketList.addAll(taskList);
+        this.bucketList.addAll(bucketList);
+        notifyDataSetChanged();
+        notifyItemInserted(bucketList.size() - 1);
+    }
 
-        if (updateType == null) {
-            notifyDataSetChanged();
-            return;
-        }
-
-        switch (updateType) {
-            case ADDED:
-                notifyItemInserted(taskList.size() - 1);
-                break;
-           /* case REMOVED:
-                break;
-            case MODIFIED:
-                notifyDataSetChanged();
-                break;*/
+    public void notifyBucketRemoved(Bucket bucket) {
+        for (int i = 0 ; i < this.bucketList.size() ; i++) {
+            if (this.bucketList.get(i).getDocumentId().equals(bucket.getDocumentId())) {
+                notifyItemRemoved(i + 1);
+                this.bucketList.remove(i);
+            }
         }
     }
 
@@ -145,6 +140,18 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        if (position == 0) {
+            return;
+        }
+
+        holder.parentView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                EventBus.getDefault().post(new OpenBottomFragmentEvent(BucketBottomDialog.Companion.instance(bucket)));
+                return true;
             }
         });
     }
