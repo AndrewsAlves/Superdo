@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="50dp">
+
+    <ImageView
+        android:id="@+id/iv_bucket_type__selectbucket_item"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:visibility="visible"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/ic_bc_briefcase_on"/>
+
+    <TextView
+        android:id="@+id/tv_bucketname__selectbucket_item"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Bucket Name"
+        android:textSize="12sp"
+        android:fontFamily="@font/montserrat_regular"
+        android:textColor="@color/grey3"
+        android:layout_marginStart="20dp" />
+
+    <ImageView
+        android:id="@+id/iv_colortag__selectbucket_item"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:visibility="visible"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/img_oval_light_red_mini"/>
+
+
+</LinearLayout>

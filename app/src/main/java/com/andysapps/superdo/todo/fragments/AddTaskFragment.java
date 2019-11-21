@@ -1,14 +1,17 @@
 package com.andysapps.superdo.todo.fragments;
 
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +23,12 @@ import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment;
+import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.events.action.SelectBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
+import com.andysapps.superdo.todo.events.ui.DialogDismissEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.SuperDate;
@@ -46,7 +53,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddTaskFragment extends BottomSheetDialogFragment implements  DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class AddTaskFragment extends BottomSheetDialogFragment implements  DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnDismissListener {
 
     private static final String TAG = "Add Task Fragment";
     @BindView(R.id.et_add_task)
@@ -179,16 +186,6 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
             bgDoDate.setBackgroundResource(R.drawable.bg_light_red);
         }
 
-        if (task.getBucketId() == null) {
-            ivTag.getDrawable().setColorFilter(getResources().getColor(R.color.lightRed), PorterDuff.Mode.SRC_IN);
-            bucketName.setText("All Tasks");
-            bucketName.setTextColor(getResources().getColor(R.color.lightRed));
-        } else {
-            ivTag.getDrawable().setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_IN);
-            bucketName.setText(task.getBucketName());
-            bucketName.setTextColor(Color.parseColor(task.getBucketColor()));
-        }
-
        if (task.getDoDate() != null) {
            int hours = task.getDoDate().getHours();
            String meridien = " am";
@@ -210,6 +207,28 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
            ivTime.setImageResource(R.drawable.ic_time_off);
        }
 
+       if (task.getBucketId() != null) {
+
+           bucketName.setText(task.getBucketName());
+
+           switch (BucketColors.valueOf(task.getBucketColor())) {
+               case Red:
+                   ivTag.setImageResource(R.drawable.img_oval_light_red_mini);
+                   break;
+               case Green:
+                   ivTag.setImageResource(R.drawable.img_oval_light_green_mini);
+                   break;
+               case SkyBlue:
+                   ivTag.setImageResource(R.drawable.img_oval_light_skyblue_mini);
+                   break;
+               case InkBlue:
+                   ivTag.setImageResource(R.drawable.img_oval_light_inkblue_mini);
+                   break;
+               case Orange:
+                   ivTag.setImageResource(R.drawable.img_oval_light_orange_mini);
+                   break;
+           }
+       }
     }
 
     public void showDatePicker() {
@@ -294,7 +313,11 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     @OnClick(R.id.btn_buckets)
     public void clickBuckets() {
+        etTaskName.clearFocus();
+        SelectBucketDialogFragment fragment = new SelectBucketDialogFragment();
 
+
+        new SelectBucketDialogFragment().show(getFragmentManager(), SelectBucketDialogFragment.class.getName());
     }
 
     @OnClick(R.id.ib_add_task)
@@ -314,11 +337,23 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         return true;
     }
 
+    public void showKeyboradAsync() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Utils.showSoftKeyboard(getContext(), etTaskName);
+            }
+        }, 50);
+    }
+
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         SuperDate date = new SuperDate(dayOfMonth, monthOfYear + 1, year);
         task.setDoDate(date);
         updateUi();
+
+
 
         Utils.showSoftKeyboard(getContext(), etTaskName);
     }
@@ -330,8 +365,6 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         updateUi();
 
         Utils.showSoftKeyboard(getContext(), etTaskName);
-
-
     }
 
     /////////////
@@ -350,5 +383,17 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         updateUi();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(SelectBucketEvent event) {
+        task.setBucketColor(event.getBucket().getTagColor());
+        task.setBucketId(event.getBucket().getDocumentId());
+        task.setBucketName(event.getBucket().getName());
+        updateUi();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(DialogDismissEvent event) {
+        showKeyboradAsync();
+    }
 
 }

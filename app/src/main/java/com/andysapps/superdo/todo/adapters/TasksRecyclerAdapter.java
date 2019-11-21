@@ -111,7 +111,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         h.ivCheck.getDrawable().setColorFilter(context.getResources().getColor(R.color.grey3), PorterDuff.Mode.SRC_ATOP);
 
         if (task.getBucketColor() != null) {
-            h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
+            //h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
         }
 
         if (task.getDueDate() != null) {

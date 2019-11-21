@@ -122,9 +122,4 @@ public class BucketFragment extends Fragment {
 
 }
 
-enum BucketActions {
-    Edit,
-    Delete
-}
-
 

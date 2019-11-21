@@ -7,22 +7,22 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.fragment.app.Fragment
 import butterknife.ButterKnife
-
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
+import com.andysapps.superdo.todo.enums.BucketColors
+import com.andysapps.superdo.todo.events.DeleteTaskEvent
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.Task
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus
-import com.andysapps.superdo.todo.events.DeleteTaskEvent
 import org.greenrobot.eventbus.Subscribe
 
 
@@ -121,15 +121,16 @@ class EditTaskFragment : Fragment() {
             editTask_tv_do_time.setTextColor(resources.getColor(R.color.grey2))
         }
 
-        // set bucket name
-        if (task.bucketId == null) {
-            editTask_iv_bucket.drawable.setColorFilter(resources.getColor(R.color.lightRed), PorterDuff.Mode.SRC_IN)
-            editTask_tv_bucketName.text = "All Tasks"
-            editTask_tv_bucketName.setTextColor(resources.getColor(R.color.lightRed))
-        } else {
-            editTask_iv_bucket.drawable.setColorFilter(Color.parseColor(task.bucketColor), PorterDuff.Mode.SRC_IN)
-            editTask_tv_bucketName.text = task.bucketName
-            editTask_tv_bucketName.setTextColor(Color.parseColor(task.bucketColor))
+        if (task.bucketId != null) {
+            editTask_tv_bucketName.setText(task.bucketName)
+            editTask_tv_bucketName.setTextColor(resources.getColor(R.color.black))
+            when (BucketColors.valueOf(task.bucketColor)) {
+                BucketColors.Red -> editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_red)
+                BucketColors.Green -> editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_green)
+                BucketColors.SkyBlue -> editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_skyblue)
+                BucketColors.InkBlue -> editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_inkblue)
+                BucketColors.Orange -> editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_orange)
+            }
         }
 
         // remind
