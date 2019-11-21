@@ -23,10 +23,12 @@ import com.andysapps.superdo.todo.enums.BucketUpdateType;
 import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
+import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
 import com.andysapps.superdo.todo.fragments.AddBucketFragment;
 import com.andysapps.superdo.todo.fragments.BucketTasksFragment;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.firebase.firestore.DocumentChange;
@@ -136,10 +138,15 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
                 break;
         }
 
+        String taskDone = TaskOrganiser.getInstance().getBucketTasksDoneCount(bucket) + " / " +
+                TaskOrganiser.getInstance().getBucketTasksCount(bucket);
+
+        holder.tvNoTasks.setText(taskDone);
+
         holder.parentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                EventBus.getDefault().post(new SetBucketTaskListEvent(bucket));
             }
         });
 

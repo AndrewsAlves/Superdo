@@ -95,13 +95,14 @@ public class BucketTasksFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_bucket_tasks, container, false);
         ButterKnife.bind(this, v);
+        EventBus.getDefault().register(this);
 
         if (bucket == null) {
             bucket = FirestoreManager.getAllTasksBucket(getContext());
         }
 
         taskList = new ArrayList<>();
-        taskList = TaskOrganiser.getInstance().getTasksInBucket(bucket);
+        taskList.addAll(TaskOrganiser.getInstance().getTasksInBucket(bucket));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new TasksRecyclerAdapter(getContext(), taskList);
         recyclerView.setAdapter(adapter);
@@ -110,6 +111,12 @@ public class BucketTasksFragment extends Fragment {
 
         return v;
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
     }
 
     public void updateUi() {
@@ -209,8 +216,10 @@ public class BucketTasksFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(SetBucketTaskListEvent event) {
-
+        getFragmentManager().popBackStack();
+        bucket = event.getBucket();
+        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket));
+        updateUi();
     }
-
 
 }

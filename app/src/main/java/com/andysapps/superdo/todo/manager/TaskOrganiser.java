@@ -166,17 +166,60 @@ public class TaskOrganiser {
     public List<Task> getTasksInBucket(Bucket bucket) {
         List<Task> bucketList = new ArrayList<>();
 
-        if (bucket.getId().equals("all_tasks")) {
+        if (bucket.getDocumentId().equals("all_tasks")) {
             return allTaskList;
         }
 
         for (Task task : allTaskList) {
-            if (task.getBucketId() != null && task.getBucketId().equals( bucket.getId())) {
+            if (task.getBucketId() != null && task.getBucketId().equals(bucket.getDocumentId())) {
                 bucketList.add(task);
             }
         }
 
+        Log.e(TAG, "organiseAllTasks: bucketList size : " + bucketList.size());
+
         return bucketList;
+    }
+
+    public int getBucketTasksCount(Bucket bucket) {
+
+        int tasksCount = 0;
+
+        if (bucket.getDocumentId().equals("all_tasks")) {
+            return allTaskList.size();
+        }
+
+        for (Task task : allTaskList) {
+            if (task.getBucketId() != null && task.getBucketId().equals( bucket.getDocumentId())) {
+                tasksCount++;
+            }
+        }
+
+        return tasksCount;
+    }
+
+    public int getBucketTasksDoneCount(Bucket bucket) {
+
+        int tasksDoneCount = 0;
+
+        if (bucket.getDocumentId().equals("all_tasks")) {
+            for (Task task : allTaskList) {
+                if (task.isTaskCompleted()) {
+                    tasksDoneCount++;
+                }
+            }
+            return tasksDoneCount;
+        }
+
+        for (Task task : allTaskList) {
+            if (task.getBucketId() != null && task.getBucketId().equals( bucket.getDocumentId())) {
+                if (task.isTaskCompleted()) {
+                    tasksDoneCount++;
+                }
+            }
+        }
+
+        return tasksDoneCount;
     }
 
     public void deleteTask(Bucket bucket) {

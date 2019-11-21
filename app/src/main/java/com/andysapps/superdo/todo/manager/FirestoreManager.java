@@ -80,7 +80,7 @@ public class FirestoreManager {
 
     public static Bucket getAllTasksBucket(Context context) {
         Bucket bucket = new Bucket();
-        bucket.setId("all_tasks");
+        bucket.setDocumentId("all_tasks");
         bucket.setName("All Tasks");
         bucket.setBucketType(BucketType.Tasks.toString());
         bucket.setDescription(SharedPrefsManager.getDescAllTasks(context));
