@@ -22,13 +22,13 @@ import org.greenrobot.eventbus.EventBus
  * A simple [Fragment] subclass.
  */
 
-class BucketBottomDialog : BottomSheetDialogFragment() {
+class BucketActionBottomDialog : BottomSheetDialogFragment() {
 
     var bucket : Bucket = Bucket()
 
     companion object {
-        fun instance(bucket : Bucket) : BucketBottomDialog {
-            val fragment = BucketBottomDialog()
+        fun instance(bucket : Bucket) : BucketActionBottomDialog {
+            val fragment = BucketActionBottomDialog()
             fragment.bucket = bucket
             return fragment
         }
@@ -49,7 +49,7 @@ class BucketBottomDialog : BottomSheetDialogFragment() {
         }
 
         btn_delete__BucketDialog.setOnClickListener {
-            TaskOrganiser.getInstance().deleteTask(bucket)
+            TaskOrganiser.getInstance().deleteBucket(bucket)
             EventBus.getDefault().post(BucketUpdatedEvent(BucketUpdateType.Deleted, bucket))
             dismiss()
         }

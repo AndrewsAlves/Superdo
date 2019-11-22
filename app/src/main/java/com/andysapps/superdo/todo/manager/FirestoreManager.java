@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.enums.BucketUpdateType;
+import com.andysapps.superdo.todo.enums.TaskUpdateType;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
@@ -93,8 +94,8 @@ public class FirestoreManager {
 
         Source source = Source.DEFAULT;
 
-        taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", userId);
-        bucketQuery = firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId).orderBy("created", Query.Direction.DESCENDING);
+        taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", userId).whereEqualTo("isDeleted", false);
+        bucketQuery = firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId).whereEqualTo("isDeleted", false).orderBy("created", Query.Direction.DESCENDING);
 
         initQuerySnapshots();
 
@@ -148,7 +149,8 @@ public class FirestoreManager {
 
     public void initQuerySnapshots() {
 
-        taskQuery.addSnapshotListener((queryDocumentSnapshots, e) -> {
+        firestore.collection(DB_TASKS).whereEqualTo("userId", userId)
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
 
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e);
@@ -165,8 +167,14 @@ public class FirestoreManager {
                 switch (dc.getType()) {
                     case ADDED:
                         taskHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Task.class));
-                        updateTaskList(DocumentChange.Type.ADDED,taskHashMap.get(dc.getDocument().getId()));
+                        updateTaskList(TaskUpdateType.Added,taskHashMap.get(dc.getDocument().getId()));
                         break;
+                    /*case MODIFIED:
+                        if(taskHashMap.containsKey(dc.getDocument().getId())) {
+                            taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
+                            updateTaskList(TaskUpdateType.Modified,taskHashMap.get(dc.getDocument().getId()));
+                        }
+                        break;*/
                   /*  case MODIFIED:
                         if(taskHashMap.containsKey(documentId)) {
                             // only the task completed task update
@@ -243,7 +251,7 @@ public class FirestoreManager {
         EventBus.getDefault().post(new BucketUpdatedEvent(change, bucket));
     }
 
-    public void updateTaskList(DocumentChange.Type change, Task task) {
+    public void updateTaskList(TaskUpdateType change, Task task) {
         TaskOrganiser.getInstance().organiseAllTasks();
         EventBus.getDefault().post(new TaskUpdatedEvent(change, task));
     }

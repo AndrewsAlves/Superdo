@@ -14,8 +14,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.activity.MainActivity;
 import com.andysapps.superdo.todo.adapters.BucketsRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.BucketUpdateType;
+import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.ClickBucketEvent;
 import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
@@ -52,7 +54,6 @@ public class BucketFragment extends Fragment {
     @BindView(R.id.ll_noBuckets)
     LinearLayout llNoTasks;
 
-
     public BucketFragment() {
         // Required empty public constructor
     }
@@ -63,6 +64,7 @@ public class BucketFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_bucket, container, false);
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
+        MainActivity.moonButtonType = MoonButtonType.ADD_BUCKET;
 
         bucketList = new ArrayList<>();
         bucketList.addAll(TaskOrganiser.getInstance().bucketList);
@@ -80,6 +82,7 @@ public class BucketFragment extends Fragment {
     @Override
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
+        MainActivity.moonButtonType = MoonButtonType.ADD_TASK;
         super.onDestroyView();
     }
 

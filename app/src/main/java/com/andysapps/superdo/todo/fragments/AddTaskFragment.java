@@ -26,6 +26,7 @@ import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.enums.TaskUpdateType;
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.DialogDismissEvent;
@@ -373,7 +374,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskUpdatedEvent event) {
-        if (event.getDocumentChange() != DocumentChange.Type.ADDED) {
+        if (event.getDocumentChange() != TaskUpdateType.Added) {
             return;
         }
         TaskListing lastTaskListing = task.getListedIn();

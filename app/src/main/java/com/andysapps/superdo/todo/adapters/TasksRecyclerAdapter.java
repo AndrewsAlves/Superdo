@@ -2,7 +2,9 @@ package com.andysapps.superdo.todo.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.Log;
@@ -17,10 +19,16 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieProperty;
+import com.airbnb.lottie.model.KeyPath;
+import com.airbnb.lottie.value.LottieFrameInfo;
+import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.firebase.firestore.DocumentChange;
 import com.thesurix.gesturerecycler.GestureAdapter;
@@ -58,27 +66,19 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         return new PlaceViewHolder(view);
     }
 
-    public void updateList(List<Task> taskList, DocumentChange.Type updateType, Task task) {
-        Log.e(TAG, "updateList: data size" + this.taskList.size());
-
+    public void notifyTaskAdded(List<Task> taskList) {
         this.taskList.clear();
         this.taskList.addAll(taskList);
+        notifyDataSetChanged();
+        notifyItemInserted(taskList.size() - 1);
+    }
 
-        if (updateType == null) {
-            notifyDataSetChanged();
-            return;
-        }
-
-        switch (updateType) {
-            case ADDED:
-                notifyItemInserted(taskList.size() - 1);
-                break;
-            /*case REMOVED:
-                notifyItemRemoved(task.getTaskSize());
-                break;
-            case MODIFIED:
-                notifyDataSetChanged();
-                break;*/
+    public void notifyTaskRemoved(Task task) {
+        for (int i = 0 ; i < this.taskList.size() ; i++) {
+            if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
+                notifyItemRemoved(i);
+                this.taskList.remove(i);
+            }
         }
     }
 
@@ -108,7 +108,6 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         h.tvTaskName.setText(task.getName());
 
-        h.ivCheck.getDrawable().setColorFilter(context.getResources().getColor(R.color.grey3), PorterDuff.Mode.SRC_ATOP);
 
         if (task.getBucketColor() != null) {
             //h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
@@ -128,6 +127,39 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         if (task.getSubTasks() != null && !task.getSubTasks().isEmpty()) {
             h.ivSubtasks.setVisibility(View.VISIBLE);
         }
+
+        if (task.getBucketId() != null) {
+            switch (BucketColors.valueOf(task.getBucketColor())) {
+                case Red:
+                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_red);
+                    break;
+                case Green:
+                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_green);
+                    break;
+                case SkyBlue:
+                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_skyblue);
+                    break;
+                case InkBlue:
+                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_inkblue);
+                    break;
+                case Orange:
+                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_orange);
+                    break;
+            }
+        } else {
+            h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
+        }
+
+        h.lottieCheckView.addValueCallback(
+                new KeyPath("Shape Layer 1", "**"),
+                LottieProperty.COLOR_FILTER,
+                new SimpleLottieValueCallback<ColorFilter>() {
+                    @Override
+                    public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
+                        return new PorterDuffColorFilter(getColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+        );
 
         h.lottieCheckView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,5 +244,36 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             lottieCheckView.setAnimation("anim_check2.json");
         }
 
+    }
+
+    public int getColor(String colors) {
+
+        if (colors == null) {
+            return  context.getResources().getColor(R.color.grey4);
+        }
+
+        BucketColors colors1 = BucketColors.valueOf(colors);
+
+        int color = R.color.grey4;
+        switch (colors1) {
+            case Red:
+                color = R.color.lightRed;
+                break;
+            case Green:
+                color = R.color.green;
+                break;
+            case Orange:
+                color = R.color.orange;
+                break;
+            case SkyBlue:
+                color = R.color.skyblue;
+                break;
+            case InkBlue:
+                color = R.color.inkBlue;
+                break;
+
+        }
+
+        return context.getResources().getColor(color);
     }
 }

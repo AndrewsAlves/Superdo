@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,9 +18,14 @@ import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
 import com.andysapps.superdo.todo.enums.BucketColors
+import com.andysapps.superdo.todo.enums.BucketUpdateType
+import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.DeleteTaskEvent
+import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent
+import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
 import com.andysapps.superdo.todo.manager.FirestoreManager
+import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus
@@ -72,6 +78,7 @@ class EditTaskFragment : Fragment() {
     private fun initUi() {
 
         editTask_et_taskName.imeOptions = EditorInfo.IME_ACTION_DONE
+        editTask_et_taskName.setRawInputType(InputType.TYPE_CLASS_TEXT)
 
         editTask_et_taskName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
@@ -162,14 +169,17 @@ class EditTaskFragment : Fragment() {
 
     private fun initClicks() {
 
+        ///// DELETE task
         editTask_deleteTask.setOnClickListener {
-            DeleteTaskDialog().show(fragmentManager!!, "deleteTask")
+            DeleteTaskDialog().show(fragmentManager!!, "deleteBucket")
         }
 
+        ///// Close Fragment
         editTask_close.setOnClickListener {
             if (shouldUpdate()) {
                 FirestoreManager.getInstance().updateTask(task)
             }
+            fragmentManager!!.popBackStack()
             EventBus.getDefault().post(RemoveFragmentEvents())
         }
     }
@@ -189,9 +199,11 @@ class EditTaskFragment : Fragment() {
     @Subscribe
     fun onMessageEvent(event : DeleteTaskEvent) {
         if (event.isPositive) {
-            task.isDeleted = true
-            FirestoreManager.getInstance().updateTask(task);
-            EventBus.getDefault().post(RemoveFragmentEvents())
+            TaskOrganiser.getInstance().deleteTask(task)
+            fragmentManager!!.popBackStack()
+            EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Added, task))
+
+            //EventBus.getDefault().post(RemoveFragmentEvents())
         }
     }
 

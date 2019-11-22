@@ -10,6 +10,6 @@ public enum  BucketColors {
     Green,
     SkyBlue,
     InkBlue,
-    Orange;
+    Orange
 
 }

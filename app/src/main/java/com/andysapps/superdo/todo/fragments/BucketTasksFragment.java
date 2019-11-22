@@ -211,7 +211,6 @@ public class BucketTasksFragment extends Fragment {
     @OnClick(R.id.ib_bucketList)
     public void clickBucket() {
         EventBus.getDefault().post(new OpenFragmentEvent(new BucketFragment(), true));
-        EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_BUCKET));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

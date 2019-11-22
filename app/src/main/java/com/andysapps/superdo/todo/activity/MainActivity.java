@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         EditTaskFragment fragment = EditTaskFragment.Companion.instance(event.getTask());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fl_fragment_container, fragment);
+        ft.addToBackStack(fragment.getClass().getName());
         ft.commitAllowingStateLoss(); // save the changes
     }
 
@@ -220,8 +221,5 @@ public class MainActivity extends AppCompatActivity {
     public void onMessageEvent(OpenBottomFragmentEvent event) {
        event.getFragment().show(getSupportFragmentManager(), event.getFragment().getClass().getName());
     }
-
-
-
 
 }

@@ -9,7 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.enums.BucketUpdateType
+import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.DeleteTaskEvent
+import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent
+import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import kotlinx.android.synthetic.main.fragment_delete_task_dialog.*
 import org.greenrobot.eventbus.EventBus
 

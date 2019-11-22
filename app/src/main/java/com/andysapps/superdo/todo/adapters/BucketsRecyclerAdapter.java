@@ -1,14 +1,11 @@
 package com.andysapps.superdo.todo.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,22 +13,14 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.dialog.BucketBottomDialog;
+import com.andysapps.superdo.todo.dialog.BucketActionBottomDialog;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
-import com.andysapps.superdo.todo.enums.BucketUpdateType;
-import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
-import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
-import com.andysapps.superdo.todo.fragments.AddBucketFragment;
-import com.andysapps.superdo.todo.fragments.BucketTasksFragment;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
-import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
-import com.andysapps.superdo.todo.model.Task;
-import com.google.firebase.firestore.DocumentChange;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -157,7 +146,7 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
         holder.parentView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                EventBus.getDefault().post(new OpenBottomFragmentEvent(BucketBottomDialog.Companion.instance(bucket)));
+                EventBus.getDefault().post(new OpenBottomFragmentEvent(BucketActionBottomDialog.Companion.instance(bucket)));
                 return true;
             }
         });

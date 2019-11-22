@@ -20,7 +20,10 @@ import android.widget.TextView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback;
 import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
+import com.andysapps.superdo.todo.enums.BucketUpdateType;
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.enums.TaskUpdateType;
+import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
@@ -131,12 +134,6 @@ public class TodayFragment extends Fragment {
         adapter.updateList(taskList);
     }
 
-
-    public void updateList(Task task, DocumentChange.Type chageType) {
-        taskList = TaskOrganiser.getInstance().getTasks(listing);
-        adapter.updateList(taskList, chageType, task);
-    }
-
     @OnClick(R.id.btn_today)
     public void clickToday() {
         listing = TaskListing.TODAY;
@@ -162,8 +159,15 @@ public class TodayFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskUpdatedEvent event) {
-        if (event.getTask().getListedIn() == listing){
-            updateList(event.getTask(), event.getDocumentChange());
+
+        if (event.getTask().getListedIn() == listing) {
+            if (event.getDocumentChange() == TaskUpdateType.Added) {
+                adapter.notifyTaskAdded(TaskOrganiser.getInstance().getTasks(listing));
+            } else if (event.getDocumentChange() == TaskUpdateType.Deleted){
+                adapter.notifyTaskRemoved(event.getTask());
+            } else {
+                adapter.updateList(TaskOrganiser.getInstance().getTasks(listing));
+            }
         } else {
             listing = event.getTask().getListedIn();
             updateUi();

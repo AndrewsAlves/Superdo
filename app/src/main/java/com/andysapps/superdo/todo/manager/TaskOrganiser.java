@@ -47,8 +47,6 @@ public class TaskOrganiser {
 
         HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
 
-        allTaskList.addAll(FirestoreManager.getInstance().getHasMapTask().values());
-
         if (allTasks == null) {
             return;
         }
@@ -57,7 +55,11 @@ public class TaskOrganiser {
 
         for (Task task : allTasks.values()) {
 
-            if (task.isDeleted()) continue;
+            if (task.isDeleted()) {
+                continue;
+            }
+
+            allTaskList.add(task);
 
             if (task.getListedIn() == TaskListing.TODAY) {
                 todayTaskList.add(task);
@@ -222,11 +224,19 @@ public class TaskOrganiser {
         return tasksDoneCount;
     }
 
-    public void deleteTask(Bucket bucket) {
+    public void deleteBucket(Bucket bucket) {
         if (FirestoreManager.getInstance().getHasMapBucket().containsKey(bucket.getDocumentId())) {
             Bucket bucket1 = FirestoreManager.getInstance().getHasMapBucket().get(bucket.getDocumentId());
             bucket1.setDeleted(true);
             FirestoreManager.getInstance().updateBucket(bucket1);
+        }
+    }
+
+    public void deleteTask(Task task) {
+        if (FirestoreManager.getInstance().getHasMapTask().containsKey(task.getDocumentId())) {
+            Task task1 = FirestoreManager.getInstance().getHasMapTask().get(task.getDocumentId());
+            task1.setDeleted(true);
+            FirestoreManager.getInstance().updateTask(task1);
         }
     }
 }

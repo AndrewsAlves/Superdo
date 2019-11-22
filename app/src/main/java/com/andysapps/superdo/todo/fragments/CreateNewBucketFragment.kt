@@ -2,18 +2,16 @@ package com.andysapps.superdo.todo.fragments
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.activity.MainActivity
 import com.andysapps.superdo.todo.enums.BucketColors
 import com.andysapps.superdo.todo.enums.BucketType
 import com.andysapps.superdo.todo.enums.MoonButtonType
 import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent
-import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.Bucket
 import kotlinx.android.synthetic.main.fragment_create_bucket.*
@@ -62,6 +60,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
 
     override fun onDestroyView() {
         EventBus.getDefault().unregister(this)
+        MainActivity.moonButtonType = MoonButtonType.ADD_BUCKET
         super.onDestroyView()
     }
 
