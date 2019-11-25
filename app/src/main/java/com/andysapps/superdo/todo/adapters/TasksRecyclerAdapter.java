@@ -28,6 +28,7 @@ import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.firebase.firestore.DocumentChange;
@@ -204,12 +205,17 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 Collections.swap(taskList, i, i - 1);
             }
         }
+
+        Log.e(TAG, "onItemMove: from : " + fromPosition);
+        taskList.get(toPosition).setTaskIndex(toPosition);
+        TaskOrganiser.getInstance().organiseAllTasks();
+        FirestoreManager.getInstance().updateTask( taskList.get(toPosition));
         notifyItemMoved(fromPosition, toPosition);
     }
 
     @Override
     public void onItemDismiss(int position) {
-
+        Log.e(TAG, "onItemDismiss: " + position );
     }
 
     public class PlaceViewHolder extends RecyclerView.ViewHolder {

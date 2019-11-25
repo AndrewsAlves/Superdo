@@ -224,6 +224,10 @@ public class TaskOrganiser {
         return tasksDoneCount;
     }
 
+    //////////////////////////////////////
+    /////// TASK UPDATES
+    //////////////////////////////////////
+
     public void deleteBucket(Bucket bucket) {
         if (FirestoreManager.getInstance().getHasMapBucket().containsKey(bucket.getDocumentId())) {
             Bucket bucket1 = FirestoreManager.getInstance().getHasMapBucket().get(bucket.getDocumentId());
@@ -236,6 +240,7 @@ public class TaskOrganiser {
         if (FirestoreManager.getInstance().getHasMapTask().containsKey(task.getDocumentId())) {
             Task task1 = FirestoreManager.getInstance().getHasMapTask().get(task.getDocumentId());
             task1.setDeleted(true);
+            organiseAllTasks();
             FirestoreManager.getInstance().updateTask(task1);
         }
     }

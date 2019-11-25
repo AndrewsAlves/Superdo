@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.activity.MainActivity
 import com.andysapps.superdo.todo.enums.BucketColors
 import com.andysapps.superdo.todo.enums.BucketType
 import com.andysapps.superdo.todo.enums.MoonButtonType
+import com.andysapps.superdo.todo.events.UpdateMoonButtonType
+import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent
 import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.Bucket
@@ -47,7 +50,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         EventBus.getDefault().register(this)
-        MainActivity.moonButtonType = MoonButtonType.SAVE_BUCKET
+        EventBus.getDefault().post(UpdateMoonButtonType(MoonButtonType.SAVE_BUCKET))
         initUi()
         if (!isEditing) {
             bucket.tagColor = BucketColors.Red.name
@@ -55,12 +58,13 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         } else {
             et_create_bucket_name.setText(bucket.name)
         }
+        Utils.showSoftKeyboard(context, et_create_bucket_name)
         updateUI()
     }
 
     override fun onDestroyView() {
         EventBus.getDefault().unregister(this)
-        MainActivity.moonButtonType = MoonButtonType.ADD_BUCKET
+        EventBus.getDefault().post(UpdateMoonButtonType(MoonButtonType.ADD_BUCKET))
         super.onDestroyView()
     }
 
@@ -181,6 +185,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
             bucket.created = Calendar.getInstance().time
             if (isEditing) {
                 FirestoreManager.getInstance().updateBucket(bucket)
+                EventBus.getDefault().post(UpdateBucketTasksEvent())
             } else {
                 FirestoreManager.getInstance().uploadBucket(bucket)
             }

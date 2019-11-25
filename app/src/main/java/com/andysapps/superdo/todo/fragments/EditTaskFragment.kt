@@ -201,8 +201,7 @@ class EditTaskFragment : Fragment() {
         if (event.isPositive) {
             TaskOrganiser.getInstance().deleteTask(task)
             fragmentManager!!.popBackStack()
-            EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Added, task))
-
+            EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Deleted, task))
             //EventBus.getDefault().post(RemoveFragmentEvents())
         }
     }

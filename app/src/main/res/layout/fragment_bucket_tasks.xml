@@ -32,28 +32,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:visibility="gone"
-                android:id="@+id/et_bucket_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
-                android:textSize="28sp"
-                android:hint="Name"
-                android:ellipsize="end"
-                android:minLines="1"
-                android:maxLines="1"
-                android:inputType="text"
-                android:scrollHorizontally="true"
-                android:imeOptions="actionDone"
-                android:textColorHint="@color/grey1"
-                android:background="@null"
-                android:textColor="@color/lightOrange"
-                android:layout_marginStart="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/tv_save"
                 android:layout_width="wrap_content"
@@ -70,13 +48,13 @@
 
             <ImageButton
                 android:visibility="visible"
-                android:id="@+id/ib_profile"
+                android:id="@+id/ib_edit_bucket"
                 style="@style/ripple_background"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginEnd="30dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_profile"
+                android:scaleType="center"
+                android:src="@drawable/ic_edit"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/ib_bucketList"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -116,6 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
+            android:focusableInTouchMode="true"
             android:layout_marginBottom="40dp">
 
             <ImageView
@@ -132,7 +111,6 @@
                 android:hint="About your Bucket or Project"
                 android:textColorHint="@color/grey2"
                 android:textSize="14sp"
-                android:inputType="textNoSuggestions"
                 android:layout_marginStart="45dp"
                 android:maxLines="20"
                 android:fontFamily="@font/montserrat_regular"/>

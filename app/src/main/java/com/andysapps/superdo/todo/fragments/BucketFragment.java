@@ -20,6 +20,7 @@ import com.andysapps.superdo.todo.enums.BucketUpdateType;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.ClickBucketEvent;
 import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
+import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
@@ -64,7 +65,7 @@ public class BucketFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_bucket, container, false);
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
-        MainActivity.moonButtonType = MoonButtonType.ADD_BUCKET;
+        EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_BUCKET));
 
         bucketList = new ArrayList<>();
         bucketList.addAll(TaskOrganiser.getInstance().bucketList);
@@ -82,7 +83,7 @@ public class BucketFragment extends Fragment {
     @Override
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
-        MainActivity.moonButtonType = MoonButtonType.ADD_TASK;
+        EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
         super.onDestroyView();
     }
 
