@@ -64,7 +64,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
 
     override fun onDestroyView() {
         EventBus.getDefault().unregister(this)
-        EventBus.getDefault().post(UpdateMoonButtonType(MoonButtonType.ADD_BUCKET))
+        EventBus.getDefault().post(UpdateMoonButtonType(MoonButtonType.ADD_TASK))
         super.onDestroyView()
     }
 

@@ -188,20 +188,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         }
 
        if (task.getDoDate() != null) {
-           int hours = task.getDoDate().getHours();
-           String meridien = " am";
-
-           if (task.getDoDate().getHours() > 12) {
-               hours = task.getDoDate().getHours() - 12;
-               meridien = " pm";
-           }
-
-           // format to two decimal
-           String hour =  new DecimalFormat("00").format(hours);
-           String min =  new DecimalFormat("00").format(task.getDoDate().getMinutes());
-           String time = hour + ":" + min + meridien;
-
-           tvTime.setText(time);
+           tvTime.setText(task.getTimeString());
            ivTime.setImageResource(Utils.getTimeIcon(task.getDoDate().getHours()));
        } else {
            tvTime.setText("No Time");
@@ -315,9 +302,6 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @OnClick(R.id.btn_buckets)
     public void clickBuckets() {
         etTaskName.clearFocus();
-        SelectBucketDialogFragment fragment = new SelectBucketDialogFragment();
-
-
         new SelectBucketDialogFragment().show(getFragmentManager(), SelectBucketDialogFragment.class.getName());
     }
 
@@ -351,21 +335,26 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         SuperDate date = new SuperDate(dayOfMonth, monthOfYear + 1, year);
-        task.setDoDate(date);
+        if (task.getDoDate() != null) {
+            task.getDoDate().setDoDate(dayOfMonth, monthOfYear + 1, year);
+        } else {
+            task.setDoDate(date);
+        }
         updateUi();
-
-
-
-        Utils.showSoftKeyboard(getContext(), etTaskName);
+        showKeyboradAsync();
     }
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        SuperDate time = new SuperDate(hourOfDay, minute);
+        if (task.getDoDate() != null) {
+            task.getDoDate().setTime(hourOfDay, minute);
+        } else {
+            task.setDoDate(time);
+        }
         isTimeSet = true;
-        task.getDoDate().setTime(hourOfDay, minute);
         updateUi();
-
-        Utils.showSoftKeyboard(getContext(), etTaskName);
+        showKeyboradAsync();
     }
 
     /////////////

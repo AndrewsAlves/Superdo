@@ -5,6 +5,7 @@ import com.andysapps.superdo.todo.enums.TaskListing;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -268,15 +269,19 @@ public class Task implements Cloneable {
             return "No Time";
         }
 
-        String timeString;
+        int hours = doDate.hours;
+        String meridien = " am";
 
-        if (doDate.hours > 12) {
-            timeString = doDate.hours + " : " + doDate.minutes + " pm";
-        } else {
-            timeString = doDate.hours + " : " + doDate.minutes + " am";
+        if (hours > 12) {
+            hours = doDate.hours - 12;
+            meridien = " pm";
         }
 
-        return timeString;
+        // format to two decimal
+        String hour =  new DecimalFormat("00").format(hours);
+        String min =  new DecimalFormat("00").format(doDate.minutes);
+
+        return hour + ":" + min + meridien;
     }
 
 }

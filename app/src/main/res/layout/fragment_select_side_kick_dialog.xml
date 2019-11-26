@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="250dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".dialog.SelectSideKickDialog">
+
+    <LinearLayout
+        android:id="@+id/sk_btn_remind"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:visibility="visible"
+            android:scaleType="center"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_sk_remind"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Remind"
+            android:textSize="12sp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/grey3"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_sk_remind_sel"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:visibility="visible"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_sk_checked"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sk_btn_subtasks"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:visibility="visible"
+            android:scaleType="center"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_sk_subtasks"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Subtasks"
+            android:textSize="12sp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/grey3"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_sk_subtasks_sel"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:visibility="gone"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_sk_checked"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sk_btn_focus"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:visibility="visible"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_sk_focus"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Focus 30 60 90"
+            android:textSize="12sp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/grey3"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_sk_focus_sel"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:visibility="gone"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_sk_checked"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/sk_btn_task_type"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:visibility="visible"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_sk_deadline"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Deadline"
+            android:textSize="12sp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/grey3"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_sk_task_type_sel"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:visibility="gone"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_sk_checked"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sk_btn_contact_card"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:visibility="visible"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_sk_contact"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Contact card"
+            android:textSize="12sp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/grey3"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_sk_remind_contact_card"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:visibility="gone"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_sk_checked"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/sk_btn_location"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:visibility="visible"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_sk_location"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            android:textSize="12sp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/grey3"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_sk_location_sel"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:visibility="gone"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_sk_checked"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/sk_b_negative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="cancel"
+            style="@style/ripple_background_bordered"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/lightRed" />
+
+        <Button
+            android:id="@+id/sk_b_possitive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ripple_background_bordered"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="Ok"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/lightRed" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

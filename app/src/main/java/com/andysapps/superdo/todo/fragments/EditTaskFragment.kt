@@ -1,8 +1,6 @@
 package com.andysapps.superdo.todo.fragments
 
 
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -17,25 +15,31 @@ import butterknife.ButterKnife
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
+import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
 import com.andysapps.superdo.todo.enums.BucketColors
-import com.andysapps.superdo.todo.enums.BucketUpdateType
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.DeleteTaskEvent
-import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent
+import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
+import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.Task
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import java.util.*
 
 
 /**
  * A simple [Fragment] subclass.
  */
-class EditTaskFragment : Fragment() {
+
+class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
 
     val TAG : String = "EditTaskFragment"
@@ -169,6 +173,18 @@ class EditTaskFragment : Fragment() {
 
     private fun initClicks() {
 
+        editTask_rl_btn_do_date.setOnClickListener {
+            showDatePicker()
+        }
+
+        editTask_rl_btn_time.setOnClickListener {
+            showTimePicker()
+        }
+
+        editTask_rl_btn_select_bucket.setOnClickListener {
+            SelectBucketDialogFragment().show(fragmentManager!!, SelectBucketDialogFragment().javaClass.name)
+        }
+
         ///// DELETE task
         editTask_deleteTask.setOnClickListener {
             DeleteTaskDialog().show(fragmentManager!!, "deleteBucket")
@@ -184,6 +200,52 @@ class EditTaskFragment : Fragment() {
         }
     }
 
+    fun showDatePicker() {
+        val now = Calendar.getInstance()
+        var day = now.get(Calendar.DAY_OF_MONTH)
+        var month = now.get(Calendar.MONTH)
+        var year = now.get(Calendar.YEAR)
+
+        if (task.doDate != null) {
+            day = task.doDate.date
+            month = task.doDate.month
+            year = task.doDate.year
+        }
+
+        val dpd = DatePickerDialog.newInstance(
+                this,
+                year,
+                month - 1,
+                day
+        )
+
+        dpd.accentColor = resources.getColor(R.color.lightRed)
+        dpd.minDate = Utils.getStartDate()
+        dpd.maxDate = Utils.getEndDate()
+        dpd.show(fragmentManager!!, "Datepickerdialog")
+    }
+
+    fun showTimePicker() {
+
+        var now = Calendar.getInstance()
+        var hours : Int = now.get(Calendar.HOUR)
+        var min : Int = now.get(Calendar.MINUTE)
+
+        if (task.doDate != null) {
+            hours = task.doDate.hours
+            min = task.doDate.minutes
+        }
+
+        var dpd = TimePickerDialog.newInstance(
+                this,
+                hours,
+                min,
+                false)
+
+        dpd.accentColor = resources.getColor(R.color.lightRed)
+        dpd.show(fragmentManager!!, "Datepickerdialog")
+    }
+
     private fun shouldUpdate() : Boolean {
         if (task.name.isEmpty()) {
             task.name = nonEditedTask.name
@@ -191,6 +253,27 @@ class EditTaskFragment : Fragment() {
         }
         return false
     }
+
+    override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        val date = SuperDate(dayOfMonth, monthOfYear + 1, year)
+        if (task.doDate != null) {
+            task.doDate.setDoDate(dayOfMonth, monthOfYear + 1, year)
+        } else {
+            task.doDate = date
+        }
+        updateUi()
+    }
+
+    override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
+        val time = SuperDate(hourOfDay, minute)
+        if (task.doDate != null) {
+            task.doDate.setTime(hourOfDay, minute)
+        } else {
+            task.doDate = time
+        }
+        updateUi()
+    }
+
 
     ///////////
     /// EVENTS
@@ -205,5 +288,14 @@ class EditTaskFragment : Fragment() {
             //EventBus.getDefault().post(RemoveFragmentEvents())
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: SelectBucketEvent) {
+        task.bucketColor = event.bucket.tagColor
+        task.bucketId = event.bucket.documentId
+        task.bucketName = event.bucket.name
+        updateUi()
+    }
+
 
 }

@@ -129,9 +129,10 @@
             android:layout_marginBottom="-25dp">
 
             <ImageView
+                android:id="@+id/iv_moonbutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_add"
+                android:src="@drawable/ic_mb_add_task"
                 android:layout_margin="40dp"/>
 
         </RelativeLayout>

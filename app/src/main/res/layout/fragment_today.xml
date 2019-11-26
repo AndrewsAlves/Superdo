@@ -21,8 +21,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
-                android:text="Good Morning"
-                android:textSize="28sp"
+                android:text="Good Morning, Andy"
+                android:textSize="22sp"
                 android:textColor="@color/lightRed"
                 android:layout_marginStart="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +32,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="@+id/tv_todaytitle"
@@ -74,6 +73,7 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:visibility="gone"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="40dp"

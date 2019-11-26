@@ -37,6 +37,11 @@ public class SuperDate {
         this.year = year;
     }
 
+    public SuperDate(int hours, int minutes) {
+        this.hours = hours;
+        this.minutes = minutes;
+    }
+
     public int getHours() {
         return hours;
     }
@@ -59,6 +64,12 @@ public class SuperDate {
 
     public void setDate(int date) {
         this.date = date;
+    }
+
+    public void setDoDate(int date, int month, int year) {
+        this.setDate(date);
+        this.setMonth(month);
+        this.setYear(year);
     }
 
     public int getMonth() {

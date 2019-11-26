@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.tv_today_msg)
     TextView tvMsg;
+
+    @BindView(R.id.iv_moonbutton)
+    ImageView moonButton;
 
     @BindView(R.id.pulseLayout)
     RipplePulseRelativeLayout rippleBackground;
@@ -167,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         onMessageEvent(new RemoveFragmentEvents()); // occupied fragments
     }
 
-
     //////////////////////
     /////// EVENTS
     /////////////////////
@@ -194,6 +197,20 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateMoonButtonType event) {
         this.moonButtonType = event.moonButtonType;
+
+        switch (moonButtonType) {
+            case ADD_TASK:
+                moonButton.setImageResource(R.drawable.ic_mb_add_task);
+                break;
+            case ADD_BUCKET:
+                moonButton.setImageResource(R.drawable.ic_add_bucket);
+                break;
+            case SAVE_BUCKET:
+                moonButton.setImageResource(R.drawable.ic_tick_create_bucket);
+                break;
+        }
+
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
