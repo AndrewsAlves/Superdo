@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 
 import com.andysapps.superdo.todo.R
+import kotlinx.android.synthetic.main.fragment_select_side_kick_dialog.*
 
 /**
  * A simple [Fragment] subclass.
@@ -23,6 +24,14 @@ class SelectSideKickDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        sk_b_possitive.setOnClickListener {
+
+        }
+
+        sk_b_negative.setOnClickListener {
+            dismiss()
+        }
     }
 
 

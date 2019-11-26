@@ -340,6 +340,7 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/editTask_btn_add_sidekicks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"

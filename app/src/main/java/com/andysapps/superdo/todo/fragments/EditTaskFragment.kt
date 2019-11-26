@@ -16,6 +16,7 @@ import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
+import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
 import com.andysapps.superdo.todo.enums.BucketColors
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.DeleteTaskEvent
@@ -188,6 +189,10 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         ///// DELETE task
         editTask_deleteTask.setOnClickListener {
             DeleteTaskDialog().show(fragmentManager!!, "deleteBucket")
+        }
+
+        editTask_btn_add_sidekicks.setOnClickListener {
+            SelectSideKickDialog().show(fragmentManager!!, SelectSideKickDialog().javaClass.name)
         }
 
         ///// Close Fragment

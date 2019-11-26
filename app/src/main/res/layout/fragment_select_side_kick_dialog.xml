@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="250dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".dialog.SelectSideKickDialog">
 
@@ -112,7 +112,6 @@
             android:src="@drawable/ic_sk_checked"/>
 
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/sk_btn_task_type"
