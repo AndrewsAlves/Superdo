@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginBottom="70dp"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp">
 
@@ -64,224 +65,9 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="40dp">
-
-            <ImageView
-                android:id="@+id/editTask_iv_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:src="@drawable/ic_desc" />
-
-            <EditText
-                android:id="@+id/editTask_et_desc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="45dp"
-                android:background="@android:color/transparent"
-                android:fontFamily="@font/montserrat_regular"
-                android:hint="About your task"
-                android:maxLines="20"
-                android:textSize="14sp" />
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="40dp">
-
-            <RelativeLayout
-                android:id="@+id/editTask_rl_btn_do_date"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:id="@+id/editTask_iv_do_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_calender_mini" />
-
-                <TextView
-                    android:id="@+id/editTask_tv_do_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="45dp"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:maxLines="1"
-                    android:text="No Date"
-                    android:textColor="@color/grey2" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/editTask_rl_btn_time"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:id="@+id/editTask_iv_do_time"
-                    android:layout_width="23dp"
-                    android:layout_height="23dp"
-                    android:src="@drawable/ic_time_off" />
-
-                <TextView
-                    android:id="@+id/editTask_tv_do_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="45dp"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:maxLines="1"
-                    android:text="No Time"
-                    android:textColor="@color/grey2" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="40dp">
-
-            <RelativeLayout
-                android:id="@+id/editTask_rl_btn_select_bucket"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:id="@+id/editTask_iv_bucket"
-                    android:layout_width="23dp"
-                    android:layout_height="23dp"
-                    android:scaleType="center"
-                    android:src="@drawable/img_oval_light_red_mini" />
-
-                <TextView
-                    android:id="@+id/editTask_tv_bucketName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="45dp"
-                    android:layout_marginEnd="10dp"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:maxLines="1"
-                    android:text="Bucket"
-                    android:textColor="@color/grey2" />
-
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/editTask_rl_btn_repeat"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/editTask_iv_repeat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_repeat_off" />
-
-                <TextView
-                    android:id="@+id/editTask_tv_repeat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="45dp"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:maxLines="1"
-                    android:text="Repeat"
-                    android:textColor="@color/grey2" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="40dp"
-            android:visibility="gone">
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <CheckBox
-                    android:id="@+id/editTask_cb_remind"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/editTask_tv_remind"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="45dp"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:maxLines="1"
-                    android:text="Remind"
-                    android:textColor="@color/grey2" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:id="@+id/editTask_iv_priority"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_priority_low" />
-
-                <TextView
-                    android:id="@+id/editTask_tv_priority"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="45dp"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:maxLines="1"
-                    android:text="Priority low"
-                    android:textColor="@color/grey2" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -291,92 +77,446 @@
                 android:layout_marginEnd="40dp">
 
                 <ImageView
-                    android:id="@+id/editTask_iv_subtasks"
+                    android:id="@+id/editTask_iv_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_sub_tasks_off" />
+                    android:layout_marginTop="3dp"
+                    android:src="@drawable/ic_desc" />
 
-                <TextView
-                    android:id="@+id/editTask_tv_subtasks"
+                <EditText
+                    android:id="@+id/editTask_et_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="45dp"
+                    android:background="@android:color/transparent"
                     android:fontFamily="@font/montserrat_regular"
-                    android:text="Sub Tasks"
+                    android:hint="About your task"
+                    android:maxLines="20"
                     android:textSize="14sp" />
 
             </RelativeLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/editTask_rv_subtasks"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
-                android:layout_marginTop="20dp" />
+            <!-- BUCKET UI -->
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
-                android:layout_marginTop="10dp">
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="40dp">
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/ic_add_task" />
+                <RelativeLayout
+                    android:id="@+id/editTask_rl_btn_select_bucket"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
 
-                <TextView
-                    android:id="@+id/tv_tasks_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="Add subtask"
-                    android:textColor="@color/grey2"
-                    android:textSize="16sp" />
+                    <ImageView
+                        android:id="@+id/editTask_iv_bucket"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:scaleType="center"
+                        android:src="@drawable/img_oval_light_red" />
+
+                    <TextView
+                        android:id="@+id/editTask_tv_bucketName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="45dp"
+                        android:layout_marginEnd="10dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:maxLines="1"
+                        android:textSize="16sp"
+                        android:text="Bucket Name"
+                        android:textColor="@color/grey4" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/editTask_btn_add_sidekicks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="40dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_add_sidekick"/>
-
-            <TextView
-                android:id="@+id/editTask_tv_add_sidekick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add Sidekicks"
-                android:fontFamily="@font/montserrat_medium"
-                android:textColor="@color/grey3"
-                android:layout_marginStart="40dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sidekicks are tools like reminder, Subtasks etc"
-                android:fontFamily="@font/montserrat_regular"
-                android:textColor="@color/grey2"
                 android:layout_marginStart="40dp"
-                android:layout_marginTop="-3dp"
-                android:textSize="12sp"
-                android:layout_below="@id/editTask_tv_add_sidekick"/>
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="40dp">
+
+                <RelativeLayout
+                    android:id="@+id/editTask_rl_btn_do_date"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/editTask_iv_do_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_calender_mini" />
+
+                    <TextView
+                        android:id="@+id/editTask_tv_do_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="45dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:maxLines="1"
+                        android:text="Do Someday..."
+                        android:textSize="16sp"
+                        android:textColor="@color/grey2" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <!-- REPEAT -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="40dp">
+
+                <LinearLayout
+                    android:id="@+id/editTask_rl_btn_repeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/editTask_iv_repeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_calender_mini" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/editTask_tv_repeat_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:maxLines="1"
+                            android:text="Repeat Task"
+                            android:textSize="12sp"
+                            android:textColor="@color/grey2" />
+
+                        <TextView
+                            android:id="@+id/editTask_tv_repeat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:maxLines="1"
+                            android:text="No Recurrence"
+                            android:textSize="16sp"
+                            android:textColor="@color/grey4" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- REMIND -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="40dp">
+
+                <LinearLayout
+                    android:id="@+id/editTask_rl_btn_remind"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/editTask_iv_remind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_calender_mini" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/editTask_tv_remind_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:maxLines="1"
+                            android:text="Will Remind you"
+                            android:textSize="12sp"
+                            android:textColor="@color/grey2" />
+
+                        <TextView
+                            android:id="@+id/editTask_tv_remind"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:maxLines="1"
+                            android:text="When to remind ?"
+                            android:textSize="16sp"
+                            android:textColor="@color/grey4" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- DEADLINE  -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="40dp">
+
+                <LinearLayout
+                    android:id="@+id/editTask_rl_btn_deadline"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/editTask_iv_deadline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_calender_mini" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/editTask_tv_deadline_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:maxLines="1"
+                            android:text="Deadline on"
+                            android:textSize="12sp"
+                            android:textColor="@color/grey2" />
+
+                        <TextView
+                            android:id="@+id/editTask_tv_deadline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:maxLines="1"
+                            android:text="No Deadline"
+                            android:textSize="16sp"
+                            android:textColor="@color/grey4" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
 
-        </RelativeLayout>
+            <!-- SUBTASKS -->
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="25dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:visibility="visible">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/editTask_iv_subtasks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_subtasks" />
+
+                    <TextView
+                        android:id="@+id/editTask_tv_subtasks"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="45dp"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:text="Sub Tasks"
+                        android:textSize="14sp" />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/editTask_rv_subtasks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="80dp"
+                    android:layout_marginTop="20dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="80dp"
+                    android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/ic_add_task" />
+
+                    <TextView
+                        android:id="@+id/tv_tasks_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:text="Add subtask"
+                        android:textColor="@color/grey2"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- FOCUS MODE -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="40dp">
+
+                <LinearLayout
+                    android:id="@+id/editTask_rl_btn_focus"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/editTask_iv_focus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_calender_mini" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/editTask_tv_focus_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:maxLines="1"
+                            android:text="Focus Mode"
+                            android:textSize="16sp"
+                            android:textColor="@color/grey4" />
+
+                        <TextView
+                            android:id="@+id/editTask_tv_focus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:maxLines="1"
+                            android:text="Start focusing on this project for 30, 40, 90 min"
+                            android:textSize="12sp"
+                            android:textColor="@color/grey2" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:background="@drawable/bg_capsul_gradient"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="40dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Start Focus"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/montserrat_medium"/>
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/editTask_btn_add_sidekicks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_add_sidekick"/>
+
+                <TextView
+                    android:id="@+id/editTask_tv_add_sidekick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Sidekicks"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="@color/grey3"
+                    android:layout_marginStart="40dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sidekicks are tools like reminder, Subtasks etc"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textColor="@color/grey2"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="-3dp"
+                    android:textSize="12sp"
+                    android:layout_below="@id/editTask_tv_add_sidekick"/>
+
+
+            </RelativeLayout>
+
+        </ScrollView>
 
     </LinearLayout>
-
 
 
     <TextView
