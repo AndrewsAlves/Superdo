@@ -7,9 +7,10 @@
     tools:context=".dialog.SelectSideKickDialog">
 
     <LinearLayout
-        android:id="@+id/sk_btn_remind"
+        android:id="@+id/sk_btn_deadline"
         android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
@@ -17,27 +18,26 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:visibility="visible"
-            android:scaleType="center"
             android:layout_marginStart="20dp"
-            android:src="@drawable/ic_sk_remind"/>
+            android:src="@drawable/ic_sk_deadline"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Remind"
-            android:textSize="12sp"
-            android:fontFamily="@font/montserrat_medium"
+            android:text="Deadline"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_regular"
             android:textColor="@color/grey3"
             android:layout_marginStart="20dp" />
 
         <ImageView
-            android:id="@+id/iv_sk_remind_sel"
+            android:id="@+id/iv_sk_deadline_sel"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:visibility="visible"
-            android:layout_marginEnd="20dp"
+            android:visibility="gone"
             android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:src="@drawable/ic_sk_checked"/>
 
     </LinearLayout>
@@ -62,8 +62,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Subtasks"
-            android:textSize="12sp"
-            android:fontFamily="@font/montserrat_medium"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_regular"
             android:textColor="@color/grey3"
             android:layout_marginStart="20dp" />
 
@@ -77,6 +77,43 @@
             android:src="@drawable/ic_sk_checked"/>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sk_btn_remind"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="250dp"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:visibility="visible"
+            android:scaleType="center"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_sk_remind"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Remind"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/grey3"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_sk_remind_sel"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:visibility="gone"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_sk_checked"/>
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/sk_btn_focus"
@@ -97,8 +134,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Focus 30 60 90"
-            android:textSize="12sp"
-            android:fontFamily="@font/montserrat_medium"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_regular"
             android:textColor="@color/grey3"
             android:layout_marginStart="20dp" />
 
@@ -113,40 +150,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/sk_btn_task_type"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:visibility="visible"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_sk_deadline"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Deadline"
-            android:textSize="12sp"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/grey3"
-            android:layout_marginStart="20dp" />
-
-        <ImageView
-            android:id="@+id/iv_sk_task_type_sel"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:visibility="gone"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/ic_sk_checked"/>
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/sk_btn_contact_card"
@@ -167,13 +170,13 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Contact card"
-            android:textSize="12sp"
-            android:fontFamily="@font/montserrat_medium"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_regular"
             android:textColor="@color/grey3"
             android:layout_marginStart="20dp" />
 
         <ImageView
-            android:id="@+id/iv_sk_remind_contact_card"
+            android:id="@+id/iv_sk_contact_card_sel"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:visibility="gone"
@@ -203,8 +206,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Location"
-            android:textSize="12sp"
-            android:fontFamily="@font/montserrat_medium"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_regular"
             android:textColor="@color/grey3"
             android:layout_marginStart="20dp" />
 
@@ -221,30 +224,36 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"
+        android:layout_height="40dp"
+        android:gravity="center_vertical|right"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
-        <Button
+        <TextView
             android:id="@+id/sk_b_negative"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="cancel"
+            android:layout_marginEnd="10dp"
+            android:text="Cancel"
+            android:gravity="center"
             style="@style/ripple_background_bordered"
-            android:fontFamily="@font/montserrat_regular"
+            android:fontFamily="@font/montserrat_medium"
             android:textColor="@color/lightRed" />
 
-        <Button
+        <TextView
             android:id="@+id/sk_b_possitive"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             style="@style/ripple_background_bordered"
+            android:gravity="center"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="Ok"
-            android:fontFamily="@font/montserrat_regular"
+            android:textSize="14sp"
+            android:layout_marginEnd="20dp"
+            android:text="Done"
+            android:fontFamily="@font/montserrat_medium"
             android:textColor="@color/lightRed" />
 
     </LinearLayout>

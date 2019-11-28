@@ -2,6 +2,13 @@ package com.andysapps.superdo.todo.model;
 
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.model.sidekicks.ContactCard;
+import com.andysapps.superdo.todo.model.sidekicks.Deadline;
+import com.andysapps.superdo.todo.model.sidekicks.Focus;
+import com.andysapps.superdo.todo.model.sidekicks.Location;
+import com.andysapps.superdo.todo.model.sidekicks.Remind;
+import com.andysapps.superdo.todo.model.sidekicks.Repeat;
+import com.andysapps.superdo.todo.model.sidekicks.Subtasks;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -29,13 +36,31 @@ public class Task implements Cloneable {
 
     int taskIndex;
 
+    boolean isTaskCompleted;
+
+    ////
+    // SIDE KICKS
+    /////
+
     SuperDate doDate;
 
-    SuperDate dueDate;
+    Repeat repeat;
 
-    String repeat;
+    Deadline deadline;
 
-    int priority;
+    Subtasks subtasks;
+
+    Remind remind;
+
+    Focus focus;
+
+    ContactCard contactCard;
+
+    Location location;
+
+    /////
+    // BUCKET
+    /////
 
     String bucketId;
 
@@ -43,14 +68,12 @@ public class Task implements Cloneable {
 
     String bucketColor;
 
-    boolean toRemind;
-
-    List<String> subTasks;
+    ///////
+    // OTHER
+    ///////
 
     @ServerTimestamp
     Date created;
-
-    boolean isTaskCompleted;
 
     boolean isDeleted;
 
@@ -78,22 +101,6 @@ public class Task implements Cloneable {
         this.description = description;
     }
 
-    public SuperDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(SuperDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
     public String getBucketId() {
         return bucketId;
     }
@@ -118,22 +125,6 @@ public class Task implements Cloneable {
         this.bucketColor = bucketColor;
     }
 
-    public boolean isToRemind() {
-        return toRemind;
-    }
-
-    public void setToRemind(boolean toRemind) {
-        this.toRemind = toRemind;
-    }
-
-    public List<String> getSubTasks() {
-        return subTasks;
-    }
-
-    public void setSubTasks(List<String> subTasks) {
-        this.subTasks = subTasks;
-    }
-
     public Date getCreated() {
         return created;
     }
@@ -156,14 +147,6 @@ public class Task implements Cloneable {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
-    }
-
-    public String getRepeat() {
-        return repeat;
-    }
-
-    public void setRepeat(String repeat) {
-        this.repeat = repeat;
     }
 
     public TaskListing getListedIn() {
@@ -206,21 +189,60 @@ public class Task implements Cloneable {
         this.taskIndex = taskIndex;
     }
 
-    public String getDueDateString() {
+    public Repeat getRepeat() {
+        return repeat;
+    }
 
-        if (dueDate == null) {
-            return "No deadline";
-        }
+    public void setRepeat(Repeat repeat) {
+        this.repeat = repeat;
+    }
 
-        String duedate;
+    public Deadline getDeadline() {
+        return deadline;
+    }
 
-        if (dueDate.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
-            duedate = dueDate.getMonthString() + " "+ dueDate.getDate() + ", " + dueDate.getYear();
-        } else {
-            duedate = dueDate.getMonthString() + " "+ dueDate.getDate();
-        }
+    public void setDeadline(Deadline deadline) {
+        this.deadline = deadline;
+    }
 
-        return duedate;
+    public Subtasks getSubtasks() {
+        return subtasks;
+    }
+
+    public void setSubtasks(Subtasks subtasks) {
+        this.subtasks = subtasks;
+    }
+
+    public Remind getRemind() {
+        return remind;
+    }
+
+    public void setRemind(Remind remind) {
+        this.remind = remind;
+    }
+
+    public Focus getFocus() {
+        return focus;
+    }
+
+    public void setFocus(Focus focus) {
+        this.focus = focus;
+    }
+
+    public ContactCard getContactCard() {
+        return contactCard;
+    }
+
+    public void setContactCard(ContactCard contactCard) {
+        this.contactCard = contactCard;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public String getDoDateString() {

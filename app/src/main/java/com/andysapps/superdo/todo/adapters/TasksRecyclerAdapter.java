@@ -114,8 +114,8 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             //h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
         }
 
-        if (task.getDueDate() != null) {
-            String dueDate = task.getDueDate().getDate() + " " + task.getDueDate().getMonthString();
+        if (task.getDeadline() != null && task.getDeadline().isEnabled) {
+            String dueDate = task.getDeadline().getDate() + " " + task.getDeadline().getMonthString();
             h.tvDueDate.setText(dueDate);
 
             h.tvDueDate.setVisibility(View.VISIBLE);
@@ -125,7 +125,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             h.ivRepeat.setVisibility(View.VISIBLE);
         }
 
-        if (task.getSubTasks() != null && !task.getSubTasks().isEmpty()) {
+        if (task.getSubtasks() != null && !task.getSubtasks().isEnabled) {
             h.ivSubtasks.setVisibility(View.VISIBLE);
         }
 
