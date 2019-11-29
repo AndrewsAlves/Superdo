@@ -17,17 +17,20 @@ import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
 import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
+import com.andysapps.superdo.todo.dialog.sidekicks.DeadlineDialog
 import com.andysapps.superdo.todo.enums.BucketColors
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.DeleteTaskEvent
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
+import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.Task
+import com.andysapps.superdo.todo.model.sidekicks.Deadline
 import com.andysapps.superdo.todo.model.sidekicks.Repeat
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -157,6 +160,15 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
 
         if (task.deadline != null && task.deadline.isEnabled) {
             editTask_rl_btn_deadline.visibility = View.VISIBLE
+
+            if (task.deadline.hasDate) {
+                editTask_iv_deadline.setImageResource(R.drawable.ic_deadline_on)
+            } else {
+                editTask_iv_deadline.setImageResource(R.drawable.ic_deadline_off)
+            }
+
+            editTask_tv_deadline.setText(task.deadline.doDateStringMain)
+
         } else {
             editTask_rl_btn_deadline.visibility = View.GONE
         }
@@ -190,6 +202,10 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
 
         editTask_rl_btn_select_bucket.setOnClickListener {
             SelectBucketDialogFragment().show(fragmentManager!!, SelectBucketDialogFragment().javaClass.name)
+        }
+
+        editTask_rl_btn_deadline.setOnClickListener {
+            DeadlineDialog.instance(task.deadline).show(fragmentManager!!, DeadlineDialog().javaClass.name)
         }
 
         ///// DELETE task
@@ -313,5 +329,14 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         updateUi()
     }
 
+    //////////////
+    /// SIDE KICK EVENT
+    /////////////
+
+    @Subscribe
+    fun onMeessageEvent(event : SetDeadlineEvent) {
+        task.deadline = event.deadline.clone()
+        updateUi()
+    }
 
 }

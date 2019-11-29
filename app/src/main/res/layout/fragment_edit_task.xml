@@ -505,6 +505,46 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/editTask_rl_mark_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_check_task"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:scaleType="center"
+            android:src="@drawable/img_oval_thin_grey3_mark"
+            android:visibility="visible" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_check_view"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerInParent="true"
+            app:lottie_autoPlay="false"
+            app:lottie_fileName="anim_check2.json" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="Mark Done"
+        android:textSize="16sp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintTop_toTopOf="@id/editTask_rl_mark_done"
+        app:layout_constraintBottom_toBottomOf="@id/editTask_rl_mark_done"
+        app:layout_constraintStart_toEndOf="@id/editTask_rl_mark_done"
+        android:textColor="@color/grey3"/>
+
 
     <TextView
         android:id="@+id/editTask_tv_createdOn"

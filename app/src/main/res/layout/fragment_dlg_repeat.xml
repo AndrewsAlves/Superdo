@@ -31,15 +31,119 @@
             android:textColor="@color/black"
             android:layout_height="30dp"
             android:text="1"
+            android:inputType="number"
             android:layout_marginStart="10dp"
             android:background="@drawable/bg_grey_low"
             android:textSize="14sp" />
 
         <Spinner
+            android:id="@+id/dlg_repeat_spinner_dwm"
             android:layout_width="120dp"
             android:layout_height="30dp"
             android:background="@drawable/bg_grey_low"
             android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dlg_repeat_ll_weekdays"
+        android:layout_width="210dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
+
+        <TextView
+            android:id="@+id/dlg_repeat__btn_sunday"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_grey_low"
+            android:text="S"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:textColor="@color/grey4"
+            android:layout_margin="3dp"
+            android:fontFamily="@font/montserrat_bold"/>
+
+        <TextView
+            android:id="@+id/dlg_repeat__btn_monday"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_grey_low"
+            android:text="M"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:textColor="@color/grey4"
+            android:layout_margin="3dp"
+            android:fontFamily="@font/montserrat_bold"/>
+
+        <TextView
+            android:id="@+id/dlg_repeat__btn_tuesday"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_grey_low"
+            android:text="T"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:textColor="@color/grey4"
+            android:layout_margin="3dp"
+            android:fontFamily="@font/montserrat_bold"/>
+
+
+        <TextView
+            android:id="@+id/dlg_repeat__btn_wednesday"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_grey_low"
+            android:text="W"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:textColor="@color/grey4"
+            android:layout_margin="3dp"
+            android:fontFamily="@font/montserrat_bold"/>
+
+        <TextView
+            android:id="@+id/dlg_repeat__btn_thursday"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_grey_low"
+            android:text="T"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:textColor="@color/grey4"
+            android:layout_margin="3dp"
+            android:fontFamily="@font/montserrat_bold"/>
+
+        <TextView
+            android:id="@+id/dlg_repeat__btn_friday"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_grey_low"
+            android:text="F"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:textColor="@color/grey4"
+            android:layout_margin="3dp"
+            android:fontFamily="@font/montserrat_bold"/>
+
+        <TextView
+            android:id="@+id/dlg_repeat__btn_saturday"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_grey_low"
+            android:text="S"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:textColor="@color/grey4"
+            android:layout_margin="3dp"
+            android:fontFamily="@font/montserrat_bold"/>
 
     </LinearLayout>
 

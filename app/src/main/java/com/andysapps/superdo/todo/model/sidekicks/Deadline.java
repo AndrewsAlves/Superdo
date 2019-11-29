@@ -1,14 +1,17 @@
 package com.andysapps.superdo.todo.model.sidekicks;
 
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.model.Task;
 
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
  * Created by Andrews on 12,November,2019
  */
-public class Deadline {
+public class Deadline implements Cloneable {
 
     public int hours;
     public int minutes;
@@ -16,6 +19,9 @@ public class Deadline {
     public int date;
     public int month;
     public int year;
+
+    public boolean hasDate;
+    public boolean hasTime;
 
     Date timestamp;
 
@@ -44,6 +50,11 @@ public class Deadline {
     public Deadline(int hours, int minutes) {
         this.hours = hours;
         this.minutes = minutes;
+    }
+
+    @Override
+    public Deadline clone() throws CloneNotSupportedException {
+        return (Deadline) super.clone();
     }
 
     public int getHours() {
@@ -107,5 +118,65 @@ public class Deadline {
 
     public String getMonthString() {
         return Utils.getMonthString(month);
+    }
+
+    public String getMonthStringLong() {
+        return Utils.getMonthStringLong(month);
+    }
+
+    public String getDeadlineDateString() {
+
+        String duedate;
+
+        if (!hasDate) {
+            return "Set Date";
+        }
+
+        duedate = getDate() + ", " + getMonthStringLong()  + ", " + getYear();
+
+        return duedate;
+    }
+
+    public String getDoDateStringMain() {
+
+        if (!hasDate) {
+            return "No Deadline";
+        }
+
+        String duedate;
+
+        if (getDate() == Calendar.getInstance().get(Calendar.DATE)) {
+            return "Today by " + getTimeString();
+        } else if (getDate() == Utils.getTomorrow().get(Calendar.DATE)) {
+            return "Tomorrow by " + getTimeString();
+        }
+
+        if (getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
+            duedate = getDate() + ", " + getMonthStringLong() + ", "+ getYear() + " by " + getTimeString();
+        } else {
+            duedate = getDate() + ", " + getMonthStringLong() + " by " + getTimeString();
+        }
+
+        return duedate;
+    }
+
+    public  String getTimeString() {
+
+        if (!hasTime) {
+            return "Set Time";
+        }
+
+        int hours1 = hours;
+        String meridien = " AM";
+
+        if (hours > 12) {
+            hours1 = hours - 12;
+            meridien = " PM";
+        }
+
+        // format to two decimal
+        String min =  new DecimalFormat("00").format(minutes);
+
+        return hours1 + " : " + min + meridien;
     }
 }
