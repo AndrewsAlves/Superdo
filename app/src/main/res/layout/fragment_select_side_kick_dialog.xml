@@ -114,7 +114,6 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/sk_btn_focus"
         android:orientation="horizontal"

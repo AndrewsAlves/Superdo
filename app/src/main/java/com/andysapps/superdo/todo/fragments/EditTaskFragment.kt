@@ -23,10 +23,12 @@ import com.andysapps.superdo.todo.events.DeleteTaskEvent
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
+import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.Task
+import com.andysapps.superdo.todo.model.sidekicks.Repeat
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.fragment_edit_task.*
@@ -113,26 +115,6 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             editTask_et_desc.setText(task.description)
         }
 
-        // set Dodate
-        if (task.doDate != null) {
-            editTask_iv_do_date.setImageResource(R.drawable.ic_duedate_on_red)
-            editTask_tv_do_date.text = task.doDateString2
-            editTask_tv_do_date.setTextColor(resources.getColor(R.color.grey4))
-
-            editTask_iv_do_time.setImageResource(Utils.getTimeIcon(task.doDate.hours))
-            editTask_tv_do_time.text = task.getTimeString()
-            editTask_tv_do_time.setTextColor(resources.getColor(R.color.grey4))
-
-        } else {
-            editTask_iv_do_date.setImageResource(R.drawable.ic_duedate_off)
-            editTask_tv_do_date.text = task.doDateString2
-            editTask_tv_do_date.setTextColor(resources.getColor(R.color.grey2))
-
-            editTask_iv_do_time.setImageResource(R.drawable.ic_time_off)
-            editTask_tv_do_time.text = task.getTimeString()
-            editTask_tv_do_time.setTextColor(resources.getColor(R.color.grey2))
-        }
-
         if (task.bucketId != null) {
             editTask_tv_bucketName.setText(task.bucketName)
             editTask_tv_bucketName.setTextColor(resources.getColor(R.color.black))
@@ -145,25 +127,53 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             }
         }
 
-        // remind
-        //editTask_cb_remind.isChecked = task.isToRemind
+        // set Dodate
+        if (task.doDate != null) {
+            editTask_iv_do_date.setImageResource(R.drawable.ic_do_date_on)
+            editTask_tv_do_date.text = task.doDateString2
+            editTask_tv_do_date.setTextColor(resources.getColor(R.color.grey4))
+        } else {
+            editTask_iv_do_date.setImageResource(R.drawable.ic_do_date_off)
+            editTask_tv_do_date.text = task.doDateString2
+            editTask_tv_do_date.setTextColor(resources.getColor(R.color.grey2))
+        }
 
-       /* when (task.priority) {
+        if (task.repeat == null) {
+            task.repeat = Repeat(true)
+        }
 
+        if (task.repeat != null && task.repeat.isEnabled) {
+            editTask_tv_repeat_name.visibility
+            editTask_rl_btn_repeat.visibility = View.VISIBLE
+        } else {
+            editTask_rl_btn_repeat.visibility = View.GONE
+        }
 
-            0 -> {
-                editTask_iv_priority.setImageResource(R.drawable.ic_priority_low)
-                editTask_tv_priority.text = "Priotirty Low"
-            }
-            1 -> {
-                editTask_iv_priority.setImageResource(R.drawable.ic_priority_medium)
-                editTask_tv_priority.text = "Priotirty Medium"
-            }
-            2 -> {
-            editTask_iv_priority.setImageResource(R.drawable.ic_priority_high)
-                editTask_tv_priority.text = "Priotirty Hign"
-            }
-        } */
+        if (task.remind != null && task.remind.isEnabled) {
+            editTask_rl_btn_remind.visibility = View.VISIBLE
+        } else {
+            editTask_rl_btn_remind.visibility = View.GONE
+        }
+
+        if (task.deadline != null && task.deadline.isEnabled) {
+            editTask_rl_btn_deadline.visibility = View.VISIBLE
+        } else {
+            editTask_rl_btn_deadline.visibility = View.GONE
+        }
+
+        if (task.subtasks != null && task.subtasks.isEnabled) {
+            editTask_ll_subtasks.visibility = View.VISIBLE
+        } else {
+            editTask_ll_subtasks.visibility = View.GONE
+        }
+
+        if (task.focus != null && task.focus.isEnabled) {
+            editTask_rl_btn_focus.visibility = View.VISIBLE
+            editTask_btn_start_focus.visibility = View.VISIBLE
+        } else {
+            editTask_rl_btn_focus.visibility = View.GONE
+            editTask_btn_start_focus.visibility = View.GONE
+        }
 
         // Task created date
         if (task.created != null) {
@@ -178,10 +188,6 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             showDatePicker()
         }
 
-        editTask_rl_btn_time.setOnClickListener {
-            showTimePicker()
-        }
-
         editTask_rl_btn_select_bucket.setOnClickListener {
             SelectBucketDialogFragment().show(fragmentManager!!, SelectBucketDialogFragment().javaClass.name)
         }
@@ -192,7 +198,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         }
 
         editTask_btn_add_sidekicks.setOnClickListener {
-            SelectSideKickDialog().show(fragmentManager!!, SelectSideKickDialog().javaClass.name)
+            SelectSideKickDialog.instance(task).show(fragmentManager!!, SelectSideKickDialog().javaClass.name)
         }
 
         ///// Close Fragment
@@ -292,6 +298,11 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Deleted, task))
             //EventBus.getDefault().post(RemoveFragmentEvents())
         }
+    }
+
+    @Subscribe
+    fun onMeessageEvent(event : SideKicksSelectedEvent) {
+        updateUi()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

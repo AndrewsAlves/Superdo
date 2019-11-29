@@ -265,21 +265,21 @@ public class Task implements Cloneable {
     public String getDoDateString2() {
 
         if (doDate == null) {
-            return "No Date";
+            return "No Do Date";
         }
 
         String duedate;
 
         if (doDate.getDate() == Calendar.getInstance().get(Calendar.DATE)) {
-            return "Do Today";
+            return "Do Today by " + getTimeString();
         } else if (doDate.getDate() == Utils.getTomorrow().get(Calendar.DATE)) {
-            return "Do Tomorrow";
+            return "Do Tomorrow by " + getTimeString();
         }
 
         if (doDate.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
-            duedate = doDate.getMonthString() + " "+ doDate.getDate() + ", " + doDate.getYear();
+            duedate = "Do " + doDate.getMonthString() + " "+ doDate.getDate() + ", " + doDate.getYear() + " by " + getTimeString();
         } else {
-            duedate = doDate.getMonthString() + " "+ doDate.getDate();
+            duedate = "Do " + doDate.getMonthString() + " "+ doDate.getDate() + " by " + getTimeString();
         }
 
         return duedate;
@@ -292,18 +292,17 @@ public class Task implements Cloneable {
         }
 
         int hours = doDate.hours;
-        String meridien = " am";
+        String meridien = " AM";
 
         if (hours > 12) {
             hours = doDate.hours - 12;
-            meridien = " pm";
+            meridien = " PM";
         }
 
         // format to two decimal
-        String hour =  new DecimalFormat("00").format(hours);
         String min =  new DecimalFormat("00").format(doDate.minutes);
 
-        return hour + ":" + min + meridien;
+        return hours + " : " + min + meridien;
     }
 
 }

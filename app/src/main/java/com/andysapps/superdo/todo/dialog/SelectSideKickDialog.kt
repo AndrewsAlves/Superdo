@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
 import com.andysapps.superdo.todo.fragments.EditTaskFragment
 import com.andysapps.superdo.todo.model.Task
 import com.andysapps.superdo.todo.model.sidekicks.*
 import kotlinx.android.synthetic.main.fragment_select_side_kick_dialog.*
+import org.greenrobot.eventbus.EventBus
 
 /**
  * A simple [Fragment] subclass.
@@ -42,10 +44,9 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
         initOnClicks()
         updateUi()
 
-
     }
 
-    fun initOnClicks() {
+    private fun initOnClicks() {
 
         sk_btn_deadline.setOnClickListener(this)
         sk_btn_subtasks.setOnClickListener(this)
@@ -55,7 +56,8 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
         sk_btn_location.setOnClickListener(this)
 
         sk_b_possitive.setOnClickListener {
-
+            EventBus.getDefault().post(SideKicksSelectedEvent())
+            dismiss()
         }
 
         sk_b_negative.setOnClickListener {
@@ -63,7 +65,7 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
         }
     }
 
-    fun updateUi() {
+    private fun updateUi() {
 
         iv_sk_deadline_sel.visibility = View.GONE
         iv_sk_subtasks_sel.visibility = View.GONE
