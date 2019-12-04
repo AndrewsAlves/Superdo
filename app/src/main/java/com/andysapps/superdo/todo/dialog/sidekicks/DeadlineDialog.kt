@@ -54,11 +54,11 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
         updateUi()
     }
 
-    
+
     fun updateUi() {
 
-        if (deadline.date == 0) {
-            dlg_deadline_iv_date.setImageResource(R.drawable.ic_do_date_off)
+        if (!deadline.hasDate) {
+            dlg_deadline_iv_date.setImageResource(R.drawable.ic_do_date_off_grey_2)
             dlg_deadline_tv_date.setText(deadline.deadlineDateString)
             dlg_deadline_tv_date.setTextColor(resources.getColor(R.color.grey1))
         } else {
@@ -67,7 +67,7 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
             dlg_deadline_tv_date.setTextColor(resources.getColor(R.color.grey4))
         }
 
-        if (deadline.hours == 0) {
+        if (!deadline.hasTime) {
             dlg_deadline_iv_time.setImageResource(R.drawable.ic_time_off)
             dlg_deadline_tv_time.setText(deadline.timeString)
             dlg_deadline_tv_time.setTextColor(resources.getColor(R.color.grey1))

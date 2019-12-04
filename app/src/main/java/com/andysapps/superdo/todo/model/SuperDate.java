@@ -3,6 +3,7 @@ package com.andysapps.superdo.todo.model;
 import com.andysapps.superdo.todo.Utils;
 
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 /**
@@ -16,6 +17,9 @@ public class SuperDate {
     public int date;
     public int month;
     public int year;
+
+    public boolean hasDate;
+    public boolean hasTime;
 
     Date timestamp;
 
@@ -95,6 +99,43 @@ public class SuperDate {
     public void setTime(int hour, int minutes) {
         this.setHours(hour);
         this.setMinutes(minutes);
+    }
+
+    public String getMonthStringLong() {
+        return Utils.getMonthStringLong(month);
+    }
+
+    public String getSuperDateString() {
+
+        String duedate;
+
+        if (!hasDate) {
+            return "Set Date";
+        }
+
+        duedate = getDate() + ", " + getMonthStringLong()  + ", " + getYear();
+
+        return duedate;
+    }
+
+    public  String getTimeString() {
+
+        if (!hasTime) {
+            return "00 : 00 AM";
+        }
+
+        int hours1 = hours;
+        String meridien = " AM";
+
+        if (hours > 12) {
+            hours1 = hours - 12;
+            meridien = " PM";
+        }
+
+        // format to two decimal
+        String min =  new DecimalFormat("00").format(minutes);
+
+        return hours1 + " : " + min + meridien;
     }
 
     public void setTimestamp(Date timestamp) {

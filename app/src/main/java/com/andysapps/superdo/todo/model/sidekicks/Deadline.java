@@ -163,7 +163,7 @@ public class Deadline implements Cloneable {
     public  String getTimeString() {
 
         if (!hasTime) {
-            return "Set Time";
+            return "00 : 00";
         }
 
         int hours1 = hours;

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="250dp"
+    android:layout_width="270dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".dialog.sidekicks.DeadlineDialog">
 
     <LinearLayout
-        android:layout_width="210dp"
+        android:layout_width="230dp"
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginStart="20dp"
@@ -38,7 +38,7 @@
 
         <Spinner
             android:id="@+id/dlg_repeat_spinner_dwm"
-            android:layout_width="120dp"
+            android:layout_width="140dp"
             android:layout_height="30dp"
             android:background="@drawable/bg_grey_low"
             android:layout_marginStart="10dp"/>
@@ -47,8 +47,8 @@
 
     <LinearLayout
         android:id="@+id/dlg_repeat_ll_weekdays"
-        android:layout_width="210dp"
-        android:layout_height="30dp"
+        android:layout_width="230dp"
+        android:layout_height="32dp"
         android:layout_marginTop="10dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp">
@@ -159,7 +159,7 @@
         android:textColor="@color/grey3"/>
 
     <LinearLayout
-        android:layout_width="210dp"
+        android:layout_width="230dp"
         android:layout_height="40dp"
         android:gravity="center_vertical"
         android:background="@drawable/bg_grey_low"
@@ -167,14 +167,14 @@
         android:layout_marginEnd="20dp">
 
         <ImageView
-            android:id="@+id/dlg_deadline_iv_date"
+            android:id="@+id/dlg_repeat_iv_startdate"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:src="@drawable/ic_do_date_off"
             android:scaleType="center"/>
 
         <TextView
-            android:id="@+id/dlg_deadline_tv_date"
+            android:id="@+id/dlg_repeat_tv_startdate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Date"
@@ -185,7 +185,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="210dp"
+        android:layout_width="230dp"
         android:layout_height="40dp"
         android:gravity="center_vertical"
         android:background="@drawable/bg_grey_low"
@@ -194,14 +194,14 @@
         android:layout_marginEnd="20dp">
 
         <ImageView
-            android:id="@+id/dlg_deadline_iv_time"
+            android:id="@+id/dlg_repeat_iv_time"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:src="@drawable/ic_time_off"
             android:scaleType="center"/>
 
         <TextView
-            android:id="@+id/dlg_deadline_tv_time"
+            android:id="@+id/dlg_repeat_tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Time"
@@ -212,7 +212,7 @@
     </LinearLayout>
 
     <TextView
-        android:layout_width="210dp"
+        android:layout_width="230dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:gravity="center_horizontal"
@@ -224,7 +224,7 @@
         android:layout_marginTop="20dp" />
 
     <TextView
-        android:layout_width="210dp"
+        android:layout_width="230dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:gravity="center_horizontal"
