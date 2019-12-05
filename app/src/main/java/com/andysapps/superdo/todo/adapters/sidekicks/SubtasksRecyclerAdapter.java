@@ -1,0 +1,193 @@
+package com.andysapps.superdo.todo.adapters.sidekicks;
+
+import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieProperty;
+import com.airbnb.lottie.model.KeyPath;
+import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
+import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
+import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
+import com.andysapps.superdo.todo.model.Task;
+import com.andysapps.superdo.todo.model.sidekicks.Subtask;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.Collections;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * Created by Andrews on 15,August,2019
+ */
+
+public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecyclerAdapter.PlaceViewHolder> implements ItemTouchHelperAdapter {
+
+    private static final String TAG = "SubtasksRecyclerAdapter";
+    private List<Subtask> taskList;
+    private Task task;
+
+    private Context context;
+
+    public SubtasksRecyclerAdapter(Context context, List<Subtask> taskList, Task task) {
+        this.taskList = taskList;
+        this.context = context;
+        this.task = task;
+    }
+
+    @Override
+    public PlaceViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.item_task, viewGroup, false);
+        return new PlaceViewHolder(view);
+    }
+
+    public void notifyTaskAdded(List<Subtask> taskList) {
+        this.taskList.clear();
+        this.taskList.addAll(taskList);
+        notifyDataSetChanged();
+        notifyItemInserted(taskList.size() - 1);
+    }
+
+    public void updateList(List<Subtask> taskList) {
+
+        Log.e(TAG, "updateList: data size" + this.taskList.size());
+
+        this.taskList.clear();
+        this.taskList.addAll(taskList);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBindViewHolder(PlaceViewHolder h, int position) {
+
+        Subtask subtask = taskList.get(position);
+
+        h.isChecked = subtask.isTaskCompleted();
+
+        if (h.isChecked) {
+            h.lottieSubtasks.setProgress(1.0f);
+        } else {
+            h.lottieSubtasks.setProgress(0.0f);
+        }
+
+        h.lottieSubtasks.pauseAnimation();
+
+        h.tvSubtaskName.setText(subtask.getTitle());
+
+        h.lottieSubtasks.addValueCallback(
+                new KeyPath("Shape Layer 1", "**"),
+                LottieProperty.COLOR_FILTER,
+                frameInfo -> new PorterDuffColorFilter(getColor(), PorterDuff.Mode.SRC_ATOP)
+        );
+
+        h.lottieSubtasks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (h.isChecked) {
+                    h.lottieSubtasks.setSpeed(-2f);
+                    h.isChecked = false;
+                } else {
+                    h.lottieSubtasks.setSpeed(1.5f);
+                    h.isChecked = true;
+                }
+
+                subtask.setTaskCompleted(h.isChecked);
+                FirestoreManager.getInstance().updateTask(task);
+
+                h.lottieSubtasks.playAnimation();
+            }
+        });
+
+        h.ibDeleteSubtask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        h.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return taskList.size();
+    }
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(taskList, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(taskList, i, i - 1);
+            }
+        }
+
+        Log.e(TAG, "onItemMove: from : " + fromPosition);
+        taskList.get(toPosition).setIndex(toPosition);
+        TaskOrganiser.getInstance().organiseAllTasks();
+        FirestoreManager.getInstance().updateTask(task);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        Log.e(TAG, "onItemDismiss: " + position );
+    }
+
+    public class PlaceViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.lottie_check_view_subtask)
+        LottieAnimationView lottieSubtasks;
+
+        @BindView(R.id.iv_check_subtask)
+        public ImageView ivCheck;
+
+        @BindView(R.id.tv_subtask_name)
+        public TextView tvSubtaskName;
+
+        @BindView(R.id.ib_deletesubTask)
+        public ImageButton ibDeleteSubtask;
+
+        public View item;
+
+        public boolean isChecked = false;
+
+        public PlaceViewHolder(@NonNull View itemView) {
+            super(itemView);
+            item = itemView;
+            ButterKnife.bind(this,itemView);
+
+            lottieSubtasks.setAnimation("anim_check2.json");
+        }
+    }
+
+    public int getColor() {
+        return  context.getResources().getColor(R.color.grey3);
+    }
+}

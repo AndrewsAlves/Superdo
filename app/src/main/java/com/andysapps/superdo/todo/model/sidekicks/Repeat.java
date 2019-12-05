@@ -61,7 +61,7 @@ public class Repeat {
 
     public String getRepeatString() {
 
-        String repeatString;
+        String repeatString = " ";
 
         if (repeatType == RepeatType.Day) {
 
@@ -88,6 +88,6 @@ public class Repeat {
 
         }
 
-
+        return repeatString;
     }
 }
