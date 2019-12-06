@@ -52,7 +52,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
     val TAG : String = "EditTaskFragment"
     var task : Task = Task()
     var nonEditedTask : Task = Task()
-
+    var isChecked : Boolean = false
 
     companion object {
         fun instance(task : Task) : EditTaskFragment {
@@ -117,6 +117,12 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         if (task.description != null) {
             editTask_iv_desc.setImageResource(R.drawable.ic_desc_on)
             editTask_et_desc.setText(task.description)
+        }
+
+        if (isChecked) {
+            lottie_check_view.setProgress(1.0f)
+        } else {
+            lottie_check_view.setProgress(0.0f)
         }
 
         if (task.bucketId != null) {
@@ -230,6 +236,22 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             fragmentManager!!.popBackStack()
             EventBus.getDefault().post(RemoveFragmentEvents())
         }
+
+        ///// Mark done
+        lottie_check_view.setOnClickListener(View.OnClickListener {
+            if (isChecked) {
+                lottie_check_view.setSpeed(-2f)
+                isChecked = false
+            } else {
+                lottie_check_view.setSpeed(1.5f)
+                isChecked = true
+            }
+
+            task.isTaskCompleted = isChecked
+            FirestoreManager.getInstance().updateTask(task)
+
+            lottie_check_view.playAnimation()
+        })
     }
 
     fun showDatePicker() {

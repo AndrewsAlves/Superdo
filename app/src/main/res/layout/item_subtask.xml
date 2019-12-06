@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_check_subtask"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerInParent="true"
+            android:scaleType="center"
+            android:visibility="visible"
+            android:src="@drawable/img_oval_thin_grey3"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_check_view_subtask"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            app:lottie_fileName="anim_check2.json"
+            app:lottie_autoPlay="false" />
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/tv_subtask_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="This is a sub task"
+        android:textSize="15sp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/montserrat_medium"
+        android:textColor="@color/grey3"
+        android:layout_marginStart="20dp" />
+
+    <ImageButton
+        android:visibility="visible"
+        android:id="@+id/ib_deletesubTask"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_delete_task"
+        android:layout_marginStart="10dp"/>
+
+</LinearLayout>
