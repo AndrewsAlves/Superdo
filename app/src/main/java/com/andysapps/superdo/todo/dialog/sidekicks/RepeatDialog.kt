@@ -15,6 +15,7 @@ import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.enums.RepeatType
 import com.andysapps.superdo.todo.model.sidekicks.Repeat
+import com.andysapps.superdo.todo.model.sidekicks.WeekDays
 import kotlinx.android.synthetic.main.fragment_dlg_repeat.*
 import java.util.*
 
@@ -68,7 +69,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
             }
         })
 
-        dlg_repeat_spinner_monthdate.adapter = repeatTypes
+        dlg_repeat_spinner_monthdate.adapter = monthDates
         dlg_repeat_spinner_monthdate.setSelection(0)
 
         dlg_repeat__btn_monday.setOnClickListener(this)
@@ -78,13 +79,15 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         dlg_repeat__btn_friday.setOnClickListener(this)
         dlg_repeat__btn_saturday.setOnClickListener(this)
         dlg_repeat__btn_sunday.setOnClickListener(this)
-        
+
     }
 
     fun updateUi() {
 
         if (repeat.repeatType == RepeatType.Week) {
             dlg_repeat_ll_weekdays.visibility = View.VISIBLE
+            repeat.weekDays = WeekDays()
+            updateWeedaysUi()
         } else {
             dlg_repeat_ll_weekdays.visibility = View.GONE
         }
@@ -106,7 +109,6 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         dlg_repeat_tv_startdate.setText(repeat.startDate.superDateString)
         dlg_repeat_tv_startdate.setTextColor(resources.getColor(R.color.grey4))
 
-        updateWeedaysUi()
     }
 
     fun updateWeedaysUi() {
