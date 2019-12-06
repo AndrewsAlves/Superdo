@@ -8,7 +8,8 @@ import java.util.List;
 /**
  * Created by Andrews on 27,November,2019
  */
-public class Repeat {
+
+public class Repeat implements Cloneable{
 
     public boolean isEnabled;
 
@@ -18,9 +19,14 @@ public class Repeat {
 
     SuperDate startDate;
 
-    List<String> weekDays;
+    WeekDays weekDays;
 
     public Repeat() {
+    }
+
+    @Override
+    public Repeat clone() throws CloneNotSupportedException {
+        return (Repeat) super.clone();
     }
 
     public Repeat(boolean isEnabled) {
@@ -51,17 +57,25 @@ public class Repeat {
         this.startDate = startDate;
     }
 
-    public List<String> getWeekDays() {
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public WeekDays getWeekDays() {
         return weekDays;
     }
 
-    public void setWeekDays(List<String> weekDays) {
+    public void setWeekDays(WeekDays weekDays) {
         this.weekDays = weekDays;
     }
 
     public String getRepeatString() {
 
-        String repeatString;
+        String repeatString = " ";
 
         if (repeatType == RepeatType.Day) {
 
@@ -88,6 +102,6 @@ public class Repeat {
 
         }
 
-
+        return repeatString;
     }
 }

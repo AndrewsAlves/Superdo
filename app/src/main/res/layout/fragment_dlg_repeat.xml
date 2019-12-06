@@ -24,17 +24,36 @@
             android:text="Every"
             android:textSize="14sp" />
 
-        <TextView
-            android:layout_width="30dp"
-            android:gravity="center"
-            android:fontFamily="@font/montserrat_regular"
-            android:textColor="@color/black"
-            android:layout_height="30dp"
-            android:text="1"
-            android:inputType="number"
-            android:layout_marginStart="10dp"
-            android:background="@drawable/bg_grey_low"
-            android:textSize="14sp" />
+       <RelativeLayout
+           android:layout_width="30dp"
+           android:layout_height="30dp"
+           android:layout_marginStart="10dp"
+           android:background="@drawable/bg_grey_low">
+
+           <EditText
+               android:id="@+id/dlg_repeat_et_days"
+               android:layout_width="30dp"
+               android:gravity="center"
+               android:fontFamily="@font/montserrat_regular"
+               android:textColor="@color/black"
+               android:layout_height="30dp"
+               android:text="1"
+               android:scrollHorizontally="true"
+               android:minLines="1"
+               android:maxLines="1"
+               android:background="@android:color/transparent"
+               android:imeOptions="actionDone"
+               android:inputType="number"
+               android:textSize="14sp" />
+
+           <Spinner
+               android:id="@+id/dlg_repeat_spinner_monthdate"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:visibility="gone"
+               android:background="@android:color/transparent"/>
+
+       </RelativeLayout>
 
         <Spinner
             android:id="@+id/dlg_repeat_spinner_dwm"

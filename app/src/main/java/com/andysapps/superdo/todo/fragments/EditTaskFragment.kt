@@ -18,6 +18,7 @@ import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
 import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DeadlineDialog
+import com.andysapps.superdo.todo.dialog.sidekicks.RepeatDialog
 import com.andysapps.superdo.todo.enums.BucketColors
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.DeleteTaskEvent
@@ -208,6 +209,10 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             DeadlineDialog.instance(task.deadline).show(fragmentManager!!, DeadlineDialog().javaClass.name)
         }
 
+        editTask_rl_btn_repeat.setOnClickListener {
+            RepeatDialog.instance(task.repeat).show(fragmentManager!!, DeadlineDialog().javaClass.name)
+        }
+
         ///// DELETE task
         editTask_deleteTask.setOnClickListener {
             DeleteTaskDialog().show(fragmentManager!!, "deleteBucket")
@@ -288,6 +293,8 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         } else {
             task.doDate = date
         }
+        task.doDate.hasDate = true
+        showTimePicker()
         updateUi()
     }
 
@@ -298,6 +305,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         } else {
             task.doDate = time
         }
+        task.doDate.hasTime = true
         updateUi()
     }
 
@@ -312,7 +320,6 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             TaskOrganiser.getInstance().deleteTask(task)
             fragmentManager!!.popBackStack()
             EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Deleted, task))
-            //EventBus.getDefault().post(RemoveFragmentEvents())
         }
     }
 
