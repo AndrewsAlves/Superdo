@@ -99,7 +99,33 @@ public class Repeat implements Cloneable{
         }
 
         if (repeatType == RepeatType.Week) {
+            if (times != 1) {
+                if (startDate.hasDate) {
+                    repeatString = "Every " + times + " Weeks at " + startDate.getTimeString() + " from " + startDate.getMonthStringLong();
+                } else {
+                    repeatString = "Every " + times + " Weeks at " + startDate.getTimeString();
+                }
 
+                return repeatString;
+            } else {
+                if (startDate.hasDate) {
+                    repeatString = "Every week at " + startDate.getTimeString() + " from " + startDate.getMonthStringLong();
+                } else {
+                    repeatString = "Every week at " + startDate.getTimeString();
+                }
+            }
+
+            return repeatString;
+        }
+
+        if (repeatType == RepeatType.Month) {
+            if (startDate.hasDate) {
+                repeatString = "Every " + times + " of every month at " + startDate.getTimeString() + " from " + startDate.getMonthStringLong();
+            } else {
+                repeatString = "Every " + times + " of every month at " + startDate.getTimeString();
+            }
+
+            return repeatString;
         }
 
         return repeatString;

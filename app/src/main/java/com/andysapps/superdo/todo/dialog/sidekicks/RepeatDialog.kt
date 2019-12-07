@@ -3,6 +3,8 @@ package com.andysapps.superdo.todo.dialog.sidekicks
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,17 +16,22 @@ import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.enums.RepeatType
+import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.sidekicks.Repeat
 import com.andysapps.superdo.todo.model.sidekicks.WeekDays
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
+import kotlinx.android.synthetic.main.fragment_dlg_deadline.*
 import kotlinx.android.synthetic.main.fragment_dlg_repeat.*
 import java.util.*
+import kotlin.math.min
 
 
 /**
  * A simple [Fragment] subclass.
  */
 
-class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListener{
+class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListener, TextWatcher, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
     var repeat : Repeat = Repeat()
     val repeatType = arrayOf(RepeatType.Day.name, RepeatType.Week.name, RepeatType.Month.name)
@@ -65,12 +72,16 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         dlg_repeat_spinner_monthdate.onItemSelectedListener = (object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
+                repeat.times = position + 1
+                dlg_repeat_tv_monthdates.setText(monthDates.getItem(position))
             }
         })
 
         dlg_repeat_spinner_monthdate.adapter = monthDates
         dlg_repeat_spinner_monthdate.setSelection(0)
+
+        ////// Ui
+        dlg_repeat_et_days.addTextChangedListener(this)
 
         dlg_repeat__btn_monday.setOnClickListener(this)
         dlg_repeat__btn_tuesday.setOnClickListener(this)
@@ -80,9 +91,26 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         dlg_repeat__btn_saturday.setOnClickListener(this)
         dlg_repeat__btn_sunday.setOnClickListener(this)
 
+        dlg_repeat_b_positive.setOnClickListener {
+
+        }
+
+        dlg_repeat_b_negative.setOnClickListener {
+            dismiss()
+        }
+
+        dlg_repeat_btn_date.setOnClickListener {
+            showDatePicker()
+        }
+
+        dlg_repeat_btn_time.setOnClickListener {
+            showTimePicker()
+        }
+
     }
 
     fun updateUi() {
+
 
         if (repeat.repeatType == RepeatType.Week) {
             dlg_repeat_ll_weekdays.visibility = View.VISIBLE
@@ -95,8 +123,11 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         if (repeat.repeatType == RepeatType.Month) {
             dlg_repeat_spinner_monthdate.visibility = View.VISIBLE
             dlg_repeat_et_days.visibility = View.GONE
+            dlg_repeat_tv_monthdates.visibility = View.VISIBLE
+            dlg_repeat_tv_monthdates.setText(monthDates[0])
         } else {
             dlg_repeat_spinner_monthdate.visibility = View.GONE
+            dlg_repeat_tv_monthdates.visibility = View.GONE
             dlg_repeat_et_days.visibility = View.VISIBLE
         }
 
@@ -108,6 +139,32 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         dlg_repeat_iv_startdate.setImageResource(R.drawable.ic_do_date_on)
         dlg_repeat_tv_startdate.setText(repeat.startDate.superDateString)
         dlg_repeat_tv_startdate.setTextColor(resources.getColor(R.color.grey4))
+
+        dlg_repeat_tv_repeatString.setText(repeat.repeatString)
+
+        if (repeat.startDate == null) {
+            repeat.startDate = SuperDate()
+        }
+
+        if (!repeat.startDate.hasDate) {
+            dlg_repeat_iv_startdate.setImageResource(R.drawable.ic_do_date_off_grey_2)
+            dlg_repeat_tv_startdate.setText(repeat.startDate.superDateString)
+            dlg_repeat_tv_startdate.setTextColor(resources.getColor(R.color.grey1))
+        } else {
+            dlg_repeat_iv_startdate.setImageResource(R.drawable.ic_do_date_on)
+            dlg_repeat_tv_startdate.setText(repeat.startDate.superDateString)
+            dlg_repeat_tv_startdate.setTextColor(resources.getColor(R.color.grey4))
+        }
+
+        if (!repeat.startDate.hasTime) {
+            dlg_repeat_iv_time.setImageResource(R.drawable.ic_time_off)
+            dlg_repeat_tv_time.setText(repeat.startDate.timeString)
+            dlg_repeat_tv_time.setTextColor(resources.getColor(R.color.grey1))
+        } else {
+            dlg_repeat_iv_time.setImageResource(R.drawable.ic_time_on)
+            dlg_repeat_tv_time.setText(repeat.startDate.timeString)
+            dlg_repeat_tv_time.setTextColor(resources.getColor(R.color.grey4))
+        }
 
     }
 
@@ -162,6 +219,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         repeat.repeatType = RepeatType.valueOf(repeatType[position])
+        dlg_repeat_et_days.setText("1")
         updateUi()
     }
 
@@ -190,6 +248,79 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
             }
         }
         updateWeedaysUi()
+    }
+
+    override fun afterTextChanged(s: Editable?) {
+        updateUi()
+    }
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+
+    ///////////////
+    ////// TIME PICKER
+    ///////////////
+
+
+    fun showDatePicker() {
+        val now = Calendar.getInstance()
+        var day = now.get(Calendar.DAY_OF_MONTH)
+        var month = now.get(Calendar.MONTH)
+        var year = now.get(Calendar.YEAR)
+
+        if (repeat.startDate != null && repeat.startDate.hasDate) {
+            day = repeat.startDate.date
+            month = repeat.startDate.month
+            year = repeat.startDate.year
+        }
+
+        val dpd = DatePickerDialog.newInstance(
+                this,
+                year,
+                month - 1,
+                day
+        )
+
+        dpd.accentColor = resources.getColor(R.color.lightRed)
+        dpd.minDate = Utils.getStartDate()
+        dpd.maxDate = Utils.getEndDate()
+        dpd.show(fragmentManager!!, "Datepickerdialog")
+    }
+
+    fun showTimePicker() {
+
+        var now = Calendar.getInstance()
+        var hours : Int = now.get(Calendar.HOUR)
+        var min : Int = now.get(Calendar.MINUTE)
+
+
+        if (repeat.startDate != null && repeat.startDate.hasTime) {
+            hours = repeat.startDate.hours
+            min = repeat.startDate.minutes
+        }
+
+        var dpd = TimePickerDialog.newInstance(
+                this,
+                hours,
+                min,
+                false)
+
+        dpd.accentColor = resources.getColor(R.color.lightRed)
+        dpd.show(fragmentManager!!, "Datepickerdialog")
+    }
+
+    override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        repeat.startDate.setDoDate(dayOfMonth, monthOfYear + 1, year)
+        repeat.startDate.hasDate = true
+        updateUi()
+    }
+
+    override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
+        repeat.startDate.setTime(hourOfDay, minute)
+        repeat.startDate.hasTime = true
+        updateUi()
     }
 
 }
