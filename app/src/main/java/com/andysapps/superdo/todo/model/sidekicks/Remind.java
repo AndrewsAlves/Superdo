@@ -1,18 +1,63 @@
 package com.andysapps.superdo.todo.model.sidekicks;
 
+import com.andysapps.superdo.todo.enums.RemindType;
+import com.andysapps.superdo.todo.enums.RepeatType;
+import com.andysapps.superdo.todo.model.SuperDate;
+
 /**
  * Created by Andrews on 27,November,2019
  */
 
-public class Remind {
+public class Remind implements Cloneable {
 
     public boolean isEnabled;
 
-    public Remind() {
-    }
+    RemindType repeatType;
+
+    SuperDate remindOnce;
+
+    Repeat remindRepeat;
+
+    public Remind() {}
 
     public Remind(boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
 
+    @Override
+    public Remind clone() throws CloneNotSupportedException {
+        return (Remind) super.clone();
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public RemindType getRepeatType() {
+        return repeatType;
+    }
+
+    public void setRepeatType(RemindType repeatType) {
+        this.repeatType = repeatType;
+    }
+
+    public SuperDate getRemindOnce() {
+        return remindOnce;
+    }
+
+    public void setRemindOnce(SuperDate remindOnce) {
+        this.remindOnce = remindOnce;
+    }
+
+    public Repeat getRemindRepeat() {
+        return remindRepeat;
+    }
+
+    public void setRemindRepeat(Repeat remindRepeat) {
+        this.remindRepeat = remindRepeat;
+    }
 }

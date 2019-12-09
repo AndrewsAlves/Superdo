@@ -18,6 +18,7 @@ import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
 import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DeadlineDialog
+import com.andysapps.superdo.todo.dialog.sidekicks.RemindDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.RepeatDialog
 import com.andysapps.superdo.todo.enums.BucketColors
 import com.andysapps.superdo.todo.enums.TaskUpdateType
@@ -227,6 +228,10 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
 
         editTask_rl_btn_repeat.setOnClickListener {
             RepeatDialog.instance(task.repeat).show(fragmentManager!!, DeadlineDialog().javaClass.name)
+        }
+
+        editTask_rl_btn_remind.setOnClickListener {
+            RemindDialog.instance(task.remind).show(fragmentManager!!, DeadlineDialog().javaClass.name)
         }
 
         ///// DELETE task
