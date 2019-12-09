@@ -22,6 +22,8 @@ import java.util.logging.Handler;
 
 public class Utils {
 
+    public static String[] monthDates = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th",
+            "13th", "14th", "15th", "16th", "17th", "18th", "19th", "20th", "21st", "22nd", "23rd", "24th", "25th", "26th", "27th", "28th", "29th", "30th", "31st"};
 
     public static void showSoftKeyboard(Context context, View view) {
         if (view.requestFocus()) {
@@ -184,10 +186,12 @@ public class Utils {
         String dateString  = dateFormat.format(timestamp);
         String[] dateParts = dateString.split("-");
 
-        superDate.setDate(Integer.parseInt(dateParts[0]));
-        superDate.setMonth(Integer.parseInt(dateParts[1]));
-        superDate.setYear(Integer.parseInt(dateParts[2]));
+        superDate.setDoDate(
+                Integer.parseInt(dateParts[0]),
+                Integer.parseInt(dateParts[1]),
+                Integer.parseInt(dateParts[2]));
         superDate.setTimestamp(new Date(timestamp));
+
 
         return superDate;
     }

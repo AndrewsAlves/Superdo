@@ -6,6 +6,8 @@
     android:orientation="vertical"
     tools:context=".dialog.sidekicks.DeadlineDialog">
 
+
+
     <LinearLayout
         android:layout_width="230dp"
         android:layout_height="40dp"
@@ -25,26 +27,27 @@
             android:textSize="14sp" />
 
        <RelativeLayout
-           android:layout_width="30dp"
+           android:layout_width="50dp"
            android:layout_height="30dp"
            android:layout_marginStart="10dp"
            android:background="@drawable/bg_grey_low">
 
            <EditText
                android:id="@+id/dlg_repeat_et_days"
-               android:layout_width="30dp"
+               android:layout_width="match_parent"
                android:gravity="center"
-               android:fontFamily="@font/montserrat_regular"
+               android:fontFamily="@font/montserrat_medium"
                android:textColor="@color/black"
                android:layout_height="30dp"
                android:text="1"
                android:scrollHorizontally="true"
                android:minLines="1"
                android:maxLines="1"
+               android:maxLength="3"
                android:background="@android:color/transparent"
                android:imeOptions="actionDone"
                android:inputType="number"
-               android:textSize="14sp" />
+               android:textSize="16sp" />
 
            <TextView
                android:id="@+id/dlg_repeat_tv_monthdates"
@@ -52,7 +55,7 @@
                android:layout_height="match_parent"
                android:padding="4dp"
                android:gravity="center"
-               android:fontFamily="@font/montserrat_regular"
+               android:fontFamily="@font/montserrat_medium"
                android:textColor="@color/black"
                android:text="28th"
                android:minLines="1"
@@ -75,7 +78,7 @@
 
         <Spinner
             android:id="@+id/dlg_repeat_spinner_dwm"
-            android:layout_width="140dp"
+            android:layout_width="120dp"
             android:layout_height="30dp"
             android:background="@drawable/bg_grey_low"
             android:layout_marginStart="10dp"/>
@@ -217,7 +220,7 @@
             android:layout_height="wrap_content"
             android:text="Date"
             android:textSize="14sp"
-            android:fontFamily="@font/montserrat_regular"
+            android:fontFamily="@font/montserrat_medium"
             android:textColor="@color/grey3"/>
 
     </LinearLayout>
@@ -245,10 +248,17 @@
             android:layout_height="wrap_content"
             android:text="Time"
             android:textSize="14sp"
-            android:fontFamily="@font/montserrat_regular"
+            android:fontFamily="@font/montserrat_medium"
             android:textColor="@color/grey3"/>
 
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_repeat_on"
+        android:layout_marginTop="30dp"
+        android:alpha="0.5"/>
 
     <TextView
         android:layout_width="230dp"
@@ -256,11 +266,12 @@
         android:layout_marginEnd="20dp"
         android:gravity="center_horizontal"
         android:fontFamily="@font/montserrat_regular"
-        android:textColor="@color/grey2"
+        android:textColor="@color/grey4"
         android:layout_height="wrap_content"
         android:text="Repeat Task"
-        android:textSize="10sp"
-        android:layout_marginTop="20dp" />
+        android:textSize="12sp"
+        android:alpha="0.5"
+        android:layout_marginTop="6dp" />
 
     <TextView
         android:id="@+id/dlg_repeat_tv_repeatString"
@@ -268,48 +279,64 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:gravity="center_horizontal"
-        android:fontFamily="@font/montserrat_regular"
-        android:textColor="@color/black"
+        android:fontFamily="@font/montserrat_medium"
+        android:textColor="@color/grey4"
         android:layout_height="wrap_content"
         android:text="Everyday at 9 am"
-        android:textSize="12sp" />
+        android:layout_marginTop="20dp"
+        android:textSize="14sp" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:gravity="center_vertical|right"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp">
 
-        <TextView
-            android:id="@+id/dlg_repeat_b_negative"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:text="Cancel"
-            android:gravity="center"
-            style="@style/ripple_background_bordered"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/lightRed" />
+        <ImageButton
+            android:id="@+id/dlg_repeat_delete_repeat"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_delete_task_red"
+            android:background="@null"
+            android:layout_centerVertical="true"
+            android:scaleType="centerInside"/>
 
-        <TextView
-            android:id="@+id/dlg_repeat_b_positive"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            style="@style/ripple_background_bordered"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textSize="14sp"
-            android:layout_marginEnd="20dp"
-            android:text="Set"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/lightRed" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical|right"
+            android:orientation="horizontal">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/dlg_repeat_b_negative"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Cancel"
+                android:gravity="center"
+                style="@style/ripple_background_bordered"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/lightRed" />
 
+            <TextView
+                android:id="@+id/dlg_repeat_b_positive"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                style="@style/ripple_background_bordered"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textSize="14sp"
+                android:text="Set"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/lightRed" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.andysapps.superdo.todo.model.sidekicks;
 
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.RepeatType;
 import com.andysapps.superdo.todo.model.SuperDate;
 
@@ -15,11 +16,19 @@ public class Repeat implements Cloneable{
 
     int times;
 
+    int monthDaysIndex;
+
     RepeatType repeatType;
 
     SuperDate startDate;
 
-    WeekDays weekDays;
+    boolean onSunday;
+    boolean onMonday;
+    boolean onTuesday;
+    boolean onWednesday;
+    boolean onThursday;
+    boolean onFriday;
+    boolean onSaturday;
 
     public Repeat() {
     }
@@ -65,17 +74,73 @@ public class Repeat implements Cloneable{
         isEnabled = enabled;
     }
 
-    public WeekDays getWeekDays() {
-        return weekDays;
+    public int getMonthDaysIndex() {
+        return monthDaysIndex;
     }
 
-    public void setWeekDays(WeekDays weekDays) {
-        this.weekDays = weekDays;
+    public void setMonthDaysIndex(int monthDaysIndex) {
+        this.monthDaysIndex = monthDaysIndex;
+    }
+
+    public boolean isOnSunday() {
+        return onSunday;
+    }
+
+    public void setOnSunday(boolean onSunday) {
+        this.onSunday = onSunday;
+    }
+
+    public boolean isOnMonday() {
+        return onMonday;
+    }
+
+    public void setOnMonday(boolean onMonday) {
+        this.onMonday = onMonday;
+    }
+
+    public boolean isOnTuesday() {
+        return onTuesday;
+    }
+
+    public void setOnTuesday(boolean onTuesday) {
+        this.onTuesday = onTuesday;
+    }
+
+    public boolean isOnWednesday() {
+        return onWednesday;
+    }
+
+    public void setOnWednesday(boolean onWednesday) {
+        this.onWednesday = onWednesday;
+    }
+
+    public boolean isOnThursday() {
+        return onThursday;
+    }
+
+    public void setOnThursday(boolean onThursday) {
+        this.onThursday = onThursday;
+    }
+
+    public boolean isOnFriday() {
+        return onFriday;
+    }
+
+    public void setOnFriday(boolean onFriday) {
+        this.onFriday = onFriday;
+    }
+
+    public boolean isOnSaturday() {
+        return onSaturday;
+    }
+
+    public void setOnSaturday(boolean onSaturday) {
+        this.onSaturday = onSaturday;
     }
 
     public String getRepeatString() {
 
-        String repeatString = " ";
+        String repeatString = "";
 
         if (repeatType == RepeatType.Day) {
 
@@ -119,12 +184,7 @@ public class Repeat implements Cloneable{
         }
 
         if (repeatType == RepeatType.Month) {
-            if (startDate.hasDate) {
-                repeatString = "Every " + times + " of every month at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
-            } else {
-                repeatString = "Every " + times + " of every month at " + startDate.getTimeString();
-            }
-
+            repeatString = Utils.monthDates[monthDaysIndex] + " of every month at " + startDate.getTimeString();
             return repeatString;
         }
 

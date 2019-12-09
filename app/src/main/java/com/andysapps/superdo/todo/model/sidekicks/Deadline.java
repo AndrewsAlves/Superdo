@@ -152,9 +152,9 @@ public class Deadline implements Cloneable {
         }
 
         if (getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
-            duedate = getDate() + ", " + getMonthStringLong() + ", "+ getYear() + " by " + getTimeString();
+            duedate = getDate() + ", " + getMonthStringLong() + ", "+ getYear() + " at " + getTimeString();
         } else {
-            duedate = getDate() + ", " + getMonthStringLong() + " by " + getTimeString();
+            duedate = getDate() + ", " + getMonthStringLong() + " at " + getTimeString();
         }
 
         return duedate;

@@ -4,7 +4,7 @@ package com.andysapps.superdo.todo.model.sidekicks;
  * Created by Andrews on 04,December,2019
  */
 
-public class WeekDays {
+public class WeekDays implements Cloneable{
 
     boolean onSunday;
     boolean onMonday;
@@ -15,6 +15,11 @@ public class WeekDays {
     boolean onSaturday;
 
     public WeekDays() {
+    }
+
+    @Override
+    public WeekDays clone() throws CloneNotSupportedException {
+        return (WeekDays) super.clone();
     }
 
     public boolean isOnSunday() {

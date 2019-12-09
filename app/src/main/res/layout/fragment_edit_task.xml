@@ -97,7 +97,7 @@
                         android:layout_marginStart="45dp"
                         android:background="@android:color/transparent"
                         android:fontFamily="@font/montserrat_regular"
-                        android:hint="About your task"
+                        android:hint="About this task"
                         android:maxLines="20"
                         android:textSize="14sp" />
 

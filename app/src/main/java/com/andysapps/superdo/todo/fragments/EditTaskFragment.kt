@@ -25,6 +25,7 @@ import com.andysapps.superdo.todo.events.DeleteTaskEvent
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
+import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
@@ -148,13 +149,22 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             editTask_tv_do_date.setTextColor(resources.getColor(R.color.grey2))
         }
 
-        if (task.repeat == null) {
-            task.repeat = Repeat(true)
-        }
+        //if (task.repeat == null) {
+        //    task.repeat = Repeat(true)
+       // }
 
         if (task.repeat != null && task.repeat.isEnabled) {
             editTask_tv_repeat_name.visibility
             editTask_rl_btn_repeat.visibility = View.VISIBLE
+
+            if (task.repeat.repeatType != null) {
+                editTask_iv_repeat.setImageResource(R.drawable.ic_repeat_on)
+                editTask_tv_repeat.setText(task.repeat.repeatString)
+            } else {
+                editTask_iv_repeat.setImageResource(R.drawable.ic_repeat_off)
+                editTask_tv_repeat.setText("No Repeat")
+            }
+
         } else {
             editTask_rl_btn_repeat.visibility = View.GONE
         }
@@ -368,4 +378,9 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         updateUi()
     }
 
+    @Subscribe
+    fun onMeessageEvent(event : SetRepeatEvent) {
+        task.repeat = event.repeat.clone()
+        updateUi()
+    }
 }

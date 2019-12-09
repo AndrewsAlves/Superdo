@@ -48,12 +48,13 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
 
     private fun initOnClicks() {
 
+        sk_btn_repeat_task.setOnClickListener(this)
         sk_btn_deadline.setOnClickListener(this)
         sk_btn_subtasks.setOnClickListener(this)
         sk_btn_remind.setOnClickListener(this)
         sk_btn_focus.setOnClickListener(this)
-        sk_btn_contact_card.setOnClickListener(this)
-        sk_btn_location.setOnClickListener(this)
+        //sk_btn_contact_card.setOnClickListener(this)
+        //sk_btn_location.setOnClickListener(this)
 
         sk_b_possitive.setOnClickListener {
             EventBus.getDefault().post(SideKicksSelectedEvent())
@@ -67,12 +68,17 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
 
     private fun updateUi() {
 
+        iv_sk_repeat_sel.visibility = View.GONE
         iv_sk_deadline_sel.visibility = View.GONE
         iv_sk_subtasks_sel.visibility = View.GONE
         iv_sk_remind_sel.visibility = View.GONE
         iv_sk_focus_sel.visibility = View.GONE
-        iv_sk_contact_card_sel.visibility = View.GONE
-        iv_sk_location_sel.visibility = View.GONE
+       // iv_sk_contact_card_sel.visibility = View.GONE
+        //iv_sk_location_sel.visibility = View.GONE
+
+        if (task.repeat != null && task.repeat.isEnabled) {
+            iv_sk_repeat_sel.visibility = View.VISIBLE
+        }
 
         if (task.deadline != null && task.deadline.isEnabled) {
             iv_sk_deadline_sel.visibility = View.VISIBLE
@@ -91,11 +97,11 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
         }
 
         if (task.contactCard != null && task.contactCard.isEnabled) {
-            iv_sk_contact_card_sel.visibility = View.VISIBLE
+            //iv_sk_contact_card_sel.visibility = View.VISIBLE
         }
 
         if (task.location != null && task.location.isEnabled) {
-            iv_sk_location_sel.visibility = View.VISIBLE
+            //iv_sk_location_sel.visibility = View.VISIBLE
         }
 
     }
@@ -106,6 +112,12 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
  
     override fun onClick(v: View?) {
         when(v!!.id) {
+            sk_btn_repeat_task.id -> {
+                if (task.repeat == null) {
+                    task.repeat = Repeat()
+                }
+                task.repeat.isEnabled = !task.repeat.isEnabled
+            }
             sk_btn_deadline.id -> {
                 if (task.deadline == null) {
                     task.deadline = Deadline()
@@ -130,7 +142,7 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
                 }
                 task.focus.isEnabled = !task.focus.isEnabled
             }
-            sk_btn_contact_card.id -> {
+            /*sk_btn_contact_card.id -> {
                 if (task.contactCard == null) {
                     task.contactCard = ContactCard()
                 }
@@ -141,7 +153,7 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
                     task.location = Location()
                 }
                 task.location.isEnabled = !task.location.isEnabled
-            }
+            }*/
         }
 
         updateUi()

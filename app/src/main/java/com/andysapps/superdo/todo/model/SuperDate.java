@@ -9,6 +9,7 @@ import java.util.Date;
 /**
  * Created by Andrews on 12,November,2019
  */
+
 public class SuperDate {
 
     public int hours;
@@ -74,6 +75,7 @@ public class SuperDate {
         this.setDate(date);
         this.setMonth(month);
         this.setYear(year);
+        hasDate = true;
     }
 
     public int getMonth() {
@@ -99,6 +101,7 @@ public class SuperDate {
     public void setTime(int hour, int minutes) {
         this.setHours(hour);
         this.setMinutes(minutes);
+        hasTime = true;
     }
 
     public String getMonthStringLong() {
