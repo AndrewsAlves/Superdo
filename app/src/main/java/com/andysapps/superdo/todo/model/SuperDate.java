@@ -113,6 +113,14 @@ public class SuperDate {
             return "Set Date";
         }
 
+        if (Utils.isSuperDateToday(this)) {
+            return "Today";
+        }
+
+        if (Utils.isSuperDateTomorrow(this)) {
+            return "Tomorrow";
+        }
+
         duedate = getDate() + ", " + getMonthStringLong()  + ", " + getYear();
 
         return duedate;

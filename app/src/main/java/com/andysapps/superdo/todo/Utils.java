@@ -60,6 +60,36 @@ public class Utils {
         return c;
     }
 
+    public static boolean isSuperDateToday(SuperDate superdate) {
+
+        if (superdate == null) {
+            return false;
+        }
+
+        if (superdate.getDate() == Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
+        && superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isSuperDateTomorrow(SuperDate superdate) {
+
+        if (superdate == null) {
+            return false;
+        }
+
+        if (superdate.getDate() == getTomorrow().get(Calendar.DAY_OF_MONTH)
+                && superdate.getMonth() - 1 == getTomorrow().get(Calendar.MONTH)
+                && superdate.getYear() == getTomorrow().get(Calendar.YEAR)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public static String getMonthString(int month) {
         switch (month) {
             case 1:
@@ -157,6 +187,7 @@ public class Utils {
         superDate.setDate(Integer.parseInt(dateParts[0]));
         superDate.setMonth(Integer.parseInt(dateParts[1]));
         superDate.setYear(Integer.parseInt(dateParts[2]));
+        superDate.setTimestamp(new Date(timestamp));
 
         return superDate;
     }

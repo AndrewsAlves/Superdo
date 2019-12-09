@@ -74,6 +74,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 repeat.times = position + 1
                 dlg_repeat_tv_monthdates.setText(monthDates.getItem(position))
+                updateUi()
             }
         })
 
@@ -159,7 +160,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         if (!repeat.startDate.hasTime) {
             dlg_repeat_iv_time.setImageResource(R.drawable.ic_time_off)
             dlg_repeat_tv_time.setText(repeat.startDate.timeString)
-            dlg_repeat_tv_time.setTextColor(resources.getColor(R.color.grey1))
+            dlg_repeat_tv_time.setTextColor(resources.getColor(R.color.grey2))
         } else {
             dlg_repeat_iv_time.setImageResource(R.drawable.ic_time_on)
             dlg_repeat_tv_time.setText(repeat.startDate.timeString)
@@ -219,6 +220,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         repeat.repeatType = RepeatType.valueOf(repeatType[position])
+        repeat.times = 1
         dlg_repeat_et_days.setText("1")
         updateUi()
     }

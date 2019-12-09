@@ -145,7 +145,7 @@ public class Deadline implements Cloneable {
 
         String duedate;
 
-        if (getDate() == Calendar.getInstance().get(Calendar.DATE)) {
+        if (getDate() == Utils.getTomorrow().get(Calendar.DATE)) {
             return "Today by " + getTimeString();
         } else if (getDate() == Utils.getTomorrow().get(Calendar.DATE)) {
             return "Tomorrow by " + getTimeString();

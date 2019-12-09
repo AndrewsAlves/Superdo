@@ -79,9 +79,9 @@ public class Repeat implements Cloneable{
 
         if (repeatType == RepeatType.Day) {
 
-            if (times != 1) {
+            if (times != 1 && times != 0) {
                 if (startDate.hasDate) {
-                    repeatString = "Every " + times + " days at " + startDate.getTimeString() + " from " + startDate.getMonthStringLong();
+                    repeatString = "Every " + times + " days at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
                 } else {
                     repeatString = "Every " + times + " days at " + startDate.getTimeString();
                 }
@@ -89,7 +89,7 @@ public class Repeat implements Cloneable{
                 return repeatString;
             } else {
                 if (startDate.hasDate) {
-                    repeatString = "Everyday at " + startDate.getTimeString() + " from " + startDate.getMonthStringLong();
+                    repeatString = "Everyday at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
                 } else {
                     repeatString = "Everyday at " + startDate.getTimeString();
                 }
@@ -99,9 +99,9 @@ public class Repeat implements Cloneable{
         }
 
         if (repeatType == RepeatType.Week) {
-            if (times != 1) {
+            if (times != 1 && times != 0) {
                 if (startDate.hasDate) {
-                    repeatString = "Every " + times + " Weeks at " + startDate.getTimeString() + " from " + startDate.getMonthStringLong();
+                    repeatString = "Every " + times + " Weeks at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
                 } else {
                     repeatString = "Every " + times + " Weeks at " + startDate.getTimeString();
                 }
@@ -109,7 +109,7 @@ public class Repeat implements Cloneable{
                 return repeatString;
             } else {
                 if (startDate.hasDate) {
-                    repeatString = "Every week at " + startDate.getTimeString() + " from " + startDate.getMonthStringLong();
+                    repeatString = "Every week at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
                 } else {
                     repeatString = "Every week at " + startDate.getTimeString();
                 }
@@ -120,7 +120,7 @@ public class Repeat implements Cloneable{
 
         if (repeatType == RepeatType.Month) {
             if (startDate.hasDate) {
-                repeatString = "Every " + times + " of every month at " + startDate.getTimeString() + " from " + startDate.getMonthStringLong();
+                repeatString = "Every " + times + " of every month at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
             } else {
                 repeatString = "Every " + times + " of every month at " + startDate.getTimeString();
             }
