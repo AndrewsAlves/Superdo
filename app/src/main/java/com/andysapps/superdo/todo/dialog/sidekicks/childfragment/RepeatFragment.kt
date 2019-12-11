@@ -18,8 +18,11 @@ import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.Utils.monthDates
+import com.andysapps.superdo.todo.enums.RepeatFragmentType
 import com.andysapps.superdo.todo.enums.RepeatType
+import com.andysapps.superdo.todo.events.sidekick.SetRemindRepeatEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
+import com.andysapps.superdo.todo.events.ui.DismissRemindDialogEvent
 import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.sidekicks.Repeat
 import com.andysapps.superdo.todo.model.sidekicks.WeekDays
@@ -40,11 +43,13 @@ class RepeatFragment : Fragment(), OnItemSelectedListener, View.OnClickListener,
 
     var repeat : Repeat = Repeat()
     val repeatType = arrayOf(RepeatType.Day.name, RepeatType.Week.name, RepeatType.Month.name)
+    var repeatFragmentType : RepeatFragmentType = RepeatFragmentType.REPEAT_REMINDER
 
     companion object {
-        fun instance(repeat : Repeat) : RepeatFragment {
+        fun instance(repeat : Repeat, fragmentType: RepeatFragmentType) : RepeatFragment {
             val repeatDialog = RepeatFragment()
             repeatDialog.repeat = repeat.clone()
+            repeatDialog.repeatFragmentType = fragmentType
             return repeatDialog
         }
     }
@@ -95,12 +100,26 @@ class RepeatFragment : Fragment(), OnItemSelectedListener, View.OnClickListener,
         dlg_repeat__btn_sunday.setOnClickListener(this)
 
         dlg_repeat_b_positive.setOnClickListener {
-            EventBus.getDefault().post(SetRepeatEvent(repeat))
+            when(repeatFragmentType) {
+                RepeatFragmentType.REPEAT_REMINDER -> {
+                    EventBus.getDefault().post(SetRemindRepeatEvent(repeat))
+                }
+            }
             //dismiss()
         }
 
         dlg_repeat_b_negative.setOnClickListener {
+            when(repeatFragmentType) {
+                RepeatFragmentType.REPEAT_REMINDER -> {
+                    EventBus.getDefault().post(DismissRemindDialogEvent())
+                }
+            }
            // dismiss()
+        }
+
+        dlg_repeat_delete_repeat.setOnClickListener {
+            EventBus.getDefault().post(SetRepeatEvent(Repeat(true)))
+            // dismiss()
         }
 
         dlg_repeat_btn_date.setOnClickListener {
@@ -111,10 +130,7 @@ class RepeatFragment : Fragment(), OnItemSelectedListener, View.OnClickListener,
             showTimePicker()
         }
 
-        dlg_repeat_delete_repeat.setOnClickListener {
-            EventBus.getDefault().post(SetRepeatEvent(Repeat(true)))
-           // dismiss()
-        }
+
 
         //////// UPDATE UI ////////
 

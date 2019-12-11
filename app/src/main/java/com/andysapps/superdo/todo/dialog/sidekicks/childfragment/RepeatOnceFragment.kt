@@ -6,17 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
-import com.andysapps.superdo.todo.dialog.sidekicks.RemindDialog
 import com.andysapps.superdo.todo.enums.RemindType
+import com.andysapps.superdo.todo.events.sidekick.SetRemindOnceEvent
+import com.andysapps.superdo.todo.events.ui.DismissRemindDialogEvent
 import com.andysapps.superdo.todo.model.sidekicks.Remind
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
-import kotlinx.android.synthetic.main.fragment_dlg_remind.*
-import kotlinx.android.synthetic.main.fragment_repeat_once.*
+import kotlinx.android.synthetic.main.fragment_remind_once.*
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 /**
@@ -38,7 +38,7 @@ class RepeatOnceFragment : Fragment() ,DatePickerDialog.OnDateSetListener, TimeP
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_repeat_once, container, false)
+        return inflater.inflate(R.layout.fragment_remind_once, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,11 +65,11 @@ class RepeatOnceFragment : Fragment() ,DatePickerDialog.OnDateSetListener, TimeP
         }
 
         dlg_remind_b_positive.setOnClickListener {
-            // EventBus.getDefault().post(SetDeadlineEvent(deadline))
+             EventBus.getDefault().post(SetRemindOnceEvent(remind))
         }
 
         dlg_remind_b_negative.setOnClickListener {
-           // dismiss()
+            EventBus.getDefault().post(DismissRemindDialogEvent())
         }
 
     }

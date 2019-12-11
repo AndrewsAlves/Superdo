@@ -26,6 +26,7 @@ import com.andysapps.superdo.todo.events.DeleteTaskEvent
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
+import com.andysapps.superdo.todo.events.sidekick.SetRemindEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
@@ -33,8 +34,6 @@ import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.Task
-import com.andysapps.superdo.todo.model.sidekicks.Deadline
-import com.andysapps.superdo.todo.model.sidekicks.Repeat
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.fragment_edit_task.*
@@ -150,8 +149,8 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             editTask_tv_do_date.setTextColor(resources.getColor(R.color.grey2))
         }
 
-        //if (task.repeat == null) {
-        //    task.repeat = Repeat(true)
+        //if (task.remind == null) {
+        //    task.remind = Repeat(true)
        // }
 
         if (task.repeat != null && task.repeat.isEnabled) {
@@ -172,6 +171,15 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
 
         if (task.remind != null && task.remind.isEnabled) {
             editTask_rl_btn_remind.visibility = View.VISIBLE
+
+            if (task.remind.remindType != null) {
+                editTask_iv_remind.setImageResource(R.drawable.ic_remind_on)
+                editTask_tv_remind.setText(task.remind.remindString)
+            } else {
+                editTask_iv_remind.setImageResource(R.drawable.ic_remind_off)
+                editTask_tv_remind.setText("When to remind?")
+            }
+
         } else {
             editTask_rl_btn_remind.visibility = View.GONE
         }
@@ -386,6 +394,12 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
     @Subscribe
     fun onMeessageEvent(event : SetRepeatEvent) {
         task.repeat = event.repeat.clone()
+        updateUi()
+    }
+
+    @Subscribe
+    fun onMeessageEvent(event : SetRemindEvent) {
+        task.remind = event.remind.clone()
         updateUi()
     }
 }

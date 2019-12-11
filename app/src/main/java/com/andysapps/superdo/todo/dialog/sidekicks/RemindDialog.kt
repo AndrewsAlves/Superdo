@@ -13,9 +13,16 @@ import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.dialog.sidekicks.childfragment.RepeatFragment
 import com.andysapps.superdo.todo.dialog.sidekicks.childfragment.RepeatOnceFragment
 import com.andysapps.superdo.todo.enums.RemindType
-import com.andysapps.superdo.todo.fragments.EditTaskFragment
+import com.andysapps.superdo.todo.enums.RepeatFragmentType
+import com.andysapps.superdo.todo.events.sidekick.SetRemindEvent
+import com.andysapps.superdo.todo.events.sidekick.SetRemindOnceEvent
+import com.andysapps.superdo.todo.events.sidekick.SetRemindRepeatEvent
+import com.andysapps.superdo.todo.events.ui.DismissRemindDialogEvent
 import com.andysapps.superdo.todo.model.sidekicks.Remind
+import com.andysapps.superdo.todo.model.sidekicks.Repeat
 import kotlinx.android.synthetic.main.fragment_dlg_remind.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 /**
  * A simple [Fragment] subclass.
@@ -41,8 +48,14 @@ class RemindDialog : DialogFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        EventBus.getDefault().register(this)
         initView()
         updateUi()
+    }
+
+    override fun onDestroyView() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroyView()
     }
 
     fun initView() {
@@ -82,8 +95,11 @@ class RemindDialog : DialogFragment(){
             }
 
             RemindType.REMIND_REPEAT -> {
+                if (remind.remindRepeat == null) {
+                    remind.remindRepeat = Repeat(true)
+                }
                 dlg_remind_btn_repeat_remind.setImageResource(R.drawable.ic_dlg_repeat_remind_on)
-                setFragment(RepeatFragment.instance(remind.remindRepeat))
+                setFragment(RepeatFragment.instance(remind.remindRepeat, RepeatFragmentType.REPEAT_REMINDER))
             }
         }
     }
@@ -93,6 +109,25 @@ class RemindDialog : DialogFragment(){
         ft.replace(R.id.dlg_framelayout__remind, fragment)
         ft.commit() // save the changes
         Log.e("tag Ui updated", " UI updaed fragment")
+    }
+
+    @Subscribe
+    fun onMeessageEvent(event : SetRemindRepeatEvent) {
+        remind.remindRepeat = event.repeat.clone()
+        EventBus.getDefault().post(SetRemindEvent(remind))
+        dismiss()
+    }
+
+    @Subscribe
+    fun onMeessageEvent(event : SetRemindOnceEvent) {
+        remind = event.remind.clone()
+        EventBus.getDefault().post(SetRemindEvent(remind))
+        dismiss()
+    }
+
+    @Subscribe
+    fun onMeessageEvent(event : DismissRemindDialogEvent) {
+        dismiss()
     }
 
 }

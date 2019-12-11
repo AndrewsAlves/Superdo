@@ -59,4 +59,19 @@ public class Remind implements Cloneable {
     public void setRemindRepeat(Repeat remindRepeat) {
         this.remindRepeat = remindRepeat;
     }
+
+    public String getRemindString() {
+
+        String remindString = "When to remind?";
+
+        switch (remindType) {
+            case REMIND_ONCE:
+                remindString = "Remind Once " + remindOnce.getSuperDateString() + " at " + remindOnce.getTimeString();
+                return remindString;
+            case REMIND_REPEAT:
+                remindString = remindRepeat.getRepeatString();
+        }
+
+        return remindString;
+    }
 }
