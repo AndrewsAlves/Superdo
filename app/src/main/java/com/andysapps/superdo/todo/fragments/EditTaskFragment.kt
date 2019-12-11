@@ -227,11 +227,11 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         }
 
         editTask_rl_btn_repeat.setOnClickListener {
-            RepeatDialog.instance(task.repeat).show(fragmentManager!!, DeadlineDialog().javaClass.name)
+            RepeatDialog.instance(task.repeat).show(fragmentManager!!, RepeatDialog().javaClass.name)
         }
 
         editTask_rl_btn_remind.setOnClickListener {
-            RemindDialog.instance(task.remind).show(fragmentManager!!, DeadlineDialog().javaClass.name)
+            RemindDialog.instance(task.remind).show(fragmentManager!!, RemindDialog().javaClass.name)
         }
 
         ///// DELETE task

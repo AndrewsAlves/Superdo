@@ -1,7 +1,6 @@
 package com.andysapps.superdo.todo.model.sidekicks;
 
 import com.andysapps.superdo.todo.enums.RemindType;
-import com.andysapps.superdo.todo.enums.RepeatType;
 import com.andysapps.superdo.todo.model.SuperDate;
 
 /**
@@ -12,7 +11,7 @@ public class Remind implements Cloneable {
 
     public boolean isEnabled;
 
-    RemindType repeatType;
+    RemindType remindType;
 
     SuperDate remindOnce;
 
@@ -37,12 +36,12 @@ public class Remind implements Cloneable {
         isEnabled = enabled;
     }
 
-    public RemindType getRepeatType() {
-        return repeatType;
+    public RemindType getRemindType() {
+        return remindType;
     }
 
-    public void setRepeatType(RemindType repeatType) {
-        this.repeatType = repeatType;
+    public void setRemindType(RemindType remindType) {
+        this.remindType = remindType;
     }
 
     public SuperDate getRemindOnce() {
