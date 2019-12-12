@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,14 +20,12 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
-import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
+import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
-import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.sidekicks.Subtask;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,13 +40,12 @@ import butterknife.ButterKnife;
 public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecyclerAdapter.PlaceViewHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = "SubtasksRecyclerAdapter";
-    private List<Subtask> taskList;
+    private List<Subtask> subtaskList;
     private Task task;
-
     private Context context;
 
     public SubtasksRecyclerAdapter(Context context, List<Subtask> taskList, Task task) {
-        this.taskList = taskList;
+        this.subtaskList = taskList;
         this.context = context;
         this.task = task;
     }
@@ -54,30 +53,30 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
     @Override
     public PlaceViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_task, viewGroup, false);
+                .inflate(R.layout.item_subtask, viewGroup, false);
         return new PlaceViewHolder(view);
     }
 
     public void notifyTaskAdded(List<Subtask> taskList) {
-        this.taskList.clear();
-        this.taskList.addAll(taskList);
+        this.subtaskList.clear();
+        this.subtaskList.addAll(taskList);
         notifyDataSetChanged();
         notifyItemInserted(taskList.size() - 1);
     }
 
     public void updateList(List<Subtask> taskList) {
 
-        Log.e(TAG, "updateList: data size" + this.taskList.size());
+        Log.e(TAG, "updateList: data size" + this.subtaskList.size());
 
-        this.taskList.clear();
-        this.taskList.addAll(taskList);
+        this.subtaskList.clear();
+        this.subtaskList.addAll(taskList);
         notifyDataSetChanged();
     }
 
     @Override
     public void onBindViewHolder(PlaceViewHolder h, int position) {
 
-        Subtask subtask = taskList.get(position);
+        Subtask subtask = subtaskList.get(position);
 
         h.isChecked = subtask.isTaskCompleted();
 
@@ -89,12 +88,34 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
 
         h.lottieSubtasks.pauseAnimation();
 
+        if (task.getBucketId() != null) {
+            switch (BucketColors.valueOf(task.getBucketColor())) {
+                case Red:
+                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_red);
+                    break;
+                case Green:
+                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_green);
+                    break;
+                case SkyBlue:
+                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_skyblue);
+                    break;
+                case InkBlue:
+                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_inkblue);
+                    break;
+                case Orange:
+                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_orange);
+                    break;
+            }
+        } else {
+            h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
+        }
+
         h.tvSubtaskName.setText(subtask.getTitle());
 
         h.lottieSubtasks.addValueCallback(
                 new KeyPath("Shape Layer 1", "**"),
                 LottieProperty.COLOR_FILTER,
-                frameInfo -> new PorterDuffColorFilter(getColor(), PorterDuff.Mode.SRC_ATOP)
+                frameInfo -> new PorterDuffColorFilter(getColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP)
         );
 
         h.lottieSubtasks.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +131,7 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
                 }
 
                 subtask.setTaskCompleted(h.isChecked);
-                FirestoreManager.getInstance().updateTask(task);
+                //FirestoreManager.getInstance().updateTask(task);
 
                 h.lottieSubtasks.playAnimation();
             }
@@ -129,29 +150,53 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
 
             }
         });
+
+        h.tvSubtaskName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    h.tvSubtaskName.clearFocus();
+                    subtask.title = h.tvSubtaskName.getText().toString();
+                    Utils.hideKeyboard(context, h.tvSubtaskName);
+                    notifyDataSetChanged();
+                }
+                return true;
+            }
+        });
+
+        h.tvSubtaskName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    h.ibDeleteSubtask.setVisibility(View.VISIBLE);
+                } else {
+                    h.ibDeleteSubtask.setVisibility(View.GONE);
+                }
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
-        return taskList.size();
+        return subtaskList.size();
     }
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
-                Collections.swap(taskList, i, i + 1);
+                Collections.swap(subtaskList, i, i + 1);
             }
         } else {
             for (int i = fromPosition; i > toPosition; i--) {
-                Collections.swap(taskList, i, i - 1);
+                Collections.swap(subtaskList, i, i - 1);
             }
         }
 
         Log.e(TAG, "onItemMove: from : " + fromPosition);
-        taskList.get(toPosition).setIndex(toPosition);
-        TaskOrganiser.getInstance().organiseAllTasks();
-        FirestoreManager.getInstance().updateTask(task);
+        subtaskList.get(toPosition).setIndex(toPosition);
+        //FirestoreManager.getInstance().updateTask(task);
         notifyItemMoved(fromPosition, toPosition);
     }
 
@@ -187,7 +232,34 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
         }
     }
 
-    public int getColor() {
-        return  context.getResources().getColor(R.color.grey3);
+    public int getColor(String colors) {
+
+        if (colors == null) {
+            return  context.getResources().getColor(R.color.grey4);
+        }
+
+        BucketColors colors1 = BucketColors.valueOf(colors);
+
+        int color = R.color.grey4;
+        switch (colors1) {
+            case Red:
+                color = R.color.lightRed;
+                break;
+            case Green:
+                color = R.color.green;
+                break;
+            case Orange:
+                color = R.color.orange;
+                break;
+            case SkyBlue:
+                color = R.color.skyblue;
+                break;
+            case InkBlue:
+                color = R.color.inkBlue;
+                break;
+
+        }
+
+        return context.getResources().getColor(color);
     }
 }

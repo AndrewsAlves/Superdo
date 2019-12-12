@@ -10,10 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import butterknife.ButterKnife
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
+import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
+import com.andysapps.superdo.todo.adapters.sidekicks.SubtasksRecyclerAdapter
 import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
 import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
@@ -34,6 +39,8 @@ import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.Task
+import com.andysapps.superdo.todo.model.sidekicks.Subtask
+import com.andysapps.superdo.todo.model.sidekicks.Subtasks
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.fragment_edit_task.*
@@ -41,6 +48,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -54,6 +62,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
     var task : Task = Task()
     var nonEditedTask : Task = Task()
     var isChecked : Boolean = false
+    var subtaskAdapter : SubtasksRecyclerAdapter? = null
 
     companion object {
         fun instance(task : Task) : EditTaskFragment {
@@ -107,6 +116,42 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+
+        editTask_et_add_subtask.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if( editTask_et_add_subtask.text.trim().isNotEmpty()){
+                    var subtask = Subtask()
+                    subtask.index = task.subtasks.subtaskList.size - 1
+                    subtask.isTaskCompleted = false
+                    subtask.title = editTask_et_add_subtask.text.toString()
+                    task.subtasks.subtaskList.add(subtask)
+                    subtaskAdapter!!.notifyItemInserted(task.subtasks.subtaskList.size - 1)
+                    editTask_et_add_subtask.setText("")
+                }
+            }
+
+            true
+        })
+
+        ///////////////
+        ///// SUBTASK RECYCLER
+        //////////////
+
+        if (task.subtasks == null) {
+            task.subtasks = Subtasks(false)
+        }
+
+        if (task.subtasks.subtaskList == null) {
+            Log.e("null, find ", " todod ")
+            task.subtasks.subtaskList = ArrayList()
+        }
+
+        editTask_rv_subtasks.setLayoutManager(LinearLayoutManager(activity))
+        subtaskAdapter = SubtasksRecyclerAdapter(context, task.subtasks.subtaskList, task)
+        val callback: ItemTouchHelper.Callback = LongItemTouchHelperCallback(subtaskAdapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(editTask_rv_subtasks)
+        editTask_rv_subtasks.setAdapter(subtaskAdapter)
     }
 
     private fun updateUi() {
@@ -126,6 +171,10 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             lottie_check_view.setProgress(0.0f)
         }
 
+
+        //////////////
+        //// BUCKET
+
         if (task.bucketId != null) {
             editTask_tv_bucketName.setText(task.bucketName)
             editTask_tv_bucketName.setTextColor(resources.getColor(R.color.black))
@@ -138,7 +187,9 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             }
         }
 
-        // set Dodate
+        //////////////
+        //// DO DATE
+
         if (task.doDate != null) {
             editTask_iv_do_date.setImageResource(R.drawable.ic_do_date_on)
             editTask_tv_do_date.text = task.doDateString2
@@ -169,6 +220,9 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             editTask_rl_btn_repeat.visibility = View.GONE
         }
 
+        //////////////
+        //// REMIND
+
         if (task.remind != null && task.remind.isEnabled) {
             editTask_rl_btn_remind.visibility = View.VISIBLE
 
@@ -183,6 +237,9 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         } else {
             editTask_rl_btn_remind.visibility = View.GONE
         }
+
+        //////////////
+        //// DEADLINE
 
         if (task.deadline != null && task.deadline.isEnabled) {
             editTask_rl_btn_deadline.visibility = View.VISIBLE
@@ -199,11 +256,17 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             editTask_rl_btn_deadline.visibility = View.GONE
         }
 
+        //////////////
+        //// SUBTASKS
+
         if (task.subtasks != null && task.subtasks.isEnabled) {
             editTask_ll_subtasks.visibility = View.VISIBLE
         } else {
             editTask_ll_subtasks.visibility = View.GONE
         }
+
+        //////////////
+        //// FOCUS
 
         if (task.focus != null && task.focus.isEnabled) {
             editTask_rl_btn_focus.visibility = View.VISIBLE
@@ -212,6 +275,9 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             editTask_rl_btn_focus.visibility = View.GONE
             editTask_btn_start_focus.visibility = View.GONE
         }
+
+        //////////////
+        //// CREATED
 
         // Task created date
         if (task.created != null) {

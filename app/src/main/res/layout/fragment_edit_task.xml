@@ -353,8 +353,9 @@
                             android:id="@+id/editTask_tv_subtasks"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="45dp"
-                            android:fontFamily="@font/montserrat_regular"
+                            android:layout_marginStart="40dp"
+                            android:textColor="@color/grey4"
+                            android:fontFamily="@font/montserrat_medium"
                             android:text="Sub Tasks"
                             android:textSize="14sp" />
 
@@ -364,29 +365,38 @@
                         android:id="@+id/editTask_rv_subtasks"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="80dp"
+                        android:layout_marginStart="40dp"
                         android:layout_marginTop="20dp" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="80dp"
+                        android:layout_marginStart="40dp"
+                        android:gravity="center_vertical"
                         android:layout_marginTop="10dp">
 
                         <ImageView
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:src="@drawable/ic_add_task" />
+                            android:scaleType="center"
+                            android:src="@drawable/ic_add_subtask" />
 
-                        <TextView
-                            android:id="@+id/tv_tasks_name"
+                        <EditText
+                            android:id="@+id/editTask_et_add_subtask"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:background="@android:color/transparent"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:textColor="@color/grey3"
                             android:layout_marginStart="20dp"
-                            android:fontFamily="@font/montserrat_regular"
-                            android:text="Add subtask"
-                            android:textColor="@color/grey2"
-                            android:textSize="14sp" />
+                            android:hint="Add Subtask"
+                            android:ellipsize="end"
+                            android:minLines="1"
+                            android:maxLines="1"
+                            android:inputType="text"
+                            android:scrollHorizontally="true"
+                            android:imeOptions="actionDone" />
 
                     </LinearLayout>
 

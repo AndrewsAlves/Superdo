@@ -1,5 +1,6 @@
 package com.andysapps.superdo.todo.model.sidekicks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,7 @@ public class Subtasks {
 
     public Subtasks(boolean isEnabled) {
         this.isEnabled = isEnabled;
+        subtaskList = new ArrayList<>();
     }
 
     public boolean isEnabled() {
