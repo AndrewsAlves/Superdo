@@ -125,6 +125,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
                     subtask.isTaskCompleted = false
                     subtask.title = editTask_et_add_subtask.text.toString()
                     task.subtasks.subtaskList.add(subtask)
+                    subtaskAdapter!!.updateList()
                     subtaskAdapter!!.notifyItemInserted(task.subtasks.subtaskList.size - 1)
                     editTask_et_add_subtask.setText("")
                 }

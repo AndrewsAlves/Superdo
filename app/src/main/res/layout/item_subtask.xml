@@ -40,14 +40,22 @@
         android:background="@android:color/transparent"
         android:fontFamily="@font/montserrat_medium"
         android:textColor="@color/grey3"
-        android:layout_marginStart="20dp" />
+        android:layout_marginStart="20dp"
+        android:ellipsize="end"
+        android:minLines="1"
+        android:maxLines="1"
+        android:inputType="text"
+        android:scrollHorizontally="true"
+        android:imeOptions="actionDone"/>
 
     <ImageButton
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/ib_deletesubTask"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/ic_delete_task"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@null"
+        android:scaleType="center"
+        android:src="@drawable/ic_delete_subtask"
         android:layout_marginStart="10dp"/>
 
 </LinearLayout>

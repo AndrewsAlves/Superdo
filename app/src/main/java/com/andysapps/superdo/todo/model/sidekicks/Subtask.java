@@ -2,7 +2,7 @@ package com.andysapps.superdo.todo.model.sidekicks;
 
 public class Subtask {
 
-    String title;
+    public String title;
     boolean isTaskCompleted;
     boolean deleted;
     int index;

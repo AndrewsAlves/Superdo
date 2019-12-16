@@ -27,7 +27,9 @@ import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.sidekicks.Subtask;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,14 +42,14 @@ import butterknife.ButterKnife;
 public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecyclerAdapter.PlaceViewHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = "SubtasksRecyclerAdapter";
-    private List<Subtask> subtaskList;
+    private List<Subtask> subtaskList = new ArrayList<>();
     private Task task;
     private Context context;
 
     public SubtasksRecyclerAdapter(Context context, List<Subtask> taskList, Task task) {
-        this.subtaskList = taskList;
         this.context = context;
         this.task = task;
+        updateList();
     }
 
     @Override
@@ -55,6 +57,27 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_subtask, viewGroup, false);
         return new PlaceViewHolder(view);
+    }
+
+    public void updateList() {
+
+        subtaskList.clear();
+        subtaskList = new ArrayList<>();
+
+        for (Subtask subtask : task.getSubtasks().subtaskList) {
+            if (!subtask.isDeleted()) {
+                subtaskList.add(subtask);
+            }
+        }
+
+        //organise index based on index
+        Collections.sort(subtaskList, new Comparator<Subtask>() {
+            @Override
+            public int compare(Subtask o1, Subtask o2) {
+                return o1.getIndex() - o2.getIndex();
+            }
+        });
+
     }
 
     public void notifyTaskAdded(List<Subtask> taskList) {
@@ -140,7 +163,12 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
         h.ibDeleteSubtask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                subtask.setDeleted(true);
+                subtaskList.remove(position);
+                notifyItemRemoved(position);
+                updateList();
+                Utils.hideKeyboard(context, h.tvSubtaskName);
+                h.tvSubtaskName.clearFocus();
             }
         });
 
