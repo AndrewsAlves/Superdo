@@ -61,7 +61,7 @@ class RemindDialog : DialogFragment(){
     fun initView() {
 
         if (remind.remindType == null) {
-            remind.remindType = RemindType.REMIND_ONCE
+            remind.remindType = RemindType.REMIND_ONCE.name
         }
 
         Log.e("tag Ui updated", " UI updaed ")
@@ -70,12 +70,12 @@ class RemindDialog : DialogFragment(){
         // CLICKS
 
         dlg_remind_btn_remind_once.setOnClickListener {
-            remind.remindType = RemindType.REMIND_ONCE
+            remind.remindType = RemindType.REMIND_ONCE.name
             updateUi()
         }
 
         dlg_remind_btn_repeat_remind.setOnClickListener {
-            remind.remindType = RemindType.REMIND_REPEAT
+            remind.remindType = RemindType.REMIND_REPEAT.name
             updateUi()
         }
 
@@ -86,7 +86,7 @@ class RemindDialog : DialogFragment(){
         dlg_remind_btn_remind_once.setImageResource(R.drawable.ic_dlg_remind_off)
         dlg_remind_btn_repeat_remind.setImageResource(R.drawable.ic_dlg_repeat_remind_off)
 
-        when (remind.remindType) {
+        when (RemindType.valueOf(remind.remindType)) {
 
             RemindType.REMIND_ONCE -> {
                 dlg_remind_btn_remind_once.setImageResource(R.drawable.ic_dlg_remind_on)

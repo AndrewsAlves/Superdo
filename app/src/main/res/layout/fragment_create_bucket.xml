@@ -29,7 +29,7 @@
                 android:ellipsize="end"
                 android:minLines="1"
                 android:maxLines="1"
-                android:inputType="text"
+                android:inputType="textCapSentences"
                 android:scrollHorizontally="true"
                 android:imeOptions="actionDone"
                 android:textColorHint="@color/grey1"

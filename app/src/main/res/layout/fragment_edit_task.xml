@@ -25,7 +25,7 @@
                 android:id="@+id/editTask_et_taskName"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginEnd="120dp"
+                android:layout_marginEnd="130dp"
                 android:layout_marginStart="40dp"
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/montserrat_medium"
@@ -34,7 +34,7 @@
                 android:textSize="20dp"
                 android:maxLines="2"
                 android:maxLength="40"
-                android:inputType="textMultiLine"
+                android:inputType="textMultiLine|textCapSentences"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -42,22 +42,23 @@
             <ImageButton
                 android:id="@+id/editTask_deleteTask"
                 style="@style/ripple_background_grey"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginStart="40dp"
+                android:scaleType="center"
                 android:src="@drawable/ic_delete_task"
                 android:layout_marginTop="5dp"
                 app:layout_constraintEnd_toStartOf="@+id/editTask_close"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="10dp"/>
 
             <ImageButton
                 android:id="@+id/editTask_close"
                 style="@style/ripple_background"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="40dp"
-                android:scaleType="fitXY"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="30dp"
+                android:scaleType="center"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_close_mini"
                 app:layout_constraintTop_toTopOf="parent"

@@ -18,7 +18,7 @@ public class Repeat implements Cloneable{
 
     int monthDaysIndex;
 
-    RepeatType repeatType;
+    String repeatType;
 
     SuperDate startDate;
 
@@ -32,6 +32,8 @@ public class Repeat implements Cloneable{
 
     public Repeat() {
     }
+
+
 
     @Override
     public Repeat clone() throws CloneNotSupportedException {
@@ -50,11 +52,11 @@ public class Repeat implements Cloneable{
         this.times = times;
     }
 
-    public RepeatType getRepeatType() {
+    public String getRepeatType() {
         return repeatType;
     }
 
-    public void setRepeatType(RepeatType repeatType) {
+    public void setRepeatType(String repeatType) {
         this.repeatType = repeatType;
     }
 
@@ -142,7 +144,11 @@ public class Repeat implements Cloneable{
 
         String repeatString = "";
 
-        if (repeatType == RepeatType.Day) {
+        if (repeatType == null) {
+            return repeatString;
+        }
+
+        if (repeatType.equals(RepeatType.Day.name())) {
 
             if (times != 1 && times != 0) {
                 if (startDate.hasDate) {
@@ -163,7 +169,7 @@ public class Repeat implements Cloneable{
             return repeatString;
         }
 
-        if (repeatType == RepeatType.Week) {
+        if (repeatType.equals(RepeatType.Week.name())) {
             if (times != 1 && times != 0) {
                 if (startDate.hasDate) {
                     repeatString = "Every " + times + " Weeks at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
@@ -183,7 +189,7 @@ public class Repeat implements Cloneable{
             return repeatString;
         }
 
-        if (repeatType == RepeatType.Month) {
+        if (repeatType.equals(RepeatType.Month.name())) {
             repeatString = Utils.monthDates[monthDaysIndex] + " of every month at " + startDate.getTimeString();
             return repeatString;
         }

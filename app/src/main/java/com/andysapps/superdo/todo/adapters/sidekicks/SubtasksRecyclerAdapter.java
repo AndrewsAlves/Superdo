@@ -154,7 +154,7 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
                 }
 
                 subtask.setTaskCompleted(h.isChecked);
-                //FirestoreManager.getInstance().updateTask(task);
+                FirestoreManager.getInstance().updateTask(task);
 
                 h.lottieSubtasks.playAnimation();
             }
@@ -167,6 +167,8 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
                 subtaskList.remove(position);
                 notifyItemRemoved(position);
                 updateList();
+                FirestoreManager.getInstance().updateTask(task);
+
                 Utils.hideKeyboard(context, h.tvSubtaskName);
                 h.tvSubtaskName.clearFocus();
             }
@@ -224,7 +226,7 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
 
         Log.e(TAG, "onItemMove: from : " + fromPosition);
         subtaskList.get(toPosition).setIndex(toPosition);
-        //FirestoreManager.getInstance().updateTask(task);
+        FirestoreManager.getInstance().updateTask(task);
         notifyItemMoved(fromPosition, toPosition);
     }
 

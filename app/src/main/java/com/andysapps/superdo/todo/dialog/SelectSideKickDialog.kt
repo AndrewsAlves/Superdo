@@ -27,7 +27,7 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
     companion object {
         fun instance(task : Task) : SelectSideKickDialog {
             val fragment = SelectSideKickDialog()
-            fragment.task = task
+            fragment.task = task.clone()
             return fragment
         }
     }
@@ -57,7 +57,7 @@ class SelectSideKickDialog : DialogFragment(), View.OnClickListener {
         //sk_btn_location.setOnClickListener(this)
 
         sk_b_possitive.setOnClickListener {
-            EventBus.getDefault().post(SideKicksSelectedEvent())
+            EventBus.getDefault().post(SideKicksSelectedEvent(task))
             dismiss()
         }
 

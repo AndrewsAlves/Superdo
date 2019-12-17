@@ -58,6 +58,8 @@ dependencies {
     implementation 'com.thesurix.gesturerecycler:gesture-recycler:1.9.0' // reorder Recyclerview
     implementation 'com.github.woxthebox:draglistview:1.6.6'
     implementation 'com.ernestoyaquello.dragdropswiperecyclerview:drag-drop-swipe-recyclerview:0.5.0'
+    implementation 'com.github.zijing07:ExTextView:v0.1.0' // strike textview
+
 
     // animation library
     implementation 'com.daimajia.easing:library:2.0@aar'

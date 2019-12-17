@@ -7,11 +7,14 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
+import android.media.Image;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,6 +46,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import lib.mozidev.me.extextview.ExTextView;
+import lib.mozidev.me.extextview.StrikeThroughPainting;
 
 /**
  * Created by Andrews on 15,August,2019
@@ -109,24 +114,40 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         h.tvTaskName.setText(task.getName());
 
+        /*if (task.getBucketColor() != null) {
+            h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
+        }*/
 
-        if (task.getBucketColor() != null) {
-            //h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
+        h.ivRepeat.setVisibility(View.GONE);
+        h.ivDeadline.setVisibility(View.GONE);
+        h.ivSubtasks.setVisibility(View.GONE);
+        h.ivRemind.setVisibility(View.GONE);
+        h.ivFocus.setVisibility(View.GONE);
+        h.parentIcons.setVisibility(View.GONE);
+
+        if (task.getRepeat() != null && task.getRepeat().isEnabled) {
+            h.ivRepeat.setVisibility(View.VISIBLE);
+            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.getDeadline() != null && task.getDeadline().isEnabled) {
-            String dueDate = task.getDeadline().getDate() + " " + task.getDeadline().getMonthString();
-            h.tvDueDate.setText(dueDate);
-
-            h.tvDueDate.setVisibility(View.VISIBLE);
+            h.ivDeadline.setVisibility(View.VISIBLE);
+            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getRepeat() != null) {
-            h.ivRepeat.setVisibility(View.VISIBLE);
-        }
-
-        if (task.getSubtasks() != null && !task.getSubtasks().isEnabled) {
+        if (task.getSubtasks() != null && task.getSubtasks().isEnabled) {
             h.ivSubtasks.setVisibility(View.VISIBLE);
+            h.parentIcons.setVisibility(View.VISIBLE);
+        }
+
+        if (task.getRemind() != null && task.getRemind().isEnabled) {
+            h.ivRemind.setVisibility(View.VISIBLE);
+            h.parentIcons.setVisibility(View.VISIBLE);
+        }
+
+        if (task.getFocus() != null && task.getFocus().isEnabled) {
+            h.ivFocus.setVisibility(View.VISIBLE);
+            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.getBucketId() != null) {
@@ -154,12 +175,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         h.lottieCheckView.addValueCallback(
                 new KeyPath("Shape Layer 1", "**"),
                 LottieProperty.COLOR_FILTER,
-                new SimpleLottieValueCallback<ColorFilter>() {
-                    @Override
-                    public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
-                        return new PorterDuffColorFilter(getColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
-                    }
-                }
+                frameInfo -> new PorterDuffColorFilter(getColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP)
         );
 
         h.lottieCheckView.setOnClickListener(new View.OnClickListener() {
@@ -169,9 +185,11 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 if (h.isChecked) {
                     h.lottieCheckView.setSpeed(-2f);
                     h.isChecked = false;
+                    strikeInText(h);
                 } else {
                     h.lottieCheckView.setSpeed(1.5f);
                     h.isChecked = true;
+                    strikeOutText(h);
                 }
 
                 task.setTaskCompleted(h.isChecked);
@@ -187,6 +205,34 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 EventBus.getDefault().post(new OpenEditTaskEvent(task));
             }
         });
+    }
+
+    private void strikeOutText(PlaceViewHolder holder) {
+
+        float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                2,
+                context.getResources().getDisplayMetrics());
+
+        holder.painting.cutTextEdge(true)
+                // default to Color.BLACK
+                .color(context.getResources().getColor(R.color.grey3))
+                // default to 2F px
+                .strokeWidth(pix)
+                // default to StrikeThroughPainting.MODE_DEFAULT
+                .mode(StrikeThroughPainting.MODE_DEFAULT)
+                // default to 0.65F
+                .linePosition(0.8F)
+                // default to 0.6F, since the first line is calculated
+                // differently to the following lines
+                .firstLinePosition(0.6F)
+                // default to 1_000 milliseconds, aka 1s
+                .totalTime(500)
+                // do the draw!
+                .strikeThrough();
+    }
+
+    private void strikeInText(PlaceViewHolder holder) {
+        holder.painting.clearStrikeThrough();
     }
 
     @Override
@@ -209,7 +255,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         Log.e(TAG, "onItemMove: from : " + fromPosition);
         taskList.get(toPosition).setTaskIndex(toPosition);
         TaskOrganiser.getInstance().organiseAllTasks();
-        FirestoreManager.getInstance().updateTask( taskList.get(toPosition));
+        FirestoreManager.getInstance().updateTask(taskList.get(toPosition));
         notifyItemMoved(fromPosition, toPosition);
     }
 
@@ -227,16 +273,28 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         public ImageView ivCheck;
 
         @BindView(R.id.tv_tasks_name)
-        public TextView tvTaskName;
-
-        @BindView(R.id.tv_due_date)
-        public TextView tvDueDate;
+        public ExTextView tvTaskName;
 
         @BindView(R.id.iv_repeat)
         public ImageView ivRepeat;
 
-        @BindView(R.id.iv_sub_tasks)
+        @BindView(R.id.iv_deadline)
+        public ImageView ivDeadline;
+
+        @BindView(R.id.iv_subtasks)
         public ImageView ivSubtasks;
+
+        @BindView(R.id.iv_remind)
+        public ImageView ivRemind;
+
+        @BindView(R.id.iv_focus)
+        public ImageView ivFocus;
+
+        @BindView(R.id.parent_ll_task_icons)
+        public LinearLayout parentIcons;
+
+
+        StrikeThroughPainting painting;
 
         public View item;
 
@@ -248,6 +306,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             ButterKnife.bind(this,itemView);
 
             lottieCheckView.setAnimation("anim_check2.json");
+            painting = new StrikeThroughPainting(tvTaskName);
         }
 
     }

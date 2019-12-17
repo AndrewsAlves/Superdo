@@ -50,7 +50,7 @@ class RepeatOnceFragment : Fragment() ,DatePickerDialog.OnDateSetListener, TimeP
     fun initView() {
 
         if (remind.remindType == null) {
-            remind.remindType = RemindType.REMIND_ONCE
+            remind.remindType = RemindType.REMIND_ONCE.name
         }
 
         /////////

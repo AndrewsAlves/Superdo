@@ -124,7 +124,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
                 repeat.times = 1
             }
 
-            when (repeat.repeatType) {
+            when (RepeatType.valueOf(repeat.repeatType)) {
                 RepeatType.Day -> {
                     dlg_repeat_spinner_dwm.setSelection(0)
                 }
@@ -147,14 +147,14 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
 
     fun updateUi() {
 
-        if (repeat.repeatType == RepeatType.Week) {
+        if (repeat.repeatType == RepeatType.Week.name) {
             dlg_repeat_ll_weekdays.visibility = View.VISIBLE
             updateWeedaysUi()
         } else {
             dlg_repeat_ll_weekdays.visibility = View.GONE
         }
 
-        if (repeat.repeatType == RepeatType.Month) {
+        if (repeat.repeatType == RepeatType.Month.name) {
             dlg_repeat_spinner_monthdate.visibility = View.VISIBLE
             dlg_repeat_et_days.visibility = View.GONE
             //dlg_repeat_tv_monthdates.visibility = View.VISIBLE
@@ -247,8 +247,8 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
     override fun onNothingSelected(parent: AdapterView<*>?) { }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        repeat.repeatType = RepeatType.valueOf(repeatType[position])
-        if (repeat.repeatType == RepeatType.Week) {
+        repeat.repeatType = repeatType[position]
+        if (repeat.repeatType == RepeatType.Week.name) {
             updateWeedaysUi()
         }
         dlg_repeat_et_days.setText(repeat.times.toString())

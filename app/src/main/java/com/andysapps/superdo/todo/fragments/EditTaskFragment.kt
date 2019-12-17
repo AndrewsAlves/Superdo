@@ -99,7 +99,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
     private fun initUi() {
 
         editTask_et_taskName.imeOptions = EditorInfo.IME_ACTION_DONE
-        editTask_et_taskName.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        //editTask_et_taskName.setRawInputType(InputType.TYPE_CLASS_TEXT)
 
         editTask_et_taskName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
@@ -124,10 +124,16 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
                     subtask.index = task.subtasks.subtaskList.size - 1
                     subtask.isTaskCompleted = false
                     subtask.title = editTask_et_add_subtask.text.toString()
+
                     task.subtasks.subtaskList.add(subtask)
                     subtaskAdapter!!.updateList()
+                    FirestoreManager.getInstance().updateTask(task)
                     subtaskAdapter!!.notifyItemInserted(task.subtasks.subtaskList.size - 1)
+
                     editTask_et_add_subtask.setText("")
+                } else {
+                    Utils.hideKeyboard(context, editTask_et_add_subtask)
+                    editTask_et_add_subtask.clearFocus()
                 }
             }
 
@@ -437,7 +443,9 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
 
     @Subscribe
     fun onMeessageEvent(event : SideKicksSelectedEvent) {
+        task = event.task.clone()
         updateUi()
+        FirestoreManager.getInstance().updateTask(task)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -446,6 +454,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         task.bucketId = event.bucket.documentId
         task.bucketName = event.bucket.name
         updateUi()
+        FirestoreManager.getInstance().updateTask(task)
     }
 
     //////////////
@@ -456,17 +465,20 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
     fun onMeessageEvent(event : SetDeadlineEvent) {
         task.deadline = event.deadline.clone()
         updateUi()
+        FirestoreManager.getInstance().updateTask(task)
     }
 
     @Subscribe
     fun onMeessageEvent(event : SetRepeatEvent) {
         task.repeat = event.repeat.clone()
         updateUi()
+        FirestoreManager.getInstance().updateTask(task)
     }
 
     @Subscribe
     fun onMeessageEvent(event : SetRemindEvent) {
         task.remind = event.remind.clone()
         updateUi()
+        FirestoreManager.getInstance().updateTask(task)
     }
 }

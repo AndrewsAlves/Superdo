@@ -11,7 +11,7 @@ public class Remind implements Cloneable {
 
     public boolean isEnabled;
 
-    RemindType remindType;
+    String remindType;
 
     SuperDate remindOnce;
 
@@ -36,11 +36,11 @@ public class Remind implements Cloneable {
         isEnabled = enabled;
     }
 
-    public RemindType getRemindType() {
+    public String getRemindType() {
         return remindType;
     }
 
-    public void setRemindType(RemindType remindType) {
+    public void setRemindType(String remindType) {
         this.remindType = remindType;
     }
 
@@ -64,7 +64,11 @@ public class Remind implements Cloneable {
 
         String remindString = "When to remind?";
 
-        switch (remindType) {
+        if (remindType == null) {
+            return remindString;
+        }
+
+        switch (RemindType.valueOf(remindType)) {
             case REMIND_ONCE:
                 remindString = "Remind Once " + remindOnce.getSuperDateString() + " at " + remindOnce.getTimeString();
                 return remindString;
