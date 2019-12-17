@@ -59,6 +59,8 @@ dependencies {
     implementation 'com.github.woxthebox:draglistview:1.6.6'
     implementation 'com.ernestoyaquello.dragdropswiperecyclerview:drag-drop-swipe-recyclerview:0.5.0'
     implementation 'com.github.zijing07:ExTextView:v0.1.0' // strike textview
+    implementation 'uk.co.markormesher:android-fab:2.5.0' // fab view
+
 
 
     // animation library

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+
     <com.andysapps.superdo.todo.views.ViewPagerNoScroll
         android:id="@+id/vp_main"
         android:layout_width="match_parent"
@@ -104,6 +105,7 @@
         android:layout_marginBottom="60dp"/>
 
     <RelativeLayout
+        android:id="@+id/main_rl_bottom_fab_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
@@ -150,5 +152,90 @@
         android:id="@+id/fl_add_task_frag_container"
         android:layout_width="match_parent"
         android:layout_height="140dp"/>
+
+    <LinearLayout
+        android:scaleY="0.0"
+        android:scaleX="0.0"
+        android:id="@+id/main_ll_fab_add_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_above="@id/main_rl_bottom_fab_view"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/black"
+            android:textSize="12sp"/>
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/bg_oval_gradient"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:scaleY="0.0"
+        android:scaleX="0.0"
+        android:id="@+id/main_ll_fab_add_habit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/main_rl_bottom_fab_view"
+        android:layout_toStartOf="@+id/main_ll_fab_add_task"
+        android:gravity="center_vertical"
+        android:layout_marginRight="-15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_medium"
+            android:text="Habit"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/bg_oval_gradient" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:scaleY="0.0"
+        android:scaleX="0.0"
+        android:id="@+id/main_ll_fab_add_shopping_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/cv_maintab"
+        android:layout_toStartOf="@+id/main_ll_fab_add_habit"
+        android:gravity="center_vertical"
+        android:layout_marginRight="-50dp"
+        android:layout_marginBottom="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_medium"
+            android:text="Shopping"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/bg_oval_gradient" />
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>

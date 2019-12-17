@@ -7,7 +7,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
@@ -25,6 +27,7 @@ import com.andysapps.superdo.todo.fragments.CreateNewBucketFragment;
 import com.andysapps.superdo.todo.fragments.EditTaskFragment;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.github.florent37.viewanimator.ViewAnimator;
 import com.kuassivi.component.RipplePulseRelativeLayout;
 
 import org.greenrobot.eventbus.EventBus;
@@ -54,6 +57,17 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.iv_moonbutton)
     ImageView moonButton;
+
+    @BindView(R.id.main_ll_fab_add_task)
+    LinearLayout fabTask;
+
+    @BindView(R.id.main_ll_fab_add_habit)
+    LinearLayout fabHabit;
+
+    @BindView(R.id.main_ll_fab_add_shopping_list)
+    LinearLayout fabShopping;
+
+    boolean isShowingFab = false;
 
     @BindView(R.id.pulseLayout)
     RipplePulseRelativeLayout rippleBackground;
@@ -129,8 +143,20 @@ public class MainActivity extends AppCompatActivity {
     public void clickAddTask() {
         switch (moonButtonType) {
             case ADD_TASK:
-                AddTaskFragment bottomSheetFragment = new AddTaskFragment();
-                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+                if (isShowingFab) {
+                    animateFab(1.0f, 0.0f, fabTask, 0,0, 0, 0, 200);
+                    animateFab(1.0f, 0.0f, fabHabit, 150,0,200, 0, 200);
+                    animateFab(1.0f, 0.0f, fabShopping, 350, 0,200, 0, 0);
+                    isShowingFab = false;
+                } else {
+                    animateFab(0.0f, 1.0f, fabTask, 0,0,0, 200, 0);
+                    animateFab(0.0f, 1.0f, fabHabit, 150,200,0, 200, 0);
+                    animateFab(0.0f, 1.0f, fabShopping, 350,200,0, 0, 0);
+                    isShowingFab = true;
+                }
+
+               // AddTaskFragment bottomSheetFragment = new AddTaskFragment();
+               // bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                 break;
             case ADD_BUCKET:
                 onMessageEvent(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(new Bucket(), false), true));
@@ -171,6 +197,23 @@ public class MainActivity extends AppCompatActivity {
         onMessageEvent(new RemoveFragmentEvents()); // occupied fragments
     }
 
+    //////////////
+    //// FAB ANIMATIONS
+    //////////////
+
+    public void animateFab(float start, float end, View fabButton, long delay,int x1, int x2, int y1, int y2) {
+
+        ViewAnimator
+                .animate(fabButton)
+                .scale(start, end)
+                .translationY(y1, y2)
+                .translationX(x1, x2)
+                .decelerate()
+                .duration(200)
+                .startDelay(delay)
+                .start();
+    }
+
     //////////////////////
     /////// EVENTS
     /////////////////////
@@ -209,8 +252,6 @@ public class MainActivity extends AppCompatActivity {
                 moonButton.setImageResource(R.drawable.ic_tick_create_bucket);
                 break;
         }
-
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
