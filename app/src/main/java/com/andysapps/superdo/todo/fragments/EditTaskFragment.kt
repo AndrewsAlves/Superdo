@@ -1,9 +1,10 @@
 package com.andysapps.superdo.todo.fragments
 
 
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import butterknife.ButterKnife
+import com.airbnb.lottie.LottieProperty
+import com.airbnb.lottie.model.KeyPath
+import com.airbnb.lottie.value.SimpleLottieValueCallback
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
@@ -89,6 +93,8 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         initUi()
         initClicks()
         updateUi()
+
+
     }
 
     override fun onDestroyView() {
@@ -97,6 +103,8 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
     }
 
     private fun initUi() {
+
+        editTask_lottie_anim.setAnimation("anim_check2_1.json")
 
         editTask_et_taskName.imeOptions = EditorInfo.IME_ACTION_DONE
         //editTask_et_taskName.setRawInputType(InputType.TYPE_CLASS_TEXT)
@@ -116,6 +124,28 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+
+        editTask_lottie_anim.setOnClickListener(View.OnClickListener {
+
+            editTask_lottie_anim.setMinAndMaxProgress(0.0f, 1.0f)
+
+            if (isChecked) {
+                editTask_lottie_anim.speed = -2f
+                isChecked = false
+            } else {
+                editTask_lottie_anim.speed = 1.5f
+                isChecked = true
+            }
+
+            task.isTaskCompleted = isChecked
+            FirestoreManager.getInstance().updateTask(task)
+
+            editTask_lottie_anim.playAnimation()
+        })
+
+        ///////////////
+        ///// SUBTASK RECYCLER
+        //////////////
 
         editTask_et_add_subtask.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -139,10 +169,6 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
 
             true
         })
-
-        ///////////////
-        ///// SUBTASK RECYCLER
-        //////////////
 
         if (task.subtasks == null) {
             task.subtasks = Subtasks(false)
@@ -172,27 +198,50 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
             editTask_et_desc.setText(task.description)
         }
 
-        if (isChecked) {
-            lottie_check_view.setProgress(1.0f)
-        } else {
-            lottie_check_view.setProgress(0.0f)
-        }
-
-
         //////////////
-        //// BUCKET
+        //// BUCKET & TASK COMPLETED UI
 
         if (task.bucketId != null) {
             editTask_tv_bucketName.setText(task.bucketName)
             editTask_tv_bucketName.setTextColor(resources.getColor(R.color.black))
             when (BucketColors.valueOf(task.bucketColor)) {
-                BucketColors.Red -> editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_red)
-                BucketColors.Green -> editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_green)
-                BucketColors.SkyBlue -> editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_skyblue)
-                BucketColors.InkBlue -> editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_inkblue)
-                BucketColors.Orange -> editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_orange)
+                BucketColors.Red -> {
+                    editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_red)
+                    iv_check_task.setImageResource(R.drawable.img_oval_light_red)
+                }
+                BucketColors.Green -> {
+                    editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_green)
+                    iv_check_task.setImageResource(R.drawable.img_oval_light_green)
+                }
+                BucketColors.SkyBlue -> {
+                    editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_skyblue)
+                    iv_check_task.setImageResource(R.drawable.img_oval_light_skyblue)
+                }
+                BucketColors.InkBlue -> {
+                    editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_inkblue)
+                    iv_check_task.setImageResource(R.drawable.img_oval_light_inkblue)
+                }
+                BucketColors.Orange -> {
+                    editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_orange)
+                    iv_check_task.setImageResource(R.drawable.img_oval_light_orange)
+                }
             }
+
+            editTask_lottie_anim.addValueCallback(KeyPath("Shape Layer 1", "**"), LottieProperty.COLOR_FILTER, SimpleLottieValueCallback {
+                PorterDuffColorFilter(Utils.getColor(context, task.getBucketColor()), PorterDuff.Mode.SRC_ATOP)
+            })
         }
+
+        isChecked = task.isTaskCompleted
+
+        if (isChecked) {
+            editTask_lottie_anim.setMinAndMaxProgress(1.0f, 1.0f)
+        } else {
+            editTask_lottie_anim.setMinAndMaxProgress(0.0f, 0.0f)
+            Log.e("tag", "false task")
+        }
+
+        editTask_lottie_anim.playAnimation()
 
         //////////////
         //// DO DATE
@@ -334,20 +383,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         }
 
         ///// Mark done
-        lottie_check_view.setOnClickListener(View.OnClickListener {
-            if (isChecked) {
-                lottie_check_view.setSpeed(-2f)
-                isChecked = false
-            } else {
-                lottie_check_view.setSpeed(1.5f)
-                isChecked = true
-            }
 
-            task.isTaskCompleted = isChecked
-            FirestoreManager.getInstance().updateTask(task)
-
-            lottie_check_view.playAnimation()
-        })
     }
 
     fun showDatePicker() {

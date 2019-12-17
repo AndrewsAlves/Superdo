@@ -102,21 +102,21 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         Task task = taskList.get(position);
 
-        h.isChecked = task.isTaskCompleted();
-
-        if (h.isChecked) {
-            h.lottieCheckView.setProgress(1.0f);
-        } else {
-            h.lottieCheckView.setProgress(0.0f);
-        }
-
-        h.lottieCheckView.pauseAnimation();
-
         h.tvTaskName.setText(task.getName());
 
         /*if (task.getBucketColor() != null) {
             h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
         }*/
+
+        h.isChecked = task.isTaskCompleted();
+
+        if (h.isChecked) {
+            h.lottieCheckView.setMinAndMaxProgress(1.0f, 1.0f);
+        } else {
+            h.lottieCheckView.setMinAndMaxProgress(0.0f, 0.0f);
+        }
+
+        h.lottieCheckView.playAnimation();
 
         h.ivRepeat.setVisibility(View.GONE);
         h.ivDeadline.setVisibility(View.GONE);
@@ -175,13 +175,18 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         h.lottieCheckView.addValueCallback(
                 new KeyPath("Shape Layer 1", "**"),
                 LottieProperty.COLOR_FILTER,
-                frameInfo -> new PorterDuffColorFilter(getColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP)
+                new SimpleLottieValueCallback<ColorFilter>() {
+                    @Override
+                    public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
+                        return new PorterDuffColorFilter(Utils.getColor(context, task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
         );
 
         h.lottieCheckView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
                 if (h.isChecked) {
                     h.lottieCheckView.setSpeed(-2f);
                     h.isChecked = false;
@@ -252,10 +257,13 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             }
         }
 
+        for (Task task : taskList) {
+            task.setTaskIndex(taskList.indexOf(task));
+            FirestoreManager.getInstance().updateTask(task);
+        }
+
         Log.e(TAG, "onItemMove: from : " + fromPosition);
-        taskList.get(toPosition).setTaskIndex(toPosition);
         TaskOrganiser.getInstance().organiseAllTasks();
-        FirestoreManager.getInstance().updateTask(taskList.get(toPosition));
         notifyItemMoved(fromPosition, toPosition);
     }
 
@@ -293,7 +301,6 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         @BindView(R.id.parent_ll_task_icons)
         public LinearLayout parentIcons;
 
-
         StrikeThroughPainting painting;
 
         public View item;
@@ -309,36 +316,5 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             painting = new StrikeThroughPainting(tvTaskName);
         }
 
-    }
-
-    public int getColor(String colors) {
-
-        if (colors == null) {
-            return  context.getResources().getColor(R.color.grey4);
-        }
-
-        BucketColors colors1 = BucketColors.valueOf(colors);
-
-        int color = R.color.grey4;
-        switch (colors1) {
-            case Red:
-                color = R.color.lightRed;
-                break;
-            case Green:
-                color = R.color.green;
-                break;
-            case Orange:
-                color = R.color.orange;
-                break;
-            case SkyBlue:
-                color = R.color.skyblue;
-                break;
-            case InkBlue:
-                color = R.color.inkBlue;
-                break;
-
-        }
-
-        return context.getResources().getColor(color);
     }
 }

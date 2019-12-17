@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.model.Bucket;
@@ -86,6 +87,54 @@ public class Utils {
         if (superdate.getDate() == getTomorrow().get(Calendar.DAY_OF_MONTH)
                 && superdate.getMonth() - 1 == getTomorrow().get(Calendar.MONTH)
                 && superdate.getYear() == getTomorrow().get(Calendar.YEAR)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isSuperdateIsPast(SuperDate superdate) {
+
+        if (superdate == null) {
+            return false;
+        }
+
+        if (superdate.getYear() < Calendar.getInstance().get(Calendar.YEAR)) {
+            return true;
+        }
+
+        if (superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
+                && superdate.getMonth() - 1 < Calendar.getInstance().get(Calendar.MONTH)) {
+            return true;
+        }
+
+        if (superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
+                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
+                && superdate.getDate() < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isSuperdateIsSomeday(SuperDate superdate) {
+
+        if (superdate == null) {
+            return true;
+        }
+
+        if (superdate.getYear() > Calendar.getInstance().get(Calendar.YEAR)) {
+            return true;
+        }
+
+        if (superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
+                && superdate.getMonth() - 1 > Calendar.getInstance().get(Calendar.MONTH)) {
+            return true;
+        }
+
+        if (superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
+                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
+                && superdate.getDate() > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
             return true;
         }
 
@@ -228,6 +277,37 @@ public class Utils {
         }
 
         return R.drawable.ic_time_off;
+    }
+
+    public static int getColor(Context context, String colors) {
+
+        if (colors == null) {
+            return  context.getResources().getColor(R.color.grey4);
+        }
+
+        BucketColors colors1 = BucketColors.valueOf(colors);
+
+        int color = R.color.grey4;
+        switch (colors1) {
+            case Red:
+                color = R.color.lightRed;
+                break;
+            case Green:
+                color = R.color.green;
+                break;
+            case Orange:
+                color = R.color.orange;
+                break;
+            case SkyBlue:
+                color = R.color.skyblue;
+                break;
+            case InkBlue:
+                color = R.color.inkBlue;
+                break;
+
+        }
+
+        return context.getResources().getColor(color);
     }
 
 
