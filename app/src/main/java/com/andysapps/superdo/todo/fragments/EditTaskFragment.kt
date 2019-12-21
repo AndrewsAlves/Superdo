@@ -450,6 +450,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         task.doDate.hasDate = true
         showTimePicker()
         updateUi()
+        TaskOrganiser.getInstance().organiseAllTasks()
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
@@ -461,6 +462,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         }
         task.doDate.hasTime = true
         updateUi()
+        TaskOrganiser.getInstance().organiseAllTasks()
     }
 
 

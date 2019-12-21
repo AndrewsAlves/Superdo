@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo.manager;
 
 import android.util.Log;
 
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
@@ -12,6 +13,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+
+import io.grpc.okhttp.internal.Util;
 
 /**
  * Created by Admin on 06,November,2019
@@ -61,7 +64,26 @@ public class TaskOrganiser {
 
             allTaskList.add(task);
 
-            if (task.getListedIn() == TaskListing.TODAY) {
+            if (Utils.isSuperDateToday(task.getDoDate())) {
+                todayTaskList.add(task);
+            }
+
+            // add all past tasks to today tasks
+            if (Utils.isSuperdateIsPast(task.getDoDate())) {
+                todayTaskList.add(task);
+            }
+
+            if (Utils.isSuperDateTomorrow(task.getDoDate())) {
+                tomorrowTaskList.add(task);
+            }
+
+            if (Utils.isSuperdateIsSomeday(task.getDoDate())) {
+                someDayTaskList.add(task);
+            }
+
+
+
+           /* if (task.getListedIn() == TaskListing.TODAY) {
                 todayTaskList.add(task);
             }
 
@@ -89,7 +111,7 @@ public class TaskOrganiser {
                         tomorrowTaskList.add(task);
                     }
                 }
-            }
+            }*/
         }
 
         // Sort the task by indexing
