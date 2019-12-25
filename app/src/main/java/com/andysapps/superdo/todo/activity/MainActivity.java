@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,11 +45,11 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.ib_tasks)
     ImageView imgTasks;
 
+    @BindView(R.id.ib_profile)
+    ImageView imgProfile;
+
     @BindView(R.id.vp_main)
     ViewPager mainViewPager;
-
-    @BindView(R.id.tv_tab1_name)
-    TextView tvToday;
 
     @BindView(R.id.tv_today_msg)
     TextView tvMsg;
@@ -59,13 +58,13 @@ public class MainActivity extends AppCompatActivity {
     ImageView moonButton;
 
     @BindView(R.id.main_ll_fab_add_task)
-    LinearLayout fabTask;
+    LinearLayout fabTaskButton;
 
     @BindView(R.id.main_ll_fab_add_habit)
-    LinearLayout fabHabit;
+    LinearLayout fabHabitButton;
 
     @BindView(R.id.main_ll_fab_add_shopping_list)
-    LinearLayout fabShopping;
+    LinearLayout fabShoppingButton;
 
     boolean isShowingFab = false;
 
@@ -100,11 +99,15 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (i) {
                     case 0:
-                        mainTabs = MainTabs.TODAY;
+                        mainTabs = MainTabs.TODAY_TASKS;
                         rippleBackground.startPulse();
                         break;
                     case 1:
-                        mainTabs = MainTabs.TASKS;
+                        mainTabs = MainTabs.BUCKET_TASKS;
+                        rippleBackground.stopPulse();
+                        break;
+                    case 2:
+                        mainTabs = MainTabs.PROFILE;
                         rippleBackground.stopPulse();
                         break;
                 }
@@ -127,16 +130,40 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.tab_1)
     public void clickToday() {
-        mainTabs = MainTabs.TODAY;
+        mainTabs = MainTabs.TODAY_TASKS;
         mainViewPager.setCurrentItem(0);
         updateTabUi(mainTabs);
     }
 
     @OnClick(R.id.tab_2)
     public void clickTasks() {
-        mainTabs = MainTabs.TASKS;
+        mainTabs = MainTabs.BUCKET_TASKS;
         mainViewPager.setCurrentItem(1);
         updateTabUi(mainTabs);
+    }
+
+    @OnClick(R.id.tab_3)
+    public void clickProfile() {
+        mainTabs = MainTabs.PROFILE;
+        mainViewPager.setCurrentItem(2);
+        updateTabUi(mainTabs);
+    }
+
+    @OnClick(R.id.main_ll_fab_add_task)
+    public void clickTask() {
+        AddTaskFragment bottomSheetFragment = new AddTaskFragment();
+        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+        closeFab();
+    }
+
+    @OnClick(R.id.main_ll_fab_add_habit)
+    public void clickHabit() {
+        closeFab();
+    }
+
+    @OnClick(R.id.main_ll_fab_add_shopping_list)
+    public void clickShopping() {
+        closeFab();
     }
 
     @OnClick(R.id.btn_add_task)
@@ -144,19 +171,10 @@ public class MainActivity extends AppCompatActivity {
         switch (moonButtonType) {
             case ADD_TASK:
                 if (isShowingFab) {
-                    animateFab(1.0f, 0.0f, fabTask, 0,0, 0, 0, 200);
-                    animateFab(1.0f, 0.0f, fabHabit, 150,0,200, 0, 200);
-                    animateFab(1.0f, 0.0f, fabShopping, 350, 0,200, 0, 0);
-                    isShowingFab = false;
+                    closeFab();
                 } else {
-                    animateFab(0.0f, 1.0f, fabTask, 0,0,0, 200, 0);
-                    animateFab(0.0f, 1.0f, fabHabit, 150,200,0, 200, 0);
-                    animateFab(0.0f, 1.0f, fabShopping, 350,200,0, 0, 0);
-                    isShowingFab = true;
+                    openFab();
                 }
-
-               // AddTaskFragment bottomSheetFragment = new AddTaskFragment();
-               // bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                 break;
             case ADD_BUCKET:
                 onMessageEvent(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(new Bucket(), false), true));
@@ -168,11 +186,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void openFab() {
+        animateFab(0.0f, 1.0f, fabTaskButton, 0,0,0, 300, 0);
+        animateFab(0.0f, 1.0f, fabHabitButton, 75,300,0, 300, 0);
+        animateFab(0.0f, 1.0f, fabShoppingButton, 150,300,0, 0, 0);
+        isShowingFab = true;
+    }
+
+     public void closeFab() {
+         animateFab(1.0f, 0.0f, fabTaskButton, 0,0, 0, 0, 300);
+         animateFab(1.0f, 0.0f, fabHabitButton, 75,0,300, 0, 300);
+         animateFab(1.0f, 0.0f, fabShoppingButton, 150, 0,300, 0, 0);
+         isShowingFab = false;
+     }
+
     public void updateTabUi(MainTabs tabs) {
 
-        imgDayNight.setImageResource(R.drawable.ic_day_off);
-        imgTasks.setImageResource(R.drawable.ic_tasks_off);
-        tvToday.setTextColor(getResources().getColor(R.color.grey2));
+        imgDayNight.setImageResource(R.drawable.ic_today_tasks_off);
+        imgTasks.setImageResource(R.drawable.ic_bucket_tasks_off);
+        imgProfile.setImageResource(R.drawable.ic_profile_off);
 
         tvMsg.setText(" ");
 
@@ -181,16 +213,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         switch (tabs) {
-            case TODAY:
-                imgDayNight.setImageResource(R.drawable.ic_day_on);
-                tvToday.setTextColor(getResources().getColor(R.color.black));
+            case TODAY_TASKS:
+                imgDayNight.setImageResource(R.drawable.ic_today_tasks_on);
                 if (isNight) {
                     imgDayNight.setImageResource(R.drawable.ic_night_on);
                 }
 
                 break;
-            case TASKS:
-                imgTasks.setImageResource(R.drawable.ic_tasks_on);
+            case BUCKET_TASKS:
+                imgTasks.setImageResource(R.drawable.ic_bucket_tasks_on);
+                break;
+            case PROFILE:
+                imgProfile.setImageResource(R.drawable.ic_profile_on);
                 break;
         }
 
@@ -209,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 .translationY(y1, y2)
                 .translationX(x1, x2)
                 .decelerate()
-                .duration(200)
+                .duration(250)
                 .startDelay(delay)
                 .start();
     }

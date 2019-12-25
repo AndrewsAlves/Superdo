@@ -69,13 +69,9 @@ public class Utils {
             return false;
         }
 
-        if (superdate.getDate() == Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-        && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
-        && superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)) {
-            return true;
-        }
-
-        return false;
+        return superdate.getDate() == Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
+                && superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR);
     }
 
     public static boolean isSuperDateTomorrow(SuperDate superdate) {
@@ -93,7 +89,7 @@ public class Utils {
         return false;
     }
 
-    public static boolean isSuperdateIsPast(SuperDate superdate) {
+    public static boolean isSuperDateIsPast(SuperDate superdate) {
 
         if (superdate == null) {
             return false;

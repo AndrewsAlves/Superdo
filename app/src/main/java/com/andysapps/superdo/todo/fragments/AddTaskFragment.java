@@ -12,9 +12,12 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -130,12 +133,29 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
 
+        initUi();
         Utils.showSoftKeyboard(getContext(), etTaskName);
 
         task = new Task();
         clickToday();
         // Inflate the layout for this fragment
         return v;
+    }
+
+    public void initUi() {
+        etTaskName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    clickAddTask();
+                    Utils.hideKeyboard(getContext(), etTaskName);
+                    if (validate()){
+                        //dismiss();
+                    }
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -221,11 +241,23 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     public void showDatePicker() {
         Calendar now = Calendar.getInstance();
-        DatePickerDialog dpd = DatePickerDialog.newInstance(
-                AddTaskFragment.this,
-                now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH)
+
+        int day = now.get(Calendar.DAY_OF_MONTH);
+        int month = now.get(Calendar.MONTH);
+        int year = now.get(Calendar.YEAR);
+
+        if (task.getDoDate() != null) {
+            day = task.getDoDate().date;
+            month = task.getDoDate().month;
+            year = task.getDoDate().year;
+            Log.e(TAG, "clickTomorrow: tomorrow date in show dialog: " + day);
+        }
+
+        DatePickerDialog dpd  = DatePickerDialog.newInstance(
+                this,
+                year,
+                month - 1,
+                day
         );
 
         dpd.setAccentColor(getResources().getColor(R.color.lightRed));
@@ -235,15 +267,20 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     }
 
     public void showTimePicker() {
-        Date date = new Date();
-        date.getTime();
         Calendar now = Calendar.getInstance();
+        int hours = now.get(Calendar.HOUR);
+        int min = now.get(Calendar.MINUTE);
+
+        if (task.getDoDate() != null) {
+            hours = task.getDoDate().hours;
+            min = task.getDoDate().minutes;
+        }
+
         TimePickerDialog dpd = TimePickerDialog.newInstance(
-                AddTaskFragment.this,
-                now.get(Calendar.HOUR),
-                now.get(Calendar.MINUTE),
-                false
-        );
+                this,
+                hours,
+                min,
+                false);
 
         dpd.setAccentColor(getResources().getColor(R.color.lightRed));
         dpd.show(getFragmentManager(), "Datepickerdialog");
@@ -254,7 +291,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         task.setListedIn(TaskListing.TODAY);
         SuperDate date = new SuperDate(Calendar.getInstance().getTime());
         date.setDate(Calendar.getInstance().get(Calendar.DATE));
-        date.setMonth(Calendar.getInstance().get(Calendar.MONTH));
+        date.setMonth(Calendar.getInstance().get(Calendar.MONTH) + 1);
         date.setYear(Calendar.getInstance().get(Calendar.YEAR));
         if (!isTimeSet) {
             date.setTime(Utils.getDefaultTime(task.getListedIn()), 0);
@@ -269,7 +306,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         Calendar tomorrow = Utils.getTomorrow();
         SuperDate date = new SuperDate(tomorrow.getTime());
         date.setDate(tomorrow.get(Calendar.DATE));
-        date.setMonth(tomorrow.get(Calendar.MONTH));
+        date.setMonth(tomorrow.get(Calendar.MONTH) + 1);
         date.setYear(tomorrow.get(Calendar.YEAR));
         if (!isTimeSet) {
             date.setTime(Utils.getDefaultTime(task.getListedIn()), 0);
@@ -335,11 +372,23 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         SuperDate date = new SuperDate(dayOfMonth, monthOfYear + 1, year);
+
+        if (Utils.isSuperDateToday(date)) {
+            clickToday();
+            return;
+        } else if (Utils.isSuperDateTomorrow(date)){
+            clickTomorrow();
+            return;
+        } else {
+            task.setListedIn(TaskListing.SOMEDAY);
+        }
+
         if (task.getDoDate() != null) {
             task.getDoDate().setDoDate(dayOfMonth, monthOfYear + 1, year);
         } else {
             task.setDoDate(date);
         }
+
         updateUi();
         showKeyboradAsync();
     }
@@ -366,9 +415,8 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         if (event.getDocumentChange() != TaskUpdateType.Added) {
             return;
         }
-        TaskListing lastTaskListing = task.getListedIn();
         task = new Task();
-        task.setListedIn(lastTaskListing);
+        task.setName(null);
         etTaskName.getText().clear();
         updateUi();
     }

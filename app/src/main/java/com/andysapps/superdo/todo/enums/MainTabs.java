@@ -5,8 +5,9 @@ package com.andysapps.superdo.todo.enums;
  */
 
 public enum MainTabs {
-    TODAY(0),
-    TASKS(1);
+    TODAY_TASKS(0),
+    BUCKET_TASKS(1),
+    PROFILE(2);
 
     private final int value;
     private MainTabs(int value) {

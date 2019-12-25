@@ -270,9 +270,9 @@ public class Task implements Cloneable {
 
         String duedate;
 
-        if (doDate.getDate() == Calendar.getInstance().get(Calendar.DATE)) {
+        if (Utils.isSuperDateToday(doDate)) {
             return "Do Today by " + getTimeString();
-        } else if (doDate.getDate() == Utils.getTomorrow().get(Calendar.DATE)) {
+        } else if (Utils.isSuperDateTomorrow(doDate)) {
             return "Do Tomorrow by " + getTimeString();
         }
 
@@ -294,8 +294,10 @@ public class Task implements Cloneable {
         int hours = doDate.hours;
         String meridien = " AM";
 
-        if (hours > 12) {
-            hours = doDate.hours - 12;
+        if (hours >= 12) {
+            if (hours != 12) {
+                hours = doDate.hours - 12;
+            }
             meridien = " PM";
         }
 

@@ -62,7 +62,6 @@ dependencies {
     implementation 'uk.co.markormesher:android-fab:2.5.0' // fab view
 
 
-
     // animation library
     implementation 'com.daimajia.easing:library:2.0@aar'
     implementation 'com.daimajia.androidanimations:library:2.3@aar'

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.andysapps.superdo.todo.fragments.BucketFragment;
 import com.andysapps.superdo.todo.fragments.BucketTasksFragment;
+import com.andysapps.superdo.todo.fragments.ProfileFragment;
 import com.andysapps.superdo.todo.fragments.TodayFragment;
 
 /**
@@ -27,6 +28,8 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
                 return new TodayFragment();
             case 1:
                 return new BucketTasksFragment();
+            case 2:
+                return new ProfileFragment();
         }
 
         return null;
@@ -34,6 +37,6 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 }

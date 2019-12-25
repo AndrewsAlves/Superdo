@@ -8,13 +8,10 @@ import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-
-import io.grpc.okhttp.internal.Util;
 
 /**
  * Created by Admin on 06,November,2019
@@ -65,25 +62,32 @@ public class TaskOrganiser {
             allTaskList.add(task);
 
             if (Utils.isSuperDateToday(task.getDoDate())) {
+                task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
             }
 
             // add all past tasks to today tasks
-            if (Utils.isSuperdateIsPast(task.getDoDate())) {
+            if (Utils.isSuperDateIsPast(task.getDoDate())) {
+                task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
             }
 
             if (Utils.isSuperDateTomorrow(task.getDoDate())) {
+                task.setListedIn(TaskListing.TOMORROW);
                 tomorrowTaskList.add(task);
             }
 
             if (Utils.isSuperdateIsSomeday(task.getDoDate())) {
+                task.setListedIn(TaskListing.SOMEDAY);
                 someDayTaskList.add(task);
+                //Log.e(TAG, "organiseAllTasks: task name : " + task.getName());
+                //Log.e(TAG, "organiseAllTasks: index : " + task.getTaskIndex());
+                //Log.e(TAG, "organiseAllTasks: Listing : SOMEDAY");
             }
 
 
 
-           /* if (task.getListedIn() == TaskListing.TODAY) {
+           /* if (task.getListedIn() == TaskListing.TODAY_TASKS) {
                 todayTaskList.add(task);
             }
 
@@ -95,7 +99,7 @@ public class TaskOrganiser {
 
                 // add all tomorrow task to today if thier timestamp is less than current timestamp
                 if (task.getDoDate().getTimestamp().getTime() < Calendar.getInstance().getTime().getTime()) {
-                    task.setListedIn(TaskListing.TODAY);
+                    task.setListedIn(TaskListing.TODAY_TASKS);
                     todayTaskList.add(task);
                     FirestoreManager.getInstance().updateTask(task); // update tomorrow task to today
                 } else {
@@ -104,7 +108,7 @@ public class TaskOrganiser {
                     int todayDate = Calendar.getInstance().get(Calendar.DATE);
 
                     if (taskDate <= todayDate) {
-                        task.setListedIn(TaskListing.TODAY);
+                        task.setListedIn(TaskListing.TODAY_TASKS);
                         todayTaskList.add(task);
                         FirestoreManager.getInstance().updateTask(task); // update tomorrow task to today
                     } else {

@@ -38,17 +38,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_day_off" />
-
-                <TextView
-                    android:id="@+id/tv_tab1_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TODAY"
-                    android:textSize="11sp"
-                    android:textColor="@color/grey2"
-                    android:layout_marginStart="10dp"
-                    android:fontFamily="@font/montserrat_medium"/>
+                    android:src="@drawable/ic_today_tasks_off" />
 
             </LinearLayout>
 
@@ -64,13 +54,124 @@
                     android:id="@+id/ib_tasks"
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_tasks_off" />
+                    android:src="@drawable/ic_bucket_tasks_off" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tab_3"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="match_parent"
+                style="@style/ripple_background">
+
+                <ImageView
+                    android:id="@+id/ib_profile"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_profile_off" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <FrameLayout
+        android:id="@+id/fl_fragment_container_behind_add"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"/>
+
+    <!-- MOON BUTTON BUTTONS -->
+
+    <LinearLayout
+        android:scaleY="0.0"
+        android:scaleX="0.0"
+        android:id="@+id/main_ll_fab_add_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_above="@id/main_rl_bottom_fab_view"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/black"
+            android:textSize="12sp"/>
+
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/bg_oval_gradient"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:scaleY="0.0"
+        android:scaleX="0.0"
+        android:id="@+id/main_ll_fab_add_habit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/main_rl_bottom_fab_view"
+        android:layout_toStartOf="@+id/main_ll_fab_add_task"
+        android:gravity="center_vertical"
+        android:layout_marginRight="-15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_medium"
+            android:text="Habit"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/bg_oval_gradient" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:scaleY="0.0"
+        android:scaleX="0.0"
+        android:id="@+id/main_ll_fab_add_shopping_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/cv_maintab"
+        android:layout_toStartOf="@+id/main_ll_fab_add_habit"
+        android:gravity="center_vertical"
+        android:layout_marginRight="-50dp"
+        android:layout_marginBottom="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_medium"
+            android:text="Shopping"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/bg_oval_gradient" />
+
+    </LinearLayout>
+
+
+    <!-- MOON BUTTON -->
 
     <RelativeLayout
         android:layout_width="200dp"
@@ -98,28 +199,11 @@
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:id="@+id/fl_fragment_container_behind_add"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"/>
-
     <RelativeLayout
-        android:id="@+id/main_rl_bottom_fab_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
         android:layout_alignParentBottom="true">
-
-        <TextView
-            android:id="@+id/tv_today_msg"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Great! you dont have any tasks ?"
-            android:textSize="16sp"
-            android:layout_centerVertical="true"/>
 
         <RelativeLayout
             android:id="@+id/btn_add_task"
@@ -141,6 +225,27 @@
 
     </RelativeLayout>
 
+    <!-- NOTIFICATION -->
+
+    <RelativeLayout
+        android:id="@+id/main_rl_bottom_fab_view"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/tv_today_msg"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Great! you dont have any tasks ?"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
     <FrameLayout
         android:id="@+id/fl_fragment_container"
         android:layout_width="match_parent"
@@ -152,90 +257,5 @@
         android:id="@+id/fl_add_task_frag_container"
         android:layout_width="match_parent"
         android:layout_height="140dp"/>
-
-    <LinearLayout
-        android:scaleY="0.0"
-        android:scaleX="0.0"
-        android:id="@+id/main_ll_fab_add_task"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_above="@id/main_rl_bottom_fab_view"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="50dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Task"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/black"
-            android:textSize="12sp"/>
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/bg_oval_gradient"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:scaleY="0.0"
-        android:scaleX="0.0"
-        android:id="@+id/main_ll_fab_add_habit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/main_rl_bottom_fab_view"
-        android:layout_toStartOf="@+id/main_ll_fab_add_task"
-        android:gravity="center_vertical"
-        android:layout_marginRight="-15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_medium"
-            android:text="Habit"
-            android:textColor="@color/black"
-            android:textSize="12sp" />
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/bg_oval_gradient" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:scaleY="0.0"
-        android:scaleX="0.0"
-        android:id="@+id/main_ll_fab_add_shopping_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/cv_maintab"
-        android:layout_toStartOf="@+id/main_ll_fab_add_habit"
-        android:gravity="center_vertical"
-        android:layout_marginRight="-50dp"
-        android:layout_marginBottom="15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_medium"
-            android:text="Shopping"
-            android:textColor="@color/black"
-            android:textSize="12sp" />
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/bg_oval_gradient" />
-
-    </LinearLayout>
-
-
 
 </RelativeLayout>
