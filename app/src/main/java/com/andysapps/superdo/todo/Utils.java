@@ -130,7 +130,7 @@ public class Utils {
 
         if (superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
                 && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
-                && superdate.getDate() > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
+                && superdate.getDate() > getTomorrow().get(Calendar.DAY_OF_MONTH)) {
             return true;
         }
 

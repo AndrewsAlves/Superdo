@@ -148,7 +148,6 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     clickAddTask();
-                    Utils.hideKeyboard(getContext(), etTaskName);
                     if (validate()){
                         //dismiss();
                     }
@@ -320,6 +319,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         task.setListedIn(TaskListing.SOMEDAY);
         task.setDoDate(null);
         updateUi();
+        showDatePicker();
     }
 
     @OnClick(R.id.tv_do_date)
@@ -389,6 +389,10 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
             task.setDoDate(date);
         }
 
+        if (!task.getDoDate().hasTime) {
+            showTimePicker();
+        }
+
         updateUi();
         showKeyboradAsync();
     }
@@ -417,6 +421,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         }
         task = new Task();
         task.setName(null);
+        task.setListedIn(event.getTask().getListedIn());
         etTaskName.getText().clear();
         updateUi();
     }
