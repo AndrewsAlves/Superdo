@@ -419,9 +419,10 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         if (event.getDocumentChange() != TaskUpdateType.Added) {
             return;
         }
-        task = new Task();
-        task.setName(null);
-        task.setListedIn(event.getTask().getListedIn());
+        //task = new Task();
+        task.setName("");
+        //task.setListedIn(event.getTask().getListedIn());
+        //task.setDoDate(event.getTask().getDoDate());
         etTaskName.getText().clear();
         updateUi();
     }

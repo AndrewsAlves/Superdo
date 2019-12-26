@@ -187,6 +187,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openFab() {
+        fabTaskButton.setClickable(true);
+        fabHabitButton.setClickable(true);
+        fabShoppingButton.setClickable(true);
         animateFab(0.0f, 1.0f, fabTaskButton, 0,0,0, 300, 0);
         animateFab(0.0f, 1.0f, fabHabitButton, 75,300,0, 300, 0);
         animateFab(0.0f, 1.0f, fabShoppingButton, 150,300,0, 0, 0);
@@ -194,6 +197,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
      public void closeFab() {
+         fabTaskButton.setClickable(false);
+         fabHabitButton.setClickable(false);
+         fabShoppingButton.setClickable(false);
          animateFab(1.0f, 0.0f, fabTaskButton, 0,0, 0, 0, 300);
          animateFab(1.0f, 0.0f, fabHabitButton, 75,0,300, 0, 300);
          animateFab(1.0f, 0.0f, fabShoppingButton, 150, 0,300, 0, 0);

@@ -111,6 +111,8 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginStart="20dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_add_task_fab"
             android:background="@drawable/bg_oval_gradient"/>
 
     </LinearLayout>
@@ -138,6 +140,8 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginStart="20dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_add_habit_fab"
             android:background="@drawable/bg_oval_gradient" />
 
     </LinearLayout>
@@ -166,6 +170,8 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginStart="20dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_add_shoppinglist_fab"
             android:background="@drawable/bg_oval_gradient" />
 
     </LinearLayout>
