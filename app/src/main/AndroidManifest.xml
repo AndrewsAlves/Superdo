@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.andysapps.superdo.todo">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".SuperdoApplication"
         android:allowBackup="true"
@@ -10,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.FocusActivity"></activity>
+        <activity android:name=".activity.CreateHabitActivity"></activity>
+        <activity android:name=".activity.FocusActivity" />
         <activity android:name=".activity.ProfileActivity" />
         <activity android:name=".Splash">
             <intent-filter>
@@ -23,7 +26,5 @@
             android:name=".activity.MainActivity"
             android:windowSoftInputMode="adjustPan" />
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

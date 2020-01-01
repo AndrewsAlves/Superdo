@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.adapters;
+package com.andysapps.superdo.todo.adapters.viewpageradapter;
 
 
 import androidx.fragment.app.Fragment;

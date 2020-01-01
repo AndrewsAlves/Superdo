@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.adapters.MainViewPagerAdapter;
+import com.andysapps.superdo.todo.adapters.viewpageradapter.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
@@ -158,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.main_ll_fab_add_habit)
     public void clickHabit() {
+        Intent intent = new Intent(this, CreateHabitActivity.class);
+        startActivity(intent);
         closeFab();
     }
 
