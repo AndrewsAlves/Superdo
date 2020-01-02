@@ -76,9 +76,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="66"
-                    android:textColor="@color/lightRed"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:textSize="16sp"
+                    android:textColor="@color/grey4"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textSize="14sp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"/>
 
@@ -120,6 +120,14 @@
                 android:textColor="@color/grey4"
                 android:layout_marginTop="8dp"/>
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/ch_lottie_everyday"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:lottie_autoPlay="false" />
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -139,6 +147,14 @@
                 android:textColor="@color/grey4"
                 android:layout_marginTop="8dp"/>
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/ch_lottie_once_in_two_days"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:lottie_autoPlay="false" />
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -157,6 +173,14 @@
                 android:fontFamily="@font/montserrat_regular"
                 android:textColor="@color/grey4"
                 android:layout_marginTop="8dp"/>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/ch_lottie_weekly"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:lottie_autoPlay="false" />
 
         </RelativeLayout>
 
@@ -270,7 +294,35 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:textSize="14sp"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="@color/grey4"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textSize="14sp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="@color/grey4"
+                android:layout_marginTop="8dp"/>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -289,29 +341,16 @@
                 android:textColor="@color/grey4"
                 android:layout_marginTop="8dp"/>
 
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time"
-                android:textSize="14sp"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/ch_lottie_remind"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:fontFamily="@font/montserrat_regular"
-                android:textColor="@color/grey4"
-                android:layout_marginTop="8dp"/>
+                app:lottie_autoPlay="false" />
 
         </RelativeLayout>
-
 
     </LinearLayout>
-
 
 </ScrollView>

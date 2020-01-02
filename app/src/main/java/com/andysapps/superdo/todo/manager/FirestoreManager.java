@@ -179,7 +179,7 @@ public class FirestoreManager {
                   /*  case MODIFIED:
                         if(taskHashMap.containsKey(documentId)) {
                             // only the task completed task update
-                            if (taskHashMap.get(documentId).isTaskCompleted() != task.isTaskCompleted()) {
+                            if (taskHashMap.get(documentId).isHabitDone() != task.isHabitDone()) {
                                 taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
                                 TaskOrganiser.getInstance().organiseAllTasks();
                                 Log.e(TAG, "Query snapshot only Checking :");

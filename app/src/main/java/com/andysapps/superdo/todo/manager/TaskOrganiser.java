@@ -81,25 +81,25 @@ public class TaskOrganiser {
                 task.setListedIn(TaskListing.SOMEDAY);
                 someDayTaskList.add(task);
                 //Log.e(TAG, "organiseAllTasks: task name : " + task.getName());
-                //Log.e(TAG, "organiseAllTasks: index : " + task.getTaskIndex());
+                //Log.e(TAG, "organiseAllTasks: index : " + task.getHabitIndex());
                 //Log.e(TAG, "organiseAllTasks: Listing : SOMEDAY");
             }
 
 
 
-           /* if (task.getListedIn() == TaskListing.TODAY_TASKS) {
+           /* if (task.getHabitCategory() == TaskListing.TODAY_TASKS) {
                 todayTaskList.add(task);
             }
 
-            if (task.getListedIn() == TaskListing.SOMEDAY) {
+            if (task.getHabitCategory() == TaskListing.SOMEDAY) {
                 someDayTaskList.add(task);
             }
 
-            if (task.getListedIn() == TaskListing.TOMORROW) {
+            if (task.getHabitCategory() == TaskListing.TOMORROW) {
 
                 // add all tomorrow task to today if thier timestamp is less than current timestamp
                 if (task.getDoDate().getTimestamp().getTime() < Calendar.getInstance().getTime().getTime()) {
-                    task.setListedIn(TaskListing.TODAY_TASKS);
+                    task.setHabitCategory(TaskListing.TODAY_TASKS);
                     todayTaskList.add(task);
                     FirestoreManager.getInstance().updateTask(task); // update tomorrow task to today
                 } else {
@@ -108,7 +108,7 @@ public class TaskOrganiser {
                     int todayDate = Calendar.getInstance().get(Calendar.DATE);
 
                     if (taskDate <= todayDate) {
-                        task.setListedIn(TaskListing.TODAY_TASKS);
+                        task.setHabitCategory(TaskListing.TODAY_TASKS);
                         todayTaskList.add(task);
                         FirestoreManager.getInstance().updateTask(task); // update tomorrow task to today
                     } else {
