@@ -14,7 +14,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constrain"
             android:layout_width="match_parent"
-            android:layout_height="70dp">
+            android:layout_marginTop="40dp"
+            android:layout_height="wrap_content">
 
             <EditText
                 android:visibility="visible"
@@ -23,18 +24,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="80dp"
                 android:fontFamily="@font/montserrat_bold"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:hint="Habit Name"
-                android:ellipsize="end"
                 android:minLines="1"
-                android:maxLines="1"
-                android:inputType="textCapSentences"
-                android:scrollHorizontally="true"
-                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"
                 android:textColorHint="@color/grey1"
                 android:background="@null"
-                android:textColor="@color/lightRed"
-                android:layout_marginTop="20dp"
+                android:textColor="@color/grey4"
+                android:layout_marginTop="0dp"
                 android:layout_marginStart="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -44,35 +41,235 @@
                 style="@style/ripple_background"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:scaleType="fitXY"
-                android:padding="2dp"
-                android:visibility="visible"
-                android:src="@drawable/ic_close"
                 android:layout_marginEnd="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:padding="2dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_close_mini"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ch_et_habit_name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Suggestions :"
-            android:fontFamily="@font/montserrat_regular"
-            android:textColor="@color/grey2"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="40dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="40dp">
+
+            <LinearLayout
+                android:id="@+id/ch_btn_health"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_capsul_stroke_grey1">
+
+                <ImageView
+                    android:id="@+id/iv_ch_health"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_ch_health_off"
+                    android:layout_marginStart="3dp"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:id="@+id/tv_ch_heath"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Health"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="@color/grey1"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="10dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ch_btn_finance"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_capsul_stroke_grey4">
+
+                <ImageView
+                    android:id="@+id/iv_ch_finance"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_ch_finance"
+                    android:layout_marginStart="3dp"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:id="@+id/tv_ch_finance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Finance"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="@color/grey4"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="10dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ch_btn_productivity"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/bg_capsul_stroke_grey4">
+
+                <ImageView
+                    android:id="@+id/iv_ch_productivity"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_ch_productivity"
+                    android:layout_marginStart="3dp"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:id="@+id/tv_ch_productivity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Productivity"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="@color/grey4"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="3dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_marginEnd="10dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="40dp">
+
+            <LinearLayout
+                android:id="@+id/ch_btn_digital_wellbeing"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_capsul_stroke_grey4">
+
+                <ImageView
+                    android:id="@+id/iv_ch_digital_wellbeing"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_ch_digital_wellbeing"
+                    android:layout_marginStart="3dp"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:id="@+id/tv_ch_digital_wellbeing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Digital Wellbeing"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="@color/grey4"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="10dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ch_btn_mindfullness"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/bg_capsul_stroke_grey1">
+
+                <ImageView
+                    android:id="@+id/iv_ch_mindfullness"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_ch_mindfullness_off"
+                    android:layout_marginStart="3dp"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:id="@+id/tv_ch_mindfullness"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="mindfullness"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="@color/grey2"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="10dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="40dp">
+
+            <LinearLayout
+                android:id="@+id/ch_btn_addiction"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_capsul_stroke_grey4">
+
+                <ImageView
+                    android:id="@+id/iv_ch_addiction"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_ch_addiction"
+                    android:layout_marginStart="3dp"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:id="@+id/tv_ch_addiction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Addiction"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="@color/grey4"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="10dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ch_rv_suggestions"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
+            android:layout_marginTop="20dp"
+            tools:listitem="@layout/item_habits"
             android:layout_marginBottom="20dp"/>
 
-        <TextView
+       <!-- <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Category"
@@ -173,7 +370,6 @@
 
         </LinearLayout>
 
-        <!-- ROW 2 -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -263,9 +459,9 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+        </LinearLayout> -->
 
-        <RelativeLayout
+       <!-- <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
@@ -326,7 +522,7 @@
                 android:layout_centerVertical="true"
                 app:lottie_autoPlay="false" />
 
-        </RelativeLayout>
+        </RelativeLayout> -->
 
     </LinearLayout>
 

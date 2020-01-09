@@ -13,7 +13,9 @@ import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.logging.Handler;
 
@@ -306,6 +308,109 @@ public class Utils {
         return context.getResources().getColor(color);
     }
 
+    ///////////////////
+    ////// HABITS
+    //////////////////
+
+    public static ArrayList<String> getHealthSuggestionList() {
+        ArrayList<String> health = new ArrayList<>();
+
+        health.add("Eat six small, healthful meals a day");
+        health.add("Reduce your sugar intake");
+        health.add("Work out for a total of an hour a day, five days a week");
+        health.add("Talk with a positive person");
+        health.add("Express gratitude");
+        health.add("Laugh");
+        health.add("Make protein the focus of every meal");
+        health.add("Eat veggies everyday");
+        health.add("Eat fruits & veggies");
+        health.add("Drink a fruit juice everyday");
+        health.add("Replace something white with something green");
+        health.add("Get some sun");
+        health.add("Walk a dog or pet an animal");
+        health.add("Ask for a hug from one person a day");
+        health.add("Sit in the sun");
+        health.add("Take a small risk daily");
+        health.add("Do something just for fun");
+
+        Collections.shuffle(health);
+
+        return health;
+    }
+
+    public static ArrayList<String> getFinanceSuggestionList() {
+        ArrayList<String> health = new ArrayList<>();
+        health.add("Pay bill ahead on time");
+        health.add("Read financial book ");
+        health.add("Track your spending ");
+        health.add("Shop without credit card");
+        health.add("be organised in your spending");
+        health.add("inspired reading");
+        health.add("keep your wallet thin");
+        health.add("Set a budget for every shopping");
+
+        return health;
+    }
+
+    public static ArrayList<String> getProductivitySuggestionList() {
+        ArrayList<String> health = new ArrayList<>();
+        health.add("Focus on most important tasks (MITs) first");
+        health.add("Use the 80/20 rule");
+        health.add("Don’t multitask");
+        health.add("Manage your energy (not just time)");
+        health.add("Use the Eisenhower Matrix to identify long-term priorities");
+        health.add("Say no for outings");
+        health.add("Perform focus mode");
+
+        return health;
+    }
+
+    public static ArrayList<String> getDigitalWellbeingSuggestionList() {
+        ArrayList<String> health = new ArrayList<>();
+        health.add("Remove digital distractions");
+        health.add("Always ask why when you pull out your phone");
+        health.add("Organise your social apps");
+        health.add("Dont use social media for a week");
+        health.add("Track your screen time");
+        health.add("Use productive apps");
+        health.add("No Screens on bed");
+        health.add("Spend more time on reading ebooks");
+        health.add("Delete one unused apps everyday");
+
+        return health;
+    }
+
+    public static ArrayList<String> getMindfullnessSuggestionList() {
+        ArrayList<String> health = new ArrayList<>();
+        health.add("Eat mindfully");
+        health.add("Meditate for 15 minutes everyday");
+        health.add("Focus on one task at a time");
+        health.add("Feel Feelings");
+        health.add("Look at a random things an try to observe");
+        health.add("Develop one habit at a time");
+        health.add("Practice gratitude everyday");
+        health.add("Breathe deeply");
+        health.add("Take 6 deep breath and notice them");
+        health.add("Listen, don’t just hear");
+        health.add("Smile to a stranger everyday");
+        health.add("Speak kindly to yourself and watch your self words");
+
+        Collections.shuffle(health);
+
+        return health;
+    }
+
+    public static ArrayList<String> getAddictionSuggestionList() {
+        ArrayList<String> health = new ArrayList<>();
+        health.add("Don't Drink alcohol for a week");
+        health.add("Don't Smoke weed");
+        health.add("Aware of your cravings and let it go");
+        health.add("Count your substance craving everyday");
+        health.add("Don't smoke cigarette");
+        health.add("identify your habitual thought pattern");
+
+        return health;
+    }
 
 
 }

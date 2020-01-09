@@ -5,8 +5,8 @@ package com.andysapps.superdo.todo.enums;
  */
 public enum HabitCategory {
     Health,
+    finance,
     Productivity,
-    Releationship,
     DigitalWellbeign,
     Mindfullness,
     Addiction

@@ -43,6 +43,7 @@ public class SuperDate {
     }
 
     public SuperDate(int hours, int minutes) {
+        hasTime = true;
         this.hours = hours;
         this.minutes = minutes;
     }

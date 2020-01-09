@@ -12,9 +12,8 @@
         android:roundIcon="@drawable/ic_launcher_superdo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.CreateHabitActivity"></activity>
-        <activity android:name=".activity.FocusActivity" />
-        <activity android:name=".activity.ProfileActivity" />
+
+
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,9 +21,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.MainActivity"
             android:windowSoftInputMode="adjustPan" />
+
+        <activity android:name=".activity.CreateHabitActivity"
+            android:windowSoftInputMode="adjustPan"></activity>
+
+        <activity android:name=".activity.FocusActivity" />
+        <activity android:name=".activity.ProfileActivity" />
+
     </application>
 
 </manifest>

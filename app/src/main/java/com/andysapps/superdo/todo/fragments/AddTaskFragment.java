@@ -123,13 +123,13 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomDialogStyle);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_add_task, container, false);
+
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
 

@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".activity.CreateHabitActivity">
 
-    <com.andysapps.superdo.todo.views.ViewPagerNoScroll
-        android:id="@+id/ch_viewpager"
+    <FrameLayout
+        android:id="@+id/ch_habitstep_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="40dp"
@@ -61,6 +61,17 @@
             android:background="@drawable/bg_gradient"
             android:layout_alignParentEnd="true"/>
 
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/ch_btn_create"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CREATE"
+            android:textColor="@color/lightOrange"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_bold"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 
 </RelativeLayout>

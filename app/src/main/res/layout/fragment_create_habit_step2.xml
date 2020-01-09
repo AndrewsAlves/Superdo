@@ -11,21 +11,22 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:id="@+id/constrain"
             android:layout_width="match_parent"
-            android:layout_height="70dp">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp">
 
             <com.andysapps.superdo.todo.views.GradientTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="Set Goal"
-                android:textSize="28sp"
+                android:textSize="26sp"
                 android:textColor="@color/lightRed"
                 android:layout_marginStart="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"/>
 
             <ImageButton
                 android:id="@+id/ib_close_buckets"
@@ -37,10 +38,10 @@
                 android:visibility="visible"
                 android:src="@drawable/ic_close"
                 android:layout_marginEnd="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -67,22 +68,25 @@
                 android:gravity="center_vertical">
 
                 <ImageButton
+                    android:visibility="gone"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/ic_btn_bottom"
                     android:background="@drawable/bg_small_capsule_grey"/>
 
-                <TextView
+                <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="66"
                     android:textColor="@color/grey4"
                     android:fontFamily="@font/montserrat_medium"
-                    android:textSize="14sp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:textSize="16sp"
+                    android:maxLength="3"
+                    android:inputType="number"
+                    android:maxLines="1" />
 
                 <ImageButton
+                    android:visibility="gone"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/ic_btn_top"
@@ -97,6 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
+            android:layout_marginTop="-10dp"
             android:text="It takes around 66 days to make a \nhabit automatic"
             android:textSize="9sp"
             android:layout_centerVertical="true"
@@ -108,7 +113,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp">
+            android:layout_marginEnd="30dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -135,7 +140,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp">
+            android:layout_marginEnd="30dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -162,7 +167,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp">
+            android:layout_marginEnd="30dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -198,7 +203,7 @@
                 android:layout_marginEnd="20dp">
 
                 <TextView
-                    android:id="@+id/dlg_repeat__btn_sunday"
+                    android:id="@+id/ch_weekly__btn_sunday"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -211,7 +216,7 @@
                     android:fontFamily="@font/montserrat_bold"/>
 
                 <TextView
-                    android:id="@+id/dlg_repeat__btn_monday"
+                    android:id="@+id/ch_weekly__btn_monday"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -224,7 +229,7 @@
                     android:fontFamily="@font/montserrat_bold"/>
 
                 <TextView
-                    android:id="@+id/dlg_repeat__btn_tuesday"
+                    android:id="@+id/ch_weekly__btn_tuesday"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -236,9 +241,8 @@
                     android:layout_margin="3dp"
                     android:fontFamily="@font/montserrat_bold"/>
 
-
                 <TextView
-                    android:id="@+id/dlg_repeat__btn_wednesday"
+                    android:id="@+id/ch_weekly__btn_wednesday"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -251,7 +255,7 @@
                     android:fontFamily="@font/montserrat_bold"/>
 
                 <TextView
-                    android:id="@+id/dlg_repeat__btn_thursday"
+                    android:id="@+id/ch_weekly__btn_thursday"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -264,7 +268,7 @@
                     android:fontFamily="@font/montserrat_bold"/>
 
                 <TextView
-                    android:id="@+id/dlg_repeat__btn_friday"
+                    android:id="@+id/ch_weekly__btn_friday"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -277,7 +281,7 @@
                     android:fontFamily="@font/montserrat_bold"/>
 
                 <TextView
-                    android:id="@+id/dlg_repeat__btn_saturday"
+                    android:id="@+id/ch_weekly__btn_saturday"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -304,32 +308,34 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Time"
-                android:textSize="14sp"
                 android:layout_centerVertical="true"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/montserrat_regular"
+                android:text="Time"
                 android:textColor="@color/grey4"
-                android:layout_marginTop="8dp"/>
+                android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/ch_tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00"
+                android:text="9 : 00 am"
                 android:textSize="14sp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:fontFamily="@font/montserrat_regular"
+                android:fontFamily="@font/montserrat_medium"
                 android:textColor="@color/grey4"
                 android:layout_marginTop="8dp"/>
 
         </RelativeLayout>
 
         <RelativeLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp">
+            android:layout_marginEnd="30dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -350,6 +356,33 @@
                 app:lottie_autoPlay="false" />
 
         </RelativeLayout>
+
+        <TextView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="-10dp"
+            android:text="Superdo will remind you 45 min earlier"
+            android:textSize="9sp"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/grey4" />
+
+        <TextView
+            android:id="@+id/ch_tv_habit_desc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginEnd="60dp"
+            android:text="Drink 2 litre of water everyday"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@color/lightRed" />
 
     </LinearLayout>
 

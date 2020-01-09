@@ -10,6 +10,7 @@ import com.andysapps.superdo.todo.fragments.ProfileFragment;
 import com.andysapps.superdo.todo.fragments.TodayFragment;
 import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep1;
 import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep2;
+import com.andysapps.superdo.todo.model.Habit;
 
 /**
  * Created by Andrews on 10,October,2019
@@ -17,8 +18,11 @@ import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep2;
 
 public class CreateHabitPagerAdapter extends FragmentPagerAdapter {
 
-    public CreateHabitPagerAdapter(FragmentManager fm) {
+    Habit habit;
+
+    public CreateHabitPagerAdapter(FragmentManager fm, Habit habit) {
         super(fm);
+        this.habit = habit;
     }
 
     @Override
@@ -26,9 +30,9 @@ public class CreateHabitPagerAdapter extends FragmentPagerAdapter {
 
         switch (i) {
             case 0:
-                return new CreateHabitStep1();
+                return CreateHabitStep1.Companion.instance(habit);
             case 1:
-                return new CreateHabitStep2();
+                return CreateHabitStep2.Companion.instance(habit);
         }
 
         return null;

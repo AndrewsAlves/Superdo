@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo.model;
 
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.HabitCategory;
+import com.andysapps.superdo.todo.enums.HabitGoalDay;
 import com.andysapps.superdo.todo.model.sidekicks.Repeat;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
@@ -21,29 +22,33 @@ public class Habit implements Cloneable {
 
     String userId;
 
+    int habitIndex;
+
+    // step 1
+
     String name;
 
     HabitCategory habitCategory;
 
-    int habitIndex;
-
     boolean isHabitDone;
-
     boolean destroyHabit;
     boolean createhabit;
 
-    boolean everyDay;
-    boolean onceInTwoDays;
-    boolean weekly;
+    // step 2
+    int totalDays;
+    HabitGoalDay habitGoalDay;
+
     boolean remind;
 
-    ////
-    // SIDE KICKS
-    /////
+    SuperDate superTime;
 
-    SuperDate doDate;
-
-    Repeat repeat;
+    boolean onSunday;
+    boolean onMonday;
+    boolean onTuesday;
+    boolean onWednesday;
+    boolean onThursday;
+    boolean onFriday;
+    boolean onSaturday;
 
     /////
     // BUCKET
@@ -144,12 +149,20 @@ public class Habit implements Cloneable {
         this.userId = userId;
     }
 
-    public SuperDate getDoDate() {
-        return doDate;
+    public int getTotalDays() {
+        return totalDays;
     }
 
-    public void setDoDate(SuperDate doDate) {
-        this.doDate = doDate;
+    public void setTotalDays(int totalDays) {
+        this.totalDays = totalDays;
+    }
+
+    public SuperDate getSuperTime() {
+        return superTime;
+    }
+
+    public void setSuperTime(SuperDate superTime) {
+        this.superTime = superTime;
     }
 
     public String getDocumentId() {
@@ -168,14 +181,6 @@ public class Habit implements Cloneable {
         this.habitIndex = habitIndex;
     }
 
-    public Repeat getRepeat() {
-        return repeat;
-    }
-
-    public void setRepeat(Repeat repeat) {
-        this.repeat = repeat;
-    }
-
     public boolean isDestroyHabit() {
         return destroyHabit;
     }
@@ -192,28 +197,12 @@ public class Habit implements Cloneable {
         this.createhabit = createhabit;
     }
 
-    public boolean isEveryDay() {
-        return everyDay;
+    public HabitGoalDay getHabitGoalDay() {
+        return habitGoalDay;
     }
 
-    public void setEveryDay(boolean everyDay) {
-        this.everyDay = everyDay;
-    }
-
-    public boolean isOnceInTwoDays() {
-        return onceInTwoDays;
-    }
-
-    public void setOnceInTwoDays(boolean onceInTwoDays) {
-        this.onceInTwoDays = onceInTwoDays;
-    }
-
-    public boolean isWeekly() {
-        return weekly;
-    }
-
-    public void setWeekly(boolean weekly) {
-        this.weekly = weekly;
+    public void setHabitGoalDay(HabitGoalDay habitGoalDay) {
+        this.habitGoalDay = habitGoalDay;
     }
 
     public boolean isRemind() {
@@ -224,18 +213,74 @@ public class Habit implements Cloneable {
         this.remind = remind;
     }
 
+    public boolean isOnSunday() {
+        return onSunday;
+    }
+
+    public void setOnSunday(boolean onSunday) {
+        this.onSunday = onSunday;
+    }
+
+    public boolean isOnMonday() {
+        return onMonday;
+    }
+
+    public void setOnMonday(boolean onMonday) {
+        this.onMonday = onMonday;
+    }
+
+    public boolean isOnTuesday() {
+        return onTuesday;
+    }
+
+    public void setOnTuesday(boolean onTuesday) {
+        this.onTuesday = onTuesday;
+    }
+
+    public boolean isOnWednesday() {
+        return onWednesday;
+    }
+
+    public void setOnWednesday(boolean onWednesday) {
+        this.onWednesday = onWednesday;
+    }
+
+    public boolean isOnThursday() {
+        return onThursday;
+    }
+
+    public void setOnThursday(boolean onThursday) {
+        this.onThursday = onThursday;
+    }
+
+    public boolean isOnFriday() {
+        return onFriday;
+    }
+
+    public void setOnFriday(boolean onFriday) {
+        this.onFriday = onFriday;
+    }
+
+    public boolean isOnSaturday() {
+        return onSaturday;
+    }
+
+    public void setOnSaturday(boolean onSaturday) {
+        this.onSaturday = onSaturday;
+    }
+
     public String getDoDateString() {
 
-        if (doDate == null) {
+        if (superTime == null) {
             return "No Date";
         }
 
         String duedate;
 
-        if (doDate.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
-            duedate = doDate.getMonthString() + " "+ doDate.getDate() + ", " + doDate.getYear();
+        if (superTime.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
+            duedate = superTime.getMonthString() + " "+ superTime.getDate() + ", " + superTime.getYear();
         } else {
-            duedate = doDate.getMonthString() + " "+ doDate.getDate();
+            duedate = superTime.getMonthString() + " "+ superTime.getDate();
         }
 
         return duedate;
@@ -243,22 +288,22 @@ public class Habit implements Cloneable {
 
     public String getDoDateString2() {
 
-        if (doDate == null) {
+        if (superTime == null) {
             return "No Do Date";
         }
 
         String duedate;
 
-        if (Utils.isSuperDateToday(doDate)) {
+        if (Utils.isSuperDateToday(superTime)) {
             return "Do Today by " + getTimeString();
-        } else if (Utils.isSuperDateTomorrow(doDate)) {
+        } else if (Utils.isSuperDateTomorrow(superTime)) {
             return "Do Tomorrow by " + getTimeString();
         }
 
-        if (doDate.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
-            duedate = "Do " + doDate.getMonthString() + " "+ doDate.getDate() + ", " + doDate.getYear() + " by " + getTimeString();
+        if (superTime.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
+            duedate = "Do " + superTime.getMonthString() + " "+ superTime.getDate() + ", " + superTime.getYear() + " by " + getTimeString();
         } else {
-            duedate = "Do " + doDate.getMonthString() + " "+ doDate.getDate() + " by " + getTimeString();
+            duedate = "Do " + superTime.getMonthString() + " "+ superTime.getDate() + " by " + getTimeString();
         }
 
         return duedate;
@@ -266,24 +311,87 @@ public class Habit implements Cloneable {
 
     public  String getTimeString() {
 
-        if (doDate == null) {
+        if (superTime == null) {
             return "No Time";
         }
 
-        int hours = doDate.hours;
+        int hours = superTime.hours;
         String meridien = " AM";
 
         if (hours >= 12) {
             if (hours != 12) {
-                hours = doDate.hours - 12;
+                hours = superTime.hours - 12;
             }
             meridien = " PM";
         }
 
         // format to two decimal
-        String min =  new DecimalFormat("00").format(doDate.minutes);
+        String min =  new DecimalFormat("00").format(superTime.minutes);
 
         return hours + " : " + min + meridien;
+    }
+
+    public String getHabitString() {
+
+        switch (habitGoalDay) {
+            case EVERYDAY:
+                return " \" " + name + " everyday" + " \" ";
+            case ONCE_IN_TWO_DAYS:
+                return " \" " + name + " once in two days" + " \" ";
+            case WEEKLY:
+                return " \" " + name + getWeeklyString() + " \" ";
+        }
+
+        return " \" " + name + " \" ";
+    }
+
+    public String getWeeklyString() {
+
+        int count = getWeeklyCount();
+
+        if (count == 7) {
+            return " everyday";
+        }
+
+        if (count == 6) {
+            return " 6 days a week";
+        }
+
+        if (count == 5) {
+            return " 5 days a week";
+        }
+
+        if (count == 4) {
+            return " 4 days a week";
+        }
+
+        if (count == 3) {
+            return " thrice a week";
+        }
+
+        if (count == 2) {
+            return " twice a week";
+        }
+
+        if (count == 1) {
+            return " once a week";
+        }
+
+        return " weekly";
+    }
+
+    public int getWeeklyCount() {
+        int count = 0;
+
+        if (isOnSunday()) count++;
+        if (isOnMonday()) count++;
+        if (isOnTuesday()) count++;
+        if (isOnWednesday()) count++;
+        if (isOnThursday()) count++;
+        if (isOnFriday()) count++;
+        if (isOnSaturday()) count++;
+
+        return count;
     }
 
 }
