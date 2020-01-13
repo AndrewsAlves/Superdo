@@ -1,15 +1,408 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_white1"
     tools:context=".fragments.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="PROFILE"
-        android:layout_centerInParent="true"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-</RelativeLayout>
+        <!-- PROFILE -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_margin="40dp"
+            android:background="@drawable/bg_capsul_white">
+
+            <ImageView
+                android:id="@+id/profile_iv_avatar"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_avatar1"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="30dp"/>
+
+            <TextView
+                android:id="@+id/profile_tv_account_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textSize="18sp"
+                android:layout_toEndOf="@+id/profile_iv_avatar"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/black"
+                android:text="Andrews" />
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="center"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_settings_account"/>
+
+        </RelativeLayout>
+
+        <!-- TASKS -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/black"
+            android:text="Tasks" />
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp">
+
+                <RelativeLayout
+                    android:id="@+id/profile_btn_completed_tasks"
+                    android:layout_width="120dp"
+                    android:layout_height="135dp"
+                    android:background="@drawable/bg_capsul_white"
+                    android:layout_marginStart="40dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="15dp"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textColor="@color/black"
+                        android:text="Completed \nTasks" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="center"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="15dp"
+                        android:src="@drawable/ic_complete_task"/>
+
+                    <TextView
+                        android:id="@+id/profile_tv_completed_tasks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="22sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/black"
+                        android:text="25" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/profile_btn_pending_tasks"
+                    android:layout_width="120dp"
+                    android:layout_height="135dp"
+                    android:background="@drawable/bg_capsul_white"
+                    android:layout_marginStart="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="15dp"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textColor="@color/black"
+                        android:text="Pending \nTasks" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="center"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="15dp"
+                        android:src="@drawable/ic_pending_task"/>
+
+                    <TextView
+                        android:id="@+id/profile_tv_pending_tasks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="22sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/black"
+                        android:text="5" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/profile_btn_missed_tasks"
+                    android:layout_width="120dp"
+                    android:layout_height="135dp"
+                    android:background="@drawable/bg_capsul_white"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="40dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="15dp"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textColor="@color/black"
+                        android:text="Missed \nTasks" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="center"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="15dp"
+                        android:src="@drawable/ic_missed_tasks"/>
+
+                    <TextView
+                        android:id="@+id/profile_tv_missing_tasks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="22sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/black"
+                        android:text="15" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <!-- Habits -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/black"
+            android:text="Habits"
+            android:layout_marginTop="40dp"/>
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="135dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:background="@drawable/bg_capsul_white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
+                android:textSize="11sp"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/black"
+                android:text="Total habits " />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="Overall \nPerformance "
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="66%"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:textSize="22sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="45dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginBottom="15dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="15dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="bottom">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="S"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:textColor="@color/lightRed"
+                        android:layout_margin="3dp"
+                        android:fontFamily="@font/montserrat_bold"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="M"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:textColor="@color/lightRed"
+                        android:layout_margin="3dp"
+                        android:fontFamily="@font/montserrat_bold"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="T"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:textColor="@color/lightRed"
+                        android:layout_margin="3dp"
+                        android:fontFamily="@font/montserrat_bold"/>
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="W"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:textColor="@color/lightRed"
+                        android:layout_margin="3dp"
+                        android:fontFamily="@font/montserrat_bold"/>
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="T"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:textColor="@color/lightRed"
+                        android:layout_margin="3dp"
+                        android:fontFamily="@font/montserrat_bold"/>
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="F"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:textColor="@color/lightRed"
+                        android:layout_margin="3dp"
+                        android:fontFamily="@font/montserrat_bold"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="S"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:textColor="@color/lightRed"
+                        android:layout_margin="3dp"
+                        android:fontFamily="@font/montserrat_bold"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/profile_btn_support"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="40dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_support"
+                android:scaleType="center"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Support"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/black"
+                android:layout_marginStart="40dp"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/profile_btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="40dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_logout"
+                android:scaleType="center"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/black"
+                android:layout_marginStart="40dp"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>
