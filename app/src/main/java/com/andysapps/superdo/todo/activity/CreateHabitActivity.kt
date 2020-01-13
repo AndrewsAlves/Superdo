@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.andysapps.superdo.todo.R
-import com.andysapps.superdo.todo.fragments.EditTaskFragment.Companion.instance
 import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep1
 import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep2
 import com.andysapps.superdo.todo.model.Habit
@@ -41,7 +40,7 @@ class CreateHabitActivity : AppCompatActivity() {
     fun initClicks() {
 
         ch_btn_nextstep.setOnClickListener {
-            if (habit!!.name != null && habit!!.name.isNotEmpty()) {
+            if (habit!!.habitTitle != null && habit!!.habitTitle.isNotEmpty()) {
                 isStep1 = false
                 var fragment = CreateHabitStep2.instance(habit!!)
                 val ft = supportFragmentManager.beginTransaction()

@@ -3,7 +3,6 @@ package com.andysapps.superdo.todo.model;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.HabitCategory;
 import com.andysapps.superdo.todo.enums.HabitGoalDay;
-import com.andysapps.superdo.todo.model.sidekicks.Repeat;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -26,7 +25,7 @@ public class Habit implements Cloneable {
 
     // step 1
 
-    String name;
+    String habitTitle;
 
     HabitCategory habitCategory;
 
@@ -77,12 +76,12 @@ public class Habit implements Cloneable {
         return (Habit) super.clone();
     }
 
-    public String getName() {
-        return name;
+    public String getHabitTitle() {
+        return habitTitle;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setHabitTitle(String habitTitle) {
+        this.habitTitle = habitTitle;
     }
 
     public String getBucketId() {
@@ -335,14 +334,14 @@ public class Habit implements Cloneable {
 
         switch (habitGoalDay) {
             case EVERYDAY:
-                return " \" " + name + " everyday" + " \" ";
+                return " \" " + habitTitle + " everyday" + " \" ";
             case ONCE_IN_TWO_DAYS:
-                return " \" " + name + " once in two days" + " \" ";
+                return " \" " + habitTitle + " once in two days" + " \" ";
             case WEEKLY:
-                return " \" " + name + getWeeklyString() + " \" ";
+                return " \" " + habitTitle + getWeeklyString() + " \" ";
         }
 
-        return " \" " + name + " \" ";
+        return " \" " + habitTitle + " \" ";
     }
 
     public String getWeeklyString() {

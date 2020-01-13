@@ -16,8 +16,6 @@ import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.adapters.HabitSuggestionRecyclerAdapter
 import com.andysapps.superdo.todo.enums.HabitCategory
 import com.andysapps.superdo.todo.events.habit.SelectedHabitSuggestionEvent
-import com.andysapps.superdo.todo.fragments.CreateNewBucketFragment
-import com.andysapps.superdo.todo.model.Bucket
 import com.andysapps.superdo.todo.model.Habit
 import kotlinx.android.synthetic.main.fragment_create_habit_step1.*
 import org.greenrobot.eventbus.EventBus
@@ -187,7 +185,7 @@ class CreateHabitStep1 : Fragment() , TextWatcher {
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        habit.name = s.toString()
+        habit.habitTitle = s.toString()
     }
 
     ////////////
@@ -197,7 +195,7 @@ class CreateHabitStep1 : Fragment() , TextWatcher {
     @Subscribe (threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event : SelectedHabitSuggestionEvent) {
         ch_et_habit_name.setText(event.suggestion)
-        habit.name = event.suggestion
+        habit.habitTitle = event.suggestion
         ch_et_habit_name.setSelection(ch_et_habit_name.text.length)
     }
 

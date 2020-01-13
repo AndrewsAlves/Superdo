@@ -16,6 +16,7 @@ import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskFailureEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskSuccessEvent;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.andysapps.superdo.todo.model.Habit;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,6 +45,7 @@ public class FirestoreManager {
 
     public static final String DB_USER = "user";
     public static final String DB_TASKS = "tasks";
+    public static final String DB_HABITS = "habits";
     public static final String DB_BUCKETS = "buckets";
 
     HashMap<String, Task> taskHashMap;
@@ -295,6 +297,24 @@ public class FirestoreManager {
                 });
     }
 
+    public void uploatHabit(Habit habit) {
+
+        firestore.collection(DB_BUCKETS).document()
+                .set(habit)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error uploading bucket", e);
+                    }
+                });
+    }
+
     public void uploadBucket(Bucket bucket) {
 
         firestore.collection(DB_BUCKETS).document()
@@ -312,6 +332,8 @@ public class FirestoreManager {
                     }
                 });
     }
+
+
 
     public void updateBucket(Bucket bucket) {
 
