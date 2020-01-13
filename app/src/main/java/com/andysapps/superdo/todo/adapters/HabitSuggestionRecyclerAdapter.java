@@ -5,19 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.enums.BucketColors;
-import com.andysapps.superdo.todo.enums.BucketType;
-import com.andysapps.superdo.todo.events.action.SelectBucketEvent;
 import com.andysapps.superdo.todo.events.habit.SelectedHabitSuggestionEvent;
-import com.andysapps.superdo.todo.manager.FirestoreManager;
-import com.andysapps.superdo.todo.model.Bucket;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -45,7 +39,7 @@ public class HabitSuggestionRecyclerAdapter extends RecyclerView.Adapter<HabitSu
     @Override
     public PlaceViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_habits, viewGroup, false);
+                .inflate(R.layout.item_habit_suggestion, viewGroup, false);
         return new PlaceViewHolder(view);
     }
 
