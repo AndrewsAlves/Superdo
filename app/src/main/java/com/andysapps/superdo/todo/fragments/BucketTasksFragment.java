@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
-import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
+import com.andysapps.superdo.todo.adapters.MainAdapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;

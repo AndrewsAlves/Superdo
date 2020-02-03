@@ -19,17 +19,14 @@ import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback;
-import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
-import com.andysapps.superdo.todo.enums.BucketUpdateType;
+import com.andysapps.superdo.todo.adapters.MainAdapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
-import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
 import com.github.florent37.viewanimator.ViewAnimator;
-import com.google.firebase.firestore.DocumentChange;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
