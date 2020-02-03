@@ -19,12 +19,14 @@ import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback;
+import com.andysapps.superdo.todo.adapters.MainAdapters.MainRecyclerAdapter;
 import com.andysapps.superdo.todo.adapters.MainAdapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
+import com.andysapps.superdo.todo.model.Habit;
 import com.andysapps.superdo.todo.model.Task;
 import com.github.florent37.viewanimator.ViewAnimator;
 
@@ -63,11 +65,13 @@ public class TodayFragment extends Fragment {
     @BindView(R.id.recyclerView_today)
     RecyclerView recyclerView;
 
-    TasksRecyclerAdapter adapter;
+    MainRecyclerAdapter adapter;
 
     int[] gradientColor = new int[2];
 
     public List<Task> taskList;
+    public List<Habit> habitList;
+    public List<Habit> shoppingList;
 
     Typeface fontBold;
     Typeface fontRegular;
@@ -89,14 +93,10 @@ public class TodayFragment extends Fragment {
 
         fontBold = ResourcesCompat.getFont(getContext(), R.font.montserrat_bold);
         fontRegular = ResourcesCompat.getFont(getContext(), R.font.montserrat_regular);
-
         taskList = new ArrayList<>();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TasksRecyclerAdapter(getContext(), taskList);
 
-        ItemTouchHelper.Callback callback = new LongItemTouchHelperCallback(adapter);
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new MainRecyclerAdapter(getContext(), taskList, habitList, shoppingList);
         recyclerView.setAdapter(adapter);
 
         listing= TaskListing.TODAY;
@@ -128,7 +128,7 @@ public class TodayFragment extends Fragment {
             linearNoTasks.setVisibility(View.GONE);
         }
 
-        adapter.updateList(taskList);
+        adapter.updateAll(taskList, habitList, shoppingList);
     }
 
     @OnClick(R.id.btn_today)
@@ -159,11 +159,11 @@ public class TodayFragment extends Fragment {
 
         if (event.getTask().getListedIn() == listing) {
             if (event.getDocumentChange() == TaskUpdateType.Added) {
-                adapter.notifyTaskAdded(TaskOrganiser.getInstance().getTasks(listing));
+                adapter.viewHolderTasks.adapter.notifyTaskAdded(TaskOrganiser.getInstance().getTasks(listing));
             } else if (event.getDocumentChange() == TaskUpdateType.Deleted){
-                adapter.notifyTaskRemoved(event.getTask());
+                adapter.viewHolderTasks.adapter.notifyTaskRemoved(event.getTask());
             } else {
-                adapter.updateList(TaskOrganiser.getInstance().getTasks(listing));
+                adapter.viewHolderTasks.adapter.updateList(TaskOrganiser.getInstance().getTasks(listing));
             }
         } else {
             listing = event.getTask().getListedIn();

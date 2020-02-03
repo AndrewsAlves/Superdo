@@ -315,6 +315,24 @@ public class FirestoreManager {
                 });
     }
 
+    public void updateHabit(Habit habit) {
+
+        firestore.collection(DB_HABITS).document(habit.getDocumentId())
+                .set(habit)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot : Habit uploadedAccount successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error uploading task", e);
+                    }
+                });
+    }
+
     public void uploadBucket(Bucket bucket) {
 
         firestore.collection(DB_BUCKETS).document()

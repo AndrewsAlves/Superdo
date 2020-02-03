@@ -50,14 +50,14 @@
 
         <LinearLayout
             android:visibility="visible"
-            android:id="@+id/parent_ll_task_icons"
+            android:id="@+id/parent_ll_habit_icons"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_marginTop="5dp">
 
             <ImageView
                 android:visibility="visible"
-                android:id="@+id/iv_repeat"
+                android:id="@+id/iv_habit_category"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_ch_health_on"
@@ -77,6 +77,7 @@
                 android:layout_marginEnd="15dp"/>
 
             <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_habit_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 app:lottie_autoPlay="true"

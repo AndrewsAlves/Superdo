@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep1
 import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep2
+import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.Habit
 import kotlinx.android.synthetic.main.activity_create_habit.*
 
@@ -58,7 +59,7 @@ class CreateHabitActivity : AppCompatActivity() {
         }
 
         ch_btn_create.setOnClickListener {
-
+            FirestoreManager.getInstance().uploatHabit(habit)
         }
     }
 
