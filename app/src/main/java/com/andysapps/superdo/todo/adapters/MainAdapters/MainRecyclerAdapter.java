@@ -54,9 +54,14 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter {
         this.habitList.addAll(habitList);
         this.shoppingList.addAll(shoppingList);
 
-        viewHolderTasks.updateAll();
-        viewHolderHabits.updateAll();
+        if (viewHolderTasks == null) {
+            return;
+        }
 
+        notifyDataSetChanged();
+
+        //viewHolderTasks.updateAll();
+        //viewHolderHabits.updateAll();
     }
 
     public void updateTaskList() {
@@ -71,19 +76,19 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter {
 
         switch (viewType) {
 
-            case 1:
+            case 0:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_main_tasks_holder, parent, false);
                 viewHolderTasks = new ViewHolderTasks(view);
                 return viewHolderTasks;
 
-            case 2:
+            case 1:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_main_habit_holder, parent, false);
                 viewHolderHabits = new ViewHolderHabits(view);
                 return viewHolderHabits;
 
-            case 3:
+            case 2:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_main_shopping_holder, parent, false);
                 return new ViewHolderTasks(view);
@@ -129,13 +134,11 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter {
 
         public TasksRecyclerAdapter adapter;
 
-        List<Task> taskList;
-
         public ViewHolderTasks(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.VERTICAL,false));
+            recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL,false));
             recyclerView.setHasFixedSize(true);
         }
 
@@ -154,21 +157,19 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter {
 
     public class ViewHolderHabits extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.tv_tasks)
+        @BindView(R.id.tv_habits)
         TextView tasks;
 
-        @BindView(R.id.rv_tasks)
+        @BindView(R.id.rv_habits)
         RecyclerView recyclerView;
 
-        HabitRecyclerAdapter adapter;
-
-        List<Habit> habitList;
+        public HabitRecyclerAdapter adapter;
 
         public ViewHolderHabits(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.VERTICAL,false));
+            recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL,false));
             recyclerView.setHasFixedSize(true);
         }
 

@@ -12,9 +12,11 @@ import com.andysapps.superdo.todo.enums.TaskUpdateType;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
+import com.andysapps.superdo.todo.events.firestore.HabitUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskFailureEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskSuccessEvent;
+import com.andysapps.superdo.todo.events.habit.UploadHabitSuccessEvent;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Habit;
 import com.andysapps.superdo.todo.model.Task;
@@ -49,9 +51,11 @@ public class FirestoreManager {
     public static final String DB_BUCKETS = "buckets";
 
     HashMap<String, Task> taskHashMap;
+    HashMap<String, Habit> habitHashMap;
     HashMap<String, Bucket> bucketHashMap;
 
     Query taskQuery;
+    Query habitQuery;
     Query bucketQuery;
 
     public String userId = "test_user";
@@ -66,6 +70,7 @@ public class FirestoreManager {
         firestore =  FirebaseFirestore.getInstance();
         fetchUserData();
         taskHashMap = new HashMap<>();
+        habitHashMap = new HashMap<>();
         bucketHashMap = new HashMap<>();
     }
 
@@ -75,6 +80,10 @@ public class FirestoreManager {
 
     public HashMap<String, Task> getHasMapTask() {
         return taskHashMap;
+    }
+
+    public HashMap<String, Habit> getHabitHashMap() {
+        return habitHashMap;
     }
 
     public HashMap<String, Bucket> getHasMapBucket() {
@@ -97,6 +106,7 @@ public class FirestoreManager {
         Source source = Source.DEFAULT;
 
         taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", userId).whereEqualTo("isDeleted", false);
+        habitQuery = firestore.collection(DB_HABITS).whereEqualTo("userId", userId).whereEqualTo("isDeleted", false);
         bucketQuery = firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId).whereEqualTo("isDeleted", false).orderBy("created", Query.Direction.DESCENDING);
 
         initQuerySnapshots();
@@ -124,6 +134,30 @@ public class FirestoreManager {
                 EventBus.getDefault().post(new FetchTasksEvent(false));
             }
         });
+
+        habitQuery.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
+                    if (documentSnapshot == null) {
+                        continue;
+                    }
+
+                    habitHashMap.put(documentSnapshot.getId(), documentSnapshot.toObject(Habit.class));
+                }
+
+                TaskOrganiser.getInstance().organiseAllTasks();
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                EventBus.getDefault().post(new FetchTasksEvent(false));
+            }
+        });
+
 
         bucketQuery.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -201,6 +235,34 @@ public class FirestoreManager {
             }
         });
 
+        ////////////
+        ///// HABIT
+        ////////////
+
+        firestore.collection(DB_HABITS).whereEqualTo("userId", userId)
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
+
+                    if (queryDocumentSnapshots == null) {
+                        Log.e(TAG, "Query snapshot null : " + taskHashMap);
+                        return;
+                    }
+
+                    for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+
+                        switch (dc.getType()) {
+                            case ADDED:
+                                habitHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Habit.class));
+                                updateHabitList(TaskUpdateType.Added,habitHashMap.get(dc.getDocument().getId()));
+                                break;
+                        }
+                    }
+                });
+
         //////
         /// bucket query
         //////
@@ -259,6 +321,11 @@ public class FirestoreManager {
         EventBus.getDefault().post(new TaskUpdatedEvent(change, task));
     }
 
+    public void updateHabitList(TaskUpdateType change, Habit habit) {
+        TaskOrganiser.getInstance().organiseAllTasks();
+        EventBus.getDefault().post(new HabitUpdatedEvent(change, habit));
+    }
+
     public void uploadTask(Task task) {
 
         firestore.collection(DB_TASKS).document()
@@ -299,11 +366,12 @@ public class FirestoreManager {
 
     public void uploatHabit(Habit habit) {
 
-        firestore.collection(DB_BUCKETS).document()
+        firestore.collection(DB_HABITS).document()
                 .set(habit)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        EventBus.getDefault().post(new UploadHabitSuccessEvent());
                         Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!");
                     }
                 })

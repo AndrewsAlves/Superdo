@@ -32,7 +32,6 @@ import com.andysapps.superdo.todo.model.Habit;
 import com.andysapps.superdo.todo.model.Task;
 
 import org.greenrobot.eventbus.EventBus;
-import org.w3c.dom.Text;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,51 +48,51 @@ import lib.mozidev.me.extextview.StrikeThroughPainting;
 public class HabitRecyclerAdapter extends RecyclerView.Adapter<HabitRecyclerAdapter.PlaceViewHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = "TasksRecyclerAdapter";
-    private List<Habit> taskList;
+    private List<Habit> habitList;
 
     private Context context;
 
-    public HabitRecyclerAdapter(Context context, List<Habit> taskList) {
-        this.taskList = taskList;
+    public HabitRecyclerAdapter(Context context, List<Habit> habitList) {
+        this.habitList = habitList;
         this.context = context;
     }
 
     @Override
     public PlaceViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_task, viewGroup, false);
+                .inflate(R.layout.item_habit, viewGroup, false);
         return new PlaceViewHolder(view);
     }
 
-    public void notifyHabitAdded(List<Habit> taskList) {
-        this.taskList.clear();
-        this.taskList.addAll(taskList);
+    public void notifyHabitAdded(List<Habit> habitList) {
+        this.habitList.clear();
+        this.habitList.addAll(habitList);
         notifyDataSetChanged();
-        notifyItemInserted(taskList.size() - 1);
+        notifyItemInserted(habitList.size() - 1);
     }
 
-    public void notifyHabitRemoved(Task task) {
-        for (int i = 0 ; i < this.taskList.size() ; i++) {
-            if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
+    public void notifyHabitRemoved(Habit habit) {
+        for (int i = 0; i < this.habitList.size() ; i++) {
+            if (this.habitList.get(i).getDocumentId().equals(habit.getDocumentId())) {
                 notifyItemRemoved(i);
-                this.taskList.remove(i);
+                this.habitList.remove(i);
             }
         }
     }
 
-    public void updateList(List<Habit> taskList) {
+    public void updateList(List<Habit> habitList) {
 
-        Log.e(TAG, "updateList: data size" + this.taskList.size());
+        Log.e(TAG, "updateList: data size" + this.habitList.size());
 
-        this.taskList.clear();
-        this.taskList.addAll(taskList);
+        this.habitList.clear();
+        this.habitList.addAll(habitList);
         notifyDataSetChanged();
     }
 
     @Override
     public void onBindViewHolder(PlaceViewHolder h, int position) {
 
-        Habit habit = taskList.get(position);
+        Habit habit = habitList.get(position);
 
         ////////
         // UI
@@ -232,23 +231,23 @@ public class HabitRecyclerAdapter extends RecyclerView.Adapter<HabitRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return taskList.size();
+        return habitList.size();
     }
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
-                Collections.swap(taskList, i, i + 1);
+                Collections.swap(habitList, i, i + 1);
             }
         } else {
             for (int i = fromPosition; i > toPosition; i--) {
-                Collections.swap(taskList, i, i - 1);
+                Collections.swap(habitList, i, i - 1);
             }
         }
 
-        for (Habit task : taskList) {
-            task.setHabitIndex(taskList.indexOf(task));
+        for (Habit task : habitList) {
+            task.setHabitIndex(habitList.indexOf(task));
             FirestoreManager.getInstance().updateHabit(task);
         }
 

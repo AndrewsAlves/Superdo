@@ -24,6 +24,7 @@ import com.andysapps.superdo.todo.adapters.MainAdapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
+import com.andysapps.superdo.todo.events.firestore.HabitUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Habit;
@@ -94,6 +95,8 @@ public class TodayFragment extends Fragment {
         fontBold = ResourcesCompat.getFont(getContext(), R.font.montserrat_bold);
         fontRegular = ResourcesCompat.getFont(getContext(), R.font.montserrat_regular);
         taskList = new ArrayList<>();
+        habitList = new ArrayList<>();
+        shoppingList = new ArrayList<>();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new MainRecyclerAdapter(getContext(), taskList, habitList, shoppingList);
@@ -120,6 +123,7 @@ public class TodayFragment extends Fragment {
         gradientColor[1] = Color.parseColor( "#FF8B57");
 
         taskList = TaskOrganiser.getInstance().getTasks(listing);
+        habitList = TaskOrganiser.getInstance().getHabits(listing);
         animateTodayViews();
 
         if (taskList == null || taskList.isEmpty()) {
@@ -164,6 +168,23 @@ public class TodayFragment extends Fragment {
                 adapter.viewHolderTasks.adapter.notifyTaskRemoved(event.getTask());
             } else {
                 adapter.viewHolderTasks.adapter.updateList(TaskOrganiser.getInstance().getTasks(listing));
+            }
+        } else {
+            listing = event.getTask().getListedIn();
+            updateUi();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(HabitUpdatedEvent event) {
+
+        if (event.getTask().getListedIn() == listing) {
+            if (event.getDocumentChange() == TaskUpdateType.Added) {
+                adapter.viewHolderHabits.adapter.notifyHabitAdded(TaskOrganiser.getInstance().getHabits(listing));
+            } else if (event.getDocumentChange() == TaskUpdateType.Deleted){
+                adapter.viewHolderHabits.adapter.notifyHabitRemoved(event.getTask());
+            } else {
+                adapter.viewHolderHabits.adapter.updateList(TaskOrganiser.getInstance().getHabits(listing));
             }
         } else {
             listing = event.getTask().getListedIn();

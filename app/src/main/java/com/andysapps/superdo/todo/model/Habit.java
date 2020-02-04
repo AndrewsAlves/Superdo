@@ -3,6 +3,7 @@ package com.andysapps.superdo.todo.model;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.HabitCategory;
 import com.andysapps.superdo.todo.enums.HabitGoalDay;
+import com.andysapps.superdo.todo.enums.TaskListing;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -22,6 +23,8 @@ public class Habit implements Cloneable {
     String userId;
 
     int habitIndex;
+
+    TaskListing listedIn;
 
     // step 1
 
@@ -266,6 +269,14 @@ public class Habit implements Cloneable {
 
     public void setOnSaturday(boolean onSaturday) {
         this.onSaturday = onSaturday;
+    }
+
+    public TaskListing getListedIn() {
+        return listedIn;
+    }
+
+    public void setListedIn(TaskListing listedIn) {
+        this.listedIn = listedIn;
     }
 
     public String getDoDateString() {

@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.events.habit.UploadHabitSuccessEvent
 import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep1
 import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep2
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.Habit
 import kotlinx.android.synthetic.main.activity_create_habit.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class CreateHabitActivity : AppCompatActivity() {
 
@@ -18,14 +21,21 @@ class CreateHabitActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
         setContentView(R.layout.activity_create_habit)
         initUi()
         initClicks()
     }
 
+    override fun onDestroy() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroy()
+    }
+
     fun initUi() {
 
         habit = Habit()
+        habit!!.userId = FirestoreManager.getInstance().userId
 
         var fragment = CreateHabitStep1.instance(habit!!)
         val ft = supportFragmentManager.beginTransaction()
@@ -82,6 +92,11 @@ class CreateHabitActivity : AppCompatActivity() {
                 ch_btn_create.visibility = View.VISIBLE
             }
         }
+    }
+
+    @Subscribe
+    fun onMessageEvent(event : UploadHabitSuccessEvent) {
+        finish()
     }
 
 }

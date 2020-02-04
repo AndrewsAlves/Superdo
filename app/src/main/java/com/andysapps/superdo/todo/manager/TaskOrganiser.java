@@ -3,8 +3,10 @@ package com.andysapps.superdo.todo.manager;
 import android.util.Log;
 
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.enums.HabitGoalDay;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.andysapps.superdo.todo.model.Habit;
 import com.andysapps.superdo.todo.model.Task;
 
 import java.util.ArrayList;
@@ -14,8 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Admin on 06,November,2019
+ * Created by Andrews on 06,November,2019
  */
+
 public class TaskOrganiser {
 
     private static final String TAG = "TaskOrganiser";
@@ -25,6 +28,11 @@ public class TaskOrganiser {
     public List<Task> todayTaskList;
     public List<Task> tomorrowTaskList;
     public List<Task> someDayTaskList;
+
+    // habits
+    public List<Habit> allHabitList;
+    public List<Habit> todayHabitList;
+    public List<Habit> tomorrowHabitList;
 
     public List<Bucket> bucketList;
 
@@ -46,6 +54,7 @@ public class TaskOrganiser {
         someDayTaskList = new ArrayList<>();
 
         HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
+        HashMap<String, Habit> allHabits = FirestoreManager.getInstance().getHabitHashMap();
 
         if (allTasks == null) {
             return;
@@ -84,38 +93,20 @@ public class TaskOrganiser {
                 //Log.e(TAG, "organiseAllTasks: index : " + task.getHabitIndex());
                 //Log.e(TAG, "organiseAllTasks: Listing : SOMEDAY");
             }
+        }
 
+        allHabitList = new ArrayList<>();
+        todayHabitList = new ArrayList<>();
+        tomorrowHabitList = new ArrayList<>();
 
+        for (Habit habit : allHabits.values()) {
 
-           /* if (task.getHabitCategory() == TaskListing.TODAY_TASKS) {
-                todayTaskList.add(task);
+            allHabitList.add(habit);
+
+            if (habit.getHabitGoalDay() == HabitGoalDay.EVERYDAY) {
+                habit.setListedIn(TaskListing.TODAY);
+                todayHabitList.add(habit);
             }
-
-            if (task.getHabitCategory() == TaskListing.SOMEDAY) {
-                someDayTaskList.add(task);
-            }
-
-            if (task.getHabitCategory() == TaskListing.TOMORROW) {
-
-                // add all tomorrow task to today if thier timestamp is less than current timestamp
-                if (task.getDoDate().getTimestamp().getTime() < Calendar.getInstance().getTime().getTime()) {
-                    task.setHabitCategory(TaskListing.TODAY_TASKS);
-                    todayTaskList.add(task);
-                    FirestoreManager.getInstance().updateTask(task); // update tomorrow task to today
-                } else {
-
-                    int taskDate = task.getDoDate().getDate();
-                    int todayDate = Calendar.getInstance().get(Calendar.DATE);
-
-                    if (taskDate <= todayDate) {
-                        task.setHabitCategory(TaskListing.TODAY_TASKS);
-                        todayTaskList.add(task);
-                        FirestoreManager.getInstance().updateTask(task); // update tomorrow task to today
-                    } else {
-                        tomorrowTaskList.add(task);
-                    }
-                }
-            }*/
         }
 
         // Sort the task by indexing
@@ -175,6 +166,20 @@ public class TaskOrganiser {
         }
 
         return allTaskList;
+    }
+
+    public List<Habit> getHabits(TaskListing listing) {
+
+        switch (listing) {
+            case TODAY:
+                return todayHabitList;
+            case TOMORROW:
+                return tomorrowHabitList;
+            case SOMEDAY:
+                return new ArrayList<>();
+        }
+
+        return allHabitList;
     }
 
     public int getTaskSize(TaskListing listing) {
