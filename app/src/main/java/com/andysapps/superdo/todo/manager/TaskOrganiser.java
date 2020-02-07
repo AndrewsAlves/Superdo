@@ -95,20 +95,6 @@ public class TaskOrganiser {
             }
         }
 
-        allHabitList = new ArrayList<>();
-        todayHabitList = new ArrayList<>();
-        tomorrowHabitList = new ArrayList<>();
-
-        for (Habit habit : allHabits.values()) {
-
-            allHabitList.add(habit);
-
-            if (habit.getHabitGoalDay() == HabitGoalDay.EVERYDAY) {
-                habit.setListedIn(TaskListing.TODAY);
-                todayHabitList.add(habit);
-            }
-        }
-
         // Sort the task by indexing
 
         Collections.sort(todayTaskList, new Comparator<Task>() {
@@ -131,6 +117,29 @@ public class TaskOrganiser {
                 return o1.getTaskIndex() - o2.getTaskIndex();
             }
         });
+
+        allHabitList = new ArrayList<>();
+        todayHabitList = new ArrayList<>();
+        tomorrowHabitList = new ArrayList<>();
+
+        for (Habit habit : allHabits.values()) {
+
+            allHabitList.add(habit);
+
+            if (habit.getHabitGoalDay() == HabitGoalDay.EVERYDAY) {
+                habit.setListedIn(TaskListing.TODAY);
+                todayHabitList.add(habit);
+            }
+        }
+
+        Collections.sort(todayHabitList, new Comparator<Habit>() {
+            @Override
+            public int compare(Habit o1, Habit o2) {
+                return o1.getHabitIndex() - o2.getHabitIndex();
+            }
+        });
+
+
 
         organiseBuckets();
 

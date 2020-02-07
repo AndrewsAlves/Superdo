@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Habits"
         android:textColor="@color/lightRed"
-        android:fontFamily="@font/montserrat_medium"
-        android:layout_marginBottom="20dp"/>
+        android:fontFamily="@font/montserrat_medium" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_habits"

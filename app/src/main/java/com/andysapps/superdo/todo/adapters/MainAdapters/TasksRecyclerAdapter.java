@@ -66,7 +66,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         this.taskList.clear();
         this.taskList.addAll(taskList);
         notifyDataSetChanged();
-        notifyItemInserted(taskList.size() - 1);
+        //notifyItemInserted(taskList.size() - 1);
     }
 
     public void notifyTaskRemoved(Task task) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -68,7 +69,7 @@ public class HabitRecyclerAdapter extends RecyclerView.Adapter<HabitRecyclerAdap
         this.habitList.clear();
         this.habitList.addAll(habitList);
         notifyDataSetChanged();
-        notifyItemInserted(habitList.size() - 1);
+        //notifyItemInserted(this.habitList.size() - 1);
     }
 
     public void notifyHabitRemoved(Habit habit) {

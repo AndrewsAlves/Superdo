@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.events.habit.UploadHabitSuccessEvent
 import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep1
 import com.andysapps.superdo.todo.fragments.habit.CreateHabitStep2
 import com.andysapps.superdo.todo.manager.FirestoreManager
+import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Habit
 import kotlinx.android.synthetic.main.activity_create_habit.*
 import org.greenrobot.eventbus.EventBus
@@ -21,15 +23,25 @@ class CreateHabitActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        EventBus.getDefault().register(this)
+       // EventBus.getDefault().register(this)
         setContentView(R.layout.activity_create_habit)
         initUi()
         initClicks()
     }
 
     override fun onDestroy() {
-        EventBus.getDefault().unregister(this)
+        //EventBus.getDefault().unregister(this)
         super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (!isStep1) {
+            isStep1 = true
+            updateBottomUi()
+        } else {
+            finish()
+        }
+        super.onBackPressed()
     }
 
     fun initUi() {
@@ -69,7 +81,9 @@ class CreateHabitActivity : AppCompatActivity() {
         }
 
         ch_btn_create.setOnClickListener {
+            habit!!.habitIndex = TaskOrganiser.getInstance().getHabits(TaskListing.TODAY).size + 1
             FirestoreManager.getInstance().uploatHabit(habit)
+            finish()
         }
     }
 
@@ -93,10 +107,4 @@ class CreateHabitActivity : AppCompatActivity() {
             }
         }
     }
-
-    @Subscribe
-    fun onMessageEvent(event : UploadHabitSuccessEvent) {
-        finish()
-    }
-
 }

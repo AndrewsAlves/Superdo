@@ -49,7 +49,7 @@
             android:layout_marginTop="5dp"/>
 
         <LinearLayout
-            android:visibility="visible"
+            android:visibility="gone"
             android:id="@+id/parent_ll_habit_icons"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
