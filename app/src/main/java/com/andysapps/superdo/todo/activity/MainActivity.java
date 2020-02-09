@@ -58,17 +58,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.iv_moonbutton)
     ImageView moonButton;
 
-    @BindView(R.id.main_ll_fab_add_task)
-    LinearLayout fabTaskButton;
-
-    @BindView(R.id.main_ll_fab_add_habit)
-    LinearLayout fabHabitButton;
-
-    @BindView(R.id.main_ll_fab_add_shopping_list)
-    LinearLayout fabShoppingButton;
-
-    boolean isShowingFab = false;
-
     @BindView(R.id.pulseLayout)
     RipplePulseRelativeLayout rippleBackground;
 
@@ -150,34 +139,12 @@ public class MainActivity extends AppCompatActivity {
         updateTabUi(mainTabs);
     }
 
-    @OnClick(R.id.main_ll_fab_add_task)
-    public void clickTask() {
-        AddTaskFragment bottomSheetFragment = new AddTaskFragment();
-        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-        closeFab();
-    }
-
-    @OnClick(R.id.main_ll_fab_add_habit)
-    public void clickHabit() {
-        Intent intent = new Intent(this, CreateHabitActivity.class);
-        startActivity(intent);
-        closeFab();
-    }
-
-    @OnClick(R.id.main_ll_fab_add_shopping_list)
-    public void clickShopping() {
-        closeFab();
-    }
-
     @OnClick(R.id.btn_add_task)
     public void clickAddTask() {
         switch (moonButtonType) {
             case ADD_TASK:
-                if (isShowingFab) {
-                    closeFab();
-                } else {
-                    openFab();
-                }
+                AddTaskFragment bottomSheetFragment = new AddTaskFragment();
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                 break;
             case ADD_BUCKET:
                 onMessageEvent(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(new Bucket(), false), true));
@@ -188,26 +155,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-    public void openFab() {
-        fabTaskButton.setClickable(true);
-        fabHabitButton.setClickable(true);
-        fabShoppingButton.setClickable(true);
-        animateFab(0.0f, 1.0f, fabTaskButton, 0,0,0, 300, 0);
-        animateFab(0.0f, 1.0f, fabHabitButton, 75,300,0, 300, 0);
-        animateFab(0.0f, 1.0f, fabShoppingButton, 150,300,0, 0, 0);
-        isShowingFab = true;
-    }
-
-     public void closeFab() {
-         fabTaskButton.setClickable(false);
-         fabHabitButton.setClickable(false);
-         fabShoppingButton.setClickable(false);
-         animateFab(1.0f, 0.0f, fabTaskButton, 0,0, 0, 0, 300);
-         animateFab(1.0f, 0.0f, fabHabitButton, 75,0,300, 0, 300);
-         animateFab(1.0f, 0.0f, fabShoppingButton, 150, 0,300, 0, 0);
-         isShowingFab = false;
-     }
 
     public void updateTabUi(MainTabs tabs) {
 
