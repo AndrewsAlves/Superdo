@@ -72,10 +72,10 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         upcomingDumTask.setTaskIndex(-3);
 
         weekTaskList.add(weekDumTask);
-        weekTaskList.addAll(TaskOrganiser.getInstance().getThisWeekTaskList());
+        weekTaskList.addAll(TaskOrganiser.getInstance().getWeekTaskList());
 
         monthTaskList.add(monthDumTask);
-        monthTaskList.addAll(TaskOrganiser.getInstance().getThisMonthTaskList());
+        monthTaskList.addAll(TaskOrganiser.getInstance().getMonthTaskList());
 
         upcomingTasklist.add(upcomingDumTask);
         upcomingTasklist.addAll(TaskOrganiser.getInstance().getUpcomingTaskList());

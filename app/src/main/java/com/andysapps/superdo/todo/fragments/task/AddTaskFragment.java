@@ -375,6 +375,8 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         } else if (Utils.isSuperDateTomorrow(date)) {
             clickTomorrow();
             return;
+        } else if(Utils.isSuperdateThisWeek(date)) {
+            task.setListedIn(TaskListing.THIS_WEEK);
         } else if(Utils.isSuperdateThisMonth(date)) {
             task.setListedIn(TaskListing.THIS_MONTH);
         } else if(Utils.isSuperdateIsUpcoming(date)) {

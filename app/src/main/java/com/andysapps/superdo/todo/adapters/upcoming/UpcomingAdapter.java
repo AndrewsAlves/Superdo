@@ -19,13 +19,11 @@ import com.airbnb.lottie.value.LottieFrameInfo;
 import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
-import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
-import com.andysapps.superdo.todo.model.Upcoming;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
@@ -55,8 +53,8 @@ public class UpcomingAdapter extends ExpandableRecyclerViewAdapter<UpcomingAdapt
     public UpcomingAdapter(Context context,List<? extends ExpandableGroup> groups) {
         super(groups);
         this.context = context;
-        thisWeekTaskList = TaskOrganiser.getInstance().getThisWeekTaskList();
-        thisMonthTaskList = TaskOrganiser.getInstance().getThisMonthTaskList();
+        thisWeekTaskList = TaskOrganiser.getInstance().getWeekTaskList();
+        thisMonthTaskList = TaskOrganiser.getInstance().getMonthTaskList();
         upcomingTaskList = TaskOrganiser.getInstance().getUpcomingTaskList();
     }
 

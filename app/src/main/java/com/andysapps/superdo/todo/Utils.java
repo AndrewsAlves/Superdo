@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -14,12 +15,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+
 
 /**
  * Created by Andrews on 20,August,2019
  */
 
 public class Utils {
+
+    private static final String TAG = "Utils";
 
     public static String[] monthDates = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th",
             "13th", "14th", "15th", "16th", "17th", "18th", "19th", "20th", "21st", "22nd", "23rd", "24th", "25th", "26th", "27th", "28th", "29th", "30th", "31st"};
@@ -58,6 +63,14 @@ public class Utils {
         Calendar c = Calendar.getInstance();
         c.setTime(dt);
         c.add(Calendar.DATE, 1);
+        return c;
+    }
+
+    public static Calendar getIncrementedDay(int i) {
+        Date dt = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.add(Calendar.DATE, i);
         return c;
     }
 
@@ -111,6 +124,45 @@ public class Utils {
         return false;
     }
 
+    public static boolean isSuperdateThisWeek(SuperDate superdate) {
+
+        if (superdate == null) {
+            return false;
+        }
+
+        int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        int remainingDaysInThisWeek = 7 - today;
+
+        List<Integer> weekDays = new ArrayList<>();
+
+        for (int i = 1 ; i <= remainingDaysInThisWeek ; i++) {
+            weekDays.add(getIncrementedDay(i).get(Calendar.DAY_OF_MONTH));
+            Log.e(TAG, "isSuperdateThisWeek: " + getIncrementedDay(i).get(Calendar.DAY_OF_MONTH));
+        }
+
+        if (!isSuperDateToday(superdate) && !isSuperDateTomorrow(superdate) && isSuperdateThisMonth(superdate) ) {
+           if (weekDays.contains(superdate.getDate())) {
+               return true;
+           }
+        }
+
+        return false;
+    }
+
+
+
+    public static boolean isSuperdateThisMonth(SuperDate superdate) {
+
+        if (superdate == null) {
+            return false;
+        }
+
+        return superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
+                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
+                && !isSuperDateToday(superdate)
+                && !isSuperDateTomorrow(superdate);
+    }
+
     public static boolean isSuperdateIsUpcoming(SuperDate superdate) {
 
         if (superdate == null) {
@@ -129,17 +181,7 @@ public class Utils {
         return false;
     }
 
-    public static boolean isSuperdateThisMonth(SuperDate superdate) {
 
-        if (superdate == null) {
-            return false;
-        }
-
-        return superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
-                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
-                && !isSuperDateToday(superdate)
-                && !isSuperDateTomorrow(superdate);
-    }
 
     public static String getMonthString(int month) {
         switch (month) {
