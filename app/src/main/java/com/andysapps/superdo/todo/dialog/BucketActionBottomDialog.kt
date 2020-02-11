@@ -11,7 +11,7 @@ import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.enums.BucketUpdateType
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent
-import com.andysapps.superdo.todo.fragments.CreateNewBucketFragment
+import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Bucket
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

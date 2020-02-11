@@ -1,161 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragments.TodayFragment">
+    tools:context=".fragments.task.TodayFragment">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:id="@+id/ll_notasks"
+        android:gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="130dp">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            android:alpha="0.5"
+            android:src="@drawable/img_sloth" />
 
-            <com.andysapps.superdo.todo.views.GradientTextView
-                android:id="@+id/tv_todaytitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
-                android:text="Good Morning, Andy"
-                android:textSize="22sp"
-                android:textColor="@color/lightRed"
-                android:layout_marginStart="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
-                app:layout_constraintStart_toStartOf="@+id/tv_todaytitle"
-                app:layout_constraintTop_toBottomOf="@+id/tv_todaytitle">
-
-                <TextView
-                    android:id="@+id/btn_today"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Today"
-                    android:textSize="16sp"
-                    android:textColor="@color/lightRed" />
-
-                <TextView
-                    android:id="@+id/btn_tomorrow"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Tomorrow"
-                    android:textSize="16sp"
-                    android:textColor="@color/middleRedOrange" />
-
-                <TextView
-                    android:id="@+id/btn_someday"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:gravity="end|center_vertical"
-                    android:text="Later"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:textColor="@color/lightOrange" />
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:visibility="gone"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginEnd="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.airbnb.lottie.LottieAnimationView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    app:lottie_fileName="lottie_bell_ring.json"
-                    app:lottie_autoPlay="true"
-                    app:lottie_repeatCount="5" />
-
-                <TextView
-                    android:id="@+id/tv_notification_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="3"
-                    android:textSize="10sp"
-                    android:textColor="@color/lightOrange"
-                    android:fontFamily="@font/montserrat_regular"/>
-
-            </RelativeLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:id="@+id/ll_notasks"
-                android:gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_centerInParent="true"
-                    android:alpha="0.5"
-                    android:src="@drawable/img_sloth" />
-
-                <TextView
-                    android:id="@+id/tv_no_tasks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Great! you dont have \nany tasks Today"
-                    android:textAlignment="center"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_today"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="80dp"
-                android:requiresFadingEdge="vertical"
-                android:fadingEdgeLength="50dp"
-                tools:listitem="@layout/item_task"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tv_no_tasks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Great! you dont have \nany tasks Today"
+            android:textAlignment="center"
+            android:textSize="16sp" />
 
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView_today"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="80dp"
+        android:requiresFadingEdge="vertical"
+        android:fadingEdgeLength="50dp"
+        tools:listitem="@layout/item_task"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"/>
 
 </RelativeLayout>

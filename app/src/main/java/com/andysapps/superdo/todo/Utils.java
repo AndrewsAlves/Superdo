@@ -7,17 +7,13 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.TaskListing;
-import com.andysapps.superdo.todo.manager.SharedPrefsManager;
-import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.SuperDate;
-import com.andysapps.superdo.todo.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.logging.Handler;
 
 /**
  * Created by Andrews on 20,August,2019
@@ -51,7 +47,7 @@ public class Utils {
 
     public static Calendar getEndDate() {
         Calendar output2 = Calendar.getInstance();
-        output2.set(Calendar.YEAR, 2020);
+        output2.set(Calendar.YEAR, 2023);
         output2.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
         output2.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH));
         return output2;
@@ -115,7 +111,7 @@ public class Utils {
         return false;
     }
 
-    public static boolean isSuperdateIsSomeday(SuperDate superdate) {
+    public static boolean isSuperdateIsUpcoming(SuperDate superdate) {
 
         if (superdate == null) {
             return true;
@@ -137,6 +133,16 @@ public class Utils {
         }
 
         return false;
+    }
+
+    public static boolean isSuperdateThisMonth(SuperDate superdate) {
+
+        if (superdate == null) {
+            return false;
+        }
+
+        return superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
+                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH);
     }
 
     public static String getMonthString(int month) {
@@ -258,7 +264,7 @@ public class Utils {
                 }
                 break;
             case TOMORROW:
-            case SOMEDAY:
+            case UPCOMING:
                 return 9;
         }
 

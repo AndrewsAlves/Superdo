@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.fragments;
+package com.andysapps.superdo.todo.fragments.task;
 
 
 import android.graphics.Color;
@@ -7,36 +7,25 @@ import android.os.Bundle;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback;
-import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
-import com.andysapps.superdo.todo.enums.BucketUpdateType;
+import com.andysapps.superdo.todo.adapters.viewpageradapter.TasksDayPagerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
-import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
-import com.andysapps.superdo.todo.model.Task;
 import com.github.florent37.viewanimator.ViewAnimator;
-import com.google.firebase.firestore.DocumentChange;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +35,7 @@ import butterknife.OnClick;
  * A simple {@link Fragment} subclass.
  */
 
-public class TodayFragment extends Fragment {
+public class TasksDayFragment extends Fragment {
 
     @BindView(R.id.tv_todaytitle)
     TextView tvTitle;
@@ -60,17 +49,12 @@ public class TodayFragment extends Fragment {
     @BindView(R.id.btn_someday)
     TextView tvSomeday;
 
-    @BindView(R.id.ll_notasks)
-    LinearLayout linearNoTasks;
+    @BindView(R.id.viewpager_tasks)
+    ViewPager viewPagerTasks;
 
-    @BindView(R.id.recyclerView_today)
-    RecyclerView recyclerView;
-
-    TasksRecyclerAdapter adapter;
+    TasksDayPagerAdapter viewPagerAdapter;
 
     int[] gradientColor = new int[2];
-
-    public List<Task> taskList;
 
     Typeface fontBold;
     Typeface fontRegular;
@@ -79,33 +63,53 @@ public class TodayFragment extends Fragment {
 
     TaskListing lasttaskListing;
 
-    public TodayFragment() {
+    public TasksDayFragment() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_today, container, false);
+        View v = inflater.inflate(R.layout.fragment_tasks, container, false);
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
 
         fontBold = ResourcesCompat.getFont(getContext(), R.font.montserrat_bold);
         fontRegular = ResourcesCompat.getFont(getContext(), R.font.montserrat_regular);
 
-        taskList = new ArrayList<>();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TasksRecyclerAdapter(getContext(), taskList);
+        viewPagerAdapter = new TasksDayPagerAdapter(getChildFragmentManager());
+        viewPagerTasks.setAdapter(viewPagerAdapter);
 
-        ItemTouchHelper.Callback callback = new LongItemTouchHelperCallback(adapter);
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(recyclerView);
-        recyclerView.setAdapter(adapter);
+        viewPagerTasks.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) { }
+            @Override
+            public void onPageSelected(int i) {
+
+                switch (i) {
+                    case 0:
+                        listing = TaskListing.TODAY;
+                        break;
+                    case 1:
+                        listing = TaskListing.TOMORROW;
+                        break;
+                    case 2:
+                        listing = TaskListing.UPCOMING;
+                        break;
+                }
+
+                updateUi();
+            }
+            @Override
+            public void onPageScrollStateChanged(int i) { }
+        });
+
+        clickToday();
 
         listing= TaskListing.TODAY;
         lasttaskListing = TaskListing.TOMORROW;
         updateUi();
-        lasttaskListing = TaskListing.SOMEDAY;
+        lasttaskListing = TaskListing.UPCOMING;
         updateUi();
 
         return v;
@@ -122,33 +126,27 @@ public class TodayFragment extends Fragment {
         gradientColor[0] = Color.parseColor( "#F64F59");
         gradientColor[1] = Color.parseColor( "#FF8B57");
 
-        taskList = TaskOrganiser.getInstance().getTasks(listing);
         animateTodayViews();
-
-        if (taskList == null || taskList.isEmpty()) {
-            linearNoTasks.setVisibility(View.VISIBLE);
-        } else {
-            linearNoTasks.setVisibility(View.GONE);
-        }
-
-        adapter.updateList(taskList);
     }
 
     @OnClick(R.id.btn_today)
     public void clickToday() {
         listing = TaskListing.TODAY;
+        viewPagerTasks.setCurrentItem(0);
         updateUi();
     }
 
     @OnClick(R.id.btn_tomorrow)
     public void clickTomorrow() {
         listing = TaskListing.TOMORROW;
+        viewPagerTasks.setCurrentItem(1);
         updateUi();
     }
 
     @OnClick(R.id.btn_someday)
-    public void clickSomedat() {
-        listing = TaskListing.SOMEDAY;
+    public void clickUpcoming() {
+        listing = TaskListing.UPCOMING;
+        viewPagerTasks.setCurrentItem(2);
         updateUi();
     }
 
@@ -160,17 +158,19 @@ public class TodayFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskUpdatedEvent event) {
 
-        if (event.getTask().getListedIn() == listing) {
-            if (event.getDocumentChange() == TaskUpdateType.Added) {
-                adapter.notifyTaskAdded(TaskOrganiser.getInstance().getTasks(listing));
-            } else if (event.getDocumentChange() == TaskUpdateType.Deleted){
-                adapter.notifyTaskRemoved(event.getTask());
-            } else {
-                adapter.updateList(TaskOrganiser.getInstance().getTasks(listing));
-            }
-        } else {
-            listing = event.getTask().getListedIn();
-            updateUi();
+        switch (event.getTask().getListedIn()) {
+            case TODAY:
+                clickToday();
+                break;
+            case TOMORROW:
+                clickTomorrow();
+                break;
+            case UPCOMING:
+            case THIS_WEEK:
+            case THIS_MONTH:
+                clickUpcoming();
+                break;
+
         }
     }
 
@@ -191,7 +191,7 @@ public class TodayFragment extends Fragment {
                 case TOMORROW:
                     zoomAnimation(1.2f, 1.0f, tvTomorrow, grey);
                     break;
-                case SOMEDAY:
+                case UPCOMING:
                     zoomAnimation(1.2f, 1.0f, tvSomeday, grey);
                     break;
             }
@@ -205,7 +205,7 @@ public class TodayFragment extends Fragment {
                 case TOMORROW:
                     zoomAnimation(1.0f, 1.2f, tvTomorrow, red);
                     break;
-                case SOMEDAY:
+                case UPCOMING:
                     zoomAnimation(1.0f, 1.2f, tvSomeday, red);
                     break;
             }

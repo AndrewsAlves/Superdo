@@ -1,5 +1,8 @@
 package com.andysapps.superdo.todo.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.sidekicks.ContactCard;
@@ -21,7 +24,7 @@ import java.util.List;
  * Created by Andrews on 19,October,2019
  */
 
-public class Task implements Cloneable {
+public class Task implements Cloneable, Parcelable {
 
     @DocumentId
     String documentId;
@@ -307,4 +310,13 @@ public class Task implements Cloneable {
         return hours + " : " + min + meridien;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
 }

@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.adapters;
+package com.andysapps.superdo.todo.adapters.upcoming;
 
 import android.content.Context;
 import android.graphics.ColorFilter;
@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,7 @@ import com.airbnb.lottie.value.LottieFrameInfo;
 import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
@@ -30,6 +32,7 @@ import com.andysapps.superdo.todo.model.Task;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,30 +45,77 @@ import lib.mozidev.me.extextview.StrikeThroughPainting;
  * Created by Andrews on 15,August,2019
  */
 
-public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdapter.TaskViewHolder> implements ItemTouchHelperAdapter {
+public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAdapter.TaskViewHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = "TasksRecyclerAdapter";
+
     private List<Task> taskList;
+
+    List<Task> weekTaskList;
+    List<Task> monthTaskList;
+    List<Task> upcomingTasklist;
 
     private Context context;
 
-    public TasksRecyclerAdapter(Context context, List<Task> taskList) {
-        this.taskList = taskList;
+    public UpcomingManualAdapter(Context context) {
         this.context = context;
+
+        weekTaskList = new ArrayList<>();
+        monthTaskList = new ArrayList<>();
+        upcomingTasklist = new ArrayList<>();
+
+        Task weekDumTask = new Task();
+        weekDumTask.setTaskIndex(-1);
+        Task monthDumTask = new Task();
+        monthDumTask.setTaskIndex(-2);
+        Task upcomingDumTask = new Task();
+        upcomingDumTask.setTaskIndex(-3);
+
+        weekTaskList.add(weekDumTask);
+        weekTaskList.addAll(TaskOrganiser.getInstance().getThisWeekTaskList());
+
+        monthTaskList.add(monthDumTask);
+        monthTaskList.addAll(TaskOrganiser.getInstance().getThisMonthTaskList());
+
+        upcomingTasklist.add(upcomingDumTask);
+        upcomingTasklist.addAll(TaskOrganiser.getInstance().getUpcomingTaskList());
+
+
+
+        taskList = new ArrayList<>();
+        taskList.addAll(weekTaskList);
+        taskList.addAll(monthTaskList);
+        taskList.addAll(upcomingTasklist);
     }
 
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_task, viewGroup, false);
+                .inflate(R.layout.item_upcoming_group, viewGroup, false);
         return new TaskViewHolder(view);
     }
 
-    public void addTask(List<Task> taskList) {
-        this.taskList.clear();
-        this.taskList.addAll(taskList);
-        notifyDataSetChanged();
-        notifyItemInserted(taskList.size() - 1);
+    public void addTask(Task task) {
+
+        int addIndex;
+
+        switch (task.getListedIn()) {
+            case THIS_WEEK:
+                weekTaskList.add(task);
+                addIndex = weekTaskList.size() - 1;
+                notifyItemInserted(addIndex);
+                break;
+            case THIS_MONTH:
+                monthTaskList.add(task);
+                addIndex = weekTaskList.size() + monthTaskList.size() - 1;
+                notifyItemInserted(addIndex);
+                break;
+            case UPCOMING:
+                upcomingTasklist.add(task);
+                addIndex = weekTaskList.size() + monthTaskList.size() + upcomingTasklist.size() - 1;
+                notifyItemInserted(addIndex);
+                break;
+        }
     }
 
     public void removeTask(Task task) {
@@ -90,6 +140,24 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     public void onBindViewHolder(TaskViewHolder h, int position) {
 
         Task task = taskList.get(position);
+
+        switch (taskList.get(position).getTaskIndex()) {
+            case -1:
+                h.tvUpcomingTitle.setText("This week");
+                break;
+            case -2:
+                h.tvUpcomingTitle.setText("This month");
+                break;
+            case -3:
+                h.tvUpcomingTitle.setText("Upcoming");
+                break;
+        }
+
+        if (task.getTaskIndex() < 0) {
+            h.tvUpcomingTitle.setVisibility(View.VISIBLE);
+            h.parentTaskItem.setVisibility(View.GONE);
+            return;
+        }
 
         h.tvTaskName.setText(task.getName());
 
@@ -289,6 +357,12 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         @BindView(R.id.parent_ll_task_icons)
         public LinearLayout parentIcons;
+
+        @BindView(R.id.ll_parent_upcomingtask)
+        public LinearLayout parentTaskItem;
+
+        @BindView(R.id.tv_upcoming_group)
+        public TextView tvUpcomingTitle;
 
         StrikeThroughPainting painting;
 

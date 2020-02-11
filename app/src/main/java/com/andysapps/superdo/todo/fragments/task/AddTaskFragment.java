@@ -1,12 +1,9 @@
-package com.andysapps.superdo.todo.fragments;
+package com.andysapps.superdo.todo.fragments.task;
 
 
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -38,7 +35,6 @@ import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.firebase.firestore.DocumentChange;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -46,9 +42,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -187,7 +181,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
                 tvTomorrow.setTextColor(getResources().getColor(R.color.lightRed));
                 break;
 
-            case SOMEDAY:
+            case UPCOMING:
                 ivDotSomeday.setImageResource(R.drawable.bg_oval_light_red);
                 tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
                 break;
@@ -316,7 +310,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     @OnClick(R.id.btn_someday)
     public void clickSomeday() {
-        task.setListedIn(TaskListing.SOMEDAY);
+        task.setListedIn(TaskListing.UPCOMING);
         task.setDoDate(null);
         updateUi();
         showDatePicker();
@@ -380,7 +374,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
             clickTomorrow();
             return;
         } else {
-            task.setListedIn(TaskListing.SOMEDAY);
+            task.setListedIn(TaskListing.UPCOMING);
         }
 
         if (task.getDoDate() != null) {

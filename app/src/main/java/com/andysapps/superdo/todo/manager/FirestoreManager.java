@@ -164,7 +164,6 @@ public class FirestoreManager {
                 return;
             }
 
-
             for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
 
                 switch (dc.getType()) {

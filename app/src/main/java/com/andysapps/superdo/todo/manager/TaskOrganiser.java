@@ -24,7 +24,9 @@ public class TaskOrganiser {
     public List<Task> allTaskList;
     public List<Task> todayTaskList;
     public List<Task> tomorrowTaskList;
-    public List<Task> someDayTaskList;
+    public List<Task> thisWeekTaskList;
+    public List<Task> thisMonthTaskList;
+    public List<Task> upcomingTaskList;
 
     public List<Bucket> bucketList;
 
@@ -33,9 +35,12 @@ public class TaskOrganiser {
     }
 
     private TaskOrganiser() {
+        allTaskList = new ArrayList<>();
         todayTaskList = new ArrayList<>();
         tomorrowTaskList = new ArrayList<>();
-        someDayTaskList = new ArrayList<>();
+        thisWeekTaskList = new ArrayList<>();
+        thisMonthTaskList = new ArrayList<>();
+        upcomingTaskList = new ArrayList<>();
     }
 
     public void organiseAllTasks() {
@@ -43,7 +48,9 @@ public class TaskOrganiser {
         allTaskList = new ArrayList<>();
         todayTaskList = new ArrayList<>();
         tomorrowTaskList = new ArrayList<>();
-        someDayTaskList = new ArrayList<>();
+        thisWeekTaskList = new ArrayList<>();
+        thisMonthTaskList = new ArrayList<>();
+        upcomingTaskList = new ArrayList<>();
 
         HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
 
@@ -77,12 +84,20 @@ public class TaskOrganiser {
                 tomorrowTaskList.add(task);
             }
 
-            if (Utils.isSuperdateIsSomeday(task.getDoDate())) {
-                task.setListedIn(TaskListing.SOMEDAY);
-                someDayTaskList.add(task);
+            if (Utils.isSuperdateThisMonth(task.getDoDate())) {
+                task.setListedIn(TaskListing.UPCOMING);
+                thisMonthTaskList.add(task);
                 //Log.e(TAG, "organiseAllTasks: task name : " + task.getName());
                 //Log.e(TAG, "organiseAllTasks: index : " + task.getHabitIndex());
-                //Log.e(TAG, "organiseAllTasks: Listing : SOMEDAY");
+                //Log.e(TAG, "organiseAllTasks: Listing : UPCOMING");
+            }
+
+            if (Utils.isSuperdateIsUpcoming(task.getDoDate())) {
+                task.setListedIn(TaskListing.UPCOMING);
+                upcomingTaskList.add(task);
+                //Log.e(TAG, "organiseAllTasks: task name : " + task.getName());
+                //Log.e(TAG, "organiseAllTasks: index : " + task.getHabitIndex());
+                //Log.e(TAG, "organiseAllTasks: Listing : UPCOMING");
             }
 
 
@@ -91,8 +106,8 @@ public class TaskOrganiser {
                 todayTaskList.add(task);
             }
 
-            if (task.getHabitCategory() == TaskListing.SOMEDAY) {
-                someDayTaskList.add(task);
+            if (task.getHabitCategory() == TaskListing.UPCOMING) {
+                upcomingTaskList.add(task);
             }
 
             if (task.getHabitCategory() == TaskListing.TOMORROW) {
@@ -134,7 +149,7 @@ public class TaskOrganiser {
             }
         });
 
-        Collections.sort(someDayTaskList, new Comparator<Task>() {
+        Collections.sort(upcomingTaskList, new Comparator<Task>() {
             @Override
             public int compare(Task o1, Task o2) {
                 return o1.getTaskIndex() - o2.getTaskIndex();
@@ -170,8 +185,8 @@ public class TaskOrganiser {
                 return todayTaskList;
             case TOMORROW:
                 return tomorrowTaskList;
-            case SOMEDAY:
-                return someDayTaskList;
+            case UPCOMING:
+                return upcomingTaskList;
         }
 
         return allTaskList;
@@ -184,14 +199,30 @@ public class TaskOrganiser {
                 return todayTaskList.size();
             case TOMORROW:
                 return tomorrowTaskList.size();
-            case SOMEDAY:
-                return someDayTaskList.size();
+            case UPCOMING:
+                return upcomingTaskList.size();
         }
 
         return allTaskList.size();
     }
 
+    public List<Task> getThisMonthTaskList() {
+        return thisMonthTaskList;
+    }
+
+    public List<Task> getThisWeekTaskList() {
+        return thisWeekTaskList;
+    }
+
+    public List<Task> getUpcomingTaskList() {
+        return upcomingTaskList;
+    }
+
+    /////////////////////
+    //// BUCKET TASKS
+
     public List<Task> getTasksInBucket(Bucket bucket) {
+
         List<Task> bucketList = new ArrayList<>();
 
         if (bucket.getDocumentId().equals("all_tasks")) {

@@ -5,17 +5,20 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment;
 import com.andysapps.superdo.todo.fragments.ProfileFragment;
+import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment;
 import com.andysapps.superdo.todo.fragments.task.TasksDayFragment;
+import com.andysapps.superdo.todo.fragments.task.TodayFragment;
+import com.andysapps.superdo.todo.fragments.task.TomorrowFragment;
+import com.andysapps.superdo.todo.fragments.task.UpcomingTasksFragment;
 
 /**
  * Created by Andrews on 10,October,2019
  */
 
-public class MainViewPagerAdapter extends FragmentPagerAdapter {
+public class TasksDayPagerAdapter extends FragmentPagerAdapter {
 
-    public MainViewPagerAdapter(FragmentManager fm) {
+    public TasksDayPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -24,11 +27,11 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
 
         switch (i) {
             case 0:
-                return new TasksDayFragment();
+                return new TodayFragment();
             case 1:
-                return new BucketTasksFragment();
+                return new TomorrowFragment();
             case 2:
-                return new ProfileFragment();
+                return new UpcomingTasksFragment();
         }
 
         return null;

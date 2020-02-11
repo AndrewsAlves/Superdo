@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.fragments;
+package com.andysapps.superdo.todo.fragments.bucket;
 
 
 import android.os.Bundle;
@@ -99,7 +99,11 @@ public class BucketTasksFragment extends Fragment {
         }
 
         taskList = new ArrayList<>();
-        taskList.addAll(TaskOrganiser.getInstance().getTasksInBucket(bucket));
+
+        if (!TaskOrganiser.getInstance().getTasksInBucket(bucket).isEmpty()) {
+            taskList.addAll(TaskOrganiser.getInstance().getTasksInBucket(bucket));
+        }
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new TasksRecyclerAdapter(getContext(), taskList);
         recyclerView.setAdapter(adapter);

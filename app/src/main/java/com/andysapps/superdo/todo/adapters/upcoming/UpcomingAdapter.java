@@ -1,19 +1,16 @@
-package com.andysapps.superdo.todo.adapters;
+package com.andysapps.superdo.todo.adapters.upcoming;
 
 import android.content.Context;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
@@ -22,15 +19,20 @@ import com.airbnb.lottie.value.LottieFrameInfo;
 import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
+import com.andysapps.superdo.todo.model.Upcoming;
+import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
+import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
+import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
+import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -39,57 +41,76 @@ import lib.mozidev.me.extextview.ExTextView;
 import lib.mozidev.me.extextview.StrikeThroughPainting;
 
 /**
- * Created by Andrews on 15,August,2019
+ * Created by Andrews on 10,February,2020
  */
 
-public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdapter.TaskViewHolder> implements ItemTouchHelperAdapter {
+public class UpcomingAdapter extends ExpandableRecyclerViewAdapter<UpcomingAdapter.UpcomingViewHolder, UpcomingAdapter.UpcomingChildTaskViewHolder> {
 
-    private static final String TAG = "TasksRecyclerAdapter";
-    private List<Task> taskList;
+    Context context;
 
-    private Context context;
+    List<Task> thisWeekTaskList;
+    List<Task> thisMonthTaskList;
+    List<Task> upcomingTaskList;
 
-    public TasksRecyclerAdapter(Context context, List<Task> taskList) {
-        this.taskList = taskList;
+    public UpcomingAdapter(Context context,List<? extends ExpandableGroup> groups) {
+        super(groups);
         this.context = context;
+        thisWeekTaskList = TaskOrganiser.getInstance().getThisWeekTaskList();
+        thisMonthTaskList = TaskOrganiser.getInstance().getThisMonthTaskList();
+        upcomingTaskList = TaskOrganiser.getInstance().getUpcomingTaskList();
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return super.getItemCount();
     }
 
     @Override
-    public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_task, viewGroup, false);
-        return new TaskViewHolder(view);
+    public UpcomingViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_upcoming_group, parent, false);
+        return new UpcomingViewHolder(view);
     }
 
-    public void addTask(List<Task> taskList) {
-        this.taskList.clear();
-        this.taskList.addAll(taskList);
-        notifyDataSetChanged();
-        notifyItemInserted(taskList.size() - 1);
+    @Override
+    public UpcomingAdapter.UpcomingChildTaskViewHolder onCreateChildViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
+        return new UpcomingChildTaskViewHolder(view);
     }
 
-    public void removeTask(Task task) {
-        for (int i = 0 ; i < this.taskList.size() ; i++) {
-            if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
-                notifyItemRemoved(i);
-                this.taskList.remove(i);
-            }
+    @Override
+    public void onBindGroupViewHolder(UpcomingViewHolder holder, int flatPosition, ExpandableGroup group) {
+        switch (flatPosition) {
+            case 0:
+                holder.tvUpcomingGroup.setText("This week");
+                break;
+            case 1:
+                holder.tvUpcomingGroup.setText("This month");
+                break;
+            case 2:
+                holder.tvUpcomingGroup.setText("Upcoming");
+                break;
         }
     }
 
-    public void updateList(List<Task> taskList) {
-
-        Log.e(TAG, "updateList: data size" + this.taskList.size());
-
-        this.taskList.clear();
-        this.taskList.addAll(taskList);
-        notifyDataSetChanged();
-    }
-
     @Override
-    public void onBindViewHolder(TaskViewHolder h, int position) {
+    public void onBindChildViewHolder(UpcomingAdapter.UpcomingChildTaskViewHolder h, int flatPosition, ExpandableGroup group, int childIndex) {
 
-        Task task = taskList.get(position);
+        Task task;
+
+        switch (flatPosition) {
+            case 0:
+                task = thisWeekTaskList.get(childIndex);
+                break;
+            case 1:
+                task = thisMonthTaskList.get(childIndex);
+                break;
+            case 2:
+                task = upcomingTaskList.get(childIndex);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + flatPosition);
+        }
 
         h.tvTaskName.setText(task.getName());
 
@@ -199,69 +220,25 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 EventBus.getDefault().post(new OpenEditTaskEvent(task));
             }
         });
+
     }
 
-    private void strikeOutText(TaskViewHolder holder) {
+    public class UpcomingViewHolder extends GroupViewHolder {
 
-        float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                2,
-                context.getResources().getDisplayMetrics());
+        @BindView(R.id.tv_upcoming_group)
+        TextView tvUpcomingGroup;
 
-        holder.painting.cutTextEdge(true)
-                // default to Color.BLACK
-                .color(context.getResources().getColor(R.color.grey3))
-                // default to 2F px
-                .strokeWidth(pix)
-                // default to StrikeThroughPainting.MODE_DEFAULT
-                .mode(StrikeThroughPainting.MODE_DEFAULT)
-                // default to 0.65F
-                .linePosition(0.8F)
-                // default to 0.6F, since the first line is calculated
-                // differently to the following lines
-                .firstLinePosition(0.6F)
-                // default to 1_000 milliseconds, aka 1s
-                .totalTime(500)
-                // do the draw!
-                .strikeThrough();
-    }
-
-    private void strikeInText(TaskViewHolder holder) {
-        holder.painting.clearStrikeThrough();
-    }
-
-    @Override
-    public int getItemCount() {
-        return taskList.size();
-    }
-
-    @Override
-    public void onItemMove(int fromPosition, int toPosition) {
-        if (fromPosition < toPosition) {
-            for (int i = fromPosition; i < toPosition; i++) {
-                Collections.swap(taskList, i, i + 1);
-            }
-        } else {
-            for (int i = fromPosition; i > toPosition; i--) {
-                Collections.swap(taskList, i, i - 1);
-            }
+        public UpcomingViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this,itemView);
         }
-
-        for (Task task : taskList) {
-            task.setTaskIndex(taskList.indexOf(task));
-            FirestoreManager.getInstance().updateTask(task);
-        }
-
-        Log.e(TAG, "onItemMove: from : " + fromPosition);
-        TaskOrganiser.getInstance().organiseAllTasks();
-        notifyItemMoved(fromPosition, toPosition);
     }
 
-    @Override
-    public void onItemDismiss(int position) {
-        Log.e(TAG, "onItemDismiss: " + position );
-    }
+    /////////
+    ///// CHILD VIEW HOLDER
+    /////////
 
-    public class TaskViewHolder extends RecyclerView.ViewHolder {
+    public class UpcomingChildTaskViewHolder extends ChildViewHolder {
 
         @BindView(R.id.lottie_check_view)
         LottieAnimationView lottieCheckView;
@@ -296,7 +273,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         public boolean isChecked = false;
 
-        public TaskViewHolder(@NonNull View itemView) {
+        public UpcomingChildTaskViewHolder(View itemView) {
             super(itemView);
             item = itemView;
             ButterKnife.bind(this,itemView);
@@ -304,6 +281,34 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             lottieCheckView.setAnimation("anim_check2.json");
             painting = new StrikeThroughPainting(tvTaskName);
         }
-
     }
+
+    private void strikeOutText(UpcomingChildTaskViewHolder holder) {
+
+        float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                2,
+                context.getResources().getDisplayMetrics());
+
+        holder.painting.cutTextEdge(true)
+                // default to Color.BLACK
+                .color(context.getResources().getColor(R.color.grey3))
+                // default to 2F px
+                .strokeWidth(pix)
+                // default to StrikeThroughPainting.MODE_DEFAULT
+                .mode(StrikeThroughPainting.MODE_DEFAULT)
+                // default to 0.65F
+                .linePosition(0.8F)
+                // default to 0.6F, since the first line is calculated
+                // differently to the following lines
+                .firstLinePosition(0.6F)
+                // default to 1_000 milliseconds, aka 1s
+                .totalTime(500)
+                // do the draw!
+                .strikeThrough();
+    }
+
+    private void strikeInText(UpcomingChildTaskViewHolder holder) {
+        holder.painting.clearStrikeThrough();
+    }
+
 }

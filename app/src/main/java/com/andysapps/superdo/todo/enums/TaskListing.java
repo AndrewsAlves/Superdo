@@ -7,5 +7,7 @@ package com.andysapps.superdo.todo.enums;
 public enum TaskListing {
     TODAY,
     TOMORROW,
-    SOMEDAY
+    THIS_WEEK,
+    THIS_MONTH,
+    UPCOMING
 }

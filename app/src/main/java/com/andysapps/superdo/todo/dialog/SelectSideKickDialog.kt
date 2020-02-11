@@ -10,7 +10,6 @@ import androidx.fragment.app.DialogFragment
 
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
-import com.andysapps.superdo.todo.fragments.EditTaskFragment
 import com.andysapps.superdo.todo.model.Task
 import com.andysapps.superdo.todo.model.sidekicks.*
 import kotlinx.android.synthetic.main.fragment_select_side_kick_dialog.*
