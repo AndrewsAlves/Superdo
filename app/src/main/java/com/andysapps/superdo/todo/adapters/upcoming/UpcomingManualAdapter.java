@@ -163,13 +163,13 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         switch (taskList.get(position).getTaskIndex()) {
             case -1:
-                h.tvUpcomingTitle.setText("This week");
+                h.tvUpcomingTitle.setText("This week" + " " + "(" + (weekTaskList.size() - 1) + ")");
                 break;
             case -2:
-                h.tvUpcomingTitle.setText("This month");
+                h.tvUpcomingTitle.setText("This month" + " " + "(" + (monthTaskList.size() - 1) + ")");
                 break;
             case -3:
-                h.tvUpcomingTitle.setText("Upcoming");
+                h.tvUpcomingTitle.setText("Upcoming" + " " + "(" + (upcomingTasklist.size() - 1) + ")");
                 break;
         }
 
@@ -180,9 +180,25 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             return;
         }
 
+        h.isChecked = task.isTaskCompleted();
+
         h.tvTaskName.setText(task.getName());
 
-        h.isChecked = task.isTaskCompleted();
+        if (task.getDoDate() == null) {
+            h.tvUpcomingDate.setVisibility(View.GONE);
+        } else {
+            switch (task.getListedIn()) {
+                case THIS_WEEK:
+                    h.tvUpcomingDate.setText(Utils.getWeekDay(task.getDoDate()));
+                    break;
+                case THIS_MONTH:
+                    h.tvUpcomingDate.setText(Utils.monthDates[task.getDoDate().getDate() - 1]);
+                    break;
+                case UPCOMING:
+                    h.tvUpcomingDate.setText(Utils.getMonthString(task.getDoDate().getMonth()) + " " + Utils.monthDates[task.getDoDate().getDate() - 1]);
+                    break;
+            }
+        }
 
         if (h.isChecked) {
             h.lottieCheckView.setMinAndMaxProgress(1.0f, 1.0f);
@@ -380,6 +396,10 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         @BindView(R.id.tv_upcoming_group)
         public TextView tvUpcomingTitle;
+
+        @BindView(R.id.tv_upcoming_task_date)
+        public TextView tvUpcomingDate;
+
 
         StrikeThroughPainting painting;
 

@@ -140,7 +140,10 @@ public class Utils {
             Log.e(TAG, "isSuperdateThisWeek: " + getIncrementedDay(i).get(Calendar.DAY_OF_MONTH));
         }
 
-        if (!isSuperDateToday(superdate) && !isSuperDateTomorrow(superdate) && isSuperdateThisMonth(superdate) ) {
+        if (!isSuperDateToday(superdate)
+                && !isSuperDateTomorrow(superdate)
+                && superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
+                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH) ) {
            if (weekDays.contains(superdate.getDate())) {
                return true;
            }
@@ -148,8 +151,6 @@ public class Utils {
 
         return false;
     }
-
-
 
     public static boolean isSuperdateThisMonth(SuperDate superdate) {
 
@@ -160,7 +161,8 @@ public class Utils {
         return superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
                 && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
                 && !isSuperDateToday(superdate)
-                && !isSuperDateTomorrow(superdate);
+                && !isSuperDateTomorrow(superdate)
+                && !isSuperdateThisWeek(superdate);
     }
 
     public static boolean isSuperdateIsUpcoming(SuperDate superdate) {
@@ -180,8 +182,6 @@ public class Utils {
 
         return false;
     }
-
-
 
     public static String getMonthString(int month) {
         switch (month) {
@@ -213,6 +213,39 @@ public class Utils {
                 default:
                     return "   ";
         }
+    }
+
+    public static String getWeekDay(SuperDate date) {
+
+        if (date == null) {
+            return " ";
+        }
+
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.DAY_OF_MONTH, date.getDate());
+        c.set(Calendar.MONTH, date.getMonth() - 1);
+        c.set(Calendar.YEAR, date.getYear());
+
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+
+        switch (dayOfWeek) {
+            case 1:
+                return "Sun";
+            case 2:
+                return "Mon";
+            case 3:
+                return "Tue";
+            case 4:
+                return "Wed";
+            case 5:
+                return "Thu";
+            case 6:
+                return "Fri";
+            case 7:
+                return "Sat";
+        }
+
+        return " ";
     }
 
     public static String getMonthStringLong(int month) {
