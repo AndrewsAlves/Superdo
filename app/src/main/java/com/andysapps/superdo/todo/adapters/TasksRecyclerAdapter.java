@@ -61,10 +61,8 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         return new TaskViewHolder(view);
     }
 
-    public void addTask(List<Task> taskList) {
-        this.taskList.clear();
-        this.taskList.addAll(taskList);
-        notifyDataSetChanged();
+    public void addTask(Task task) {
+        taskList.add(task);
         notifyItemInserted(taskList.size() - 1);
     }
 

@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.andysapps.superdo.todo.adapters.upcoming.UpcomingManualAdapter;
+
 /**
  * Created by Admin on 09,November,2019
  */
@@ -29,6 +31,9 @@ public class LongItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+        if (!viewHolder.itemView.isClickable()) {
+            return makeMovementFlags(0,0);
+        }
         int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
         int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
         return makeMovementFlags(dragFlags, swipeFlags);

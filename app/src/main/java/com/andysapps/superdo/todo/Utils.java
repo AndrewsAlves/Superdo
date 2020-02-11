@@ -126,12 +126,6 @@ public class Utils {
             return true;
         }
 
-        if (superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
-                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
-                && superdate.getDate() > getTomorrow().get(Calendar.DAY_OF_MONTH)) {
-            return true;
-        }
-
         return false;
     }
 
@@ -142,7 +136,9 @@ public class Utils {
         }
 
         return superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
-                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH);
+                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
+                && !isSuperDateToday(superdate)
+                && !isSuperDateTomorrow(superdate);
     }
 
     public static String getMonthString(int month) {

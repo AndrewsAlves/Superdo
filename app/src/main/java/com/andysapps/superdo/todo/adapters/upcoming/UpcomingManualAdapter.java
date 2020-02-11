@@ -99,27 +99,47 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         int addIndex;
 
+        Log.e(TAG, "addTask: upcoming add task ");
+
         switch (task.getListedIn()) {
             case THIS_WEEK:
                 weekTaskList.add(task);
                 addIndex = weekTaskList.size() - 1;
+                //refreshList();
+                taskList.add(addIndex, task);
                 notifyItemInserted(addIndex);
                 break;
             case THIS_MONTH:
                 monthTaskList.add(task);
                 addIndex = weekTaskList.size() + monthTaskList.size() - 1;
+                //refreshList();
+                taskList.add(addIndex, task);
                 notifyItemInserted(addIndex);
                 break;
             case UPCOMING:
                 upcomingTasklist.add(task);
                 addIndex = weekTaskList.size() + monthTaskList.size() + upcomingTasklist.size() - 1;
+                //refreshList();
+                taskList.add(addIndex, task);
                 notifyItemInserted(addIndex);
                 break;
         }
     }
 
+    public void refreshList() {
+        taskList = new ArrayList<>();
+        taskList.addAll(weekTaskList);
+        taskList.addAll(monthTaskList);
+        taskList.addAll(upcomingTasklist);
+    }
+
     public void removeTask(Task task) {
         for (int i = 0 ; i < this.taskList.size() ; i++) {
+
+            if (taskList.get(i).getTaskIndex() < 0) {
+                continue;
+            }
+
             if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
                 notifyItemRemoved(i);
                 this.taskList.remove(i);
@@ -155,15 +175,12 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         if (task.getTaskIndex() < 0) {
             h.tvUpcomingTitle.setVisibility(View.VISIBLE);
+            h.itemView.setClickable(false); // disable click for
             h.parentTaskItem.setVisibility(View.GONE);
             return;
         }
 
         h.tvTaskName.setText(task.getName());
-
-        /*if (task.getBucketColor() != null) {
-            h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
-        }*/
 
         h.isChecked = task.isTaskCompleted();
 
@@ -316,11 +333,11 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         for (Task task : taskList) {
             task.setTaskIndex(taskList.indexOf(task));
-            FirestoreManager.getInstance().updateTask(task);
+           // FirestoreManager.getInstance().updateTask(task);
         }
 
         Log.e(TAG, "onItemMove: from : " + fromPosition);
-        TaskOrganiser.getInstance().organiseAllTasks();
+        //TaskOrganiser.getInstance().organiseAllTasks();
         notifyItemMoved(fromPosition, toPosition);
     }
 
@@ -368,12 +385,16 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         public View item;
 
+        boolean isDraggable;
+
         public boolean isChecked = false;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             item = itemView;
             ButterKnife.bind(this,itemView);
+
+            isDraggable = true;
 
             lottieCheckView.setAnimation("anim_check2.json");
             painting = new StrikeThroughPainting(tvTaskName);

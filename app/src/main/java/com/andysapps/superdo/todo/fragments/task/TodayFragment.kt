@@ -77,15 +77,22 @@ class TodayFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: TaskUpdatedEvent) {
 
-        if (event.documentChange == TaskUpdateType.Added) {
-            adapter!!.addTask(todayTaskList)
-        } else if (event.documentChange == TaskUpdateType.Deleted) {
-            adapter!!.removeTask(event.task)
-        } else {
-            adapter!!.updateList(TaskOrganiser.getInstance().getTasks(TaskListing.TODAY))
+        if (event.task.listedIn != TaskListing.TODAY) {
+            return
         }
 
-        updateUi()
+        when (event.documentChange) {
+            TaskUpdateType.Added -> {
+                adapter!!.addTask(event.task)
+            }
+            TaskUpdateType.Deleted -> {
+                adapter!!.removeTask(event.task)
+            }
+            else -> {
+                updateUi()
+            }
+        }
+
     }
 
 }

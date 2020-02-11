@@ -181,6 +181,8 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
                 tvTomorrow.setTextColor(getResources().getColor(R.color.lightRed));
                 break;
 
+            case THIS_WEEK:
+            case THIS_MONTH:
             case UPCOMING:
                 ivDotSomeday.setImageResource(R.drawable.bg_oval_light_red);
                 tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
@@ -370,10 +372,12 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         if (Utils.isSuperDateToday(date)) {
             clickToday();
             return;
-        } else if (Utils.isSuperDateTomorrow(date)){
+        } else if (Utils.isSuperDateTomorrow(date)) {
             clickTomorrow();
             return;
-        } else {
+        } else if(Utils.isSuperdateThisMonth(date)) {
+            task.setListedIn(TaskListing.THIS_MONTH);
+        } else if(Utils.isSuperdateIsUpcoming(date)) {
             task.setListedIn(TaskListing.UPCOMING);
         }
 

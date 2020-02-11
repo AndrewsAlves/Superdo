@@ -85,11 +85,8 @@ public class TaskOrganiser {
             }
 
             if (Utils.isSuperdateThisMonth(task.getDoDate())) {
-                task.setListedIn(TaskListing.UPCOMING);
+                task.setListedIn(TaskListing.THIS_MONTH);
                 thisMonthTaskList.add(task);
-                //Log.e(TAG, "organiseAllTasks: task name : " + task.getName());
-                //Log.e(TAG, "organiseAllTasks: index : " + task.getHabitIndex());
-                //Log.e(TAG, "organiseAllTasks: Listing : UPCOMING");
             }
 
             if (Utils.isSuperdateIsUpcoming(task.getDoDate())) {
