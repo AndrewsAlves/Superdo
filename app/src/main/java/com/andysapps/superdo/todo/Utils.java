@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -74,6 +75,23 @@ public class Utils {
         return c;
     }
 
+    public static TaskListing getTaskListed(SuperDate superdate) {
+
+        if (isSuperDateToday(superdate)) {
+            return TaskListing.TODAY;
+        } else if (isSuperDateTomorrow(superdate)) {
+            return TaskListing.TOMORROW;
+        } else if (isSuperdateThisWeek(superdate)) {
+            return TaskListing.THIS_WEEK;
+        } else if (isSuperdateThisMonth(superdate)) {
+            return TaskListing.THIS_MONTH;
+        } else if (isSuperdateIsUpcoming(superdate)) {
+            return TaskListing.UPCOMING;
+        }
+
+        return TaskListing.UPCOMING;
+    }
+
     public static boolean isSuperDateToday(SuperDate superdate) {
 
         if (superdate == null) {
@@ -137,7 +155,6 @@ public class Utils {
 
         for (int i = 1 ; i <= remainingDaysInThisWeek ; i++) {
             weekDays.add(getIncrementedDay(i).get(Calendar.DAY_OF_MONTH));
-            Log.e(TAG, "isSuperdateThisWeek: " + getIncrementedDay(i).get(Calendar.DAY_OF_MONTH));
         }
 
         if (!isSuperDateToday(superdate)
@@ -181,6 +198,51 @@ public class Utils {
         }
 
         return false;
+    }
+
+    public static SuperDate getRandomMonthDate() {
+
+        int date = 29;
+        int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
+        return new SuperDate(date, month, year, 0, 0);
+    }
+
+    public static SuperDate getRandomWeekDay() {
+
+        int date = getIncrementedDay(getTomorrow().get(Calendar.DAY_OF_MONTH) + 1).get(Calendar.DAY_OF_MONTH);
+        int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
+       /* int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        int remainingDaysInThisWeek = 7 - today;
+
+        if (remainingDaysInThisWeek < 2) {
+            // this should give next week date
+        }
+
+        List<Integer> weekDays = new ArrayList<>();
+
+        for (int i = 1 ; i <= remainingDaysInThisWeek ; i++) {
+            weekDays.add(getIncrementedDay(i).get(Calendar.DAY_OF_MONTH));
+        }
+
+        SuperDate superdate = new SuperDate(date, month, year, 0, 0);
+
+        for (Integer int1 : weekDays) {
+            superdate.setDoDate(int1, month, year);
+            if (!isSuperDateToday(superdate)
+                    && !isSuperDateTomorrow(superdate)
+                    && superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
+                    && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH) ) {
+               return superdate;
+            }
+        } */
+
+
+
+        return new SuperDate(date, month, year, 0, 0);
     }
 
     public static String getMonthString(int month) {

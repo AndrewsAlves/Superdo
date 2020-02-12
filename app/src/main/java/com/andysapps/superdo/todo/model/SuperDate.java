@@ -37,6 +37,7 @@ public class SuperDate {
     }
 
     public SuperDate(int day, int month, int year) {
+        hasDate = true;
         this.date = day;
         this.month = month;
         this.year = year;
@@ -46,6 +47,16 @@ public class SuperDate {
         hasTime = true;
         this.hours = hours;
         this.minutes = minutes;
+    }
+
+    public SuperDate(int day, int month, int year, int hours, int minutes) {
+        this.date = day;
+        this.month = month;
+        this.year = year;
+        this.hours = hours;
+        this.minutes = minutes;
+        hasTime = true;
+        hasDate = true;
     }
 
     public int getHours() {

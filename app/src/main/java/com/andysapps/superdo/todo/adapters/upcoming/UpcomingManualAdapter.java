@@ -189,7 +189,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         Task task = taskList.get(position);
 
-        switch (taskList.get(position).getDocumentId()) {
+        switch (task.getDocumentId()) {
             case dummyWeekTitle:
                 h.tvUpcomingTitle.setText("This week" + " " + "(" + (weekTaskList.size() - 1) + ")");
                 break;
@@ -330,35 +330,6 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 EventBus.getDefault().post(new OpenEditTaskEvent(task));
             }
         });
-
-        h.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                h.isDragging = true;
-                Log.e(TAG, "onTouch: Dragged pressed");
-                return true;
-            }
-        });
-
-        h.itemView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if (h.isDragging) {
-                        reaarageGroupTasks();
-                        h.isDragging = false;
-                        Log.e(TAG, "onTouch: Dragged released");
-                    }
-                    return true;
-                }
-
-                if(event.getAction() == MotionEvent.ACTION_MOVE) {
-                    Log.e(TAG, "onTouch: Dragged moved");
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 
     private void strikeOutText(TaskViewHolder holder) {
@@ -417,6 +388,15 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         notifyItemMoved(fromPosition, toPosition);
     }
 
+    public void updateTasks() {
+        viewUpdateHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                reaarageGroupTasks();
+            }
+        }, 500);
+    }
+
     public void reaarageGroupTasks() {
 
         String curruntQueryGroup = dummyWeekTitle;
@@ -455,28 +435,45 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             }
         }
 
-        setGroupTaskIndex(weekTaskList);
-        setGroupTaskIndex(monthTaskList);
-        setGroupTaskIndex(upcomingTasklist);
+        setTaskListingAndDate(weekTaskList, TaskListing.THIS_WEEK);
+        setTaskListingAndDate(monthTaskList, TaskListing.THIS_MONTH);
+        setTaskListingAndDate(upcomingTasklist, TaskListing.UPCOMING);
 
-        notifyItemChanged(0);
-        notifyItemChanged(weekTaskList.size());
-        notifyItemChanged(weekTaskList.size() + monthTaskList.size());
+        for (Task task : taskList) {
+            //Log.e(TAG, "Task name and index : " + task.getName() + " " + task.getTaskIndex());
+            Log.e(TAG, "Task name and index : " + task.getDocumentId() + " " + task.getTaskIndex());
+        }
+
+        notifyDataSetChanged();
+
+
+
+       // notifyItemChanged(0);
+       // notifyItemChanged(weekTaskList.size());
+        //notifyItemChanged(weekTaskList.size() + monthTaskList.size());
     }
 
-    public void updateTasks() {
-        viewUpdateHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                reaarageGroupTasks();
-            }
-        }, 500);
-    }
-
-    public void setGroupTaskIndex(List<Task> taskList) {
+    public void setTaskListingAndDate(List<Task> taskList, TaskListing taskListing) {
         for (Task task : taskList) {
             task.setTaskIndex(taskList.indexOf(task));
-            Log.e(TAG, "Task name and index : " + task.getName() + " " + task.getTaskIndex());
+            task.setListedIn(taskListing);
+
+            if (Utils.getTaskListed(task.getDoDate()) != taskListing) {
+
+                switch (Utils.getTaskListed(task.getDoDate())) {
+                    case THIS_WEEK:
+                        task.setDoDate(Utils.getRandomWeekDay());
+                        break;
+                    case THIS_MONTH:
+                        task.setDoDate(Utils.getRandomMonthDate());
+                        break;
+                        case UPCOMING:
+                            task.setDoDate(null);
+                            break;
+                }
+            }
+
+            //Log.e(TAG, "Task name and index : " + task.getName() + " " + task.getTaskIndex());
         }
     }
 
