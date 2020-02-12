@@ -231,6 +231,11 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
     }
 
     @Override
+    public void onItemMoved() {
+
+    }
+
+    @Override
     public void onItemDismiss(int position) {
         Log.e(TAG, "onItemDismiss: " + position );
     }

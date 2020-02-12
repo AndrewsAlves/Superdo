@@ -71,27 +71,32 @@ public class TaskOrganiser {
             if (Utils.isSuperDateToday(task.getDoDate())) {
                 task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
+                continue;
             }
 
             // add all past tasks to today tasks
             if (Utils.isSuperDateIsPast(task.getDoDate())) {
                 task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
+                continue;
             }
 
             if (Utils.isSuperDateTomorrow(task.getDoDate())) {
                 task.setListedIn(TaskListing.TOMORROW);
                 tomorrowTaskList.add(task);
+                continue;
             }
 
             if (Utils.isSuperdateThisWeek(task.getDoDate())) {
                 task.setListedIn(TaskListing.THIS_WEEK);
                 weekTaskList.add(task);
+                continue;
             }
 
             if (Utils.isSuperdateThisMonth(task.getDoDate())) {
                 task.setListedIn(TaskListing.THIS_MONTH);
                 monthTaskList.add(task);
+                continue;
             }
 
             if (Utils.isSuperdateIsUpcoming(task.getDoDate())) {

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="This week"
         android:textSize="16sp"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/montserrat_medium"
         android:textColor="@color/lightRed"
         android:ellipsize="end"
         android:minLines="1"

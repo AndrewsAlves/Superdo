@@ -255,6 +255,11 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     }
 
     @Override
+    public void onItemMoved() {
+
+    }
+
+    @Override
     public void onItemDismiss(int position) {
         Log.e(TAG, "onItemDismiss: " + position );
     }

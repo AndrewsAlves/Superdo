@@ -465,7 +465,6 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         TaskOrganiser.getInstance().organiseAllTasks()
     }
 
-
     ///////////
     /// EVENTS
     ///////////

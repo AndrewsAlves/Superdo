@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,6 +27,7 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
+import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
@@ -49,27 +52,35 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
     private static final String TAG = "TasksRecyclerAdapter";
 
+    private static final String dummyWeekTitle = "week";
+    private static final String dummyMonthTitle = "month";
+    private static final String dummyUpcomingTitle = "upcoming";
+
+    Task weekDumTask = new Task();
+    Task monthDumTask = new Task();
+    Task upcomingDumTask = new Task();
+
     private List<Task> taskList;
 
     List<Task> weekTaskList;
     List<Task> monthTaskList;
     List<Task> upcomingTasklist;
 
+    Handler viewUpdateHandler;
+
     private Context context;
 
     public UpcomingManualAdapter(Context context) {
         this.context = context;
+        this.viewUpdateHandler = new Handler();
 
         weekTaskList = new ArrayList<>();
         monthTaskList = new ArrayList<>();
         upcomingTasklist = new ArrayList<>();
 
-        Task weekDumTask = new Task();
-        weekDumTask.setTaskIndex(-1);
-        Task monthDumTask = new Task();
-        monthDumTask.setTaskIndex(-2);
-        Task upcomingDumTask = new Task();
-        upcomingDumTask.setTaskIndex(-3);
+        weekDumTask.setDocumentId(dummyWeekTitle);
+        monthDumTask.setDocumentId(dummyMonthTitle);
+        upcomingDumTask.setDocumentId(dummyUpcomingTitle);
 
         weekTaskList.add(weekDumTask);
         weekTaskList.addAll(TaskOrganiser.getInstance().getWeekTaskList());
@@ -79,8 +90,6 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         upcomingTasklist.add(upcomingDumTask);
         upcomingTasklist.addAll(TaskOrganiser.getInstance().getUpcomingTaskList());
-
-
 
         taskList = new ArrayList<>();
         taskList.addAll(weekTaskList);
@@ -108,6 +117,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 //refreshList();
                 taskList.add(addIndex, task);
                 notifyItemInserted(addIndex);
+                notifyItemChanged(0);
                 break;
             case THIS_MONTH:
                 monthTaskList.add(task);
@@ -115,6 +125,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 //refreshList();
                 taskList.add(addIndex, task);
                 notifyItemInserted(addIndex);
+                notifyItemChanged(weekTaskList.size());
                 break;
             case UPCOMING:
                 upcomingTasklist.add(task);
@@ -122,6 +133,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 //refreshList();
                 taskList.add(addIndex, task);
                 notifyItemInserted(addIndex);
+                notifyItemChanged(weekTaskList.size() + monthTaskList.size());
                 break;
         }
     }
@@ -134,6 +146,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
     }
 
     public void removeTask(Task task) {
+
         for (int i = 0 ; i < this.taskList.size() ; i++) {
 
             if (taskList.get(i).getTaskIndex() < 0) {
@@ -141,10 +154,25 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             }
 
             if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
-                notifyItemRemoved(i);
                 this.taskList.remove(i);
+                notifyItemRemoved(i);
+
+                switch (task.getListedIn()) {
+                    case THIS_WEEK:
+                        notifyItemChanged(0);
+                        break;
+                    case THIS_MONTH:
+                        notifyItemChanged(weekTaskList.size());
+                        break;
+                    case UPCOMING:
+                        notifyItemChanged(weekTaskList.size() + monthTaskList.size());
+                        break;
+                }
+
             }
         }
+
+        reaarageGroupTasks();
     }
 
     public void updateList(List<Task> taskList) {
@@ -161,19 +189,21 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         Task task = taskList.get(position);
 
-        switch (taskList.get(position).getTaskIndex()) {
-            case -1:
+        switch (taskList.get(position).getDocumentId()) {
+            case dummyWeekTitle:
                 h.tvUpcomingTitle.setText("This week" + " " + "(" + (weekTaskList.size() - 1) + ")");
                 break;
-            case -2:
+            case dummyMonthTitle:
                 h.tvUpcomingTitle.setText("This month" + " " + "(" + (monthTaskList.size() - 1) + ")");
                 break;
-            case -3:
+            case dummyUpcomingTitle:
                 h.tvUpcomingTitle.setText("Upcoming" + " " + "(" + (upcomingTasklist.size() - 1) + ")");
                 break;
         }
 
-        if (task.getTaskIndex() < 0) {
+        if (task.getDocumentId().equals(dummyWeekTitle)
+                || task.getDocumentId().equals(dummyMonthTitle)
+                || task.getDocumentId().equals(dummyUpcomingTitle) ) {
             h.tvUpcomingTitle.setVisibility(View.VISIBLE);
             h.itemView.setClickable(false); // disable click for
             h.parentTaskItem.setVisibility(View.GONE);
@@ -300,6 +330,35 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 EventBus.getDefault().post(new OpenEditTaskEvent(task));
             }
         });
+
+        h.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                h.isDragging = true;
+                Log.e(TAG, "onTouch: Dragged pressed");
+                return true;
+            }
+        });
+
+        h.itemView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if (h.isDragging) {
+                        reaarageGroupTasks();
+                        h.isDragging = false;
+                        Log.e(TAG, "onTouch: Dragged released");
+                    }
+                    return true;
+                }
+
+                if(event.getAction() == MotionEvent.ACTION_MOVE) {
+                    Log.e(TAG, "onTouch: Dragged moved");
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void strikeOutText(TaskViewHolder holder) {
@@ -337,6 +396,13 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
+
+        if (toPosition == 0) {
+            return;
+        }
+
+        viewUpdateHandler.removeCallbacksAndMessages(null);
+
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
                 Collections.swap(taskList, i, i + 1);
@@ -347,14 +413,77 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             }
         }
 
+        updateTasks();
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    public void reaarageGroupTasks() {
+
+        String curruntQueryGroup = dummyWeekTitle;
+
+        weekTaskList.clear();
+        monthTaskList.clear();
+        upcomingTasklist.clear();
+        weekTaskList.add(weekDumTask);
+        monthTaskList.add(monthDumTask);
+        upcomingTasklist.add(upcomingDumTask);
+
         for (Task task : taskList) {
-            task.setTaskIndex(taskList.indexOf(task));
-           // FirestoreManager.getInstance().updateTask(task);
+
+            switch (task.getDocumentId()) {
+                case dummyWeekTitle:
+                    curruntQueryGroup = dummyWeekTitle;
+                    continue;
+                case dummyMonthTitle:
+                    curruntQueryGroup = dummyMonthTitle;
+                    continue;
+                case dummyUpcomingTitle:
+                    curruntQueryGroup = dummyUpcomingTitle;
+                    continue;
+            }
+
+            switch (curruntQueryGroup) {
+                case dummyWeekTitle:
+                    weekTaskList.add(task);
+                    break;
+                case dummyMonthTitle:
+                    monthTaskList.add(task);
+                    break;
+                case dummyUpcomingTitle:
+                    upcomingTasklist.add(task);
+                    break;
+            }
         }
 
-        Log.e(TAG, "onItemMove: from : " + fromPosition);
-        //TaskOrganiser.getInstance().organiseAllTasks();
-        notifyItemMoved(fromPosition, toPosition);
+        setGroupTaskIndex(weekTaskList);
+        setGroupTaskIndex(monthTaskList);
+        setGroupTaskIndex(upcomingTasklist);
+
+        notifyItemChanged(0);
+        notifyItemChanged(weekTaskList.size());
+        notifyItemChanged(weekTaskList.size() + monthTaskList.size());
+    }
+
+    public void updateTasks() {
+        viewUpdateHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                reaarageGroupTasks();
+            }
+        }, 500);
+    }
+
+    public void setGroupTaskIndex(List<Task> taskList) {
+        for (Task task : taskList) {
+            task.setTaskIndex(taskList.indexOf(task));
+            Log.e(TAG, "Task name and index : " + task.getName() + " " + task.getTaskIndex());
+        }
+    }
+
+    @Override
+    public void onItemMoved() {
+        //reaarageGroupTasks();
+
     }
 
     @Override
@@ -402,10 +531,9 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
 
         StrikeThroughPainting painting;
-
         public View item;
 
-        boolean isDraggable;
+        boolean isDragging;
 
         public boolean isChecked = false;
 
@@ -414,11 +542,8 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             item = itemView;
             ButterKnife.bind(this,itemView);
 
-            isDraggable = true;
-
             lottieCheckView.setAnimation("anim_check2.json");
             painting = new StrikeThroughPainting(tvTaskName);
         }
-
     }
 }

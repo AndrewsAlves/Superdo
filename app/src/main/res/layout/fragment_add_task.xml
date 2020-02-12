@@ -115,7 +115,7 @@
                 android:id="@+id/tv_someday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Custom"
+                android:text="Set Date"
                 android:textSize="16sp"
                 android:ellipsize="end"
                 android:maxLines="1"
