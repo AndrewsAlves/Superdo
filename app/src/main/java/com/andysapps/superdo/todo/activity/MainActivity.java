@@ -25,6 +25,7 @@ import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment;
 import com.andysapps.superdo.todo.fragments.task.EditTaskFragment;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.andysapps.superdo.todo.notification.SuperdoNotificationManager;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.kuassivi.component.RipplePulseRelativeLayout;
 
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+
+        SuperdoNotificationManager.getInstance().createNotification(this, SuperdoNotificationManager.CHANNEL_RANDOM);
 
         viewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
         mainViewPager.setAdapter(viewPagerAdapter);

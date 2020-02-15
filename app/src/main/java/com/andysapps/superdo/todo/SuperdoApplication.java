@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
+import com.andysapps.superdo.todo.notification.SuperdoNotificationManager;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
@@ -18,6 +19,7 @@ public class SuperdoApplication extends Application {
 
         FirebaseApp.initializeApp(this);
         FirestoreManager.intialize(this);
+        SuperdoNotificationManager.initialise(this);
 
     }
 }
