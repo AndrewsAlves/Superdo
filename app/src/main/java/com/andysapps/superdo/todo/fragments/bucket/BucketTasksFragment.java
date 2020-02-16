@@ -162,7 +162,7 @@ public class BucketTasksFragment extends Fragment {
     @OnClick(R.id.tv_save)
     public void saveEditing() {
 
-        // update firestore
+        // Update firestore
         bucket.setDescription(etBucketDesc.getText().toString());
         FirestoreManager.getInstance().updateBucket(bucket);
         isEditing = false;

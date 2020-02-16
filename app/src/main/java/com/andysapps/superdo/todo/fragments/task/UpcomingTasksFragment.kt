@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
-import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter
 import com.andysapps.superdo.todo.adapters.upcoming.UpcomingManualAdapter
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
+import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
@@ -77,6 +77,13 @@ class UpcomingTasksFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: TaskUpdatedEvent) {
 
+        when (event.documentChange) {
+            TaskUpdateType.Update -> {
+                adapter!!.notifyDataSetChanged()
+                return
+            }
+        }
+
         if (event.task.listedIn == TaskListing.TODAY
                 || event.task.listedIn == TaskListing.TOMORROW) {
             return
@@ -94,4 +101,17 @@ class UpcomingTasksFragment : Fragment() {
             }
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: UpdateTaskListEvent) {
+        when (event.listType) {
+            TaskListing.THIS_WEEK ,
+            TaskListing.THIS_MONTH ,
+            TaskListing.UPCOMING -> {
+                adapter!!.notifyDataSetChanged()
+            }
+        }
+
+    }
+
 }

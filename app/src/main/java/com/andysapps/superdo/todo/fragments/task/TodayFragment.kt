@@ -77,7 +77,7 @@ class TodayFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: TaskUpdatedEvent) {
 
-        if (event.task.listedIn != TaskListing.TODAY) {
+        if (event.task!!.listedIn != TaskListing.TODAY) {
             return
         }
 

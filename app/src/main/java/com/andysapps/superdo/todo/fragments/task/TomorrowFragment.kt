@@ -93,7 +93,6 @@ class TomorrowFragment : Fragment() {
                 updateUi()
             }
         }
-
     }
 
 }

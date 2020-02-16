@@ -7,4 +7,5 @@ public enum TaskUpdateType {
     Added,
     Deleted,
     Modified,
+    Update
 }
