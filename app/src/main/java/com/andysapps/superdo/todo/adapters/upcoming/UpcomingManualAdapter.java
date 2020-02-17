@@ -73,8 +73,10 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
     public UpcomingManualAdapter(Context context) {
         this.context = context;
         this.viewUpdateHandler = new Handler();
+        setUpcomingTaskList();
+    }
 
-        TaskOrganiser.getInstance().organiseAllTasks();
+    public void setUpcomingTaskList() {
 
         weekTaskList = new ArrayList<>();
         monthTaskList = new ArrayList<>();
@@ -97,6 +99,8 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         taskList.addAll(weekTaskList);
         taskList.addAll(monthTaskList);
         taskList.addAll(upcomingTasklist);
+
+        Log.e(TAG, "Task updated");
     }
 
     @Override
@@ -138,13 +142,8 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 notifyItemChanged(weekTaskList.size() + monthTaskList.size());
                 break;
         }
-    }
 
-    public void refreshList() {
-        taskList = new ArrayList<>();
-        taskList.addAll(weekTaskList);
-        taskList.addAll(monthTaskList);
-        taskList.addAll(upcomingTasklist);
+        reaarageGroupTasks(-1);
     }
 
     public void removeTask(Task task) {
@@ -177,12 +176,8 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         reaarageGroupTasks(-1);
     }
 
-    public void updateList(List<Task> taskList) {
-
-        Log.e(TAG, "updateList: data size" + this.taskList.size());
-
-        this.taskList.clear();
-        this.taskList.addAll(taskList);
+    public void updateList() {
+        setUpcomingTaskList();
         notifyDataSetChanged();
     }
 
@@ -449,6 +444,8 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         setTaskListingAndDate(weekTaskList, TaskListing.THIS_WEEK);
         setTaskListingAndDate(monthTaskList, TaskListing.THIS_MONTH);
         setTaskListingAndDate(upcomingTasklist, TaskListing.UPCOMING);
+
+        TaskOrganiser.getInstance().organiseAllTasks();
 
         notifyItemChanged(0);
         notifyItemChanged(weekTaskList.size());

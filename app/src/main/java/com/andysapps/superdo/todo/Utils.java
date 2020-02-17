@@ -203,7 +203,7 @@ public class Utils {
     public static SuperDate getRandomMonthDate() {
 
         int date = 29;
-        int month = Calendar.getInstance().get(Calendar.MONTH) + 1 + 1;
+        int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
         int year = Calendar.getInstance().get(Calendar.YEAR);
 
         return new SuperDate(date, month, year, 0, 0);
@@ -211,7 +211,7 @@ public class Utils {
 
     public static SuperDate getRandomWeekDay() {
 
-        int date = getIncrementedDay(getTomorrow().get(Calendar.DAY_OF_MONTH) + 1).get(Calendar.DAY_OF_MONTH);
+        int date = getIncrementedDay(2).get(Calendar.DAY_OF_MONTH);
         int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
         int year = Calendar.getInstance().get(Calendar.YEAR);
 

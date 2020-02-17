@@ -13,6 +13,7 @@ import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
 import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
+import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
@@ -91,6 +92,15 @@ class TomorrowFragment : Fragment() {
             }
             else -> {
                 updateUi()
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: UpdateTaskListEvent) {
+        when (event.listType) {
+            TaskListing.TOMORROW -> {
+                adapter!!.updateList(TaskOrganiser.getInstance().getTasks(TaskListing.TOMORROW))
             }
         }
     }

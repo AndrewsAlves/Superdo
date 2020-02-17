@@ -71,18 +71,11 @@ class UpcomingTasksFragment : Fragment() {
             ll_notasks.visibility = View.GONE
         }
 
-        adapter!!.updateList(tomorrowTaskList)
+        adapter!!.updateList()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: TaskUpdatedEvent) {
-
-        when (event.documentChange) {
-            TaskUpdateType.Update -> {
-                adapter!!.notifyDataSetChanged()
-                return
-            }
-        }
 
         if (event.task.listedIn == TaskListing.TODAY
                 || event.task.listedIn == TaskListing.TOMORROW) {
@@ -106,12 +99,11 @@ class UpcomingTasksFragment : Fragment() {
     fun onMessageEvent(event: UpdateTaskListEvent) {
         when (event.listType) {
             TaskListing.THIS_WEEK ,
-            TaskListing.THIS_MONTH ,
+            TaskListing.THIS_MONTH,
             TaskListing.UPCOMING -> {
-                adapter!!.notifyDataSetChanged()
+                adapter!!.updateList()
             }
         }
-
     }
 
 }

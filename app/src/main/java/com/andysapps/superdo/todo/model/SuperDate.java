@@ -1,6 +1,7 @@
 package com.andysapps.superdo.todo.model;
 
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.model.sidekicks.Deadline;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -10,7 +11,7 @@ import java.util.Date;
  * Created by Andrews on 12,November,2019
  */
 
-public class SuperDate {
+public class SuperDate implements Cloneable {
 
     public int hours;
     public int minutes;
@@ -28,6 +29,11 @@ public class SuperDate {
 
     }
 
+    @Override
+    public SuperDate clone() throws CloneNotSupportedException {
+        return (SuperDate) super.clone();
+    }
+
     public SuperDate(Date timestamp) {
         this.timestamp = timestamp;
     }
@@ -37,7 +43,7 @@ public class SuperDate {
     }
 
     public SuperDate(int day, int month, int year) {
-        hasDate = true;
+        this.hasDate = true;
         this.date = day;
         this.month = month;
         this.year = year;
@@ -90,6 +96,20 @@ public class SuperDate {
         hasDate = true;
     }
 
+    public boolean isHasDate() {
+        if (date != 0) {
+            return true;
+        }
+        return hasDate;
+    }
+
+    public boolean isHasTime() {
+        if (hours != 0) {
+            return true;
+        }
+        return hasTime;
+    }
+
     public int getMonth() {
         return month;
     }
@@ -124,7 +144,7 @@ public class SuperDate {
 
         String duedate;
 
-        if (!hasDate) {
+        if (!isHasDate()) {
             return "Set Date";
         }
 
