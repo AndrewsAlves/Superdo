@@ -27,14 +27,18 @@ import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
 import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DeadlineDialog
+import com.andysapps.superdo.todo.dialog.sidekicks.DoDateDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.RemindDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.RepeatDialog
 import com.andysapps.superdo.todo.enums.BucketColors
+import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.DeleteTaskEvent
+import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
+import com.andysapps.superdo.todo.events.sidekick.SetDoDateEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRemindEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
@@ -54,12 +58,11 @@ import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 /**
  * A simple [Fragment] subclass.
  */
 
-class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+class EditTaskFragment : Fragment() {
 
 
     val TAG : String = "EditTaskFragment"
@@ -93,7 +96,6 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         initUi()
         initClicks()
         updateUi()
-
 
     }
 
@@ -345,7 +347,7 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
     private fun initClicks() {
 
         editTask_rl_btn_do_date.setOnClickListener {
-            showDatePicker()
+            DoDateDialog.instance(task.doDate).show(fragmentManager!!, DoDateDialog().javaClass.name)
         }
 
         editTask_rl_btn_select_bucket.setOnClickListener {
@@ -383,53 +385,6 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         }
 
         ///// Mark done
-
-    }
-
-    fun showDatePicker() {
-        val now = Calendar.getInstance()
-        var day = now.get(Calendar.DAY_OF_MONTH)
-        var month = now.get(Calendar.MONTH)
-        var year = now.get(Calendar.YEAR)
-
-        if (task.doDate != null) {
-            day = task.doDate.date
-            month = task.doDate.month
-            year = task.doDate.year
-        }
-
-        val dpd = DatePickerDialog.newInstance(
-                this,
-                year,
-                month - 1,
-                day
-        )
-
-        dpd.accentColor = resources.getColor(R.color.lightRed)
-        dpd.minDate = Utils.getStartDate()
-        dpd.maxDate = Utils.getEndDate()
-        dpd.show(fragmentManager!!, "Datepickerdialog")
-    }
-
-    fun showTimePicker() {
-
-        var now = Calendar.getInstance()
-        var hours : Int = now.get(Calendar.HOUR)
-        var min : Int = now.get(Calendar.MINUTE)
-
-        if (task.doDate != null) {
-            hours = task.doDate.hours
-            min = task.doDate.minutes
-        }
-
-        var dpd = TimePickerDialog.newInstance(
-                this,
-                hours,
-                min,
-                false)
-
-        dpd.accentColor = resources.getColor(R.color.lightRed)
-        dpd.show(fragmentManager!!, "Datepickerdialog")
     }
 
     private fun shouldUpdate() : Boolean {
@@ -440,29 +395,10 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
         return false
     }
 
-    override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        val date = SuperDate(dayOfMonth, monthOfYear + 1, year)
-        if (task.doDate != null) {
-            task.doDate.setDoDate(dayOfMonth, monthOfYear + 1, year)
-        } else {
-            task.doDate = date
-        }
-        task.doDate.hasDate = true
-        showTimePicker()
-        updateUi()
-        TaskOrganiser.getInstance().organiseAllTasks()
-    }
-
-    override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
-        val time = SuperDate(hourOfDay, minute)
-        if (task.doDate != null) {
-            task.doDate.setTime(hourOfDay, minute)
-        } else {
-            task.doDate = time
-        }
-        task.doDate.hasTime = true
-        updateUi()
-        TaskOrganiser.getInstance().organiseAllTasks()
+    fun updateTasks() {
+        EventBus.getDefault().post(UpdateTaskListEvent(TaskListing.TODAY))
+        EventBus.getDefault().post(UpdateTaskListEvent(TaskListing.TOMORROW))
+        EventBus.getDefault().post(UpdateTaskListEvent(TaskListing.UPCOMING))
     }
 
     ///////////
@@ -497,6 +433,15 @@ class EditTaskFragment : Fragment() , DatePickerDialog.OnDateSetListener, TimePi
     //////////////
     /// SIDE KICK EVENT
     /////////////
+
+    @Subscribe
+    fun onMeessageEvent(event : SetDoDateEvent) {
+        task.doDate = event.superDate.clone()
+        updateUi()
+        FirestoreManager.getInstance().updateTask(task)
+        TaskOrganiser.getInstance().organiseAllTasks()
+        updateTasks()
+    }
 
     @Subscribe
     fun onMeessageEvent(event : SetDeadlineEvent) {

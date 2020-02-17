@@ -4,7 +4,7 @@
     android:layout_width="270dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".dialog.sidekicks.DeadlineDialog">
+    tools:context=".dialog.sidekicks.RepeatDialog">
 
 
 

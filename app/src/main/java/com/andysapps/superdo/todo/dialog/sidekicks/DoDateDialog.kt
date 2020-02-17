@@ -6,21 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
-import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
-import com.andysapps.superdo.todo.events.DeleteTaskEvent
 import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
+import com.andysapps.superdo.todo.events.sidekick.SetDoDateEvent
 import com.andysapps.superdo.todo.model.SuperDate
-import com.andysapps.superdo.todo.model.Task
-import com.andysapps.superdo.todo.model.sidekicks.Deadline
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
-import kotlinx.android.synthetic.main.fragment_delete_task_dialog.*
 import kotlinx.android.synthetic.main.fragment_dlg_deadline.*
 import org.greenrobot.eventbus.EventBus
 import java.util.*
@@ -28,15 +22,18 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
+class DoDateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
-
-    var deadline : Deadline = Deadline()
+    var doDate : SuperDate = SuperDate()
 
     companion object {
-        fun instance(deadline : Deadline) : DeadlineDialog {
-            val fragment = DeadlineDialog()
-            fragment.deadline = deadline.clone()
+        fun instance(superdate : SuperDate) : DoDateDialog {
+            val fragment = DoDateDialog()
+            if (superdate == null) {
+                fragment.doDate = SuperDate()
+            } else {
+                fragment.doDate = superdate.clone()
+            }
             return fragment
         }
     }
@@ -44,7 +41,7 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dlg_deadline, container, false)
+        return inflater.inflate(R.layout.fragment_dlg_dodate, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,30 +51,29 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
         updateUi()
     }
 
-
     fun updateUi() {
 
-        if (!deadline.hasDate) {
+        if (!doDate.isHasDate) {
             dlg_deadline_iv_date.setImageResource(R.drawable.ic_do_date_off_grey_2)
-            dlg_deadline_tv_date.setText(deadline.deadlineDateString)
+            dlg_deadline_tv_date.setText(doDate.superDateString)
             dlg_deadline_tv_date.setTextColor(resources.getColor(R.color.grey1))
         } else {
-            dlg_deadline_iv_date.setImageResource(R.drawable.ic_do_date_on)
-            dlg_deadline_tv_date.setText(deadline.deadlineDateString)
+            dlg_deadline_iv_date.setImageResource(R.drawable.ic_do_date_off_grey_2)
+            dlg_deadline_tv_date.setText(doDate.superDateString)
             dlg_deadline_tv_date.setTextColor(resources.getColor(R.color.grey4))
         }
 
-        if (!deadline.hasTime) {
+        if (!doDate.isHasTime) {
             dlg_deadline_iv_time.setImageResource(R.drawable.ic_time_off)
-            dlg_deadline_tv_time.setText(deadline.timeString)
+            dlg_deadline_tv_time.setText(doDate.timeString)
             dlg_deadline_tv_time.setTextColor(resources.getColor(R.color.grey1))
         } else {
             dlg_deadline_iv_time.setImageResource(R.drawable.ic_time_on)
-            dlg_deadline_tv_time.setText(deadline.timeString)
+            dlg_deadline_tv_time.setText(doDate.timeString)
             dlg_deadline_tv_time.setTextColor(resources.getColor(R.color.grey4))
         }
 
-        if (deadline.hasDate) {
+        if (doDate.isHasDate) {
             dlg_deadline_b_positive.isClickable = true
             dlg_deadline_b_positive.alpha = 1f
         } else {
@@ -98,7 +94,7 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
         }
 
         dlg_deadline_b_positive.setOnClickListener {
-            EventBus.getDefault().post(SetDeadlineEvent(deadline))
+            EventBus.getDefault().post(SetDoDateEvent(doDate))
             dismiss()
         }
 
@@ -113,10 +109,10 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
         var month = now.get(Calendar.MONTH)
         var year = now.get(Calendar.YEAR)
 
-        if (deadline.date != 0) {
-            day = deadline.date
-            month = deadline.month
-            year = deadline.year
+        if (doDate.date != 0) {
+            day = doDate.date
+            month = doDate.month
+            year = doDate.year
         }
 
         val dpd = DatePickerDialog.newInstance(
@@ -138,8 +134,8 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
         var hours : Int = now.get(Calendar.HOUR)
         var min : Int = now.get(Calendar.MINUTE)
 
-        hours = deadline.hours
-        min = deadline.minutes
+        hours = doDate.hours
+        min = doDate.minutes
 
         if (hours != 0) {
 
@@ -156,14 +152,14 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
     }
 
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        deadline.setDoDate(dayOfMonth, monthOfYear + 1, year)
-        deadline.hasDate = true
+        doDate.setDoDate(dayOfMonth, monthOfYear + 1, year)
+        doDate.hasDate = true
         updateUi()
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
-        deadline.setTime(hourOfDay, minute)
-        deadline.hasTime = true
+        doDate.setTime(hourOfDay, minute)
+        doDate.hasTime = true
         updateUi()
     }
 

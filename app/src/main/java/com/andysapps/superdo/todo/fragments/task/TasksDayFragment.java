@@ -18,6 +18,7 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.TasksDayPagerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
+import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
@@ -89,12 +90,15 @@ public class TasksDayFragment extends Fragment {
                 switch (i) {
                     case 0:
                         listing = TaskListing.TODAY;
+                        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.TODAY));
                         break;
                     case 1:
                         listing = TaskListing.TOMORROW;
+                        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.TOMORROW));
                         break;
                     case 2:
                         listing = TaskListing.UPCOMING;
+                        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.TODAY));
                         break;
                 }
 
@@ -147,6 +151,7 @@ public class TasksDayFragment extends Fragment {
     public void clickUpcoming() {
         listing = TaskListing.UPCOMING;
         viewPagerTasks.setCurrentItem(2);
+        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.UPCOMING));
         updateUi();
     }
 
