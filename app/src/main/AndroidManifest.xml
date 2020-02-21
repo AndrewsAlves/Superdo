@@ -32,6 +32,8 @@
         <activity android:name=".activity.FocusActivity" />
         <activity android:name=".activity.ProfileActivity" />
 
+        <receiver android:name=".NotificationBroadcast"/>
+
     </application>
 
 </manifest>

@@ -59,6 +59,11 @@ public class Utils {
         return output2;
     }
 
+    public static SuperDate getSuperdateToday() {
+        Calendar c = Calendar.getInstance();
+        return new SuperDate(c.get(Calendar.DATE), c.get(Calendar.MONTH) + 1, c.get(Calendar.YEAR));
+    }
+
     public static Calendar getTomorrow() {
         Date dt = new Date();
         Calendar c = Calendar.getInstance();

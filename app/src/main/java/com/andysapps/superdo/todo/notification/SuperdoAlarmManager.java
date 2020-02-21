@@ -1,5 +1,6 @@
 package com.andysapps.superdo.todo.notification;
 
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,14 +12,20 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.andysapps.superdo.todo.NotificationBroadcast;
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.activity.MainActivity;
+import com.andysapps.superdo.todo.model.SuperDate;
 
-import java.util.UUID;
+import java.util.Calendar;
+import java.util.Random;
 
-public class SuperdoNotificationManager {
+import io.grpc.okhttp.internal.Util;
 
-    private static SuperdoNotificationManager ourInstance;
+public class SuperdoAlarmManager {
+
+    private static SuperdoAlarmManager ourInstance;
 
     public static final String CHANNEL_TASK = "sd_notification_tasks";
     public static final String CHANNEL_DAILY = "sd_notification_recursive";
@@ -28,19 +35,31 @@ public class SuperdoNotificationManager {
     public static final String CHANNEL_SUBSCRIPTIONS= "sd_notification_subscription";
     public static final String CHANNEL_RANDOM = "sd_notification_random";
 
-    public static SuperdoNotificationManager getInstance() {
+    public static final int REQ_CODE_MORNING = 9;
+    public static final int REQ_CODE_AFTERNOON = 15;
+    public static final int REQ_CODE_EVENING = 18;
+    public static final int REQ_CODE_NIGHT = 21;
+
+
+    /**
+     * NOTIFICATION SHOW STRATEGY
+     *
+     *
+     *
+     */
+
+    public static SuperdoAlarmManager getInstance() {
         return ourInstance;
     }
 
-    private SuperdoNotificationManager(Context context) {
-        this.createNotificationChannels(context);
+    private SuperdoAlarmManager(Context context) {
     }
 
     public static void initialise(Context context) {
-        ourInstance = new SuperdoNotificationManager(context);
+        ourInstance = new SuperdoAlarmManager(context);
     }
 
-    public void createNotification(Context context, String channelId) {
+    public void createNotification(Context context, String channelId, String title, String content, String contentBig) {
 
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -48,10 +67,10 @@ public class SuperdoNotificationManager {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.ic_launcher_superdo)
-                .setContentTitle("Superdo notification")
-                .setContentText("Starting your day right can increase your productivity")
+                .setContentTitle(title)
+                .setContentText(content)
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Start planning with superdo and leverage your morning."))
+                        .bigText(contentBig))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent);
 
@@ -93,5 +112,57 @@ public class SuperdoNotificationManager {
                 notificationManager.createNotificationChannel(channel);
             }
         }
+    }
+
+    public void registerDailyNotificationAlarms(Context context) {
+        SuperDate date = new SuperDate();
+        date.setTime(9,0);
+        setAlarmRepeat(context, date, REQ_CODE_MORNING);
+        date.setTime(15,0);
+        setAlarmRepeat(context, date, REQ_CODE_AFTERNOON);
+        date.setTime(18,0);
+        setAlarmRepeat(context, date, REQ_CODE_EVENING);
+        date.setTime(21,0);
+        setAlarmRepeat(context, date, REQ_CODE_NIGHT);
+    }
+
+    public void setAlarmExact(Context context, SuperDate date, int requestCode) {
+        AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, NotificationBroadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, date.getDate());
+        calendar.set(Calendar.MONTH, date.getMonth() - 1);
+        calendar.set(Calendar.YEAR, date.getYear());
+        calendar.set(Calendar.HOUR_OF_DAY, date.getHours());
+        calendar.set(Calendar.MINUTE, date.getMinutes());
+        calendar.set(Calendar.SECOND, 0);
+
+        alarmManage.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    public void setAlarmRepeat(Context context, SuperDate date, int requestCode) {
+        AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, NotificationBroadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        if (date.isHasDate()) {
+            calendar.set(Calendar.DAY_OF_MONTH, date.getDate());
+            calendar.set(Calendar.MONTH, date.getMonth() - 1);
+            calendar.set(Calendar.YEAR, date.getYear());
+        }
+        calendar.set(Calendar.HOUR_OF_DAY, date.getHours());
+        calendar.set(Calendar.MINUTE, date.getMinutes());
+        calendar.set(Calendar.SECOND, 0);
+
+        alarmManage.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    public void testNotification(Context context) {
+        SuperDate date = Utils.getSuperdateToday();
+        date.setTime(13, 54);
+        setAlarmExact(context, date, 1);
     }
 }
