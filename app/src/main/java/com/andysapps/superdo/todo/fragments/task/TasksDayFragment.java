@@ -9,20 +9,27 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.androidadvance.topsnackbar.TSnackbar;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.TasksDayPagerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
+import com.andysapps.superdo.todo.events.action.TaskCompletedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.github.florent37.viewanimator.ViewAnimator;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,6 +59,9 @@ public class TasksDayFragment extends Fragment {
 
     @BindView(R.id.viewpager_tasks)
     ViewPager viewPagerTasks;
+
+    @BindView(R.id.tasks_parent)
+    LinearLayout parentView;
 
     TasksDayPagerAdapter viewPagerAdapter;
 
@@ -155,6 +165,8 @@ public class TasksDayFragment extends Fragment {
         updateUi();
     }
 
+
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(FetchTasksEvent event) {
         updateUi();
@@ -178,6 +190,8 @@ public class TasksDayFragment extends Fragment {
 
         }
     }
+
+
 
     /////////////////////
     /////// ANIMATION

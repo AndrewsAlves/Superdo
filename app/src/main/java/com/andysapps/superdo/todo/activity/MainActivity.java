@@ -1,21 +1,28 @@
 package com.andysapps.superdo.todo.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.androidadvance.topsnackbar.TSnackbar;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
+import com.andysapps.superdo.todo.events.action.TaskCompletedEvent;
 import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
@@ -26,6 +33,7 @@ import com.andysapps.superdo.todo.fragments.task.EditTaskFragment;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.github.florent37.viewanimator.ViewAnimator;
+import com.google.android.material.snackbar.Snackbar;
 import com.kuassivi.component.RipplePulseRelativeLayout;
 
 import org.greenrobot.eventbus.EventBus;
@@ -55,6 +63,15 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.iv_moonbutton)
     ImageView moonButton;
+
+    @BindView(R.id.cv_maintab)
+    CardView cvMainTab;
+
+    @BindView(R.id.rl_parent_moonbutton)
+    RelativeLayout parentMoonButton;
+
+    @BindView(R.id.parent_coodinator)
+    CoordinatorLayout fragmentContainer;
 
     @BindView(R.id.pulseLayout)
     RipplePulseRelativeLayout rippleBackground;
@@ -267,6 +284,31 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(OpenBottomFragmentEvent event) {
        event.getFragment().show(getSupportFragmentManager(), event.getFragment().getClass().getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(TaskCompletedEvent event) {
+        if(event.isCompleted) {
+            showUndoSnackBar();
+        }
+    }
+
+    public void showUndoSnackBar() {
+        
+        Snackbar snackbar = Snackbar.make(fragmentContainer, "Task completed!", Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(Color.WHITE);
+        TextView tv = (TextView) snackbar.getView().findViewById(R.id.snackbar_text);
+        tv.setTextColor(getResources().getColor(R.color.lightRed));
+
+        snackbar.setActionTextColor(getResources().getColor(R.color.lightRed));
+        snackbar.setAction("Undo", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        snackbar.show();
+
     }
 
 }

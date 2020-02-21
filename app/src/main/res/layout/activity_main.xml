@@ -113,58 +113,62 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/parent_coodinator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
         android:layout_alignParentBottom="true">
 
-        <RelativeLayout
-            android:id="@+id/btn_add_task"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:background="@drawable/bg_oval_gradient"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="-25dp"
-            android:layout_marginBottom="-25dp">
+        <com.andysapps.superdo.todo.views.MoonButtonRelativeLayout
+            android:id="@+id/rl_parent_moonbutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-10dp"
+            android:layout_gravity="bottom|start">
 
-            <ImageView
-                android:id="@+id/iv_moonbutton"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/btn_add_task"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:background="@drawable/bg_oval_gradient"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="-25dp"
+                android:layout_marginBottom="-25dp">
+
+                <ImageView
+                    android:id="@+id/iv_moonbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_mb_add_task"
+                    android:layout_margin="40dp"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_today_msg"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_mb_add_task"
-                android:layout_margin="40dp"/>
+                android:layout_marginStart="30dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Great! you dont have any tasks ?"
+                android:textSize="16sp"
+                android:layout_centerVertical="true"/>
 
-        </RelativeLayout>
+        </com.andysapps.superdo.todo.views.MoonButtonRelativeLayout>
 
-    </RelativeLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
     <!-- NOTIFICATION -->
-
-    <RelativeLayout
-        android:id="@+id/main_rl_bottom_fab_view"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginBottom="50dp"
-        android:layout_alignParentBottom="true">
-
-        <TextView
-            android:id="@+id/tv_today_msg"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Great! you dont have any tasks ?"
-            android:textSize="16sp"
-            android:layout_centerVertical="true"/>
-
-    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/fl_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"/>
+        android:layout_marginBottom="60dp">
+
+    </FrameLayout>
 
     <FrameLayout
         android:layout_alignParentBottom="true"
