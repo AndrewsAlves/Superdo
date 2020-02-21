@@ -28,6 +28,9 @@ public class TaskOrganiser {
     public List<Task> monthTaskList;
     public List<Task> upcomingTaskList;
 
+    /// profile list
+    public List<Task> completedTaskList;
+
     public List<Bucket> bucketList;
 
     public static TaskOrganiser getInstance() {
@@ -63,6 +66,10 @@ public class TaskOrganiser {
         for (Task task : allTasks.values()) {
 
             if (task.isDeleted()) {
+                continue;
+            }
+
+            if (task.isTaskCompleted()) {
                 continue;
             }
 

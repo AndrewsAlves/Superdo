@@ -18,13 +18,12 @@ import com.google.firebase.firestore.ServerTimestamp;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Andrews on 19,October,2019
  */
 
-public class Task implements Cloneable, Parcelable {
+public class Task implements Cloneable {
 
     @DocumentId
     String documentId;
@@ -40,6 +39,8 @@ public class Task implements Cloneable, Parcelable {
     int taskIndex;
 
     boolean isTaskCompleted;
+
+    Date taskCompletedDate;
 
     ////
     // SIDE KICKS
@@ -77,6 +78,8 @@ public class Task implements Cloneable, Parcelable {
 
     @ServerTimestamp
     Date created;
+
+
 
     boolean isDeleted;
 
@@ -248,6 +251,15 @@ public class Task implements Cloneable, Parcelable {
         this.location = location;
     }
 
+
+    public Date getTaskCompletedDate() {
+        return taskCompletedDate;
+    }
+
+    public void setTaskCompletedDate(Date taskCompletedDate) {
+        this.taskCompletedDate = taskCompletedDate;
+    }
+
     public String getDoDateString() {
 
         if (doDate == null) {
@@ -310,13 +322,4 @@ public class Task implements Cloneable, Parcelable {
         return hours + " : " + min + meridien;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-    }
 }

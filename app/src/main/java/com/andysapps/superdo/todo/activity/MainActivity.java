@@ -15,8 +15,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.androidadvance.topsnackbar.TSnackbar;
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
@@ -289,11 +289,11 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskCompletedEvent event) {
         if(event.isCompleted) {
-            showUndoSnackBar();
+            showUndoSnackBar(event.adapter);
         }
     }
 
-    public void showUndoSnackBar() {
+    public void showUndoSnackBar(TasksRecyclerAdapter adapter) {
         
         Snackbar snackbar = Snackbar.make(fragmentContainer, "Task completed!", Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundColor(Color.WHITE);
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
         snackbar.setAction("Undo", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                adapter.undoTaskCompleted();
             }
         });
         snackbar.show();

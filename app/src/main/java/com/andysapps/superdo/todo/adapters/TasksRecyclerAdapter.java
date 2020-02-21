@@ -4,13 +4,12 @@ import android.content.Context;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -30,10 +29,10 @@ import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,11 +50,16 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     private static final String TAG = "TasksRecyclerAdapter";
     private List<Task> taskList;
 
+    Task lastCompletedTask;
+    int lastCompletedTaskPos;
+
     private Context context;
+    private Handler viewUpdateHandler;
 
     public TasksRecyclerAdapter(Context context, List<Task> taskList) {
         this.taskList = taskList;
         this.context = context;
+        viewUpdateHandler = new Handler();
     }
 
     @Override
@@ -68,6 +72,13 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     public void addTask(Task task) {
         taskList.add(task);
         notifyItemInserted(taskList.size() - 1);
+    }
+
+    public void undoTaskCompleted() {
+        lastCompletedTask.setTaskCompleted(false);
+        FirestoreManager.getInstance().updateTask(lastCompletedTask);
+        taskList.add(lastCompletedTaskPos, lastCompletedTask);
+        notifyItemInserted(lastCompletedTaskPos);
     }
 
     public void removeTask(Task task) {
@@ -185,13 +196,27 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 } else {
                     h.lottieCheckView.setSpeed(1.5f);
                     h.isChecked = true;
-                    strikeOutText(h);
+                    //strikeOutText(h);
                 }
 
                 task.setTaskCompleted(h.isChecked);
                 FirestoreManager.getInstance().updateTask(task);
 
-                EventBus.getDefault().post(new TaskCompletedEvent(h.isChecked));
+                //// SET TASK COMPLETED
+                if (h.isChecked) {
+                    viewUpdateHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            task.setTaskCompletedDate(Calendar.getInstance().getTime());
+                            lastCompletedTask = task;
+                            lastCompletedTaskPos = position;
+                            EventBus.getDefault().post(new TaskCompletedEvent(TasksRecyclerAdapter.this,h.isChecked));
+                            taskList.remove(h.getAdapterPosition());
+                            notifyItemRemoved(h.getAdapterPosition());
+                        }
+                    }, 500);
+
+                }
 
                 h.lottieCheckView.playAnimation();
             }
@@ -228,7 +253,6 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 // do the draw!
                 .strikeThrough();
     }
-
 
 
     private void strikeInText(TaskViewHolder holder) {

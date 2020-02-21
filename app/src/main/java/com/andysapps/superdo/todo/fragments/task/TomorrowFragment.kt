@@ -14,6 +14,7 @@ import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
+import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
@@ -74,6 +75,11 @@ class TomorrowFragment : Fragment() {
         }
 
         adapter!!.updateList(tomorrowTaskList)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: FetchTasksEvent) {
+        updateUi()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
