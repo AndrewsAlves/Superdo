@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidadvance.topsnackbar.TSnackbar;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.TasksDayPagerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
@@ -164,8 +163,6 @@ public class TasksDayFragment extends Fragment {
         EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.UPCOMING));
         updateUi();
     }
-
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(FetchTasksEvent event) {
