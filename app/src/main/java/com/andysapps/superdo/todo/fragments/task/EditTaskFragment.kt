@@ -62,7 +62,7 @@ import kotlin.collections.ArrayList
  * A simple [Fragment] subclass.
  */
 
-class EditTaskFragment : Fragment() {
+class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
 
     val TAG : String = "EditTaskFragment"
@@ -70,6 +70,7 @@ class EditTaskFragment : Fragment() {
     var nonEditedTask : Task = Task()
     var isChecked : Boolean = false
     var subtaskAdapter : SubtasksRecyclerAdapter? = null
+    var editing : Boolean = false
 
     companion object {
         fun instance(task : Task) : EditTaskFragment {
@@ -127,6 +128,12 @@ class EditTaskFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+        editTask_et_taskName.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                editing = true
+            }
+        }
+
         editTask_lottie_anim.setOnClickListener(View.OnClickListener {
 
             editTask_lottie_anim.setMinAndMaxProgress(0.0f, 1.0f)
@@ -144,6 +151,13 @@ class EditTaskFragment : Fragment() {
 
             editTask_lottie_anim.playAnimation()
         })
+
+        editTask_tick_save.setOnClickListener {
+            editTask_et_taskName.clearFocus()
+            editTask_et_desc.clearFocus()
+            Utils.hideKeyboard(context, editTask_et_taskName)
+            Utils.hideKeyboard(context, editTask_et_desc)
+        }
 
         ///////////////
         ///// SUBTASK RECYCLER
@@ -401,6 +415,28 @@ class EditTaskFragment : Fragment() {
         EventBus.getDefault().post(UpdateTaskListEvent(TaskListing.UPCOMING))
     }
 
+    override fun onFocusChange(v: View?, hasFocus: Boolean) {
+        if (hasFocus) {
+            editing = true
+            updateEditing()
+        } else {
+            editing = false
+            updateEditing()
+        }
+    }
+
+    fun updateEditing() {
+        editTask_close.visibility = View.GONE
+        editTask_deleteTask.visibility = View.GONE
+        editTask_tick_save.visibility = View.GONE
+        if (editing) {
+            editTask_tick_save.visibility = View.VISIBLE
+        } else {
+            editTask_close.visibility = View.VISIBLE
+            editTask_deleteTask.visibility = View.VISIBLE
+        }
+    }
+
     ///////////
     /// EVENTS
     ///////////
@@ -463,4 +499,6 @@ class EditTaskFragment : Fragment() {
         updateUi()
         FirestoreManager.getInstance().updateTask(task)
     }
+
+
 }

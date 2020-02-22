@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showUndoSnackBar() {
-        
+
         Snackbar snackbar = Snackbar.make(fragmentContainer, "Task completed!", Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundColor(Color.WHITE);
         TextView tv = (TextView) snackbar.getView().findViewById(R.id.snackbar_text);

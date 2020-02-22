@@ -53,6 +53,7 @@
                 android:layout_marginEnd="10dp"/>
 
             <ImageButton
+                android:visibility="visible"
                 android:id="@+id/editTask_close"
                 style="@style/ripple_background"
                 android:layout_width="40dp"
@@ -63,6 +64,20 @@
                 android:src="@drawable/ic_close_mini"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageButton
+                android:visibility="gone"
+                android:id="@+id/editTask_tick_save"
+                style="@style/ripple_background"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="30dp"
+                android:scaleType="center"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/ic_tick_red"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
