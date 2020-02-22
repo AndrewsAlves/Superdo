@@ -10,7 +10,6 @@ import androidx.viewpager.widget.ViewPager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,6 +29,7 @@ import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
 import com.andysapps.superdo.todo.fragments.task.AddTaskFragment;
 import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment;
 import com.andysapps.superdo.todo.fragments.task.EditTaskFragment;
+import com.andysapps.superdo.todo.manager.AnimationManager;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.github.florent37.viewanimator.ViewAnimator;
@@ -61,8 +61,11 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.tv_today_msg)
     TextView tvMsg;
 
+    @BindView(R.id.btn_add_task)
+    RelativeLayout moonButton;
+
     @BindView(R.id.iv_moonbutton)
-    ImageView moonButton;
+    ImageView moonIcon;
 
     @BindView(R.id.cv_maintab)
     CardView cvMainTab;
@@ -136,22 +139,33 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.tab_1)
     public void clickToday() {
+
+        moonButton.setClickable(true);
         mainTabs = MainTabs.TODAY_TASKS;
         mainViewPager.setCurrentItem(0);
+        AnimationManager.getInstance().showMoonButton(moonButton);
         updateTabUi(mainTabs);
     }
 
     @OnClick(R.id.tab_2)
     public void clickTasks() {
+
+        moonButton.setClickable(true);
+
         mainTabs = MainTabs.BUCKET_TASKS;
         mainViewPager.setCurrentItem(1);
+        AnimationManager.getInstance().showMoonButton(moonButton);
         updateTabUi(mainTabs);
     }
 
     @OnClick(R.id.tab_3)
     public void clickProfile() {
+
         mainTabs = MainTabs.PROFILE;
         mainViewPager.setCurrentItem(2);
+        viewPagerAdapter.getProfileFragment().updateUi();
+        AnimationManager.getInstance().hideMoonButton(moonButton);
+        moonButton.setClickable(false);
         updateTabUi(mainTabs);
     }
 
@@ -249,13 +263,13 @@ public class MainActivity extends AppCompatActivity {
 
         switch (moonButtonType) {
             case ADD_TASK:
-                moonButton.setImageResource(R.drawable.ic_mb_add_task);
+                moonIcon.setImageResource(R.drawable.ic_mb_add_task);
                 break;
             case ADD_BUCKET:
-                moonButton.setImageResource(R.drawable.ic_add_bucket);
+                moonIcon.setImageResource(R.drawable.ic_add_bucket);
                 break;
             case SAVE_BUCKET:
-                moonButton.setImageResource(R.drawable.ic_tick_create_bucket);
+                moonIcon.setImageResource(R.drawable.ic_tick_create_bucket);
                 break;
         }
     }

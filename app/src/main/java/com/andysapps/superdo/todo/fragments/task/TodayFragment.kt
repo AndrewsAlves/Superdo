@@ -13,6 +13,7 @@ import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
 import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
+import com.andysapps.superdo.todo.events.TaskModifiedEvent
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent

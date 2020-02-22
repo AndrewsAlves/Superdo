@@ -31,10 +31,6 @@ public class Splash extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
 
-        YoYo.with(Techniques.SlideInLeft).duration(1000).playOn(tvPlan);
-        YoYo.with(Techniques.SlideInLeft).duration(1000).delay(500).playOn(tvPrio);
-        YoYo.with(Techniques.SlideInLeft).duration(1000).delay(1000).playOn(tvTakeAction);
-
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -42,7 +38,7 @@ public class Splash extends AppCompatActivity {
                 Intent intent = new Intent(Splash.this, MainActivity.class);
                 startActivity(intent);
             }
-        }, 2500);
+        }, 500);
 
     }
 }

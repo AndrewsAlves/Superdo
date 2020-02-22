@@ -30,6 +30,9 @@ public class TaskOrganiser {
 
     /// profile list
     public List<Task> completedTaskList;
+    public List<Task> missedTaskList;
+    public List<Task> pendingTaskList;
+    public List<Task> deletedTaskList;
 
     public List<Bucket> bucketList;
 
@@ -44,6 +47,11 @@ public class TaskOrganiser {
         weekTaskList = new ArrayList<>();
         monthTaskList = new ArrayList<>();
         upcomingTaskList = new ArrayList<>();
+
+        completedTaskList = new ArrayList<>();
+        missedTaskList = new ArrayList<>();
+        pendingTaskList = new ArrayList<>();
+        deletedTaskList = new ArrayList<>();
     }
 
     public void organiseAllTasks() {
@@ -54,6 +62,11 @@ public class TaskOrganiser {
         weekTaskList = new ArrayList<>();
         monthTaskList = new ArrayList<>();
         upcomingTaskList = new ArrayList<>();
+
+        completedTaskList = new ArrayList<>();
+        missedTaskList = new ArrayList<>();
+        pendingTaskList = new ArrayList<>();
+        deletedTaskList = new ArrayList<>();
 
         HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
 
@@ -66,14 +79,17 @@ public class TaskOrganiser {
         for (Task task : allTasks.values()) {
 
             if (task.isDeleted()) {
+                deletedTaskList.add(task);
                 continue;
             }
 
             if (task.isTaskCompleted()) {
+                completedTaskList.add(task);
                 continue;
             }
 
             allTaskList.add(task);
+            pendingTaskList.add(task);
 
             if (Utils.isSuperDateToday(task.getDoDate())) {
                 task.setListedIn(TaskListing.TODAY);
@@ -85,6 +101,7 @@ public class TaskOrganiser {
             if (Utils.isSuperDateIsPast(task.getDoDate())) {
                 task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
+                missedTaskList.add(task);
                 continue;
             }
 
@@ -169,9 +186,20 @@ public class TaskOrganiser {
         }
     }
 
-    public List<Task> getTodayTaskList() {
-        Log.e(TAG, "getTodayList: tasks size : " + todayTaskList.size());
-        return todayTaskList;
+    public List<Task> getCompletedTaskList() {
+        return completedTaskList;
+    }
+
+    public List<Task> getMissedTaskList() {
+        return missedTaskList;
+    }
+
+    public List<Task> getPendingTaskList() {
+        return pendingTaskList;
+    }
+
+    public List<Task> getDeletedTaskList() {
+        return deletedTaskList;
     }
 
     public List<Task> getTasks(TaskListing listing) {

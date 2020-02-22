@@ -15,6 +15,8 @@ import com.andysapps.superdo.todo.fragments.task.TasksDayFragment;
 
 public class MainViewPagerAdapter extends FragmentPagerAdapter {
 
+    ProfileFragment profileFragment;
+
     public MainViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -28,7 +30,8 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new BucketTasksFragment();
             case 2:
-                return new ProfileFragment();
+                profileFragment = new ProfileFragment();
+                return profileFragment;
         }
 
         return null;
@@ -37,5 +40,9 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return 3;
+    }
+
+    public ProfileFragment getProfileFragment() {
+        return profileFragment;
     }
 }

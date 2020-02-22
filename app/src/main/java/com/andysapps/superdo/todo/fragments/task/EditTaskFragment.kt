@@ -5,6 +5,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -64,7 +65,6 @@ import kotlin.collections.ArrayList
 
 class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
-
     val TAG : String = "EditTaskFragment"
     var task : Task = Task()
     var nonEditedTask : Task = Task()
@@ -97,10 +97,10 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         initUi()
         initClicks()
         updateUi()
-
     }
 
     override fun onDestroyView() {
+        updateTasks()
         EventBus.getDefault().unregister(this)
         super.onDestroyView()
     }
@@ -110,7 +110,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         editTask_lottie_anim.setAnimation("anim_check2_1.json")
 
         editTask_et_taskName.imeOptions = EditorInfo.IME_ACTION_DONE
-        //editTask_et_taskName.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        editTask_et_taskName.setRawInputType(InputType.TYPE_CLASS_TEXT)
 
         editTask_et_taskName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
@@ -118,6 +118,13 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             }
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        })
+
+        editTask_et_taskName.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                editTask_tick_save.performClick()
+            }
+                true
         })
 
         editTask_et_desc.addTextChangedListener(object :TextWatcher {
@@ -128,11 +135,8 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        editTask_et_taskName.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                editing = true
-            }
-        }
+        editTask_et_taskName.onFocusChangeListener = this
+        editTask_et_desc.onFocusChangeListener = this
 
         editTask_lottie_anim.setOnClickListener(View.OnClickListener {
 
@@ -153,10 +157,13 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         })
 
         editTask_tick_save.setOnClickListener {
+            validate()
             editTask_et_taskName.clearFocus()
             editTask_et_desc.clearFocus()
             Utils.hideKeyboard(context, editTask_et_taskName)
             Utils.hideKeyboard(context, editTask_et_desc)
+            FirestoreManager.getInstance().updateTask(task)
+
         }
 
         ///////////////
@@ -391,22 +398,18 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
         ///// Close Fragment
         editTask_close.setOnClickListener {
-            if (shouldUpdate()) {
-                FirestoreManager.getInstance().updateTask(task)
-            }
+            FirestoreManager.getInstance().updateTask(task)
             fragmentManager!!.popBackStack()
-            EventBus.getDefault().post(RemoveFragmentEvents())
         }
 
         ///// Mark done
     }
 
-    private fun shouldUpdate() : Boolean {
+    fun validate() {
         if (task.name.isEmpty()) {
             task.name = nonEditedTask.name
-            return true
+            updateUi()
         }
-        return false
     }
 
     fun updateTasks() {

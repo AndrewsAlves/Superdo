@@ -74,18 +74,20 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         notifyItemInserted(taskList.size() - 1);
     }
 
-    public void undoTaskCompleted() {
-        lastCompletedTask.setTaskCompleted(false);
-        FirestoreManager.getInstance().updateTask(lastCompletedTask);
-        taskList.add(lastCompletedTaskPos, lastCompletedTask);
-        notifyItemInserted(lastCompletedTaskPos);
-    }
-
     public void removeTask(Task task) {
         for (int i = 0 ; i < this.taskList.size() ; i++) {
             if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
                 notifyItemRemoved(i);
                 this.taskList.remove(i);
+            }
+        }
+    }
+
+    public void notifyModifiedItem(Task task) {
+        for (int i = 0 ; i < this.taskList.size() ; i++) {
+            if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
+                taskList.set(i, task);
+                notifyItemChanged(i);
             }
         }
     }
@@ -98,6 +100,14 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         this.taskList.addAll(taskList);
         notifyDataSetChanged();
     }
+
+    public void undoTaskCompleted() {
+        lastCompletedTask.setTaskCompleted(false);
+        FirestoreManager.getInstance().updateTask(lastCompletedTask);
+        taskList.add(lastCompletedTaskPos, lastCompletedTask);
+        notifyItemInserted(lastCompletedTaskPos);
+    }
+
 
     @Override
     public void onBindViewHolder(TaskViewHolder h, int position) {
