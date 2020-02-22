@@ -26,11 +26,7 @@
             android:name=".activity.MainActivity"
             android:windowSoftInputMode="adjustPan" />
 
-        <activity android:name=".activity.CreateHabitActivity"
-            android:windowSoftInputMode="adjustPan"></activity>
-
         <activity android:name=".activity.FocusActivity" />
-        <activity android:name=".activity.ProfileActivity" />
 
     </application>
 

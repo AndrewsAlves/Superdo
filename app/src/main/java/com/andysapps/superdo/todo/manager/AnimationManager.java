@@ -7,6 +7,7 @@ import com.github.florent37.viewanimator.ViewAnimator;
 /**
  * Created by Andrews on 21,December,2019
  */
+
 public class AnimationManager {
 
     private static final AnimationManager ourInstance = new AnimationManager();

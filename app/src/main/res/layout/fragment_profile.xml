@@ -16,7 +16,10 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_margin="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/bg_capsul_white">
 
             <ImageView

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.bucket.BucketTasksFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="40dp">
+
+            <com.andysapps.superdo.todo.views.GradientTextView
+                android:id="@+id/tv_cpmd_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Completed tasks"
+                android:textSize="18sp"
+                android:maxLines="1"
+                android:inputType="textNoSuggestions"
+                android:textColor="@color/lightRed" />
+
+            <ImageButton
+                android:id="@+id/ib_close_cpdm"
+                style="@style/ripple_background"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:scaleType="fitXY"
+                android:padding="5dp"
+                android:visibility="visible"
+                android:src="@drawable/ic_close"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
+
+            <ImageButton
+                android:id="@+id/ib_cpdm_delete_tasks"
+                style="@style/ripple_background"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:scaleType="center"
+                android:visibility="visible"
+                android:src="@drawable/ic_delete_task"
+                android:layout_marginEnd="40dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
+
+            <ImageButton
+                android:id="@+id/ib_cpdm_select_all_tasks"
+                style="@style/ripple_background"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:scaleType="center"
+                android:visibility="visible"
+                android:src="@drawable/ic_select_all"
+                android:layout_marginEnd="80dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/ll_notasks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:alpha="0.5"
+                    android:src="@drawable/ic_empty_box" />
+
+                <TextView
+                    android:id="@+id/tv_no_tasks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="List is empty"
+                    android:textAlignment="center"
+                    android:textColor="@color/grey2"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_task_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:requiresFadingEdge="vertical"
+                android:fadingEdgeLength="50dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
