@@ -10,6 +10,8 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -35,6 +37,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,6 +56,10 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
 
     Task lastCompletedTask;
     int lastCompletedTaskPos;
+    boolean isSeleting;
+    boolean selectAll;
+
+    HashMap<String, Task> selectedTask;
 
     private Context context;
     private Handler viewUpdateHandler;
@@ -61,12 +68,13 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
         this.taskList = taskList;
         this.context = context;
         viewUpdateHandler = new Handler();
+        selectedTask = new HashMap<>();
     }
 
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_task, viewGroup, false);
+                .inflate(R.layout.item_task_cpdm, viewGroup, false);
         return new TaskViewHolder(view);
     }
 
@@ -109,6 +117,27 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
         notifyItemInserted(lastCompletedTaskPos);
     }
 
+    public void clearSelection() {
+        isSeleting = false;
+        notifyDataSetChanged();
+    }
+
+    public void selectAll(boolean selectAll) {
+        this.selectAll = selectAll;
+        if (selectAll) {
+            selectedTask.clear();
+            for (Task task : taskList) {
+                selectedTask.put(task.getDocumentId(), task);
+            }
+        } else {
+            selectedTask.clear();
+        }
+        notifyDataSetChanged();
+    }
+
+    public HashMap<String, Task> getSelectedTask() {
+        return selectedTask;
+    }
 
     @Override
     public void onBindViewHolder(TaskViewHolder h, int position) {
@@ -196,9 +225,24 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
                 }
         );
 
+        h.cbSelection.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                selectedTask.put(taskList.get(position).getDocumentId(), taskList.get(position));
+                Log.e(TAG, "item added:");
+            } else {
+                selectedTask.remove(taskList.get(position).getDocumentId());
+                Log.e(TAG, "item removed:");
+            }
+        });
+
         h.lottieCheckView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (isSeleting) {
+                    return;
+                }
+
                 h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
                 if (h.isChecked) {
                     h.lottieCheckView.setSpeed(-2f);
@@ -236,13 +280,40 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
         h.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isSeleting) {
+                    h.cbSelection.setChecked(!h.cbSelection.isChecked());
+                    return;
+                }
                 EventBus.getDefault().post(new OpenEditTaskEvent(task));
             }
         });
 
+        if (isSeleting) {
+            h.cbSelection.setVisibility(View.VISIBLE);
+            if (selectAll) {
+                h.cbSelection.setChecked(true);
+            }
+        } else {
+            h.cbSelection.setChecked(false);
+            h.cbSelection.setVisibility(View.GONE);
+        }
+
+        if (selectedTask.containsKey(taskList.get(position).getDocumentId())) {
+            h.cbSelection.setChecked(true);
+            Log.e(TAG, "item selected:");
+        } else {
+            h.cbSelection.setChecked(false);
+        }
+
         h.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                if (isSeleting) {
+                    return false;
+                }
+                isSeleting = true;
+                h.cbSelection.setChecked(true);
+                notifyDataSetChanged();
                 EventBus.getDefault().post(new SelectProfileTaskEvent(true));
                 return true;
             }
@@ -272,7 +343,6 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
                 // do the draw!
                 .strikeThrough();
     }
-
 
     private void strikeInText(TaskViewHolder holder) {
         holder.painting.clearStrikeThrough();
@@ -343,6 +413,9 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
 
         @BindView(R.id.parent_ll_task_icons)
         public LinearLayout parentIcons;
+
+        @BindView(R.id.cb_selected)
+        public CheckBox cbSelection;
 
         StrikeThroughPainting painting;
 

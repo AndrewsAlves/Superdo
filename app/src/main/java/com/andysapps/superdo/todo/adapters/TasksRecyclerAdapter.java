@@ -24,6 +24,8 @@ import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.BucketColors;
+import com.andysapps.superdo.todo.enums.UndoType;
+import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.action.TaskCompletedEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
@@ -78,6 +80,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         for (int i = 0 ; i < this.taskList.size() ; i++) {
             if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
                 notifyItemRemoved(i);
+                EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, task, i, UndoType.MOVED_TO_BIN));
                 this.taskList.remove(i);
             }
         }
@@ -101,13 +104,28 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         notifyDataSetChanged();
     }
 
-    public void undoTaskCompleted() {
-        lastCompletedTask.setTaskCompleted(false);
-        FirestoreManager.getInstance().updateTask(lastCompletedTask);
-        taskList.add(lastCompletedTaskPos, lastCompletedTask);
-        notifyItemInserted(lastCompletedTaskPos);
+    public void undoTaskCompleted(Task task,int position) {
+        taskList.add(position, task);
+        task.setTaskCompleted(false);
+        notifyItemInserted(position);
+        FirestoreManager.getInstance().updateTask(task);
     }
 
+    public void undoMovedToBin(Task task,int position) {
+        taskList.add(position, task);
+        task.setMovedToBin(false);
+        notifyItemInserted(position);
+        FirestoreManager.getInstance().updateTask(task);
+    }
+
+    public int getTaskIndex(Task task) {
+        for (int i = 0 ; i < this.taskList.size() ; i++) {
+            if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     @Override
     public void onBindViewHolder(TaskViewHolder h, int position) {
@@ -210,22 +228,10 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 }
 
                 task.setTaskCompleted(h.isChecked);
-                FirestoreManager.getInstance().updateTask(task);
 
                 //// SET TASK COMPLETED
                 if (h.isChecked) {
-                    viewUpdateHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            task.setTaskCompletedDate(Calendar.getInstance().getTime());
-                            lastCompletedTask = task;
-                            lastCompletedTaskPos = position;
-                            EventBus.getDefault().post(new TaskCompletedEvent(TasksRecyclerAdapter.this,h.isChecked));
-                            taskList.remove(h.getAdapterPosition());
-                            notifyItemRemoved(h.getAdapterPosition());
-                        }
-                    }, 500);
-
+                   setTaskCompleted(h.getAdapterPosition(), task);
                 }
 
                 h.lottieCheckView.playAnimation();
@@ -238,6 +244,14 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 EventBus.getDefault().post(new OpenEditTaskEvent(task));
             }
         });
+    }
+
+    public void setTaskCompleted(int position, Task task) {
+        Log.e(TAG, "run: position " + position);
+        taskList.remove(position);
+        task.setTaskCompletedDate(Calendar.getInstance().getTime());
+        EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, task, position, UndoType.TASK_COMPLETED));
+        notifyItemRemoved(position);
     }
 
     private void strikeOutText(TaskViewHolder holder) {

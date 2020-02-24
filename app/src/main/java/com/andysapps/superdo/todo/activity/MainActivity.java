@@ -20,6 +20,8 @@ import com.andysapps.superdo.todo.adapters.viewpageradapter.MainViewPagerAdapter
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
+import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
+import com.andysapps.superdo.todo.events.UndoEvent;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.action.TaskCompletedEvent;
 import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
@@ -301,15 +303,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(TaskCompletedEvent event) {
-        if(event.isCompleted) {
-            showUndoSnackBar(event.adapter);
-        }
-    }
+    public void onMessageEvent(ShowSnakeBarEvent event) {
 
-    public void showUndoSnackBar(TasksRecyclerAdapter adapter) {
-        
-        Snackbar snackbar = Snackbar.make(fragmentContainer, "Task completed!", Snackbar.LENGTH_LONG);
+        String title = "Error";
+
+        switch (event.getUndoType()) {
+            case TASK_COMPLETED:
+                title = "Task completed +1";
+                break;
+            case MOVED_TO_BIN:
+                title = "Moved to bin";
+                break;
+        }
+
+        Snackbar snackbar = Snackbar.make(fragmentContainer, title, Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundColor(Color.WHITE);
         TextView tv = (TextView) snackbar.getView().findViewById(R.id.snackbar_text);
         tv.setTextColor(getResources().getColor(R.color.lightRed));
@@ -318,11 +325,18 @@ public class MainActivity extends AppCompatActivity {
         snackbar.setAction("Undo", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adapter.undoTaskCompleted();
+                switch (event.getUndoType()) {
+                    case TASK_COMPLETED:
+                        event.getTasksRecyclerAdapter().undoTaskCompleted(event.getTask(), event.getPosition());
+                        break;
+                    case MOVED_TO_BIN:
+                        event.getTasksRecyclerAdapter().undoMovedToBin(event.getTask(), event.getPosition());
+                        break;
+                }
             }
         });
-        snackbar.show();
 
+        snackbar.show();
     }
 
 }

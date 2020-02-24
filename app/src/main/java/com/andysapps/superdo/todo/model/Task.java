@@ -1,8 +1,5 @@
 package com.andysapps.superdo.todo.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.sidekicks.ContactCard;
@@ -79,8 +76,7 @@ public class Task implements Cloneable {
     @ServerTimestamp
     Date created;
 
-
-
+    boolean movedToBin;
     boolean isDeleted;
 
     public Task() {
@@ -145,6 +141,14 @@ public class Task implements Cloneable {
 
     public void setTaskCompleted(boolean taskCompleted) {
         isTaskCompleted = taskCompleted;
+    }
+
+    public boolean isMovedToBin() {
+        return movedToBin;
+    }
+
+    public void setMovedToBin(boolean movedToBin) {
+        this.movedToBin = movedToBin;
     }
 
     public boolean isDeleted() {

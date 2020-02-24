@@ -78,7 +78,7 @@ public class TaskOrganiser {
 
         for (Task task : allTasks.values()) {
 
-            if (task.isDeleted()) {
+            if (task.isMovedToBin()) {
                 deletedTaskList.add(task);
                 continue;
             }
@@ -321,12 +321,25 @@ public class TaskOrganiser {
         }
     }
 
-    public void deleteTask(Task task) {
+    public void moveToBin(Task task) {
         if (FirestoreManager.getInstance().getHasMapTask().containsKey(task.getDocumentId())) {
             Task task1 = FirestoreManager.getInstance().getHasMapTask().get(task.getDocumentId());
-            task1.setDeleted(true);
-            organiseAllTasks();
-            FirestoreManager.getInstance().updateTask(task1);
+            if (task1 != null) {
+                task1.setMovedToBin(true);
+                organiseAllTasks();
+                FirestoreManager.getInstance().updateTask(task1);
+            }
+        }
+    }
+
+    public void permanentDeleteTask(Task task) {
+        if (FirestoreManager.getInstance().getHasMapTask().containsKey(task.getDocumentId())) {
+            Task task1 = FirestoreManager.getInstance().getHasMapTask().get(task.getDocumentId());
+            if (task1 != null) {
+                task1.setDeleted(true);
+                organiseAllTasks();
+                FirestoreManager.getInstance().updateTask(task1);
+            }
         }
     }
 }

@@ -24,7 +24,6 @@ import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
 import com.andysapps.superdo.todo.adapters.sidekicks.SubtasksRecyclerAdapter
-import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
 import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DeadlineDialog
@@ -34,7 +33,6 @@ import com.andysapps.superdo.todo.dialog.sidekicks.RepeatDialog
 import com.andysapps.superdo.todo.enums.BucketColors
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
-import com.andysapps.superdo.todo.events.DeleteTaskEvent
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
@@ -42,21 +40,16 @@ import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
 import com.andysapps.superdo.todo.events.sidekick.SetDoDateEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRemindEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
-import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
-import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.Task
 import com.andysapps.superdo.todo.model.sidekicks.Subtask
 import com.andysapps.superdo.todo.model.sidekicks.Subtasks
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -163,7 +156,12 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             Utils.hideKeyboard(context, editTask_et_taskName)
             Utils.hideKeyboard(context, editTask_et_desc)
             FirestoreManager.getInstance().updateTask(task)
+        }
 
+        if (task.isMovedToBin) {
+            editTask_deleteTask.visibility = View.GONE
+        } else {
+            editTask_deleteTask.visibility = View.VISIBLE
         }
 
         ///////////////
@@ -389,7 +387,9 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
         ///// DELETE task
         editTask_deleteTask.setOnClickListener {
-            DeleteTaskDialog().show(fragmentManager!!, "deleteBucket")
+            TaskOrganiser.getInstance().moveToBin(task)
+            EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Deleted, task))
+            fragmentManager!!.popBackStack()
         }
 
         editTask_btn_add_sidekicks.setOnClickListener {
@@ -443,15 +443,6 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     ///////////
     /// EVENTS
     ///////////
-
-    @Subscribe
-    fun onMessageEvent(event : DeleteTaskEvent) {
-        if (event.isPositive) {
-            TaskOrganiser.getInstance().deleteTask(task)
-            fragmentManager!!.popBackStack()
-            EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Deleted, task))
-        }
-    }
 
     @Subscribe
     fun onMeessageEvent(event : SideKicksSelectedEvent) {
