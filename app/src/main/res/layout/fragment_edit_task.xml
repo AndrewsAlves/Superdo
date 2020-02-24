@@ -46,7 +46,7 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="40dp"
                 android:scaleType="center"
-                android:src="@drawable/ic_delete_task"
+                android:src="@drawable/ic_move_to_bin_orange"
                 android:layout_marginTop="5dp"
                 app:layout_constraintEnd_toStartOf="@+id/editTask_close"
                 app:layout_constraintTop_toTopOf="parent"

@@ -419,7 +419,7 @@ public class Utils {
     public static int getColor(Context context, String colors) {
 
         if (colors == null) {
-            return  context.getResources().getColor(R.color.grey4);
+            return  context.getResources().getColor(R.color.grey2);
         }
 
         BucketColors colors1 = BucketColors.valueOf(colors);

@@ -141,8 +141,10 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         h.isChecked = task.isTaskCompleted();
 
         if (h.isChecked) {
+            h.lottieCheckView.setVisibility(View.VISIBLE);
             h.lottieCheckView.setMinAndMaxProgress(1.0f, 1.0f);
         } else {
+            h.lottieCheckView.setVisibility(View.INVISIBLE);
             h.lottieCheckView.setMinAndMaxProgress(0.0f, 0.0f);
         }
 
@@ -202,27 +204,24 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
         }
 
-        h.lottieCheckView.addValueCallback(
-                new KeyPath("Shape Layer 1", "**"),
-                LottieProperty.COLOR_FILTER,
-                new SimpleLottieValueCallback<ColorFilter>() {
-                    @Override
-                    public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
-                        return new PorterDuffColorFilter(Utils.getColor(context, task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
-                    }
-                }
+        h.lottieCheckView.addValueCallback(new KeyPath("Shape Layer 1", "**"), LottieProperty.COLOR_FILTER,
+                frameInfo -> new PorterDuffColorFilter(Utils.getColor(context, task.getBucketColor()), PorterDuff.Mode.SRC_ATOP)
+        );
+        h.lottieCheckView.addValueCallback(new KeyPath("Shape Layer 3", "**"), LottieProperty.COLOR_FILTER,
+                frameInfo -> new PorterDuffColorFilter(Utils.getColor(context, task.getBucketColor()), PorterDuff.Mode.SRC_ATOP)
         );
 
-        h.lottieCheckView.setOnClickListener(new View.OnClickListener() {
+        h.ivCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                h.lottieCheckView.setVisibility(View.VISIBLE);
                 h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
                 if (h.isChecked) {
                     h.lottieCheckView.setSpeed(-2f);
                     h.isChecked = false;
                     strikeInText(h);
                 } else {
-                    h.lottieCheckView.setSpeed(1.5f);
+                    h.lottieCheckView.setSpeed(1.0f);
                     h.isChecked = true;
                     //strikeOutText(h);
                 }
@@ -360,7 +359,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             item = itemView;
             ButterKnife.bind(this,itemView);
 
-            lottieCheckView.setAnimation("anim_check2.json");
+            lottieCheckView.setAnimation("check_box3.json");
             painting = new StrikeThroughPainting(tvTaskName);
         }
 
