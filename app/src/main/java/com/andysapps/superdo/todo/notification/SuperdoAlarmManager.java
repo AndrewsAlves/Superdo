@@ -129,7 +129,7 @@ public class SuperdoAlarmManager {
     public void setAlarmExact(Context context, SuperDate date, int requestCode) {
         AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationBroadcast.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH, date.getDate());
@@ -138,6 +138,7 @@ public class SuperdoAlarmManager {
         calendar.set(Calendar.HOUR_OF_DAY, date.getHours());
         calendar.set(Calendar.MINUTE, date.getMinutes());
         calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
         alarmManage.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
@@ -145,7 +146,7 @@ public class SuperdoAlarmManager {
     public void setAlarmRepeat(Context context, SuperDate date, int requestCode) {
         AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationBroadcast.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
         if (date.isHasDate()) {
@@ -156,13 +157,34 @@ public class SuperdoAlarmManager {
         calendar.set(Calendar.HOUR_OF_DAY, date.getHours());
         calendar.set(Calendar.MINUTE, date.getMinutes());
         calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
-        alarmManage.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    public void setAlarmRepeatTest(Context context, SuperDate date, int requestCode) {
+        AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, NotificationBroadcast.class);
+        intent.putExtra("test", "This is Awful");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Calendar calendar = Calendar.getInstance();
+        if (date.isHasDate()) {
+            calendar.set(Calendar.DAY_OF_MONTH, date.getDate());
+            calendar.set(Calendar.MONTH, date.getMonth() - 1);
+            calendar.set(Calendar.YEAR, date.getYear());
+        }
+        calendar.set(Calendar.HOUR_OF_DAY, date.getHours());
+        calendar.set(Calendar.MINUTE, date.getMinutes());
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000, pendingIntent);
     }
 
     public void testNotification(Context context) {
         SuperDate date = Utils.getSuperdateToday();
-        date.setTime(13, 54);
-        setAlarmExact(context, date, 1);
+        date.setTime(22, 48);
+        setAlarmRepeatTest(context, date, 1);
     }
 }

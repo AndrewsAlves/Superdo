@@ -17,7 +17,14 @@ public class NotificationBroadcast extends BroadcastReceiver {
             SuperdoAlarmManager.initialise(context);
         }
 
-        SuperdoAlarmManager.getInstance().createNotification(context, SuperdoAlarmManager.CHANNEL_DAILY, "Superod notification", "Context jjajjajajjaja", " you are amazing" );
+        if (intent.getExtras() != null) {
+            SuperdoAlarmManager.getInstance().createNotification(context, SuperdoAlarmManager.CHANNEL_DAILY, "Superod notification", "Test Notification", intent.getExtras().getString("test"));
+        } else {
+            SuperdoAlarmManager.getInstance().createNotification(context, SuperdoAlarmManager.CHANNEL_DAILY, "Superod notification", "Test Notification", "You are amazing");
+
+        }
+
+
 
     }
 }

@@ -19,7 +19,7 @@ public class SuperdoApplication extends Application {
         FirestoreManager.intialize(this);
         SuperdoAlarmManager.initialise(this);
         SuperdoAlarmManager.getInstance().createNotificationChannels(this);
-        SuperdoAlarmManager.getInstance().registerDailyNotificationAlarms(this);
+        //SuperdoAlarmManager.getInstance().registerDailyNotificationAlarms(this);
         SuperdoAlarmManager.getInstance().testNotification(this);
 
     }
