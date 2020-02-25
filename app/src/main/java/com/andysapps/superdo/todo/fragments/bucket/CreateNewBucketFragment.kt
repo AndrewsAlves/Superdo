@@ -33,6 +33,9 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
     var isEditing : Boolean = false
 
     companion object {
+
+        val TAG : String = "CreateNewBucketFragment"
+
         fun instance(bucket : Bucket, isEditing: Boolean) : Fragment {
             val fragment = CreateNewBucketFragment()
             fragment.bucket = bucket

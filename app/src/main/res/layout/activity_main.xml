@@ -113,7 +113,7 @@
     </RelativeLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/parent_coodinator"
+        android:id="@+id/parent_coodinator_with_moonbtn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="60dp"
@@ -166,8 +166,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="60dp">
-
     </FrameLayout>
+
+
 
     <FrameLayout
         android:layout_alignParentBottom="true"

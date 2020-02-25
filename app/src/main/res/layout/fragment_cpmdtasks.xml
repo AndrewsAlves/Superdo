@@ -42,6 +42,7 @@
                 android:inputType="textNoSuggestions"
                 android:textColor="@color/lightRed"
                 android:layout_marginStart="20dp"
+                android:layout_toLeftOf="@id/ib_cpdm_restore_tasks"
                 android:layout_toRightOf="@id/ib_close_cpdm"/>
 
             <ImageButton
@@ -67,6 +68,17 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true" />
 
+            <ImageButton
+                android:id="@+id/ib_cpdm_restore_tasks"
+                style="@style/ripple_background"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:scaleType="center"
+                android:visibility="visible"
+                android:layout_marginEnd="80dp"
+                android:src="@drawable/ic_restore"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 
@@ -123,5 +135,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/parent_coodinator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -26,7 +25,10 @@ import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.BucketColors;
-import com.andysapps.superdo.todo.events.action.TaskCompletedEvent;
+import com.andysapps.superdo.todo.enums.CPMD;
+import com.andysapps.superdo.todo.enums.UndoType;
+import com.andysapps.superdo.todo.events.ShowSnakeBarCPMDEvent;
+import com.andysapps.superdo.todo.events.UpdateCpmdTitleEvent;
 import com.andysapps.superdo.todo.events.profile.SelectProfileTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
@@ -49,7 +51,7 @@ import lib.mozidev.me.extextview.StrikeThroughPainting;
  * Created by Andrews on 15,August,2019
  */
 
-public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapter.TaskViewHolder> implements ItemTouchHelperAdapter {
+public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapter.TaskViewHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = "TasksRecyclerAdapter";
     private List<Task> taskList;
@@ -60,13 +62,15 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
     boolean selectAll;
 
     HashMap<String, Task> selectedTask;
+    CPMD cpmd;
 
     private Context context;
     private Handler viewUpdateHandler;
 
-    public CPDMRecyclerAdapter(Context context, List<Task> taskList) {
+    public CPMDRecyclerAdapter(Context context, List<Task> taskList, CPMD cpmd) {
         this.taskList = taskList;
         this.context = context;
+        this.cpmd = cpmd;
         viewUpdateHandler = new Handler();
         selectedTask = new HashMap<>();
     }
@@ -110,15 +114,23 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
         notifyDataSetChanged();
     }
 
-    public void undoTaskCompleted() {
-        lastCompletedTask.setTaskCompleted(false);
-        FirestoreManager.getInstance().updateTask(lastCompletedTask);
-        taskList.add(lastCompletedTaskPos, lastCompletedTask);
-        notifyItemInserted(lastCompletedTaskPos);
+    public void undoTaskCompleted(Task task,int position) {
+        taskList.add(position, task);
+        task.setTaskCompleted(false);
+        notifyItemInserted(position);
+        FirestoreManager.getInstance().updateTask(task);
+    }
+
+    public void undoTaskNotCompleted(Task task,int position) {
+        taskList.add(position, task);
+        task.setTaskCompleted(true);
+        notifyItemInserted(position);
+        FirestoreManager.getInstance().updateTask(task);
     }
 
     public void clearSelection() {
         isSeleting = false;
+        selectedTask.clear();
         notifyDataSetChanged();
     }
 
@@ -217,75 +229,66 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
         h.lottieCheckView.addValueCallback(
                 new KeyPath("Shape Layer 1", "**"),
                 LottieProperty.COLOR_FILTER,
-                new SimpleLottieValueCallback<ColorFilter>() {
-                    @Override
-                    public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
-                        return new PorterDuffColorFilter(Utils.getColor(context, task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
-                    }
-                }
+                frameInfo -> new PorterDuffColorFilter(Utils.getColor(context, task.getBucketColor()), PorterDuff.Mode.SRC_ATOP)
         );
 
-        h.cbSelection.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                selectedTask.put(taskList.get(position).getDocumentId(), taskList.get(position));
-                Log.e(TAG, "item added:");
-            } else {
-                selectedTask.remove(taskList.get(position).getDocumentId());
-                Log.e(TAG, "item removed:");
-            }
-        });
-
-        h.lottieCheckView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (isSeleting) {
-                    return;
-                }
-
-                h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
-                if (h.isChecked) {
-                    h.lottieCheckView.setSpeed(-2f);
-                    h.isChecked = false;
-                    strikeInText(h);
+        if (!isSeleting) {
+            h.cbSelection.setOnCheckedChangeListener(null);
+        } else {
+            h.cbSelection.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    selectedTask.put(taskList.get(position).getDocumentId(), taskList.get(position));
+                    EventBus.getDefault().post(new UpdateCpmdTitleEvent());
                 } else {
-                    h.lottieCheckView.setSpeed(1.5f);
-                    h.isChecked = true;
-                    //strikeOutText(h);
+                    selectedTask.remove(taskList.get(position).getDocumentId());
+                    EventBus.getDefault().post(new UpdateCpmdTitleEvent());
                 }
+            });
+        }
 
-                task.setTaskCompleted(h.isChecked);
-                FirestoreManager.getInstance().updateTask(task);
+        h.ivCheck.setOnClickListener(v -> {
 
-                //// SET TASK COMPLETED
-                if (h.isChecked) {
-                    viewUpdateHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            task.setTaskCompletedDate(Calendar.getInstance().getTime());
-                            lastCompletedTask = task;
-                            lastCompletedTaskPos = position;
-                            //EventBus.getDefault().post(new TaskCompletedEvent(CPDMRecyclerAdapter.this,h.isChecked));
-                            taskList.remove(h.getAdapterPosition());
-                            notifyItemRemoved(h.getAdapterPosition());
-                        }
-                    }, 500);
-
-                }
-
-                h.lottieCheckView.playAnimation();
+            if (isSeleting) {
+                return;
             }
+
+            h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
+            if (h.isChecked) {
+                h.lottieCheckView.setSpeed(-2f);
+                h.isChecked = false;
+                strikeInText(h);
+            } else {
+                h.lottieCheckView.setSpeed(1.5f);
+                h.isChecked = true;
+                //strikeOutText(h);
+            }
+
+            task.setTaskCompleted(h.isChecked);
+            FirestoreManager.getInstance().updateTask(task);
+
+            //// SET TASK COMPLETED
+
+            if (!h.isChecked && cpmd == CPMD.COMPLETED) {
+                setTaskNotCompleted(h.getAdapterPosition(), task);
+            }
+
+            if (h.isChecked && cpmd == CPMD.PENDING) {
+                setTaskCompleted(h.getAdapterPosition(), task);
+            }
+
+            if (h.isChecked && cpmd == CPMD.MISSED) {
+                setTaskCompleted(h.getAdapterPosition(), task);
+            }
+
+            h.lottieCheckView.playAnimation();
         });
 
-        h.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isSeleting) {
-                    h.cbSelection.setChecked(!h.cbSelection.isChecked());
-                    return;
-                }
-                EventBus.getDefault().post(new OpenEditTaskEvent(task));
+        h.itemView.setOnClickListener(v -> {
+            if (isSeleting) {
+                h.cbSelection.setChecked(!h.cbSelection.isChecked());
+                return;
             }
+            EventBus.getDefault().post(new OpenEditTaskEvent(task));
         });
 
         if (isSeleting) {
@@ -305,19 +308,34 @@ public class CPDMRecyclerAdapter extends RecyclerView.Adapter<CPDMRecyclerAdapte
             h.cbSelection.setChecked(false);
         }
 
-        h.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (isSeleting) {
-                    return false;
-                }
-                isSeleting = true;
-                h.cbSelection.setChecked(true);
-                notifyDataSetChanged();
-                EventBus.getDefault().post(new SelectProfileTaskEvent(true));
-                return true;
+        h.itemView.setOnLongClickListener(v -> {
+            if (isSeleting) {
+                return false;
             }
+            isSeleting = true;
+            selectedTask.clear();
+            h.cbSelection.setChecked(true);
+            notifyDataSetChanged();
+            EventBus.getDefault().post(new SelectProfileTaskEvent(true));
+            EventBus.getDefault().post(new UpdateCpmdTitleEvent());
+            return true;
         });
+    }
+
+    public void setTaskCompleted(int position, Task task) {
+        Log.e(TAG, "run: position " + position);
+        taskList.remove(position);
+        task.setTaskCompletedDate(Calendar.getInstance().getTime());
+        EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_COMPLETED));
+        notifyItemRemoved(position);
+    }
+
+    public void setTaskNotCompleted(int position, Task task) {
+        Log.e(TAG, "run: position " + position);
+        taskList.remove(position);
+        task.setTaskCompletedDate(null);
+        EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_NOT_COMPLETED));
+        notifyItemRemoved(position);
     }
 
     private void strikeOutText(TaskViewHolder holder) {

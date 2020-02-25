@@ -12,8 +12,9 @@ public class OpenFragmentEvent {
     public Fragment fragment;
     public String tag;
 
-    public OpenFragmentEvent(Fragment fragment, Boolean behindMoonButton) {
+    public OpenFragmentEvent(Fragment fragment, Boolean behindMoonButton, String tag) {
         this.fragment = fragment;
         this.behindMoonButton = behindMoonButton;
+        this.tag = tag;
     }
 }

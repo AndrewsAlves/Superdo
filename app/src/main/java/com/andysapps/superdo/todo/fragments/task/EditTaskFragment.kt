@@ -58,7 +58,6 @@ import kotlin.collections.ArrayList
 
 class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
-    val TAG : String = "EditTaskFragment"
     var task : Task = Task()
     var nonEditedTask : Task = Task()
     var isChecked : Boolean = false
@@ -66,6 +65,9 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     var editing : Boolean = false
 
     companion object {
+
+        val TAG : String = "EditTaskFragment"
+
         fun instance(task : Task) : EditTaskFragment {
             val fragment = EditTaskFragment()
             fragment.task = task

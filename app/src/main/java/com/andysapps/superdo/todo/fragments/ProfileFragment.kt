@@ -34,16 +34,16 @@ class ProfileFragment : Fragment() {
 
     fun initUi() {
         profile_btn_completed_tasks.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.COMPLETED), false))
+            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.COMPLETED), false, CPMDTasksFragment.TAG))
         }
         profile_btn_pending_tasks.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.PENDING), false))
+            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.PENDING), false, CPMDTasksFragment.TAG))
         }
         profile_btn_missed_tasks.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.MISSED), false))
+            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.MISSED), false, CPMDTasksFragment.TAG))
         }
         profile_btn_archived_tasks.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.DELETED), false))
+            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.DELETED), false, CPMDTasksFragment.TAG))
         }
     }
 
@@ -53,6 +53,4 @@ class ProfileFragment : Fragment() {
         profile_tv_missing_tasks.text = TaskOrganiser.getInstance().getMissedTaskList().size.toString()
         profile_tv_deleted_tasks.text = TaskOrganiser.getInstance().getDeletedTaskList().size.toString()
     }
-
-
 }

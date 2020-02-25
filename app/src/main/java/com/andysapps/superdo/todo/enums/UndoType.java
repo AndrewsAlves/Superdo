@@ -5,5 +5,6 @@ package com.andysapps.superdo.todo.enums;
  */
 public enum UndoType {
     TASK_COMPLETED,
-    MOVED_TO_BIN
+    MOVED_TO_BIN,
+    TASK_NOT_COMPLETED
 }

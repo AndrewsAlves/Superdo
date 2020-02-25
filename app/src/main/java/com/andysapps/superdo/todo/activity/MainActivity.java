@@ -9,27 +9,27 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
-import com.andysapps.superdo.todo.events.UndoEvent;
+import com.andysapps.superdo.todo.events.ShowSnakeBarNoMoonEvent;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
-import com.andysapps.superdo.todo.events.action.TaskCompletedEvent;
 import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
 import com.andysapps.superdo.todo.fragments.task.AddTaskFragment;
 import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment;
+import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment;
 import com.andysapps.superdo.todo.fragments.task.EditTaskFragment;
 import com.andysapps.superdo.todo.manager.AnimationManager;
 import com.andysapps.superdo.todo.manager.TimeManager;
@@ -48,6 +48,7 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "Main Activity";
     @BindView(R.id.ib_today)
     ImageView imgDayNight;
 
@@ -75,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.rl_parent_moonbutton)
     RelativeLayout parentMoonButton;
 
-    @BindView(R.id.parent_coodinator)
-    CoordinatorLayout fragmentContainer;
+    @BindView(R.id.parent_coodinator_with_moonbtn)
+    CoordinatorLayout fragmentContainerMoonBtn;
 
     @BindView(R.id.pulseLayout)
     RipplePulseRelativeLayout rippleBackground;
@@ -130,13 +131,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         clickToday();
-
     }
 
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        if (fragmentManager.findFragmentByTag(CPMDTasksFragment.Companion.getTAG())  != null) {
+            CPMDTasksFragment fragment = (CPMDTasksFragment)fragmentManager.findFragmentByTag(CPMDTasksFragment.Companion.getTAG());
+            if (fragment.getSelectingTasks()) {
+                fragment.clearSelection();
+                return;
+            }
+        }
+
+        super.onBackPressed();
     }
 
     @OnClick(R.id.tab_1)
@@ -179,7 +194,9 @@ public class MainActivity extends AppCompatActivity {
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                 break;
             case ADD_BUCKET:
-                onMessageEvent(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(new Bucket(), false), true));
+                onMessageEvent(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(new Bucket(), false),
+                        true,
+                        CreateNewBucketFragment.Companion.getTAG()));
                 break;
             case SAVE_BUCKET:
                 EventBus.getDefault().post(new AddNewBucketEvent());
@@ -280,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
     public void onMessageEvent(OpenEditTaskEvent event) {
         EditTaskFragment fragment = EditTaskFragment.Companion.instance(event.getTask());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fl_fragment_container, fragment);
+        ft.replace(R.id.fl_fragment_container, fragment, EditTaskFragment.Companion.getTAG());
         ft.addToBackStack(fragment.getClass().getName());
         ft.commitAllowingStateLoss(); // save the changes
     }
@@ -289,11 +306,11 @@ public class MainActivity extends AppCompatActivity {
     public void onMessageEvent(OpenFragmentEvent event) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (event.behindMoonButton) {
-            ft.replace(R.id.fl_fragment_container_behind_add, event.fragment);
+            ft.replace(R.id.fl_fragment_container_behind_add, event.fragment, event.tag);
         } else {
-            ft.replace(R.id.fl_fragment_container, event.fragment);
+            ft.replace(R.id.fl_fragment_container, event.fragment, event.tag);
         }
-        ft.addToBackStack(event.fragment.getClass().getName());
+        ft.addToBackStack(null);
         ft.commitAllowingStateLoss(); // save the change
     }
 
@@ -316,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        Snackbar snackbar = Snackbar.make(fragmentContainer, title, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(fragmentContainerMoonBtn, title, Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundColor(Color.WHITE);
         TextView tv = (TextView) snackbar.getView().findViewById(R.id.snackbar_text);
         tv.setTextColor(getResources().getColor(R.color.lightRed));

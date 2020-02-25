@@ -78,6 +78,10 @@ public class TaskOrganiser {
 
         for (Task task : allTasks.values()) {
 
+            if (task.isDeleted()) {
+                continue;
+            }
+
             if (task.isMovedToBin()) {
                 deletedTaskList.add(task);
                 continue;

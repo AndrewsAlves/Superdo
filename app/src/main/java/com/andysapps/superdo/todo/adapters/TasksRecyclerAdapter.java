@@ -52,9 +52,6 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     private static final String TAG = "TasksRecyclerAdapter";
     private List<Task> taskList;
 
-    Task lastCompletedTask;
-    int lastCompletedTaskPos;
-
     private Context context;
     private Handler viewUpdateHandler;
 

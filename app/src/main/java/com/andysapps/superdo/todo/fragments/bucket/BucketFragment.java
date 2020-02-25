@@ -43,6 +43,8 @@ import butterknife.OnClick;
 
 public class BucketFragment extends Fragment {
 
+    public static String TAG = "BucketFragment";
+
     @BindView(R.id.recyclerView_bucket_list)
     RecyclerView recyclerView;
 
