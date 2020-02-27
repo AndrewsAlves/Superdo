@@ -421,6 +421,8 @@ public class Utils {
         return R.drawable.ic_time_off;
     }
 
+
+
     public static int getColor(Context context, String colors) {
 
         if (colors == null) {

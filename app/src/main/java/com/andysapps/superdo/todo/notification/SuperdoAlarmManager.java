@@ -23,12 +23,18 @@ import java.util.Random;
 
 import io.grpc.okhttp.internal.Util;
 
+import static com.andysapps.superdo.todo.notification.NotificationManager.notification_id_afternoon;
+import static com.andysapps.superdo.todo.notification.NotificationManager.notification_id_evening;
+import static com.andysapps.superdo.todo.notification.NotificationManager.notification_id_morning;
+import static com.andysapps.superdo.todo.notification.NotificationManager.notification_id_night;
+
 public class SuperdoAlarmManager {
 
     private static SuperdoAlarmManager ourInstance;
 
-    public static final String CHANNEL_TASK = "sd_notification_tasks";
     public static final String CHANNEL_DAILY = "sd_notification_recursive";
+
+    public static final String CHANNEL_TASK = "sd_notification_tasks";
     public static final String CHANNEL_DEADLINE = "sd_notification_deadline";
     public static final String CHANNEL_REMINDER = "sd_notification_reminder";
     public static final String CHANNEL_FOCUS = "sd_notification_focus";
@@ -40,6 +46,7 @@ public class SuperdoAlarmManager {
     public static final int REQ_CODE_EVENING = 18;
     public static final int REQ_CODE_NIGHT = 21;
 
+    public static final String intent_key_notification_id = "notification_id";
 
     /**
      * NOTIFICATION SHOW STRATEGY
@@ -57,25 +64,6 @@ public class SuperdoAlarmManager {
 
     public static void initialise(Context context) {
         ourInstance = new SuperdoAlarmManager(context);
-    }
-
-    public void createNotification(Context context, String channelId, String title, String content, String contentBig) {
-
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_launcher_superdo)
-                .setContentTitle(title)
-                .setContentText(content)
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(contentBig))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(101, builder.build());
     }
 
     public void createNotificationChannels(Context context) {
@@ -144,9 +132,9 @@ public class SuperdoAlarmManager {
     }
 
     public void setAlarmRepeat(Context context, SuperDate date, int requestCode) {
-        AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
         Intent intent = new Intent(context, NotificationBroadcast.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra(intent_key_notification_id, CHANNEL_DAILY);
 
         Calendar calendar = Calendar.getInstance();
         if (date.isHasDate()) {
@@ -159,13 +147,15 @@ public class SuperdoAlarmManager {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
+        AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
-    public void setAlarmRepeatTest(Context context, SuperDate date, int requestCode) {
+    public void setAlarmRepeatTest(Context context, SuperDate date,String notificationId, int requestCode) {
         AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationBroadcast.class);
-        intent.putExtra("test", "This is Awful");
+        intent.putExtra(intent_key_notification_id, notificationId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
@@ -184,7 +174,7 @@ public class SuperdoAlarmManager {
 
     public void testNotification(Context context) {
         SuperDate date = Utils.getSuperdateToday();
-        date.setTime(22, 48);
-        setAlarmRepeatTest(context, date, 1);
+        date.setTime(9, 0);
+        setAlarmRepeatTest(context, date, notification_id_afternoon, REQ_CODE_AFTERNOON);
     }
 }
