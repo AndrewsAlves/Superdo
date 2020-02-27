@@ -9,24 +9,15 @@ import android.content.Intent;
 import android.os.Build;
 
 
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
 import com.andysapps.superdo.todo.NotificationBroadcast;
-import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
-import com.andysapps.superdo.todo.activity.MainActivity;
 import com.andysapps.superdo.todo.model.SuperDate;
 
 import java.util.Calendar;
-import java.util.Random;
 
-import io.grpc.okhttp.internal.Util;
-
-import static com.andysapps.superdo.todo.notification.NotificationManager.notification_id_afternoon;
-import static com.andysapps.superdo.todo.notification.NotificationManager.notification_id_evening;
-import static com.andysapps.superdo.todo.notification.NotificationManager.notification_id_morning;
-import static com.andysapps.superdo.todo.notification.NotificationManager.notification_id_night;
+import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_afternoon;
+import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_morning;
+import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_night;
 
 public class SuperdoAlarmManager {
 
@@ -47,13 +38,6 @@ public class SuperdoAlarmManager {
     public static final int REQ_CODE_NIGHT = 21;
 
     public static final String intent_key_notification_id = "notification_id";
-
-    /**
-     * NOTIFICATION SHOW STRATEGY
-     *
-     *
-     *
-     */
 
     public static SuperdoAlarmManager getInstance() {
         return ourInstance;
@@ -105,13 +89,11 @@ public class SuperdoAlarmManager {
     public void registerDailyNotificationAlarms(Context context) {
         SuperDate date = new SuperDate();
         date.setTime(9,0);
-        setAlarmRepeat(context, date, REQ_CODE_MORNING);
+        setAlarmRepeat(context, date, notification_id_morning, REQ_CODE_MORNING,AlarmManager.INTERVAL_DAY, PendingIntent.FLAG_UPDATE_CURRENT);
         date.setTime(15,0);
-        setAlarmRepeat(context, date, REQ_CODE_AFTERNOON);
-        date.setTime(18,0);
-        setAlarmRepeat(context, date, REQ_CODE_EVENING);
+        setAlarmRepeat(context, date, notification_id_afternoon, REQ_CODE_AFTERNOON,AlarmManager.INTERVAL_DAY, PendingIntent.FLAG_UPDATE_CURRENT);
         date.setTime(21,0);
-        setAlarmRepeat(context, date, REQ_CODE_NIGHT);
+        setAlarmRepeat(context, date, notification_id_night, REQ_CODE_NIGHT,AlarmManager.INTERVAL_DAY, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     public void setAlarmExact(Context context, SuperDate date, int requestCode) {
@@ -127,6 +109,13 @@ public class SuperdoAlarmManager {
         calendar.set(Calendar.MINUTE, date.getMinutes());
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //alarmManage.setWindow(AlarmManager.RTC_WAKEUP, calMethod(week, calendar.getTimeInMillis()),
+                   // intervalMillis, sender);
+        } else {
+
+        }
 
         alarmManage.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
@@ -152,11 +141,11 @@ public class SuperdoAlarmManager {
         alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
-    public void setAlarmRepeatTest(Context context, SuperDate date,String notificationId, int requestCode) {
+    public void setAlarmRepeat(Context context, SuperDate date, String notificationId, int requestCode,long repeatInterval, int flag) {
         AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationBroadcast.class);
         intent.putExtra(intent_key_notification_id, notificationId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, flag);
 
         Calendar calendar = Calendar.getInstance();
         if (date.isHasDate()) {
@@ -169,12 +158,12 @@ public class SuperdoAlarmManager {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000, pendingIntent);
+        alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeatInterval, pendingIntent);
     }
 
     public void testNotification(Context context) {
         SuperDate date = Utils.getSuperdateToday();
         date.setTime(9, 0);
-        setAlarmRepeatTest(context, date, notification_id_afternoon, REQ_CODE_AFTERNOON);
+
     }
 }

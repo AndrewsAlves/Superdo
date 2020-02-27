@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.andysapps.superdo.todo.manager.FirestoreManager;
-import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
-import com.andysapps.superdo.todo.notification.NotificationManager;
+import com.andysapps.superdo.todo.notification.SuperdoNotificationManager;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 
-import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.CHANNEL_DAILY;
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_notification_id;
 
 /**
@@ -27,14 +25,14 @@ public class NotificationBroadcast extends BroadcastReceiver {
             return;
         }
 
-        NotificationManager.initialise(context);
+        SuperdoNotificationManager.initialise(context);
 
         if (FirestoreManager.getInstance() == null) {
             FirestoreManager.initialiseForNotification(context);
         }
 
         if (intent.getExtras().getString(intent_key_notification_id) != null) {
-            NotificationManager.getInstance().postNotificationDaily(context, intent.getExtras().getString(intent_key_notification_id));
+            SuperdoNotificationManager.getInstance().postNotificationDaily(context, intent.getExtras().getString(intent_key_notification_id));
         }
 
     }

@@ -10,10 +10,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.activity.MainActivity;
-import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
-import com.andysapps.superdo.todo.manager.TaskOrganiser;
-import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,22 +20,19 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_NOTIFICATIONS;
-import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_TASKS;
 
 /**
  * Created by Andrews on 26,February,2020
  */
-public class NotificationManager {
+public class SuperdoNotificationManager {
 
-    private static NotificationManager ourInstance;
+    private static SuperdoNotificationManager ourInstance;
 
     public static final String notification_id_morning = "morning";
     public static final String notification_id_afternoon = "afternoon";
@@ -48,17 +42,17 @@ public class NotificationManager {
     private final FirebaseFirestore firestore;
     Query taskQuery;
 
-    public static NotificationManager getInstance() {
+    public static SuperdoNotificationManager getInstance() {
         return ourInstance;
     }
 
-    private NotificationManager(Context context) {
+    private SuperdoNotificationManager(Context context) {
         firestore =  FirebaseFirestore.getInstance();
         //uploadDailyNotifications();
     }
 
     public static void initialise(Context context) {
-        ourInstance = new NotificationManager(context);
+        ourInstance = new SuperdoNotificationManager(context);
     }
 
     public void createNotification(Context context, String channelId, String contentTitle, String contentText, String contentBogText) {
@@ -68,11 +62,12 @@ public class NotificationManager {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_launcher_superdo)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setColor(context.getResources().getColor(R.color.lightOrange))
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(contentBogText))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
