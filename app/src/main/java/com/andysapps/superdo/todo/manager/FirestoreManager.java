@@ -16,18 +16,16 @@ import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskFailureEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskSuccessEvent;
 import com.andysapps.superdo.todo.model.Bucket;
-import com.andysapps.superdo.todo.model.Habit;
 import com.andysapps.superdo.todo.model.Task;
+import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
-import com.google.firebase.firestore.core.OrderBy;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,6 +45,7 @@ public class FirestoreManager {
     public static final String DB_TASKS = "tasks";
     public static final String DB_HABITS = "habits";
     public static final String DB_BUCKETS = "buckets";
+    public static final String DB_NOTIFICATIONS = "notifications";
 
     HashMap<String, Task> taskHashMap;
     HashMap<String, Bucket> bucketHashMap;
@@ -64,12 +63,16 @@ public class FirestoreManager {
 
     private FirestoreManager(Context context) {
         firestore =  FirebaseFirestore.getInstance();
-        fetchUserData();
         taskHashMap = new HashMap<>();
         bucketHashMap = new HashMap<>();
     }
 
-    public static void intialize(Context context) {
+    public static void initialise(Context context) {
+        ourInstance = new FirestoreManager(context);
+        ourInstance.fetchUserData();
+    }
+
+    public static void initialiseForNotification(Context context) {
         ourInstance = new FirestoreManager(context);
     }
 
@@ -296,10 +299,10 @@ public class FirestoreManager {
                 });
     }
 
-    public void uploatHabit(Habit habit) {
+    public void uploadBucket(Bucket bucket) {
 
         firestore.collection(DB_BUCKETS).document()
-                .set(habit)
+                .set(bucket)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -314,10 +317,10 @@ public class FirestoreManager {
                 });
     }
 
-    public void uploadBucket(Bucket bucket) {
+    public void uploadNotification(SimpleNotification notification) {
 
-        firestore.collection(DB_BUCKETS).document()
-                .set(bucket)
+        firestore.collection(DB_NOTIFICATIONS).document()
+                .set(notification)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -351,4 +354,5 @@ public class FirestoreManager {
                     }
                 });
     }
+
 }

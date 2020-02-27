@@ -28,6 +28,8 @@
 
         <activity android:name=".activity.FocusActivity" />
 
+        <receiver android:name=".NotificationBroadcast"/>
+
     </application>
 
 </manifest>
