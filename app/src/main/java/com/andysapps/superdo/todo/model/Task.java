@@ -200,6 +200,7 @@ public class Task implements Cloneable {
     }
 
     public Repeat getRepeat() {
+        if (repeat == null) return new Repeat();
         return repeat;
     }
 
@@ -208,6 +209,7 @@ public class Task implements Cloneable {
     }
 
     public Deadline getDeadline() {
+        if (deadline == null) return new Deadline();
         return deadline;
     }
 
@@ -224,6 +226,7 @@ public class Task implements Cloneable {
     }
 
     public Remind getRemind() {
+        if (remind == null) return new Remind();
         return remind;
     }
 

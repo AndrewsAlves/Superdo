@@ -54,8 +54,8 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
         updateUi()
     }
 
-
     fun updateUi() {
+
 
         if (!deadline.hasDate) {
             dlg_deadline_iv_date.setImageResource(R.drawable.ic_do_date_off_grey_2)
@@ -88,6 +88,10 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
     }
 
     private fun initUi() {
+
+        if (deadline == null) {
+            deadline = Deadline()
+        }
 
         dlg_deadline_btn_date.setOnClickListener {
             showDatePicker()

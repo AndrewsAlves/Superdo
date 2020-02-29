@@ -18,6 +18,7 @@ import com.andysapps.superdo.todo.events.sidekick.SetRemindEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRemindOnceEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRemindRepeatEvent
 import com.andysapps.superdo.todo.events.ui.DismissRemindDialogEvent
+import com.andysapps.superdo.todo.model.sidekicks.Deadline
 import com.andysapps.superdo.todo.model.sidekicks.Remind
 import com.andysapps.superdo.todo.model.sidekicks.Repeat
 import kotlinx.android.synthetic.main.fragment_dlg_remind.*
@@ -59,6 +60,10 @@ class RemindDialog : DialogFragment(){
     }
 
     fun initView() {
+
+        if (remind == null) {
+            remind = Remind();
+        }
 
         if (remind.remindType == null) {
             remind.remindType = RemindType.REMIND_ONCE.name

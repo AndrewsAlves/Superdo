@@ -140,7 +140,7 @@ public class Deadline implements Cloneable {
     public String getDoDateStringMain() {
 
         if (!hasDate) {
-            return "No Deadline";
+            return "Set Deadline";
         }
 
         String duedate;

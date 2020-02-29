@@ -21,6 +21,7 @@ import com.andysapps.superdo.todo.Utils.monthDates
 import com.andysapps.superdo.todo.enums.RepeatType
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
 import com.andysapps.superdo.todo.model.SuperDate
+import com.andysapps.superdo.todo.model.sidekicks.Remind
 import com.andysapps.superdo.todo.model.sidekicks.Repeat
 import com.andysapps.superdo.todo.model.sidekicks.WeekDays
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
@@ -62,6 +63,10 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
     }
 
     fun iniiUi() {
+
+        if (repeat == null) {
+            repeat = Repeat()
+        }
 
         val repeatTypes = ArrayAdapter(activity!!.baseContext, android.R.layout.simple_spinner_item, repeatType)
         repeatTypes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

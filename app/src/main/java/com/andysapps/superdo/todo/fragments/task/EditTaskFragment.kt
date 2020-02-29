@@ -182,8 +182,8 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
                     subtaskAdapter!!.updateList()
                     FirestoreManager.getInstance().updateTask(task)
                     subtaskAdapter!!.notifyItemInserted(task.subtasks.subtaskList.size - 1)
-
                     editTask_et_add_subtask.setText("")
+                    updateUi()
                 } else {
                     Utils.hideKeyboard(context, editTask_et_add_subtask)
                     editTask_et_add_subtask.clearFocus()
@@ -283,76 +283,47 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         //    task.remind = Repeat(true)
        // }
 
-        if (task.repeat != null && task.repeat.isEnabled) {
-            editTask_tv_repeat_name.visibility
-            editTask_rl_btn_repeat.visibility = View.VISIBLE
-
-            if (task.repeat.repeatType != null) {
-                editTask_iv_repeat.setImageResource(R.drawable.ic_repeat_on)
-                editTask_tv_repeat.setText(task.repeat.repeatString)
-            } else {
-                editTask_iv_repeat.setImageResource(R.drawable.ic_repeat_off)
-                editTask_tv_repeat.setText("No Repeat")
-            }
-
+        if (task.repeat != null && task.repeat.repeatType != null) {
+            editTask_iv_repeat.setImageResource(R.drawable.ic_repeat_on)
+            editTask_tv_repeat.alpha = 1.0f
+            editTask_tv_repeat.setText(task.repeat.repeatString)
         } else {
-            editTask_rl_btn_repeat.visibility = View.GONE
+            editTask_iv_repeat.setImageResource(R.drawable.ic_repeat_off)
+            editTask_tv_repeat.alpha = 0.5f
+            editTask_tv_repeat.setText("Set Repeat Task")
         }
 
         //////////////
         //// REMIND
 
-        if (task.remind != null && task.remind.isEnabled) {
-            editTask_rl_btn_remind.visibility = View.VISIBLE
-
-            if (task.remind.remindType != null) {
-                editTask_iv_remind.setImageResource(R.drawable.ic_remind_on)
-                editTask_tv_remind.setText(task.remind.remindString)
-            } else {
-                editTask_iv_remind.setImageResource(R.drawable.ic_remind_off)
-                editTask_tv_remind.setText("When to remind?")
-            }
-
+        if (task.remind != null && task.remind.remindType != null) {
+            editTask_iv_remind.setImageResource(R.drawable.ic_remind_on)
+            editTask_tv_remind.alpha = 1.0f
+            editTask_tv_remind.setText(task.remind.remindString)
         } else {
-            editTask_rl_btn_remind.visibility = View.GONE
+            editTask_iv_remind.setImageResource(R.drawable.ic_remind_off)
+            editTask_tv_remind.alpha = 0.5f
+            editTask_tv_remind.setText("Set Remind")
         }
 
         //////////////
         //// DEADLINE
 
-        if (task.deadline != null && task.deadline.isEnabled) {
-            editTask_rl_btn_deadline.visibility = View.VISIBLE
-
-            if (task.deadline.hasDate) {
-                editTask_iv_deadline.setImageResource(R.drawable.ic_deadline_on)
-            } else {
-                editTask_iv_deadline.setImageResource(R.drawable.ic_deadline_off)
-            }
-
+        if (task.deadline != null && task.deadline.hasDate) {
+            editTask_iv_deadline.setImageResource(R.drawable.ic_deadline_on)
+            editTask_tv_deadline.alpha = 1.0f
             editTask_tv_deadline.setText(task.deadline.doDateStringMain)
-
         } else {
-            editTask_rl_btn_deadline.visibility = View.GONE
+            editTask_iv_deadline.setImageResource(R.drawable.ic_deadline_off)
+            editTask_tv_deadline.alpha = 0.5f
         }
 
-        //////////////
-        //// SUBTASKS
-
-        if (task.subtasks != null && task.subtasks.isEnabled) {
-            editTask_ll_subtasks.visibility = View.VISIBLE
+        if (task.subtasks.subtaskList.size == 0) {
+            editTask_iv_subtasks.setImageResource(R.drawable.ic_subtasks_off)
+            editTask_tv_subtasks.alpha = 0.5f
         } else {
-            editTask_ll_subtasks.visibility = View.GONE
-        }
-
-        //////////////
-        //// FOCUS
-
-        if (task.focus != null && task.focus.isEnabled) {
-            editTask_rl_btn_focus.visibility = View.VISIBLE
-            editTask_btn_start_focus.visibility = View.VISIBLE
-        } else {
-            editTask_rl_btn_focus.visibility = View.GONE
-            editTask_btn_start_focus.visibility = View.GONE
+            editTask_iv_subtasks.setImageResource(R.drawable.ic_subtasks_on)
+            editTask_tv_subtasks.alpha = 1.0f
         }
 
         //////////////
@@ -362,7 +333,6 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         if (task.created != null) {
             editTask_tv_createdDate.text = Utils.getDateString(task.created)
         }
-
     }
 
     private fun initClicks() {

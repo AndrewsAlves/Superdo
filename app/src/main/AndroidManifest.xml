@@ -28,7 +28,9 @@
 
         <activity android:name=".activity.FocusActivity" />
 
-        <receiver android:name=".NotificationBroadcast"/>
+        <receiver android:name=".NotificationBroadcast"
+            android:enabled="true"
+            android:exported="true"/>
 
     </application>
 

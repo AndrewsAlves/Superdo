@@ -110,12 +110,7 @@ public class SuperdoAlarmManager {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //alarmManage.setWindow(AlarmManager.RTC_WAKEUP, calMethod(week, calendar.getTimeInMillis()),
-                   // intervalMillis, sender);
-        } else {
 
-        }
 
         alarmManage.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
@@ -141,7 +136,7 @@ public class SuperdoAlarmManager {
         alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
-    public void setAlarmRepeat(Context context, SuperDate date, String notificationId, int requestCode,long repeatInterval, int flag) {
+    public void setAlarmRepeat(Context context, SuperDate date, String notificationId, int requestCode, long repeatInterval, int flag) {
         AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationBroadcast.class);
         intent.putExtra(intent_key_notification_id, notificationId);
@@ -157,6 +152,12 @@ public class SuperdoAlarmManager {
         calendar.set(Calendar.MINUTE, date.getMinutes());
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+        } else {
+
+        }
 
         alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeatInterval, pendingIntent);
     }

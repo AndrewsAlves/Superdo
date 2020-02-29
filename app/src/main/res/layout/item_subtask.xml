@@ -13,17 +13,17 @@
 
         <ImageView
             android:id="@+id/iv_check_subtask"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_centerInParent="true"
-            android:scaleType="center"
+            android:scaleType="fitXY"
             android:visibility="visible"
             android:src="@drawable/img_oval_thin_grey3"/>
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_check_view_subtask"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_centerInParent="true"
             app:lottie_fileName="anim_check2.json"
             app:lottie_autoPlay="false" />
@@ -40,7 +40,7 @@
         android:background="@android:color/transparent"
         android:fontFamily="@font/montserrat_medium"
         android:textColor="@color/grey3"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:ellipsize="end"
         android:minLines="1"
         android:maxLines="1"
