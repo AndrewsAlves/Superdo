@@ -8,7 +8,14 @@ import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.notification.SuperdoNotificationManager;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 
+import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.CHANNEL_DAILY;
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_notification_id;
+import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_task_id;
+import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_afternoon;
+import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_evening;
+import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_morning;
+import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_night;
+import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_remind;
 
 /**
  * Created by Andrews on 17,February,2020
@@ -31,8 +38,22 @@ public class NotificationBroadcast extends BroadcastReceiver {
             FirestoreManager.initialiseForNotification(context);
         }
 
-        if (intent.getExtras().getString(intent_key_notification_id) != null) {
-            SuperdoNotificationManager.getInstance().postNotificationDaily(context, intent.getExtras().getString(intent_key_notification_id));
+        String notificationId = intent.getExtras().getString(intent_key_notification_id);
+
+        if (notificationId!= null) {
+
+            if (notificationId.equals(notification_id_morning)
+                    || notificationId.equals(notification_id_evening)
+                    || notificationId.equals(notification_id_afternoon)
+                    || notificationId.equals(notification_id_night)) {
+                SuperdoNotificationManager.getInstance().postNotificationDaily(context, intent.getExtras().getString(intent_key_notification_id));
+
+            } else if (intent.getExtras().getString(intent_key_notification_id).equals(notification_id_remind)) {
+
+                SuperdoNotificationManager.getInstance().postNotificationRemind(context, intent.getExtras().getString(intent_key_task_id));
+
+            }
+
         }
 
     }

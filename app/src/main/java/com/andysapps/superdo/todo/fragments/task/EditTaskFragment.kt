@@ -46,10 +46,13 @@ import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
 import com.andysapps.superdo.todo.model.sidekicks.Subtask
 import com.andysapps.superdo.todo.model.sidekicks.Subtasks
+import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
+import com.andysapps.superdo.todo.notification.SuperdoNotificationManager
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -462,8 +465,27 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     @Subscribe
     fun onMeessageEvent(event : SetRemindEvent) {
         task.remind = event.remind.clone()
-        updateUi()
+
+        if (event.deleted) {
+
+            task.remind = null
+            FirestoreManager.getInstance().updateTask(task)
+            updateUi()
+
+            if (event.remind != null) {
+                SuperdoAlarmManager.getInstance().clearAlarm(context, event.remind.remindRequestCode)
+            }
+
+            return
+        }
+
+        if (task.remind.remindRequestCode != 0) {
+            task.remind.generateNewRequestCode()
+        }
         FirestoreManager.getInstance().updateTask(task)
+        SuperdoAlarmManager.getInstance().setRemindAlarm(context, task)
+
+        updateUi()
     }
 
 

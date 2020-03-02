@@ -3,6 +3,8 @@ package com.andysapps.superdo.todo.model.sidekicks;
 import com.andysapps.superdo.todo.enums.RemindType;
 import com.andysapps.superdo.todo.model.SuperDate;
 
+import java.util.Random;
+
 /**
  * Created by Andrews on 27,November,2019
  */
@@ -13,9 +15,11 @@ public class Remind implements Cloneable {
 
     String remindType;
 
-    SuperDate remindOnce;
+    SuperDate remindDate;
 
     Repeat remindRepeat;
+
+    int remindRequestCode;
 
     public Remind() {}
 
@@ -44,12 +48,12 @@ public class Remind implements Cloneable {
         this.remindType = remindType;
     }
 
-    public SuperDate getRemindOnce() {
-        return remindOnce;
+    public SuperDate getRemindDate() {
+        return remindDate;
     }
 
-    public void setRemindOnce(SuperDate remindOnce) {
-        this.remindOnce = remindOnce;
+    public void setRemindDate(SuperDate remindDate) {
+        this.remindDate = remindDate;
     }
 
     public Repeat getRemindRepeat() {
@@ -58,6 +62,20 @@ public class Remind implements Cloneable {
 
     public void setRemindRepeat(Repeat remindRepeat) {
         this.remindRepeat = remindRepeat;
+    }
+
+    public int getRemindRequestCode() {
+        return remindRequestCode;
+    }
+
+    public void setRemindRequestCode(int remindRequestCode) {
+        this.remindRequestCode = remindRequestCode;
+    }
+
+    public int generateNewRequestCode() {
+        Random random = new Random();
+        remindRequestCode = random.nextInt(1000) * random.nextInt(10);
+        return remindRequestCode;
     }
 
     public String getRemindString() {
@@ -70,7 +88,7 @@ public class Remind implements Cloneable {
 
         switch (RemindType.valueOf(remindType)) {
             case REMIND_ONCE:
-                remindString = "Remind Once " + remindOnce.getSuperDateString() + " at " + remindOnce.getTimeString();
+                remindString = "Remind Once " + remindDate.getSuperDateString() + " at " + remindDate.getTimeString();
                 return remindString;
             case REMIND_REPEAT:
                 remindString = remindRepeat.getRepeatString();

@@ -119,14 +119,14 @@ class RemindDialog : DialogFragment(){
     @Subscribe
     fun onMeessageEvent(event : SetRemindRepeatEvent) {
         remind.remindRepeat = event.repeat.clone()
-        EventBus.getDefault().post(SetRemindEvent(remind))
+        EventBus.getDefault().post(SetRemindEvent(remind, false))
         dismiss()
     }
 
     @Subscribe
     fun onMeessageEvent(event : SetRemindOnceEvent) {
         remind = event.remind.clone()
-        EventBus.getDefault().post(SetRemindEvent(remind))
+        EventBus.getDefault().post(SetRemindEvent(remind, event.deleted))
         dismiss()
     }
 

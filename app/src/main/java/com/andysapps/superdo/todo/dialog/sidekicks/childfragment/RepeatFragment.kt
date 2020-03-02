@@ -102,7 +102,7 @@ class RepeatFragment : Fragment(), OnItemSelectedListener, View.OnClickListener,
         dlg_repeat_b_positive.setOnClickListener {
             when(repeatFragmentType) {
                 RepeatFragmentType.REPEAT_REMINDER -> {
-                    EventBus.getDefault().post(SetRemindRepeatEvent(repeat))
+                    EventBus.getDefault().post(SetRemindRepeatEvent(repeat, false))
                 }
             }
             //dismiss()
@@ -118,8 +118,12 @@ class RepeatFragment : Fragment(), OnItemSelectedListener, View.OnClickListener,
         }
 
         dlg_repeat_delete_repeat.setOnClickListener {
-            EventBus.getDefault().post(SetRepeatEvent(Repeat(true)))
-            // dismiss()
+            when(repeatFragmentType) {
+                RepeatFragmentType.REPEAT_REMINDER -> {
+                    EventBus.getDefault().post(SetRemindRepeatEvent(repeat, true))
+                    EventBus.getDefault().post(DismissRemindDialogEvent())
+                }
+            }
         }
 
         dlg_repeat_btn_date.setOnClickListener {

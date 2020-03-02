@@ -3,17 +3,22 @@ package com.andysapps.superdo.todo.notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RawRes;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.activity.MainActivity;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -26,18 +31,24 @@ import java.util.List;
 import java.util.Random;
 
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_NOTIFICATIONS;
+import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_TASKS;
 
 /**
  * Created by Andrews on 26,February,2020
  */
 public class SuperdoNotificationManager {
 
+    private static final String TAG = "NotificationManager";
     private static SuperdoNotificationManager ourInstance;
 
     public static final String notification_id_morning = "morning";
     public static final String notification_id_afternoon = "afternoon";
     public static final String notification_id_evening = "evening";
     public static final String notification_id_night = "night";
+
+    public static final String notification_id_remind = "remind";
+    public static final String notification_id_deadline = "deadline";
+    public static final String notification_id_task = "task";
 
     private final FirebaseFirestore firestore;
     Query taskQuery;
@@ -55,14 +66,13 @@ public class SuperdoNotificationManager {
         ourInstance = new SuperdoNotificationManager(context);
     }
 
-    public void createNotification(Context context, String channelId, String contentTitle, String contentText, String contentBogText) {
+    public void createNotification(Context context, Intent intent, String channelId, int smallIcon, String contentTitle, String contentText, String contentBogText, int notificationId) {
 
-        Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_notification)
+                .setSmallIcon(smallIcon)
                 .setColor(context.getResources().getColor(R.color.lightOrange))
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
@@ -71,7 +81,7 @@ public class SuperdoNotificationManager {
                 .setContentIntent(pendingIntent);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(101, builder.build());
+        notificationManager.notify(notificationId, builder.build());
     }
 
     ////////////////////////////////////////////
@@ -101,17 +111,60 @@ public class SuperdoNotificationManager {
                     notificationList.add(documentSnapshot.toObject(SimpleNotification.class));
                 }
 
-                SimpleNotification notification = getSimpleNotification(notificationList);
+                SimpleNotification notification = getSimpleNotificationForDaily(notificationList);
 
-                createNotification(context, SuperdoAlarmManager.CHANNEL_DAILY,
+                createNotification(context,new Intent(context, MainActivity.class),
+                        SuperdoAlarmManager.CHANNEL_DAILY,
+                        R.drawable.ic_notification,
                         notification.getContentTitle(),
                         notification.getContentText(),
-                        notification.getContextBigText());
+                        notification.getContextBigText(),
+                        101);
             }
 
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+            }
+        });
+    }
+
+    public void postNotificationRemind(Context context, String taskDocId) {
+
+        DocumentReference snapshot  = firestore.collection(DB_TASKS).document(taskDocId);
+        snapshot.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+
+                Task remindTask;
+
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        if (document.exists()) {
+                            remindTask = document.toObject(Task.class);
+
+                            SimpleNotification notification = new SimpleNotification();
+                            notification.setContentTitle("Reminder");
+                            notification.setContentText(remindTask.getName());
+                            notification.setContextBigText(remindTask.getName());
+
+                            createNotification(context,new Intent(context, MainActivity.class),
+                                    SuperdoAlarmManager.CHANNEL_DAILY,
+                                    R.drawable.ic_notification,
+                                    notification.getContentTitle(),
+                                    notification.getContentText(),
+                                    notification.getContextBigText(),
+                                    remindTask.getRemind().getRemindRequestCode());
+
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
             }
         });
 
@@ -146,11 +199,12 @@ public class SuperdoNotificationManager {
         return false;
     }
 
-    public SimpleNotification getSimpleNotification(List<SimpleNotification> notifications) {
+    public SimpleNotification getSimpleNotificationForDaily(List<SimpleNotification> notifications) {
         Random random = new Random();
         int index = random.nextInt(notifications.size());
         return notifications.get(index);
     }
+
 
     public void uploadDailyNotifications() {
         String[] titleMorning ={"Plan", "Savour life", "Productivity"};

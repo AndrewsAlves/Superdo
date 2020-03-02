@@ -179,27 +179,27 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
         h.ivFocus.setVisibility(View.GONE);
         h.parentIcons.setVisibility(View.GONE);
 
-        if (task.getRepeat() != null && task.getRepeat().isEnabled) {
+        if (task.getRepeat() != null) {
             h.ivRepeat.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getDeadline() != null && task.getDeadline().isEnabled) {
+        if (task.getDeadline() != null) {
             h.ivDeadline.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getSubtasks() != null && task.getSubtasks().isEnabled) {
+        if (task.getSubtasks() != null) {
             h.ivSubtasks.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getRemind() != null && task.getRemind().isEnabled) {
+        if (task.getRemind() != null) {
             h.ivRemind.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getFocus() != null && task.getFocus().isEnabled) {
+        if (task.getFocus() != null) {
             h.ivFocus.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }

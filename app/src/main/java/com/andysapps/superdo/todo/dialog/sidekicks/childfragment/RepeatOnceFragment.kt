@@ -65,10 +65,15 @@ class RepeatOnceFragment : Fragment() ,DatePickerDialog.OnDateSetListener, TimeP
         }
 
         dlg_remind_b_positive.setOnClickListener {
-             EventBus.getDefault().post(SetRemindOnceEvent(remind))
+             EventBus.getDefault().post(SetRemindOnceEvent(remind, false))
         }
 
         dlg_remind_b_negative.setOnClickListener {
+            EventBus.getDefault().post(DismissRemindDialogEvent())
+        }
+
+        dlg_remind_delete_repeat.setOnClickListener {
+            EventBus.getDefault().post(SetRemindOnceEvent(remind, true))
             EventBus.getDefault().post(DismissRemindDialogEvent())
         }
 
@@ -80,35 +85,35 @@ class RepeatOnceFragment : Fragment() ,DatePickerDialog.OnDateSetListener, TimeP
         /// REPEAT ONCE UI
         ///
 
-        if (remind.remindOnce == null) {
-            remind.remindOnce = Utils.getSuperdateFromTimeStamp(Utils.getTomorrow().timeInMillis)
-            remind.remindOnce.hasDate = true
-            remind.remindOnce.setTime(9, 0)
+        if (remind.remindDate == null) {
+            remind.remindDate = Utils.getSuperdateFromTimeStamp(Utils.getTomorrow().timeInMillis)
+            remind.remindDate.hasDate = true
+            remind.remindDate.setTime(9, 0)
         }
 
-        if (!remind.remindOnce.hasDate) {
+        if (!remind.remindDate.hasDate) {
             dlg_remind_iv_date.setImageResource(R.drawable.ic_do_date_off_grey_2)
-            dlg_remind_tv_date.setText(remind.remindOnce.superDateString)
+            dlg_remind_tv_date.setText(remind.remindDate.superDateString)
             dlg_remind_tv_date.setTextColor(resources.getColor(R.color.grey1))
         } else {
             dlg_remind_iv_date.setImageResource(R.drawable.ic_do_date_on)
-            dlg_remind_tv_date.setText(remind.remindOnce.superDateString)
+            dlg_remind_tv_date.setText(remind.remindDate.superDateString)
             dlg_remind_tv_date.setTextColor(resources.getColor(R.color.grey4))
         }
 
-        if (!remind.remindOnce.hasTime) {
+        if (!remind.remindDate.hasTime) {
             dlg_remind_iv_time.setImageResource(R.drawable.ic_time_off)
-            dlg_remind_tv_time.setText(remind.remindOnce.timeString)
+            dlg_remind_tv_time.setText(remind.remindDate.timeString)
             dlg_remind_tv_time.setTextColor(resources.getColor(R.color.grey1))
         } else {
             dlg_remind_iv_time.setImageResource(R.drawable.ic_time_on)
-            dlg_remind_tv_time.setText(remind.remindOnce.timeString)
+            dlg_remind_tv_time.setText(remind.remindDate.timeString)
             dlg_remind_tv_time.setTextColor(resources.getColor(R.color.grey4))
         }
 
 
         // button ui
-        if (remind.remindOnce.hasDate) {
+        if (remind.remindDate.hasDate) {
             dlg_remind_b_positive.isClickable = true
             dlg_remind_b_positive.alpha = 1f
         } else {
@@ -124,10 +129,10 @@ class RepeatOnceFragment : Fragment() ,DatePickerDialog.OnDateSetListener, TimeP
         var month = now.get(Calendar.MONTH)
         var year = now.get(Calendar.YEAR)
 
-        if (remind.remindOnce.date != 0) {
-            day = remind.remindOnce.date
-            month = remind.remindOnce.month
-            year = remind.remindOnce.year
+        if (remind.remindDate.date != 0) {
+            day = remind.remindDate.date
+            month = remind.remindDate.month
+            year = remind.remindDate.year
         }
 
         val dpd = DatePickerDialog.newInstance(
@@ -149,8 +154,8 @@ class RepeatOnceFragment : Fragment() ,DatePickerDialog.OnDateSetListener, TimeP
         var hours : Int = now.get(Calendar.HOUR)
         var min : Int = now.get(Calendar.MINUTE)
 
-        hours = remind.remindOnce.hours
-        min = remind.remindOnce.minutes
+        hours = remind.remindDate.hours
+        min = remind.remindDate.minutes
 
         if (hours != 0) {
 
@@ -167,14 +172,14 @@ class RepeatOnceFragment : Fragment() ,DatePickerDialog.OnDateSetListener, TimeP
     }
 
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        remind.remindOnce.setDoDate(dayOfMonth, monthOfYear + 1, year)
-        remind.remindOnce.hasDate = true
+        remind.remindDate.setDoDate(dayOfMonth, monthOfYear + 1, year)
+        remind.remindDate.hasDate = true
         updateUi()
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
-        remind.remindOnce.setTime(hourOfDay, minute)
-        remind.remindOnce.hasTime = true
+        remind.remindDate.setTime(hourOfDay, minute)
+        remind.remindDate.hasTime = true
         updateUi()
     }
 
