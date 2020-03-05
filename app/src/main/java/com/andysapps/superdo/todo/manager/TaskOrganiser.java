@@ -95,6 +95,14 @@ public class TaskOrganiser {
             allTaskList.add(task);
             pendingTaskList.add(task);
 
+            if (Utils.shouldAddTaskRepeat(task)) {
+                task.setListedIn(TaskListing.TODAY);
+                todayTaskList.add(task);
+                continue;
+            } else if (task.getRepeat() != null) {
+                continue;
+            }
+
             if (Utils.isSuperDateToday(task.getDoDate())) {
                 task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
@@ -131,6 +139,8 @@ public class TaskOrganiser {
                 task.setListedIn(TaskListing.UPCOMING);
                 upcomingTaskList.add(task);
             }
+
+
         }
 
         // Sort the task by indexing

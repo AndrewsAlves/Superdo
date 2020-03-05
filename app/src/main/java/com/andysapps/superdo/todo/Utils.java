@@ -2,14 +2,14 @@ package com.andysapps.superdo.todo;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.andysapps.superdo.todo.enums.BucketColors;
+import com.andysapps.superdo.todo.enums.RepeatType;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.SuperDate;
+import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.sidekicks.Repeat;
 
 import java.text.SimpleDateFormat;
@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -206,6 +207,34 @@ public class Utils {
         return false;
     }
 
+    public static boolean shouldAddTaskRepeat(Task task) {
+
+        if (task.getRepeat() == null) {
+            return false;
+        }
+
+        switch (RepeatType.valueOf(task.getRepeat().getRepeatType())) {
+            case Day:
+                if (task.getRepeat().getDaysInterval() == 1) {
+                    return true;
+                } else {
+
+                    long msDiff = Calendar.getInstance().getTimeInMillis() -
+                            getCalenderFromSuperDate(task.getRepeat().getLastRepeatedDate()).getTimeInMillis();
+                    long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
+
+                    return daysDiff == task.getRepeat().getDaysInterval();
+                }
+            case Week:
+                return shouldRepeatWeeklyToday(task.getRepeat());
+            case Month:
+                Calendar calendar = Calendar.getInstance();
+                return task.getRepeat().getMonthDate() == calendar.get(Calendar.DAY_OF_MONTH);
+        }
+
+        return false;
+    }
+
     public static SuperDate getRandomMonthDate() {
 
         int date = 29;
@@ -249,7 +278,7 @@ public class Utils {
         return new SuperDate(date, month, year, 0, 0);
     }
 
-    public static boolean shouldRemindToday(Repeat repeat) {
+    public static boolean shouldRepeatWeeklyToday(Repeat repeat) {
 
         if (repeat == null) {
             return false;
@@ -412,6 +441,22 @@ public class Utils {
 
 
         return superDate;
+    }
+
+    public static Calendar getCalenderFromSuperDate(SuperDate date) {
+
+        Calendar calendar = Calendar.getInstance();
+        if (date.isHasDate()) {
+            calendar.set(Calendar.DAY_OF_MONTH, date.getDate());
+            calendar.set(Calendar.MONTH, date.getMonth() - 1);
+            calendar.set(Calendar.YEAR, date.getYear());
+        }
+        calendar.set(Calendar.HOUR_OF_DAY, date.getHours());
+        calendar.set(Calendar.MINUTE, date.getMinutes());
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar;
     }
 
     public static int getDefaultTime(TaskListing listing) {

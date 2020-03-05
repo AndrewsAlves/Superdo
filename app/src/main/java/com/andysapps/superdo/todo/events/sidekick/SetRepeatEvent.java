@@ -4,6 +4,7 @@ import com.andysapps.superdo.todo.model.sidekicks.Repeat;
 
 public class SetRepeatEvent {
     public Repeat repeat;
+    public boolean
 
     public SetRepeatEvent(Repeat repeat) {
         this.repeat = repeat;

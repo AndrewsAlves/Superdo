@@ -20,7 +20,6 @@ import com.andysapps.superdo.todo.model.sidekicks.Deadline;
 import com.andysapps.superdo.todo.model.sidekicks.Repeat;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
@@ -192,7 +191,7 @@ public class SuperdoAlarmManager {
                 switch (RepeatType.valueOf(task.getRemind().getRemindRepeat().getRepeatType())) {
 
                     case Day:
-                        alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, startCalender.getTimeInMillis(), AlarmManager.INTERVAL_DAY * repeat.getTimes(), pendingIntent);
+                        alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, startCalender.getTimeInMillis(), AlarmManager.INTERVAL_DAY * repeat.getDaysInterval(), pendingIntent);
                         break;
 
                     case Week:
@@ -231,10 +230,10 @@ public class SuperdoAlarmManager {
 
                             // get the maximum possible days in this month
 
-                            if (repeat.getMonthDaysIndex() > cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                            if (repeat.getMonthDate() > cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
                                 cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
                             } else {
-                                cal.set(Calendar.DAY_OF_MONTH,repeat.getMonthDaysIndex());
+                                cal.set(Calendar.DAY_OF_MONTH,repeat.getMonthDate());
                             }
 
                             int setMonth = cal.get(Calendar.MONTH);

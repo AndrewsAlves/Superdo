@@ -1,12 +1,9 @@
 package com.andysapps.superdo.todo.dialog.sidekicks
 
 
-import android.content.Intent
-import android.nfc.Tag
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,17 +17,12 @@ import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.Utils.monthDates
 import com.andysapps.superdo.todo.enums.RepeatType
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
-import com.andysapps.superdo.todo.model.SuperDate
-import com.andysapps.superdo.todo.model.sidekicks.Remind
 import com.andysapps.superdo.todo.model.sidekicks.Repeat
-import com.andysapps.superdo.todo.model.sidekicks.WeekDays
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
-import kotlinx.android.synthetic.main.fragment_dlg_deadline.*
 import kotlinx.android.synthetic.main.fragment_dlg_repeat.*
 import org.greenrobot.eventbus.EventBus
 import java.util.*
-import kotlin.math.min
 
 
 /**
@@ -75,12 +67,16 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         dlg_repeat_spinner_dwm.onItemSelectedListener = this
         dlg_repeat_spinner_dwm.adapter = repeatTypes
 
+        if (repeat.monthDate == 0) {
+            repeat.monthDate = 1
+        }
+
         val monthDates = ArrayAdapter(activity!!.baseContext, android.R.layout.simple_spinner_item, monthDates)
         monthDates.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         dlg_repeat_spinner_monthdate.onItemSelectedListener = (object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                repeat.monthDaysIndex = position
+                repeat.monthDate = position
                 dlg_repeat_tv_monthdates.text = monthDates.getItem(position)
                 updateUi()
             }
@@ -129,8 +125,8 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
 
         if (repeat.repeatType != null) {
 
-            if (repeat.times == 0) {
-                repeat.times = 1
+            if (repeat.daysInterval == 0) {
+                repeat.daysInterval = 1
             }
 
             when (RepeatType.valueOf(repeat.repeatType)) {
@@ -142,14 +138,14 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
                 }
                 RepeatType.Month -> {
                     dlg_repeat_spinner_dwm.setSelection(2)
-                    dlg_repeat_spinner_monthdate.setSelection(repeat.monthDaysIndex)
+                    dlg_repeat_spinner_monthdate.setSelection(repeat.monthDate)
                 }
             }
 
             dlg_repeat_delete_repeat.visibility = View.VISIBLE
 
         } else {
-            repeat.times = 1
+            repeat.daysInterval = 1
             dlg_repeat_delete_repeat.visibility = View.GONE
         }
     }
@@ -167,7 +163,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
             dlg_repeat_spinner_monthdate.visibility = View.VISIBLE
             dlg_repeat_et_days.visibility = View.GONE
             //dlg_repeat_tv_monthdates.visibility = View.VISIBLE
-            dlg_repeat_tv_monthdates.text = monthDates[repeat.monthDaysIndex]
+            dlg_repeat_tv_monthdates.text = monthDates[repeat.monthDate]
         } else {
             dlg_repeat_spinner_monthdate.visibility = View.GONE
             dlg_repeat_tv_monthdates.visibility = View.GONE
@@ -260,7 +256,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         if (repeat.repeatType == RepeatType.Week.name) {
             updateWeedaysUi()
         }
-        dlg_repeat_et_days.setText(repeat.times.toString())
+        dlg_repeat_et_days.setText(repeat.daysInterval.toString())
         updateUi()
     }
 
@@ -294,7 +290,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
 
     override fun afterTextChanged(s: Editable?) {
         if (s!!.isNotEmpty()) {
-            repeat.times = s.toString().toInt()
+            repeat.daysInterval = s.toString().toInt()
         }
         updateUi()
     }

@@ -4,8 +4,6 @@ import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.RepeatType;
 import com.andysapps.superdo.todo.model.SuperDate;
 
-import java.util.List;
-
 /**
  * Created by Andrews on 27,November,2019
  */
@@ -14,13 +12,11 @@ public class Repeat implements Cloneable{
 
     public boolean isEnabled;
 
-    int times;
-
-    int monthDaysIndex = 1;
-
     String repeatType;
 
-    SuperDate startDate;
+    int daysInterval;
+
+    int monthDate = 1;
 
     boolean onSunday;
     boolean onMonday;
@@ -29,6 +25,10 @@ public class Repeat implements Cloneable{
     boolean onThursday;
     boolean onFriday;
     boolean onSaturday;
+
+    SuperDate startDate;
+
+    SuperDate lastRepeatedDate;
 
     public Repeat() {
     }
@@ -44,12 +44,12 @@ public class Repeat implements Cloneable{
         this.isEnabled = isEnabled;
     }
 
-    public int getTimes() {
-        return times;
+    public int getDaysInterval() {
+        return daysInterval;
     }
 
-    public void setTimes(int times) {
-        this.times = times;
+    public void setDaysInterval(int daysInterval) {
+        this.daysInterval = daysInterval;
     }
 
     public String getRepeatType() {
@@ -76,12 +76,20 @@ public class Repeat implements Cloneable{
         isEnabled = enabled;
     }
 
-    public int getMonthDaysIndex() {
-        return monthDaysIndex;
+    public int getMonthDate() {
+        return monthDate;
     }
 
-    public void setMonthDaysIndex(int monthDaysIndex) {
-        this.monthDaysIndex = monthDaysIndex;
+    public void setMonthDate(int monthDate) {
+        this.monthDate = monthDate;
+    }
+
+    public SuperDate getLastRepeatedDate() {
+        return lastRepeatedDate;
+    }
+
+    public void setLastRepeatedDate(SuperDate lastRepeatedDate) {
+        this.lastRepeatedDate = lastRepeatedDate;
     }
 
     public boolean isOnSunday() {
@@ -150,11 +158,11 @@ public class Repeat implements Cloneable{
 
         if (repeatType.equals(RepeatType.Day.name())) {
 
-            if (times != 1 && times != 0) {
+            if (daysInterval != 1 && daysInterval != 0) {
                 if (startDate.hasDate) {
-                    repeatString = "Every " + times + " days at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
+                    repeatString = "Every " + daysInterval + " days at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
                 } else {
-                    repeatString = "Every " + times + " days at " + startDate.getTimeString();
+                    repeatString = "Every " + daysInterval + " days at " + startDate.getTimeString();
                 }
 
                 return repeatString;
@@ -170,11 +178,11 @@ public class Repeat implements Cloneable{
         }
 
         if (repeatType.equals(RepeatType.Week.name())) {
-            if (times != 1 && times != 0) {
+            if (daysInterval != 1 && daysInterval != 0) {
                 if (startDate.hasDate) {
-                    repeatString = "Every " + times + " Weeks at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
+                    repeatString = "Every " + daysInterval + " Weeks at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
                 } else {
-                    repeatString = "Every " + times + " Weeks at " + startDate.getTimeString();
+                    repeatString = "Every " + daysInterval + " Weeks at " + startDate.getTimeString();
                 }
 
                 return repeatString;
@@ -190,13 +198,15 @@ public class Repeat implements Cloneable{
         }
 
         if (repeatType.equals(RepeatType.Month.name())) {
-            if (monthDaysIndex == 0) {
-                monthDaysIndex = 1;
+            if (monthDate == 0) {
+                monthDate = 1;
             }
-            repeatString = Utils.monthDates[monthDaysIndex - 1] + " of every month at " + startDate.getTimeString();
+            repeatString = Utils.monthDates[monthDate - 1] + " of every month at " + startDate.getTimeString();
             return repeatString;
         }
 
         return repeatString;
     }
+
+
 }

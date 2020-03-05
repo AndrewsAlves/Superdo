@@ -247,6 +247,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         task.setTaskCompletedDate(Calendar.getInstance().getTime());
         EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, task, position, UndoType.TASK_COMPLETED));
         notifyItemRemoved(position);
+        TaskOrganiser.getInstance().organiseAllTasks();
     }
 
     private void strikeOutText(TaskViewHolder holder) {

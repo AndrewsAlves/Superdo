@@ -32,12 +32,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
-import io.grpc.okhttp.internal.Util;
-
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_NOTIFICATIONS;
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_TASKS;
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_notification_deadline_type;
-import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_notification_id;
 
 /**
  * Created by Andrews on 26,February,2020
@@ -183,7 +180,7 @@ public class SuperdoNotificationManager {
                                             break;
                                         case Week:
 
-                                            if (Utils.shouldRemindToday(remindTask.getRemind().getRemindRepeat())) {
+                                            if (Utils.shouldRepeatWeeklyToday(remindTask.getRemind().getRemindRepeat())) {
                                                 notification = new SimpleNotification();
                                                 notification.setContentTitle("Hey human, Weekly Reminder for you");
                                                 notification.setContentText(remindTask.getName());
