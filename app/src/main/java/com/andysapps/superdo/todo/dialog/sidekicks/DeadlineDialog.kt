@@ -34,9 +34,11 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
     var deadline : Deadline = Deadline()
 
     companion object {
-        fun instance(deadline : Deadline) : DeadlineDialog {
+        fun instance(deadline : Deadline?) : DeadlineDialog {
             val fragment = DeadlineDialog()
-            fragment.deadline = deadline.clone()
+            if (deadline != null) {
+                fragment.deadline = deadline.clone()
+            }
             return fragment
         }
     }
@@ -54,8 +56,36 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
         updateUi()
     }
 
-    fun updateUi() {
+    private fun initUi() {
 
+        if (deadline == null) {
+            deadline = Deadline()
+        }
+
+        dlg_deadline_btn_date.setOnClickListener {
+            showDatePicker()
+        }
+
+        dlg_deadline_btn_time.setOnClickListener {
+            showTimePicker()
+        }
+
+        dlg_deadline_b_positive.setOnClickListener {
+            EventBus.getDefault().post(SetDeadlineEvent(deadline, false))
+            dismiss()
+        }
+
+        dlg_deadline_delete.setOnClickListener {
+            EventBus.getDefault().post(SetDeadlineEvent(deadline, true))
+            dismiss()
+        }
+
+        dlg_deadline_b_negative.setOnClickListener {
+            dismiss()
+        }
+    }
+
+    fun updateUi() {
 
         if (!deadline.hasDate) {
             dlg_deadline_iv_date.setImageResource(R.drawable.ic_do_date_off_grey_2)
@@ -85,30 +115,6 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
             dlg_deadline_b_positive.alpha = 0.5f
         }
 
-    }
-
-    private fun initUi() {
-
-        if (deadline == null) {
-            deadline = Deadline()
-        }
-
-        dlg_deadline_btn_date.setOnClickListener {
-            showDatePicker()
-        }
-
-        dlg_deadline_btn_time.setOnClickListener {
-            showTimePicker()
-        }
-
-        dlg_deadline_b_positive.setOnClickListener {
-            EventBus.getDefault().post(SetDeadlineEvent(deadline))
-            dismiss()
-        }
-
-        dlg_deadline_b_negative.setOnClickListener {
-            dismiss()
-        }
     }
 
     fun showDatePicker() {

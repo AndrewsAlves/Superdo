@@ -73,12 +73,15 @@ class RepeatFragment : Fragment(), OnItemSelectedListener, View.OnClickListener,
         dlg_repeat_spinner_dwm.onItemSelectedListener = this
         dlg_repeat_spinner_dwm.adapter = repeatTypes
 
+        if (repeat.monthDaysIndex == 0) {
+            repeat.monthDaysIndex = 1
+        }
         val monthDates = ArrayAdapter(activity!!.baseContext, android.R.layout.simple_spinner_item, monthDates)
         monthDates.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         dlg_repeat_spinner_monthdate.onItemSelectedListener = (object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                repeat.monthDaysIndex = position
+                repeat.monthDaysIndex = position + 1
                 dlg_repeat_tv_monthdates.text = monthDates.getItem(position)
                 updateUi()
             }
@@ -153,7 +156,7 @@ class RepeatFragment : Fragment(), OnItemSelectedListener, View.OnClickListener,
                 }
                 RepeatType.Month -> {
                     dlg_repeat_spinner_dwm.setSelection(2)
-                    dlg_repeat_spinner_monthdate.setSelection(repeat.monthDaysIndex)
+                    dlg_repeat_spinner_monthdate.setSelection(repeat.monthDaysIndex - 1)
                 }
             }
 
@@ -169,20 +172,25 @@ class RepeatFragment : Fragment(), OnItemSelectedListener, View.OnClickListener,
 
         if (repeat.repeatType == RepeatType.Week.name) {
             dlg_repeat_ll_weekdays.visibility = View.VISIBLE
+            dlg_repeat_rl_times.visibility = View.GONE
             updateWeedaysUi()
         } else {
             dlg_repeat_ll_weekdays.visibility = View.GONE
+            dlg_repeat_rl_times.visibility = View.VISIBLE
         }
 
         if (repeat.repeatType == RepeatType.Month.name) {
             dlg_repeat_spinner_monthdate.visibility = View.VISIBLE
             dlg_repeat_et_days.visibility = View.GONE
-            //dlg_repeat_tv_monthdates.visibility = View.VISIBLE
-            dlg_repeat_tv_monthdates.text = monthDates[repeat.monthDaysIndex]
+            dlg_repeat_tv_monthdates.text = monthDates[repeat.monthDaysIndex - 1]
+            dlg_repeat_tv_title_startdate.visibility = View.GONE
+            dlg_repeat_btn_date.visibility = View.GONE
         } else {
             dlg_repeat_spinner_monthdate.visibility = View.GONE
             dlg_repeat_tv_monthdates.visibility = View.GONE
             dlg_repeat_et_days.visibility = View.VISIBLE
+            dlg_repeat_tv_title_startdate.visibility = View.VISIBLE
+            dlg_repeat_btn_date.visibility = View.VISIBLE
         }
 
         if (repeat.startDate == null) {
@@ -213,11 +221,9 @@ class RepeatFragment : Fragment(), OnItemSelectedListener, View.OnClickListener,
 
         dlg_repeat_tv_repeatString.text = repeat.repeatString
 
-
     }
 
     fun updateWeedaysUi() {
-
 
         dlg_repeat__btn_sunday.setTextColor(resources.getColor(R.color.grey4))
         dlg_repeat__btn_sunday.setBackgroundResource(R.drawable.bg_grey_low)

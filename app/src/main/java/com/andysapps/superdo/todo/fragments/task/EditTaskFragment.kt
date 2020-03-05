@@ -31,6 +31,7 @@ import com.andysapps.superdo.todo.dialog.sidekicks.DoDateDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.RemindDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.RepeatDialog
 import com.andysapps.superdo.todo.enums.BucketColors
+import com.andysapps.superdo.todo.enums.RemindType
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
@@ -47,12 +48,10 @@ import com.andysapps.superdo.todo.model.Task
 import com.andysapps.superdo.todo.model.sidekicks.Subtask
 import com.andysapps.superdo.todo.model.sidekicks.Subtasks
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
-import com.andysapps.superdo.todo.notification.SuperdoNotificationManager
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -205,12 +204,12 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             task.subtasks.subtaskList = ArrayList()
         }
 
-        editTask_rv_subtasks.setLayoutManager(LinearLayoutManager(activity))
+        editTask_rv_subtasks.layoutManager = LinearLayoutManager(activity)
         subtaskAdapter = SubtasksRecyclerAdapter(context, task.subtasks.subtaskList, task)
         val callback: ItemTouchHelper.Callback = LongItemTouchHelperCallback(subtaskAdapter)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(editTask_rv_subtasks)
-        editTask_rv_subtasks.setAdapter(subtaskAdapter)
+        editTask_rv_subtasks.adapter = subtaskAdapter
     }
 
     private fun updateUi() {
@@ -228,7 +227,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         //// BUCKET & TASK COMPLETED UI
 
         if (task.bucketId != null) {
-            editTask_tv_bucketName.setText(task.bucketName)
+            editTask_tv_bucketName.text = task.bucketName
             editTask_tv_bucketName.setTextColor(resources.getColor(R.color.black))
             when (BucketColors.valueOf(task.bucketColor)) {
                 BucketColors.Red -> {
@@ -254,7 +253,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             }
 
             editTask_lottie_anim.addValueCallback(KeyPath("Shape Layer 1", "**"), LottieProperty.COLOR_FILTER, SimpleLottieValueCallback {
-                PorterDuffColorFilter(Utils.getColor(context, task.getBucketColor()), PorterDuff.Mode.SRC_ATOP)
+                PorterDuffColorFilter(Utils.getColor(context, task.bucketColor), PorterDuff.Mode.SRC_ATOP)
             })
         }
 
@@ -289,11 +288,11 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         if (task.repeat != null && task.repeat.repeatType != null) {
             editTask_iv_repeat.setImageResource(R.drawable.ic_repeat_on)
             editTask_tv_repeat.alpha = 1.0f
-            editTask_tv_repeat.setText(task.repeat.repeatString)
+            editTask_tv_repeat.text = task.repeat.repeatString
         } else {
             editTask_iv_repeat.setImageResource(R.drawable.ic_repeat_off)
             editTask_tv_repeat.alpha = 0.5f
-            editTask_tv_repeat.setText("Set Repeat Task")
+            editTask_tv_repeat.text = "Set Repeat Task"
         }
 
         //////////////
@@ -302,11 +301,11 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         if (task.remind != null && task.remind.remindType != null) {
             editTask_iv_remind.setImageResource(R.drawable.ic_remind_on)
             editTask_tv_remind.alpha = 1.0f
-            editTask_tv_remind.setText(task.remind.remindString)
+            editTask_tv_remind.text = task.remind.remindString
         } else {
             editTask_iv_remind.setImageResource(R.drawable.ic_remind_off)
             editTask_tv_remind.alpha = 0.5f
-            editTask_tv_remind.setText("Set Remind")
+            editTask_tv_remind.text = "Set Remind"
         }
 
         //////////////
@@ -315,10 +314,12 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         if (task.deadline != null && task.deadline.hasDate) {
             editTask_iv_deadline.setImageResource(R.drawable.ic_deadline_on)
             editTask_tv_deadline.alpha = 1.0f
-            editTask_tv_deadline.setText(task.deadline.doDateStringMain)
+            editTask_tv_deadline.text = task.deadline.deadlineStringMain
         } else {
             editTask_iv_deadline.setImageResource(R.drawable.ic_deadline_off)
             editTask_tv_deadline.alpha = 0.5f
+            editTask_tv_deadline.text = "Set Deadline"
+
         }
 
         if (task.subtasks.subtaskList.size == 0) {
@@ -451,8 +452,24 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     @Subscribe
     fun onMeessageEvent(event : SetDeadlineEvent) {
         task.deadline = event.deadline.clone()
-        updateUi()
+
+        if (event.deleted) {
+            task.deadline = null
+            FirestoreManager.getInstance().updateTask(task)
+            updateUi()
+            SuperdoAlarmManager.getInstance().clearAlarm(context, task.deadline.deadlineRequestCode)
+            SuperdoAlarmManager.getInstance().clearAlarm(context, task.deadline.deadlineRequestCode + 1)
+            SuperdoAlarmManager.getInstance().clearAlarm(context, task.deadline.deadlineRequestCode + 2)
+            return
+        }
+
+        if (task.deadline.deadlineRequestCode == 0) {
+            task.deadline.generateNewRequestCode()
+        }
+
         FirestoreManager.getInstance().updateTask(task)
+        SuperdoAlarmManager.getInstance().setDeadlineReminder(context, task)
+        updateUi()
     }
 
     @Subscribe
@@ -473,13 +490,17 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             updateUi()
 
             if (event.remind != null) {
-                SuperdoAlarmManager.getInstance().clearAlarm(context, event.remind.remindRequestCode)
+                if (event.remind.remindType == RemindType.REMIND_REPEAT.name) {
+                    SuperdoAlarmManager.getInstance().clearRemindRepeatAlarm(context, event.remind.remindRequestCode)
+                } else {
+                    SuperdoAlarmManager.getInstance().clearAlarm(context, event.remind.remindRequestCode)
+                }
             }
 
             return
         }
 
-        if (task.remind.remindRequestCode != 0) {
+        if (task.remind.remindRequestCode == 0) {
             task.remind.generateNewRequestCode()
         }
         FirestoreManager.getInstance().updateTask(task)

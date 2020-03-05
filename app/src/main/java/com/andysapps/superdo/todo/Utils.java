@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.SuperDate;
+import com.andysapps.superdo.todo.model.sidekicks.Repeat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -245,9 +246,35 @@ public class Utils {
             }
         } */
 
-
-
         return new SuperDate(date, month, year, 0, 0);
+    }
+
+    public static boolean shouldRemindToday(Repeat repeat) {
+
+        if (repeat == null) {
+            return false;
+        }
+
+        int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+
+        switch (today) {
+            case Calendar.SUNDAY:
+                return repeat.isOnSunday();
+            case Calendar.MONDAY:
+                return repeat.isOnMonday();
+            case Calendar.TUESDAY:
+                return repeat.isOnTuesday();
+            case Calendar.WEDNESDAY:
+                return repeat.isOnWednesday();
+            case Calendar.THURSDAY:
+                return repeat.isOnThursday();
+            case Calendar.FRIDAY:
+                return repeat.isOnFriday();
+            case Calendar.SATURDAY:
+                return repeat.isOnSaturday();
+        }
+
+        return false;
     }
 
     public static String getMonthString(int month) {

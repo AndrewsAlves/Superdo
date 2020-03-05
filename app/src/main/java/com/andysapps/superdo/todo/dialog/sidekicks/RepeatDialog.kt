@@ -43,9 +43,11 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
     val repeatType = arrayOf(RepeatType.Day.name, RepeatType.Week.name, RepeatType.Month.name)
 
     companion object {
-        fun instance(repeat : Repeat) : RepeatDialog {
+        fun instance(repeat : Repeat?) : RepeatDialog {
             val repeatDialog = RepeatDialog()
-            repeatDialog.repeat = repeat.clone()
+            if (repeat != null) {
+                repeatDialog.repeat = repeat.clone()
+            }
             return repeatDialog
         }
     }
@@ -108,6 +110,11 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
             dismiss()
         }
 
+        dlg_repeat_delete_repeat.setOnClickListener {
+            EventBus.getDefault().post(SetRepeatEvent(Repeat(true)))
+            dismiss()
+        }
+
         dlg_repeat_btn_date.setOnClickListener {
             showDatePicker()
         }
@@ -116,10 +123,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
             showTimePicker()
         }
 
-        dlg_repeat_delete_repeat.setOnClickListener {
-            EventBus.getDefault().post(SetRepeatEvent(Repeat(true)))
-            dismiss()
-        }
+
 
         //////// UPDATE UI ////////
 

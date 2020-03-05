@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by Andrews on 12,November,2019
@@ -22,6 +23,8 @@ public class Deadline implements Cloneable {
 
     public boolean hasDate;
     public boolean hasTime;
+
+    int deadlineRequestCode;
 
     Date timestamp;
 
@@ -116,6 +119,16 @@ public class Deadline implements Cloneable {
         this.timestamp = timestamp;
     }
 
+    public int generateNewRequestCode() {
+        Random random = new Random();
+        deadlineRequestCode = random.nextInt(1000) * random.nextInt(10);
+        return deadlineRequestCode;
+    }
+
+    public int getDeadlineRequestCode() {
+        return deadlineRequestCode;
+    }
+
     public String getMonthString() {
         return Utils.getMonthString(month);
     }
@@ -137,7 +150,7 @@ public class Deadline implements Cloneable {
         return duedate;
     }
 
-    public String getDoDateStringMain() {
+    public String getDeadlineStringMain() {
 
         if (!hasDate) {
             return "Set Deadline";

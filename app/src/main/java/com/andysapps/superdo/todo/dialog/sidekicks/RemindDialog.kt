@@ -34,9 +34,11 @@ class RemindDialog : DialogFragment(){
     var remind : Remind = Remind()
 
     companion object {
-        fun instance(remind : Remind) : RemindDialog {
+        fun instance(remind : Remind?) : RemindDialog {
             val fragment = RemindDialog()
-            fragment.remind = remind.clone()
+            if (remind != null) {
+                fragment.remind = remind.clone()
+            }
             return fragment
         }
     }
@@ -62,7 +64,7 @@ class RemindDialog : DialogFragment(){
     fun initView() {
 
         if (remind == null) {
-            remind = Remind();
+            remind = Remind()
         }
 
         if (remind.remindType == null) {
@@ -119,7 +121,7 @@ class RemindDialog : DialogFragment(){
     @Subscribe
     fun onMeessageEvent(event : SetRemindRepeatEvent) {
         remind.remindRepeat = event.repeat.clone()
-        EventBus.getDefault().post(SetRemindEvent(remind, false))
+        EventBus.getDefault().post(SetRemindEvent(remind, event.deleted))
         dismiss()
     }
 

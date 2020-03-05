@@ -146,7 +146,6 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         }
 
         h.lottieCheckView.playAnimation();
-
         h.ivRepeat.setVisibility(View.GONE);
         h.ivDeadline.setVisibility(View.GONE);
         h.ivSubtasks.setVisibility(View.GONE);
@@ -154,27 +153,27 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         h.ivFocus.setVisibility(View.GONE);
         h.parentIcons.setVisibility(View.GONE);
 
-        if (task.getRepeat() != null && task.getRepeat().isEnabled) {
+        if (task.getRepeat() != null) {
             h.ivRepeat.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getDeadline() != null && task.getDeadline().isEnabled) {
+        if (task.getDeadline() != null) {
             h.ivDeadline.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getSubtasks() != null && task.getSubtasks().isEnabled) {
+        if (task.getSubtasks() != null && task.getSubtasks().subtaskList.size() > 0) {
             h.ivSubtasks.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getRemind() != null && task.getRemind().isEnabled) {
+        if (task.getRemind() != null) {
             h.ivRemind.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getFocus() != null && task.getFocus().isEnabled) {
+        if (task.getFocus() != null) {
             h.ivFocus.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }

@@ -16,7 +16,7 @@ public class Repeat implements Cloneable{
 
     int times;
 
-    int monthDaysIndex;
+    int monthDaysIndex = 1;
 
     String repeatType;
 
@@ -190,7 +190,10 @@ public class Repeat implements Cloneable{
         }
 
         if (repeatType.equals(RepeatType.Month.name())) {
-            repeatString = Utils.monthDates[monthDaysIndex] + " of every month at " + startDate.getTimeString();
+            if (monthDaysIndex == 0) {
+                monthDaysIndex = 1;
+            }
+            repeatString = Utils.monthDates[monthDaysIndex - 1] + " of every month at " + startDate.getTimeString();
             return repeatString;
         }
 

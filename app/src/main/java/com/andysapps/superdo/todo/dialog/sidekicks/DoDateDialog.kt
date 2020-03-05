@@ -27,11 +27,9 @@ class DoDateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, TimeP
     var doDate : SuperDate = SuperDate()
 
     companion object {
-        fun instance(superdate : SuperDate) : DoDateDialog {
+        fun instance(superdate : SuperDate?) : DoDateDialog {
             val fragment = DoDateDialog()
-            if (superdate == null) {
-                fragment.doDate = SuperDate()
-            } else {
+            if (superdate != null) {
                 fragment.doDate = superdate.clone()
             }
             return fragment
