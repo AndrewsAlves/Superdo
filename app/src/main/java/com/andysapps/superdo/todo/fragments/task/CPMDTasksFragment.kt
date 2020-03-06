@@ -10,11 +10,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andysapps.superdo.todo.R
-import com.andysapps.superdo.todo.adapters.CPMDRecyclerAdapter
+import com.andysapps.superdo.todo.adapters.taskrecyclers.CPMDRecyclerAdapter
 import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
 import com.andysapps.superdo.todo.dialog.RestoreTaskDialog
 import com.andysapps.superdo.todo.enums.CPMD
-import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.UndoType
 import com.andysapps.superdo.todo.events.*
 import com.andysapps.superdo.todo.events.profile.SelectProfileTaskEvent
@@ -37,7 +36,7 @@ class CPMDTasksFragment : Fragment() {
     var taskList : List<Task>? = null
     var adapter: CPMDRecyclerAdapter? = null
 
-    public var selectingTasks = false
+    var selectingTasks = false
     var selectAll = false
 
     companion object {
@@ -114,6 +113,12 @@ class CPMDTasksFragment : Fragment() {
             CPMD.MISSED -> {
                 taskList = TaskOrganiser.getInstance().getMissedTaskList()
             }
+            CPMD.RECURRING -> {
+                taskList = TaskOrganiser.getInstance().getRecurringTask()
+            }
+            CPMD.DEADLINED -> {
+                taskList = TaskOrganiser.getInstance().getDeadlineTasks()
+            }
             CPMD.DELETED -> {
                 taskList = TaskOrganiser.getInstance().getDeletedTaskList()
             }
@@ -151,6 +156,12 @@ class CPMDTasksFragment : Fragment() {
             }
             CPMD.MISSED -> {
                 tv_cpmd_name.text = "Missed tasks" + " (" + taskList!!.size + ")"
+            }
+            CPMD.RECURRING -> {
+                tv_cpmd_name.text = "Recurring tasks" + " (" + taskList!!.size + ")"
+            }
+            CPMD.DEADLINED -> {
+                tv_cpmd_name.text = "Deadlined tasks" + " (" + taskList!!.size + ")"
             }
             CPMD.DELETED -> {
                 tv_cpmd_name.text = "Deleted tasks" + " (" + taskList!!.size + ")"

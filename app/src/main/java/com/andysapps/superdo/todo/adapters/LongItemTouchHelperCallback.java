@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.andysapps.superdo.todo.adapters.upcoming.UpcomingManualAdapter;
-
 /**
  * Created by Admin on 09,November,2019
  */

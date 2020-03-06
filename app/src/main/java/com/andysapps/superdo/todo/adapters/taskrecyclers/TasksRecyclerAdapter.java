@@ -1,7 +1,6 @@
-package com.andysapps.superdo.todo.adapters;
+package com.andysapps.superdo.todo.adapters.taskrecyclers;
 
 import android.content.Context;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Handler;
@@ -19,14 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
-import com.airbnb.lottie.value.LottieFrameInfo;
-import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.UndoType;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
-import com.andysapps.superdo.todo.events.action.TaskCompletedEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
@@ -77,7 +74,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         for (int i = 0 ; i < this.taskList.size() ; i++) {
             if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
                 notifyItemRemoved(i);
-                EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, task, i, UndoType.MOVED_TO_BIN));
+                EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, i, UndoType.MOVED_TO_BIN));
                 this.taskList.remove(i);
             }
         }
@@ -106,6 +103,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         task.setTaskCompleted(false);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
+        TaskOrganiser.getInstance().organiseAllTasks();
     }
 
     public void undoMovedToBin(Task task,int position) {
@@ -213,11 +211,11 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 h.lottieCheckView.setVisibility(View.VISIBLE);
                 h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
                 if (h.isChecked) {
-                    h.lottieCheckView.setSpeed(-2f);
+                    h.lottieCheckView.setSpeed(-3.5f);
                     h.isChecked = false;
-                    strikeInText(h);
+                    //strikeInText(h);
                 } else {
-                    h.lottieCheckView.setSpeed(1.0f);
+                    h.lottieCheckView.setSpeed(3.5f);
                     h.isChecked = true;
                     //strikeOutText(h);
                 }
@@ -226,7 +224,13 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
                 //// SET TASK COMPLETED
                 if (h.isChecked) {
-                   setTaskCompleted(h.getAdapterPosition(), task);
+                    viewUpdateHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setTaskCompleted(h.getAdapterPosition(), task);
+                        }
+                    }, 300);
+
                 }
 
                 h.lottieCheckView.playAnimation();
@@ -245,8 +249,9 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         Log.e(TAG, "run: position " + position);
         taskList.remove(position);
         task.setTaskCompletedDate(Calendar.getInstance().getTime());
-        EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, task, position, UndoType.TASK_COMPLETED));
+        EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, position, UndoType.TASK_COMPLETED));
         notifyItemRemoved(position);
+        FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
     }
 
@@ -356,7 +361,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             item = itemView;
             ButterKnife.bind(this,itemView);
 
-            lottieCheckView.setAnimation("check_box3.json");
+            lottieCheckView.setAnimation("anim_check2.json");
             painting = new StrikeThroughPainting(tvTaskName);
         }
 

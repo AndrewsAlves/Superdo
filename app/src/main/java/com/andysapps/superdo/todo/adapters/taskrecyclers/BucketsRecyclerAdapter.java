@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.adapters;
+package com.andysapps.superdo.todo.adapters.taskrecyclers;
 
 import android.content.Context;
 import android.util.Log;

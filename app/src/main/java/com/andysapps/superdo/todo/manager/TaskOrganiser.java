@@ -13,6 +13,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import io.grpc.okhttp.internal.Util;
+
 /**
  * Created by Andrews on 06,November,2019
  */
@@ -31,6 +33,9 @@ public class TaskOrganiser {
     /// profile list
     public List<Task> completedTaskList;
     public List<Task> missedTaskList;
+    public List<Task> recurringTask;
+    public List<Task> deadlineTasks;
+    public List<Task> remindingTasks;
     public List<Task> pendingTaskList;
     public List<Task> deletedTaskList;
 
@@ -65,6 +70,9 @@ public class TaskOrganiser {
 
         completedTaskList = new ArrayList<>();
         missedTaskList = new ArrayList<>();
+        recurringTask = new ArrayList<>();
+        deadlineTasks = new ArrayList<>();
+        remindingTasks = new ArrayList<>();
         pendingTaskList = new ArrayList<>();
         deletedTaskList = new ArrayList<>();
 
@@ -87,6 +95,24 @@ public class TaskOrganiser {
                 continue;
             }
 
+            if (task.getRepeat() != null) {
+                recurringTask.add(task);
+            }
+
+            if(task.getDeadline() != null) {
+                deadlineTasks.add(task);
+            }
+
+            if(task.getRemind() != null) {
+                remindingTasks.add(task);
+            }
+
+            if (Utils.shouldAddTaskRepeat(task)) {
+                task.setListedIn(TaskListing.TODAY);
+                todayTaskList.add(task);
+                continue;
+            }
+
             if (task.isTaskCompleted()) {
                 completedTaskList.add(task);
                 continue;
@@ -95,13 +121,7 @@ public class TaskOrganiser {
             allTaskList.add(task);
             pendingTaskList.add(task);
 
-            if (Utils.isSuperDateToday(task.getDoDate()) && task.getRepeat() == null) {
-                task.setListedIn(TaskListing.TODAY);
-                todayTaskList.add(task);
-                continue;
-            }
-
-            if (Utils.shouldAddTaskRepeat(task)) {
+            if (Utils.isSuperDateToday(task.getDoDate())) {
                 task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
                 continue;
@@ -137,7 +157,6 @@ public class TaskOrganiser {
                 task.setListedIn(TaskListing.UPCOMING);
                 upcomingTaskList.add(task);
             }
-
 
         }
 
@@ -212,6 +231,18 @@ public class TaskOrganiser {
 
     public List<Task> getDeletedTaskList() {
         return deletedTaskList;
+    }
+
+    public List<Task> getRecurringTask() {
+        return recurringTask;
+    }
+
+    public List<Task> getDeadlineTasks() {
+        return deadlineTasks;
+    }
+
+    public List<Task> getRemindingTasks() {
+        return remindingTasks;
     }
 
     public List<Task> getTasks(TaskListing listing) {

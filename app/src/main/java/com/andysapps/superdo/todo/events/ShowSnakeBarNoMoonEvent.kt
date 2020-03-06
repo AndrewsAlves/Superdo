@@ -1,6 +1,6 @@
 package com.andysapps.superdo.todo.events
 
-import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter
+import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter
 import com.andysapps.superdo.todo.enums.UndoType
 import com.andysapps.superdo.todo.model.Task
 

@@ -10,12 +10,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
-import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter
+import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
-import com.andysapps.superdo.todo.enums.UndoType
-import com.andysapps.superdo.todo.events.TaskModifiedEvent
-import com.andysapps.superdo.todo.events.UndoEvent
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
@@ -109,7 +106,7 @@ class TodayFragment : Fragment() {
     fun onMessageEvent(event: UpdateTaskListEvent) {
         when (event.listType) {
             TaskListing.TODAY -> {
-                adapter!!.updateList(TaskOrganiser.getInstance().getTasks(TaskListing.TODAY))
+                updateUi()
             }
         }
     }

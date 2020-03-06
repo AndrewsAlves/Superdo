@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
-import com.andysapps.superdo.todo.adapters.TasksRecyclerAdapter
+import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
@@ -106,7 +106,7 @@ class TomorrowFragment : Fragment() {
     fun onMessageEvent(event: UpdateTaskListEvent) {
         when (event.listType) {
             TaskListing.TOMORROW -> {
-                adapter!!.updateList(TaskOrganiser.getInstance().getTasks(TaskListing.TOMORROW))
+                updateUi()
             }
         }
     }

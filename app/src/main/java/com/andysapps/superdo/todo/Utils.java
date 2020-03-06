@@ -99,6 +99,76 @@ public class Utils {
         return TaskListing.UPCOMING;
     }
 
+    public static boolean isTaskToday(Task task) {
+
+        SuperDate superdate = task.getDoDate();
+        Repeat repeat = task.getRepeat();
+
+        if (repeat == null) {
+            return isSuperDateToday(superdate);
+        }
+
+        switch (RepeatType.valueOf(repeat.getRepeatType())) {
+            case Day:
+                if (repeat.getDaysInterval() == 1) {
+                    return true;
+                } else {
+
+                    if (isSuperDateToday(repeat.getStartDate())) {
+                        return true;
+                    }
+
+                    long msDiff = Calendar.getInstance().getTimeInMillis() -
+                            getCalenderFromSuperDate(repeat.getLastRepeatedDate()).getTimeInMillis();
+                    long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
+
+                    return daysDiff == repeat.getDaysInterval();
+                }
+            case Week:
+                return shouldRepeatWeeklyToday(repeat);
+            case Month:
+                Calendar calendar = Calendar.getInstance();
+                return repeat.getMonthDate() == calendar.get(Calendar.DAY_OF_MONTH);
+        }
+
+        return false;
+    }
+
+    public static boolean isTaskTomorrow(Task task) {
+
+        SuperDate superdate = task.getDoDate();
+        Repeat repeat = task.getRepeat();
+
+        if (repeat == null) {
+            return isSuperDateTomorrow(superdate);
+        }
+
+        switch (RepeatType.valueOf(repeat.getRepeatType())) {
+            case Day:
+                if (repeat.getDaysInterval() == 1) {
+                    return true;
+                } else {
+
+                    if (isSuperDateToday(repeat.getStartDate())) {
+                        return true;
+                    }
+
+                    long msDiff = Calendar.getInstance().getTimeInMillis() -
+                            getCalenderFromSuperDate(repeat.getLastRepeatedDate()).getTimeInMillis();
+                    long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
+
+                    return daysDiff == repeat.getDaysInterval();
+                }
+            case Week:
+                return shouldRepeatWeeklyToday(repeat);
+            case Month:
+                Calendar calendar = Calendar.getInstance();
+                return repeat.getMonthDate() == calendar.get(Calendar.DAY_OF_MONTH);
+        }
+
+        return false;
+    }
+
     public static boolean isSuperDateToday(SuperDate superdate) {
 
         if (superdate == null) {
@@ -212,27 +282,42 @@ public class Utils {
         if (task.getRepeat() == null) {
             return false;
         }
+
+        Calendar calendar = Calendar.getInstance();
+
+        if (task.isTaskCompleted()) {
+            if (task.getTaskCompletedDate() == null) {
+                return false;
+            }
+            SuperDate conpletedDate = getSuperdateFromTimeStamp(task.getTaskCompletedDate().getTime());
+            SuperDate todayDate = getSuperdateToday();
+            if (conpletedDate.getDate() == todayDate.getDate()
+                    && conpletedDate.getMonth() == todayDate.getMonth()
+                    && conpletedDate.getYear() == todayDate.getYear()) {
+                return false;
+            }
+        }
         
         switch (RepeatType.valueOf(task.getRepeat().getRepeatType())) {
             case Day:
                 if (task.getRepeat().getDaysInterval() == 1) {
                     return true;
                 } else {
-
                     if (isSuperDateToday(task.getRepeat().getStartDate())) {
                         return true;
                     }
-
-                    long msDiff = Calendar.getInstance().getTimeInMillis() -
+                   /* Calendar startDate =
+                    while ()
+                    /*long msDiff = Calendar.getInstance().getTimeInMillis() -
                             getCalenderFromSuperDate(task.getRepeat().getLastRepeatedDate()).getTimeInMillis();
                     long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
 
-                    return daysDiff == task.getRepeat().getDaysInterval();
+                    return daysDiff == task.getRepeat().getDaysInterval(); */
+                   break;
                 }
             case Week:
                 return shouldRepeatWeeklyToday(task.getRepeat());
             case Month:
-                Calendar calendar = Calendar.getInstance();
                 return task.getRepeat().getMonthDate() == calendar.get(Calendar.DAY_OF_MONTH);
         }
 

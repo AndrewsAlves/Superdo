@@ -72,7 +72,7 @@
             style="@style/ripple_background_bordered"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="Delete"
+            android:text="Restore"
             android:fontFamily="@font/montserrat_regular"
             android:textColor="@color/lightRed" />
 

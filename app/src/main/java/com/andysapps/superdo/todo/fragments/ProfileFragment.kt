@@ -42,6 +42,12 @@ class ProfileFragment : Fragment() {
         profile_btn_missed_tasks.setOnClickListener {
             EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.MISSED), false, CPMDTasksFragment.TAG))
         }
+        profile_btn_recurring_tasks.setOnClickListener {
+            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.RECURRING), false, CPMDTasksFragment.TAG))
+        }
+        profile_btn_deadline_tasks.setOnClickListener {
+            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.DEADLINED), false, CPMDTasksFragment.TAG))
+        }
         profile_btn_archived_tasks.setOnClickListener {
             EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.DELETED), false, CPMDTasksFragment.TAG))
         }
@@ -51,6 +57,8 @@ class ProfileFragment : Fragment() {
         profile_tv_completed_tasks.text = TaskOrganiser.getInstance().getCompletedTaskList().size.toString()
         profile_tv_pending_tasks.text = TaskOrganiser.getInstance().getPendingTaskList().size.toString()
         profile_tv_missing_tasks.text = TaskOrganiser.getInstance().getMissedTaskList().size.toString()
+        profile_tv_recurring_tasks.text = TaskOrganiser.getInstance().getRecurringTask().size.toString()
+        profile_tv_deadline_tasks.text = TaskOrganiser.getInstance().getDeadlineTasks().size.toString()
         profile_tv_deleted_tasks.text = TaskOrganiser.getInstance().getDeletedTaskList().size.toString()
     }
 }

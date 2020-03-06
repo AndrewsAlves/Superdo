@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andysapps.superdo.todo.R
-import com.andysapps.superdo.todo.adapters.SelectBucketRecyclerAdapter
+import com.andysapps.superdo.todo.adapters.taskrecyclers.SelectBucketRecyclerAdapter
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.ui.DialogDismissEvent
 import com.andysapps.superdo.todo.manager.TaskOrganiser

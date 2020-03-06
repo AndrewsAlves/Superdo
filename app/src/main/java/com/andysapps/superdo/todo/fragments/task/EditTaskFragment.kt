@@ -23,7 +23,7 @@ import com.airbnb.lottie.value.SimpleLottieValueCallback
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
-import com.andysapps.superdo.todo.adapters.sidekicks.SubtasksRecyclerAdapter
+import com.andysapps.superdo.todo.adapters.taskrecyclers.SubtasksRecyclerAdapter
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
 import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DeadlineDialog

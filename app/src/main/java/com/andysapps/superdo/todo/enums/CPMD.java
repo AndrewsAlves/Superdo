@@ -7,5 +7,8 @@ public enum CPMD {
     COMPLETED,
     PENDING,
     MISSED,
+    RECURRING,
+    DEADLINED,
+    REMIND,
     DELETED
 }

@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.adapters.BucketsRecyclerAdapter;
+import com.andysapps.superdo.todo.adapters.taskrecyclers.BucketsRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.BucketUpdateType;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.ClickBucketEvent;
@@ -22,7 +22,6 @@ import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
-import com.andysapps.superdo.todo.fragments.bucket.AddBucketFragment;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
 

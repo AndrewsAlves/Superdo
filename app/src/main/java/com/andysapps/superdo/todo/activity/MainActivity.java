@@ -344,10 +344,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (event.getUndoType()) {
                     case TASK_COMPLETED:
-                        event.getTasksRecyclerAdapter().undoTaskCompleted(event.getTask(), event.getPosition());
+                        if (event.getTasksRecyclerAdapter() != null) {
+                            event.getTasksRecyclerAdapter().undoTaskCompleted(event.getTask(), event.getPosition());
+                        } else if (event.getUpcomingRecyclerAdapter() != null) {
+                            event.getUpcomingRecyclerAdapter().undoTaskCompleted(event.getTask(), event.getPosition());
+                        }
                         break;
                     case MOVED_TO_BIN:
-                        event.getTasksRecyclerAdapter().undoMovedToBin(event.getTask(), event.getPosition());
+                        if (event.getTasksRecyclerAdapter() != null) {
+                            event.getTasksRecyclerAdapter().undoMovedToBin(event.getTask(), event.getPosition());
+                        } else if (event.getUpcomingRecyclerAdapter() != null) {
+                            event.getUpcomingRecyclerAdapter().undoMovedToBin(event.getTask(), event.getPosition());
+                        }
                         break;
                 }
             }

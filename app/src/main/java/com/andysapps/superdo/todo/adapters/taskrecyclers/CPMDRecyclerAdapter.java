@@ -1,7 +1,6 @@
-package com.andysapps.superdo.todo.adapters;
+package com.andysapps.superdo.todo.adapters.taskrecyclers;
 
 import android.content.Context;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Handler;
@@ -20,10 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
-import com.airbnb.lottie.value.LottieFrameInfo;
-import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.CPMD;
 import com.andysapps.superdo.todo.enums.UndoType;
@@ -264,7 +262,6 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             }
 
             task.setTaskCompleted(h.isChecked);
-            FirestoreManager.getInstance().updateTask(task);
 
             //// SET TASK COMPLETED
 
@@ -279,6 +276,9 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             if (h.isChecked && cpmd == CPMD.MISSED) {
                 setTaskCompleted(h.getAdapterPosition(), task);
             }
+
+            FirestoreManager.getInstance().updateTask(task);
+            TaskOrganiser.getInstance().organiseAllTasks();
 
             h.lottieCheckView.playAnimation();
         });

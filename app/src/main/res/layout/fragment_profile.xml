@@ -196,6 +196,87 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/profile_btn_recurring_tasks"
+                    android:layout_width="120dp"
+                    android:layout_height="135dp"
+                    android:background="@drawable/bg_capsul_white"
+                    android:layout_marginStart="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="15dp"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textColor="@color/black"
+                        android:text="Recurring \nTasks" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="center"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="15dp"
+                        android:src="@drawable/ic_repeating_tasks"/>
+
+                    <TextView
+                        android:id="@+id/profile_tv_recurring_tasks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="22sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/black"
+                        android:text="15" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/profile_btn_deadline_tasks"
+                    android:layout_width="120dp"
+                    android:layout_height="135dp"
+                    android:background="@drawable/bg_capsul_white"
+                    android:layout_marginStart="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="15dp"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textColor="@color/black"
+                        android:text="Deadline \nTasks" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="center"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="15dp"
+                        android:src="@drawable/ic_deadline_tasks"/>
+
+                    <TextView
+                        android:id="@+id/profile_tv_deadline_tasks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="22sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/black"
+                        android:text="15" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
                     android:id="@+id/profile_btn_archived_tasks"
                     android:layout_width="120dp"
                     android:layout_height="135dp"

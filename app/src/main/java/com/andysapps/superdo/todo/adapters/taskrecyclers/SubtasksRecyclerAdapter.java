@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.adapters.sidekicks;
+package com.andysapps.superdo.todo.adapters.taskrecyclers;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -23,7 +23,6 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
-import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.sidekick.UpdateSubtasksEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Task;
@@ -33,7 +32,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -153,10 +151,10 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
             public void onClick(View v) {
 
                 if (h.isChecked) {
-                    h.lottieSubtasks.setSpeed(-2f);
+                    h.lottieSubtasks.setSpeed(-3.5f);
                     h.isChecked = false;
                 } else {
-                    h.lottieSubtasks.setSpeed(1.5f);
+                    h.lottieSubtasks.setSpeed(3.5f);
                     h.isChecked = true;
                 }
 

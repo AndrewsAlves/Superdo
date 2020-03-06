@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.adapters.upcoming;
+package com.andysapps.superdo.todo.adapters.taskrecyclers;
 
 import android.content.Context;
 import android.graphics.ColorFilter;
@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,6 +27,8 @@ import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.enums.UndoType;
+import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
@@ -36,6 +37,7 @@ import com.andysapps.superdo.todo.model.Task;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -157,7 +159,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
                 this.taskList.remove(i);
                 notifyItemRemoved(i);
-
+                EventBus.getDefault().post(new ShowSnakeBarEvent(null, this, task, i, UndoType.MOVED_TO_BIN));
                 switch (task.getListedIn()) {
                     case THIS_WEEK:
                         notifyItemChanged(0);
@@ -174,6 +176,21 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         }
 
         reaarageGroupTasks(-1);
+    }
+
+    public void undoTaskCompleted(Task task,int position) {
+        taskList.add(position, task);
+        task.setTaskCompleted(false);
+        notifyItemInserted(position);
+        FirestoreManager.getInstance().updateTask(task);
+        TaskOrganiser.getInstance().organiseAllTasks();
+    }
+
+    public void undoMovedToBin(Task task,int position) {
+        taskList.add(position, task);
+        task.setMovedToBin(false);
+        notifyItemInserted(position);
+        FirestoreManager.getInstance().updateTask(task);
     }
 
     public void updateList() {
@@ -314,17 +331,27 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             public void onClick(View v) {
                 h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
                 if (h.isChecked) {
-                    h.lottieCheckView.setSpeed(-2f);
+                    h.lottieCheckView.setSpeed(-3.5f);
                     h.isChecked = false;
-                    strikeInText(h);
+                    //strikeInText(h);
                 } else {
-                    h.lottieCheckView.setSpeed(1.5f);
+                    h.lottieCheckView.setSpeed(3.5f);
                     h.isChecked = true;
-                    strikeOutText(h);
+                    //strikeOutText(h);
                 }
 
                 task.setTaskCompleted(h.isChecked);
-                FirestoreManager.getInstance().updateTask(task);
+
+                //// SET TASK COMPLETED
+                if (h.isChecked) {
+                    viewUpdateHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setTaskCompleted(h.getAdapterPosition(), task);
+                        }
+                    }, 300);
+
+                }
 
                 h.lottieCheckView.playAnimation();
             }
@@ -336,6 +363,16 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 EventBus.getDefault().post(new OpenEditTaskEvent(task));
             }
         });
+    }
+
+    public void setTaskCompleted(int position, Task task) {
+        Log.e(TAG, "run: position " + position);
+        taskList.remove(position);
+        task.setTaskCompletedDate(Calendar.getInstance().getTime());
+        EventBus.getDefault().post(new ShowSnakeBarEvent(null, this, task, position, UndoType.TASK_COMPLETED));
+        notifyItemRemoved(position);
+        FirestoreManager.getInstance().updateTask(task);
+        TaskOrganiser.getInstance().organiseAllTasks();
     }
 
     private void strikeOutText(TaskViewHolder holder) {
