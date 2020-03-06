@@ -95,6 +95,8 @@ public class TaskOrganiser {
                 continue;
             }
 
+            allTaskList.add(task);
+
             if (task.getRepeat() != null) {
                 recurringTask.add(task);
             }
@@ -111,6 +113,8 @@ public class TaskOrganiser {
                 task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
                 continue;
+            } else if (task.getRepeat() != null) {
+                continue;
             }
 
             if (task.isTaskCompleted()) {
@@ -118,7 +122,6 @@ public class TaskOrganiser {
                 continue;
             }
 
-            allTaskList.add(task);
             pendingTaskList.add(task);
 
             if (Utils.isSuperDateToday(task.getDoDate())) {

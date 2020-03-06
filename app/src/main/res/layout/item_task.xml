@@ -22,8 +22,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_check_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
             android:layout_centerInParent="true"
             app:lottie_fileName="anim_check2.json"
             app:lottie_autoPlay="false" />

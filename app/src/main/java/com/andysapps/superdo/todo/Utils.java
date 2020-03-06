@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -303,17 +304,40 @@ public class Utils {
                 if (task.getRepeat().getDaysInterval() == 1) {
                     return true;
                 } else {
-                    if (isSuperDateToday(task.getRepeat().getStartDate())) {
-                        return true;
-                    }
-                   /* Calendar startDate =
-                    while ()
-                    /*long msDiff = Calendar.getInstance().getTimeInMillis() -
-                            getCalenderFromSuperDate(task.getRepeat().getLastRepeatedDate()).getTimeInMillis();
+
+                    //task.getRepeat().setStartDate(new SuperDate(2, 3, 2020));
+
+                    getCalenderFromSuperDate(task.getRepeat().getStartDate());
+
+                    long msDiff = Calendar.getInstance().getTimeInMillis() -
+                            getCalenderFromSuperDate(task.getRepeat().getStartDate()).getTimeInMillis();
                     long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
 
-                    return daysDiff == task.getRepeat().getDaysInterval(); */
-                   break;
+                    //Log.e(TAG, "shouldAddTaskRepeat: days diff : " + daysDiff);
+
+                    Calendar intervalDate = getCalenderFromSuperDate(task.getRepeat().getStartDate());
+
+                    for (int i = 0; i < daysDiff ; i++) {
+
+                        intervalDate.add(Calendar.DAY_OF_MONTH, task.getRepeat().getDaysInterval());
+
+                        int date = intervalDate.get(Calendar.DAY_OF_MONTH);
+                        int month = intervalDate.get(Calendar.MONTH);
+                        int year = intervalDate.get(Calendar.YEAR);
+
+                        //Log.e(TAG, "shouldAddTaskRepeat: incremented date : " + date + " month" + month);
+
+                        if (date == calendar.get(Calendar.DAY_OF_MONTH)
+                             && month == calendar.get(Calendar.MONTH) &&
+                             year == calendar.get(Calendar.YEAR)) {
+
+                            //Log.e(TAG, "shouldAddTaskRepeat: today added task");
+
+                            return true;
+                        }
+                    }
+
+                   return false;
                 }
             case Week:
                 return shouldRepeatWeeklyToday(task.getRepeat());
