@@ -4,7 +4,6 @@ public class Subtask {
 
     public String title;
     boolean isTaskCompleted;
-    boolean deleted;
     int index;
 
     public Subtask() {
@@ -16,14 +15,6 @@ public class Subtask {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public int getIndex() {

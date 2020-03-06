@@ -10,15 +10,9 @@ import java.util.List;
 public class Subtasks {
 
     public boolean isEnabled;
-
     public List<Subtask> subtaskList;
 
     public Subtasks() {
-    }
-
-    public Subtasks(boolean isEnabled) {
-        this.isEnabled = isEnabled;
-        subtaskList = new ArrayList<>();
     }
 
     public boolean isEnabled() {

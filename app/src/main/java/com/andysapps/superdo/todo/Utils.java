@@ -212,12 +212,16 @@ public class Utils {
         if (task.getRepeat() == null) {
             return false;
         }
-
+        
         switch (RepeatType.valueOf(task.getRepeat().getRepeatType())) {
             case Day:
                 if (task.getRepeat().getDaysInterval() == 1) {
                     return true;
                 } else {
+
+                    if (isSuperDateToday(task.getRepeat().getStartDate())) {
+                        return true;
+                    }
 
                     long msDiff = Calendar.getInstance().getTimeInMillis() -
                             getCalenderFromSuperDate(task.getRepeat().getLastRepeatedDate()).getTimeInMillis();

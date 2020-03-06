@@ -81,7 +81,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:requiresFadingEdge="vertical"
@@ -384,7 +384,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="40dp"
-                        android:layout_marginTop="20dp" />
+                        android:layout_marginTop="20dp"
+                        android:nestedScrollingEnabled="false"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -530,7 +531,7 @@
 
             </LinearLayout>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 
@@ -573,7 +574,6 @@
         app:layout_constraintBottom_toBottomOf="@id/editTask_rl_mark_done"
         app:layout_constraintStart_toEndOf="@id/editTask_rl_mark_done"
         android:textColor="@color/black"/>
-
 
     <TextView
         android:id="@+id/editTask_tv_createdOn"

@@ -98,7 +98,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         dlg_repeat__btn_sunday.setOnClickListener(this)
 
         dlg_repeat_b_positive.setOnClickListener {
-            EventBus.getDefault().post(SetRepeatEvent(repeat))
+            EventBus.getDefault().post(SetRepeatEvent(repeat, false))
             dismiss()
         }
 
@@ -107,7 +107,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         }
 
         dlg_repeat_delete_repeat.setOnClickListener {
-            EventBus.getDefault().post(SetRepeatEvent(Repeat(true)))
+            EventBus.getDefault().post(SetRepeatEvent(repeat, false))
             dismiss()
         }
 
@@ -154,20 +154,25 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
 
         if (repeat.repeatType == RepeatType.Week.name) {
             dlg_repeat_ll_weekdays.visibility = View.VISIBLE
+            dlg_repeat_rl_times.visibility = View.GONE
             updateWeedaysUi()
         } else {
             dlg_repeat_ll_weekdays.visibility = View.GONE
+            dlg_repeat_rl_times.visibility = View.VISIBLE
         }
 
         if (repeat.repeatType == RepeatType.Month.name) {
             dlg_repeat_spinner_monthdate.visibility = View.VISIBLE
             dlg_repeat_et_days.visibility = View.GONE
-            //dlg_repeat_tv_monthdates.visibility = View.VISIBLE
-            dlg_repeat_tv_monthdates.text = monthDates[repeat.monthDate]
+            dlg_repeat_tv_monthdates.text = monthDates[repeat.monthDate - 1]
+            dlg_repeat_tv_title_startdate.visibility = View.GONE
+            dlg_repeat_btn_date.visibility = View.GONE
         } else {
             dlg_repeat_spinner_monthdate.visibility = View.GONE
             dlg_repeat_tv_monthdates.visibility = View.GONE
             dlg_repeat_et_days.visibility = View.VISIBLE
+            dlg_repeat_tv_title_startdate.visibility = View.VISIBLE
+            dlg_repeat_btn_date.visibility = View.VISIBLE
         }
 
         if (repeat.startDate == null) {
@@ -202,7 +207,6 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
     }
 
     fun updateWeedaysUi() {
-
 
         dlg_repeat__btn_sunday.setTextColor(resources.getColor(R.color.grey4))
         dlg_repeat__btn_sunday.setBackgroundResource(R.drawable.bg_grey_low)

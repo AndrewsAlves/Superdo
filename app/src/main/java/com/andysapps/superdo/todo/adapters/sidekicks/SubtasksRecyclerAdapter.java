@@ -23,9 +23,13 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
+import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.events.sidekick.UpdateSubtasksEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.sidekicks.Subtask;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,8 +52,8 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
 
     public SubtasksRecyclerAdapter(Context context, List<Subtask> taskList, Task task) {
         this.context = context;
+        subtaskList = taskList;
         this.task = task;
-        updateList();
     }
 
     @Override
@@ -61,7 +65,9 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
 
     public void updateList() {
 
-        subtaskList.clear();
+        notifyDataSetChanged();
+
+        /*subtaskList.clear();
         subtaskList = new ArrayList<>();
 
         for (Subtask subtask : task.getSubtasks().subtaskList) {
@@ -77,6 +83,7 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
                 return o1.getIndex() - o2.getIndex();
             }
         });
+        */
 
     }
 
@@ -163,12 +170,10 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
         h.ibDeleteSubtask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                subtask.setDeleted(true);
-                subtaskList.remove(position);
-                notifyItemRemoved(position);
-                updateList();
+                subtaskList.remove(h.getAdapterPosition());
+                notifyItemRemoved(h.getAdapterPosition());
                 FirestoreManager.getInstance().updateTask(task);
-
+                EventBus.getDefault().post(new UpdateSubtasksEvent());
                 Utils.hideKeyboard(context, h.tvSubtaskName);
                 h.tvSubtaskName.clearFocus();
             }

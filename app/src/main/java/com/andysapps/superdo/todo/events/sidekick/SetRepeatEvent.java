@@ -4,9 +4,10 @@ import com.andysapps.superdo.todo.model.sidekicks.Repeat;
 
 public class SetRepeatEvent {
     public Repeat repeat;
-    public boolean
+    public boolean deleted;
 
-    public SetRepeatEvent(Repeat repeat) {
+    public SetRepeatEvent(Repeat repeat, boolean deleted) {
         this.repeat = repeat;
+        this.deleted = deleted;
     }
 }

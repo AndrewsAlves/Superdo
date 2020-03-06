@@ -37,10 +37,7 @@ import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
-import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
-import com.andysapps.superdo.todo.events.sidekick.SetDoDateEvent
-import com.andysapps.superdo.todo.events.sidekick.SetRemindEvent
-import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
+import com.andysapps.superdo.todo.events.sidekick.*
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
@@ -174,7 +171,15 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
         editTask_et_add_subtask.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if( editTask_et_add_subtask.text.trim().isNotEmpty()){
+                if( editTask_et_add_subtask.text.trim().isNotEmpty()) {
+
+                    if (task.subtasks == null) {
+                        task.subtasks = Subtasks()
+                        task.subtasks.subtaskList = ArrayList()
+
+                        setSubtaskRecycler()
+                    }
+
                     var subtask = Subtask()
                     subtask.index = task.subtasks.subtaskList.size - 1
                     subtask.isTaskCompleted = false
@@ -194,15 +199,14 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
             true
         })
-
-        if (task.subtasks == null) {
-            task.subtasks = Subtasks(false)
+        
+        if (task.subtasks != null) {
+            setSubtaskRecycler()
         }
 
-        if (task.subtasks.subtaskList == null) {
-            Log.e("null, find ", " todod ")
-            task.subtasks.subtaskList = ArrayList()
-        }
+    }
+
+    fun setSubtaskRecycler() {
 
         editTask_rv_subtasks.layoutManager = LinearLayoutManager(activity)
         subtaskAdapter = SubtasksRecyclerAdapter(context, task.subtasks.subtaskList, task)
@@ -319,15 +323,14 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             editTask_iv_deadline.setImageResource(R.drawable.ic_deadline_off)
             editTask_tv_deadline.alpha = 0.5f
             editTask_tv_deadline.text = "Set Deadline"
-
         }
 
-        if (task.subtasks.subtaskList.size == 0) {
-            editTask_iv_subtasks.setImageResource(R.drawable.ic_subtasks_off)
-            editTask_tv_subtasks.alpha = 0.5f
-        } else {
+        if (task.subtasks != null) {
             editTask_iv_subtasks.setImageResource(R.drawable.ic_subtasks_on)
             editTask_tv_subtasks.alpha = 1.0f
+        } else {
+            editTask_iv_subtasks.setImageResource(R.drawable.ic_subtasks_off)
+            editTask_tv_subtasks.alpha = 0.5f
         }
 
         //////////////
@@ -441,6 +444,15 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     /////////////
 
     @Subscribe
+    fun onMeessageEvent(event : UpdateSubtasksEvent) {
+        if (task.subtasks.getSubtaskList().size == 0) {
+            task.subtasks = null
+            FirestoreManager.getInstance().updateTask(task)
+        }
+       updateUi()
+    }
+
+    @Subscribe
     fun onMeessageEvent(event : SetDoDateEvent) {
         task.doDate = event.superDate.clone()
         updateUi()
@@ -475,7 +487,12 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     @Subscribe
     fun onMeessageEvent(event : SetRepeatEvent) {
         task.repeat = event.repeat.clone()
+        if (event.deleted) {
+            task.repeat = null
+        }
         updateUi()
+        TaskOrganiser.getInstance().organiseAllTasks()
+        updateTasks()
         FirestoreManager.getInstance().updateTask(task)
     }
 

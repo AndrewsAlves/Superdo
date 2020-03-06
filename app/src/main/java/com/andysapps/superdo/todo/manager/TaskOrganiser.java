@@ -95,15 +95,13 @@ public class TaskOrganiser {
             allTaskList.add(task);
             pendingTaskList.add(task);
 
-            if (Utils.shouldAddTaskRepeat(task)) {
+            if (Utils.isSuperDateToday(task.getDoDate()) && task.getRepeat() == null) {
                 task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
                 continue;
-            } else if (task.getRepeat() != null) {
-                continue;
             }
 
-            if (Utils.isSuperDateToday(task.getDoDate())) {
+            if (Utils.shouldAddTaskRepeat(task)) {
                 task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
                 continue;
