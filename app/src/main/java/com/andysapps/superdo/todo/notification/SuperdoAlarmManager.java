@@ -14,6 +14,7 @@ import com.andysapps.superdo.todo.NotificationBroadcast;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.RemindType;
 import com.andysapps.superdo.todo.enums.RepeatType;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.sidekicks.Deadline;
@@ -103,14 +104,30 @@ public class SuperdoAlarmManager {
         }
     }
 
+    public void registerDailyNotificationsAndReminders(Context context) {
+
+        Calendar todayCal = Calendar.getInstance();
+
+        registerDailyNotificationAlarms(context);
+    }
+
     public void registerDailyNotificationAlarms(Context context) {
+
         SuperDate date = new SuperDate();
         date.setTime(9,0);
-        setAlarmRepeat(context, date, notification_id_morning, REQ_CODE_MORNING, AlarmManager.INTERVAL_DAY, FLAG_CANCEL_CURRENT);
+        setAlarmExact(context, date, notification_id_morning, REQ_CODE_MORNING,  FLAG_CANCEL_CURRENT);
         date.setTime(15,0);
-        setAlarmRepeat(context, date, notification_id_afternoon, REQ_CODE_AFTERNOON, AlarmManager.INTERVAL_DAY, FLAG_CANCEL_CURRENT);
+        setAlarmExact(context, date, notification_id_afternoon, REQ_CODE_AFTERNOON, FLAG_CANCEL_CURRENT);
         date.setTime(21,0);
-        setAlarmRepeat(context, date, notification_id_night, REQ_CODE_NIGHT, AlarmManager.INTERVAL_DAY, FLAG_CANCEL_CURRENT);
+        setAlarmExact(context, date, notification_id_night, REQ_CODE_NIGHT, FLAG_CANCEL_CURRENT);
+    }
+
+    public void registerDailyReminders(Context context) {
+
+        for (Task task : TaskOrganiser.getInstance().todayTaskList) {
+
+        }
+
     }
 
     public void setAlarmRepeat(Context context, SuperDate date, String notificationId, int requestCode, long repeatInterval, int flag) {
@@ -307,7 +324,7 @@ public class SuperdoAlarmManager {
                 Log.e(TAG, "setDeadlineAlarm DAY BEFORE !");
                 Log.e(TAG, "deadline : " + task.getDeadline().getDeadlineRequestCode() + i);
 
-                setExactAlarm(alarmManage, calendar, pendingIntent);
+                setAlarmExact(alarmManage, calendar, pendingIntent);
             }
 
             if (i == 1) {
@@ -328,7 +345,7 @@ public class SuperdoAlarmManager {
                 Log.e(TAG, "setDeadlineAlarm 3 hours!");
                 Log.e(TAG, "deadline : " + task.getDeadline().getDeadlineRequestCode() + i);
 
-                setExactAlarm(alarmManage, calendar, pendingIntent);
+                setAlarmExact(alarmManage, calendar, pendingIntent);
             }
 
             if (i == 2) {
@@ -346,15 +363,40 @@ public class SuperdoAlarmManager {
                 Log.e(TAG, "setDeadlineAlarm DONE!");
                 Log.e(TAG, "deadline : " + task.getDeadline().getDeadlineRequestCode() + i);
 
-                setExactAlarm(alarmManage, calendar, pendingIntent);
+                setAlarmExact(alarmManage, calendar, pendingIntent);
             }
         }
     }
 
-    public void setExactAlarm(AlarmManager manager, Calendar calendar, PendingIntent pendingIntent) {
+    public void setAlarmExact(AlarmManager manager, Calendar calendar, PendingIntent pendingIntent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Log.e(TAG, "millies : " + calendar.getTimeInMillis());
 
+            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        } else {
+            manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
+    }
+
+    public void setAlarmExact(Context context, SuperDate date, String notificationId, int requestCode, int flag) {
+
+        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, NotificationBroadcast.class);
+        intent.putExtra(intent_key_notification_id, notificationId);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, flag);
+
+        Calendar calendar = Calendar.getInstance();
+        if (date.isHasDate()) {
+            calendar.set(Calendar.DAY_OF_MONTH, date.getDate());
+            calendar.set(Calendar.MONTH, date.getMonth() - 1);
+            calendar.set(Calendar.YEAR, date.getYear());
+        }
+        calendar.set(Calendar.HOUR_OF_DAY, date.getHours());
+        calendar.set(Calendar.MINUTE, date.getMinutes());
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         } else {
             manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

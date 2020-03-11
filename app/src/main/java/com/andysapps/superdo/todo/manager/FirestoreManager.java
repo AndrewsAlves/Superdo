@@ -18,6 +18,7 @@ import com.andysapps.superdo.todo.events.firestore.UploadTaskSuccessEvent;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
+import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentChange;
@@ -69,7 +70,12 @@ public class FirestoreManager {
 
     public static void initialise(Context context) {
         ourInstance = new FirestoreManager(context);
-        ourInstance.fetchUserData();
+        ourInstance.fetchUserData(false);
+    }
+
+    public static void initialiseAndRegisterAlarms(Context context) {
+        ourInstance = new FirestoreManager(context);
+        ourInstance.fetchUserData(true);
     }
 
     public static void initialiseForNotification(Context context) {
@@ -95,14 +101,14 @@ public class FirestoreManager {
         return bucket;
     }
 
-    public void fetchUserData() {
+    public void fetchUserData(boolean registerReminders) {
 
         Source source = Source.DEFAULT;
 
         taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", userId).whereEqualTo("isMovedToBin", false);
         bucketQuery = firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId).whereEqualTo("isMovedToBin", false).orderBy("created", Query.Direction.DESCENDING);
 
-        initQuerySnapshots();
+        if (!registerReminders) initQuerySnapshots();
 
         taskQuery.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -118,6 +124,12 @@ public class FirestoreManager {
                 }
 
                 TaskOrganiser.getInstance().organiseAllTasks();
+
+                if (registerReminders) {
+                    SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders();
+                    return;
+                }
+
                 EventBus.getDefault().post(new FetchTasksEvent(true));
             }
 
@@ -127,6 +139,11 @@ public class FirestoreManager {
                 EventBus.getDefault().post(new FetchTasksEvent(false));
             }
         });
+
+
+        if (registerReminders) {
+            return;
+        }
 
         bucketQuery.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
