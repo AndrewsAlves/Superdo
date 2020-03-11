@@ -1,7 +1,6 @@
 package com.andysapps.superdo.todo.model;
 
 import com.andysapps.superdo.todo.Utils;
-import com.andysapps.superdo.todo.model.sidekicks.Deadline;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -148,7 +147,7 @@ public class SuperDate implements Cloneable {
     }
 
     public String getMonthStringLong() {
-        return Utils.getMonthStringLong(month);
+        return Utils.getMonthStrLong(month);
     }
 
     public String getSuperDateString() {
@@ -167,7 +166,11 @@ public class SuperDate implements Cloneable {
             return "Tomorrow";
         }
 
-        duedate = getDate() + ", " + getMonthStringLong()  + ", " + getYear();
+        if (getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
+            duedate = Utils.getDateStr(this) + ", " + getMonthStringLong()  + ", " + getYear();
+        } else {
+            duedate = Utils.getDateStr(this) +" "+ Utils.getWeekDayStr(this) +  ", " + getMonthStringLong();
+        }
 
         return duedate;
     }

@@ -297,9 +297,9 @@ public class Task implements Cloneable {
             return "No Do Date";
         }
 
-        String duedate;
+        return "Do " + doDate.getSuperDateString() + " by " + doDate.getTimeString();
 
-        if (Utils.isSuperDateToday(doDate)) {
+        /*if (Utils.isSuperDateToday(doDate)) {
             return "Do Today by " + getTimeString();
         } else if (Utils.isSuperDateTomorrow(doDate)) {
             return "Do Tomorrow by " + getTimeString();
@@ -309,9 +309,8 @@ public class Task implements Cloneable {
             duedate = "Do " + doDate.getMonthString() + " "+ doDate.getDate() + ", " + doDate.getYear() + " by " + getTimeString();
         } else {
             duedate = "Do " + doDate.getMonthString() + " "+ doDate.getDate() + " by " + getTimeString();
-        }
+        } */
 
-        return duedate;
     }
 
     public  String getTimeString() {

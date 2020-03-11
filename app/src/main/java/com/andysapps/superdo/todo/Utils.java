@@ -34,6 +34,7 @@ public class Utils {
     public static String[] monthDates = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th",
             "13th", "14th", "15th", "16th", "17th", "18th", "19th", "20th", "21st", "22nd", "23rd", "24th", "25th", "26th", "27th", "28th", "29th", "30th", "31st"};
 
+
     public static void showSoftKeyboard(Context context, View view) {
         if (view.requestFocus()) {
             InputMethodManager imm = (InputMethodManager)
@@ -307,10 +308,6 @@ public class Utils {
                      task.setDoDate(getSuperdateToday());
                  } else {
 
-                     Calendar cal = Calendar.getInstance();
-                     cal.set(Calendar.DAY_OF_MONTH, 9);
-                     task.getRepeat().setStartDate(new SuperDate(cal));
-
                      if (!isSuperDateIsPast(task.getRepeat().getStartDate())) {
                          task.setDoDate(task.getRepeat().getStartDate());
                          break;
@@ -495,7 +492,7 @@ public class Utils {
         }
     }
 
-    public static String getWeekDay(SuperDate date) {
+    public static String getWeekDayStr(SuperDate date) {
 
         if (date == null) {
             return " ";
@@ -528,7 +525,16 @@ public class Utils {
         return " ";
     }
 
-    public static String getMonthStringLong(int month) {
+    public static String getDateStr(SuperDate date) {
+
+        if (date == null) {
+            return " ";
+        }
+
+        return monthDates[date.getDate() - 1];
+    }
+
+    public static String getMonthStrLong(int month) {
         switch (month) {
             case 1:
                 return "January";

@@ -240,7 +240,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             h.tvUpcomingDate.setVisibility(View.VISIBLE);
             switch (task.getListedIn()) {
                 case THIS_WEEK:
-                    h.tvUpcomingDate.setText(Utils.getWeekDay(task.getDoDate()));
+                    h.tvUpcomingDate.setText(Utils.getWeekDayStr(task.getDoDate()));
                     break;
                 case THIS_MONTH:
                     h.tvUpcomingDate.setText(Utils.monthDates[task.getDoDate().getDate() - 1]);

@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.dialog
+package com.andysapps.superdo.todo.dialog.alert
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

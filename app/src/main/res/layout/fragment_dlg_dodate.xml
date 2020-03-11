@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:text="Do Date"
         android:layout_margin="20dp"
-        android:fontFamily="@font/montserrat_regular"
-        android:textColor="@color/black"/>
+        android:fontFamily="@font/montserrat_bold"
+        android:textColor="@color/grey4"/>
 
     <LinearLayout
         android:id="@+id/dlg_deadline_btn_date"

@@ -1,7 +1,6 @@
 package com.andysapps.superdo.todo.model.sidekicks;
 
 import com.andysapps.superdo.todo.Utils;
-import com.andysapps.superdo.todo.model.Task;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -134,7 +133,7 @@ public class Deadline implements Cloneable {
     }
 
     public String getMonthStringLong() {
-        return Utils.getMonthStringLong(month);
+        return Utils.getMonthStrLong(month);
     }
 
     public String getDeadlineDateString() {

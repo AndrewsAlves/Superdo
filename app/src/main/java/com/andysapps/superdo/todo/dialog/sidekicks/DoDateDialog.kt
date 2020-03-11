@@ -56,7 +56,7 @@ class DoDateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, TimeP
             dlg_deadline_tv_date.setText(doDate.superDateString)
             dlg_deadline_tv_date.setTextColor(resources.getColor(R.color.grey1))
         } else {
-            dlg_deadline_iv_date.setImageResource(R.drawable.ic_do_date_off_grey_2)
+            dlg_deadline_iv_date.setImageResource(R.drawable.ic_do_date_on)
             dlg_deadline_tv_date.setText(doDate.superDateString)
             dlg_deadline_tv_date.setTextColor(resources.getColor(R.color.grey4))
         }

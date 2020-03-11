@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.adapters.taskrecyclers.CPMDRecyclerAdapter
-import com.andysapps.superdo.todo.dialog.DeleteTaskDialog
-import com.andysapps.superdo.todo.dialog.RestoreTaskDialog
+import com.andysapps.superdo.todo.dialog.alert.DeleteTaskDialog
+import com.andysapps.superdo.todo.dialog.alert.RestoreTaskDialog
 import com.andysapps.superdo.todo.enums.CPMD
 import com.andysapps.superdo.todo.enums.UndoType
 import com.andysapps.superdo.todo.events.*
