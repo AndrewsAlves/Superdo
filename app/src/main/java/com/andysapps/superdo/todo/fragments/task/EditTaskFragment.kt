@@ -45,6 +45,7 @@ import com.andysapps.superdo.todo.model.Task
 import com.andysapps.superdo.todo.model.sidekicks.Subtask
 import com.andysapps.superdo.todo.model.sidekicks.Subtasks
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
+import kotlinx.android.synthetic.main.fragment_create_habit_step2.*
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -102,6 +103,10 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     private fun initUi() {
 
         editTask_lottie_anim.setAnimation("anim_check2_1.json")
+        lv_remind.setAnimation("check_box2.json")
+        lv_remind.speed = 1.5f
+
+
 
         editTask_et_taskName.imeOptions = EditorInfo.IME_ACTION_DONE
         editTask_et_taskName.setRawInputType(InputType.TYPE_CLASS_TEXT)
@@ -302,14 +307,12 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         //////////////
         //// REMIND
 
-        if (task.remind != null && task.remind.remindType != null) {
+        if (task.isToRemind) {
             editTask_iv_remind.setImageResource(R.drawable.ic_remind_on)
             editTask_tv_remind.alpha = 1.0f
-            editTask_tv_remind.text = task.remind.remindString
         } else {
             editTask_iv_remind.setImageResource(R.drawable.ic_remind_off)
             editTask_tv_remind.alpha = 0.5f
-            editTask_tv_remind.text = "Set Remind"
         }
 
         //////////////
@@ -360,8 +363,18 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             RepeatDialog.instance(task.repeat).show(fragmentManager!!, RepeatDialog().javaClass.name)
         }
 
-        editTask_rl_btn_remind.setOnClickListener {
-            RemindDialog.instance(task.remind).show(fragmentManager!!, RemindDialog().javaClass.name)
+        lv_remind.setOnClickListener {
+            task.isToRemind = !task.isToRemind
+
+            if (task.isToRemind) {
+                lv_remind.setMinAndMaxProgress(0.20f, 0.50f) // on
+            } else {
+                lv_remind.setMinAndMaxProgress(0.70f, 1.0f) // off
+            }
+
+            lv_remind.playAnimation()
+            updateUi()
+            //RemindDialog.instance(task.remind).show(fragmentManager!!, RemindDialog().javaClass.name)
         }
 
         ///// DELETE task
@@ -487,6 +500,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     @Subscribe
     fun onMeessageEvent(event : SetRepeatEvent) {
         task.repeat = event.repeat.clone()
+        Utils.setNextDoDate(task)
         if (event.deleted) {
             task.repeat = null
         }
@@ -496,7 +510,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         FirestoreManager.getInstance().updateTask(task)
     }
 
-    @Subscribe
+    /*@Subscribe
     fun onMeessageEvent(event : SetRemindEvent) {
         task.remind = event.remind.clone()
 
@@ -524,7 +538,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         SuperdoAlarmManager.getInstance().setRemindAlarm(context, task)
 
         updateUi()
-    }
+    }*/
 
 
 }

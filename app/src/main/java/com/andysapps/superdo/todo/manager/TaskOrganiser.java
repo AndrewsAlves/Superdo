@@ -98,6 +98,7 @@ public class TaskOrganiser {
             allTaskList.add(task);
 
             if (task.getRepeat() != null) {
+                Utils.setNextDoDate(task);
                 recurringTask.add(task);
             }
 
@@ -105,7 +106,7 @@ public class TaskOrganiser {
                 deadlineTasks.add(task);
             }
 
-            if(task.getRemind() != null) {
+            if(task.isToRemind()) {
                 remindingTasks.add(task);
             }
 

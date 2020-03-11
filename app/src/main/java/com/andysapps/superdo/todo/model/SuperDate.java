@@ -5,6 +5,7 @@ import com.andysapps.superdo.todo.model.sidekicks.Deadline;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -25,9 +26,7 @@ public class SuperDate implements Cloneable {
 
     Date timestamp;
 
-    public SuperDate() {
-
-    }
+    public SuperDate() { }
 
     @Override
     public SuperDate clone() throws CloneNotSupportedException {
@@ -64,6 +63,18 @@ public class SuperDate implements Cloneable {
         hasTime = true;
         hasDate = true;
     }
+
+    public SuperDate(Calendar calendar) {
+        date = calendar.get(Calendar.DAY_OF_MONTH);
+        month = calendar.get(Calendar.MONTH) + 1;
+        year = calendar.get(Calendar.YEAR);
+        hours = calendar.get(Calendar.HOUR_OF_DAY);
+        minutes = calendar.get(Calendar.MINUTE);
+
+        hasDate = true;
+        hasTime = true;
+    }
+
 
     public int getHours() {
         return hours;

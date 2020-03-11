@@ -192,7 +192,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getRemind() != null) {
+        if (task.isToRemind()) {
             h.ivRemind.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }

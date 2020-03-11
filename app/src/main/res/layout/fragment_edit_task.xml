@@ -247,55 +247,6 @@
 
                 </LinearLayout>
 
-                <!-- REMIND -->
-
-                <LinearLayout
-                    android:id="@+id/editTask_rl_btn_remind"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginTop="35dp"
-                    android:layout_marginEnd="40dp">
-
-                    <ImageView
-                        android:id="@+id/editTask_iv_remind"
-                        android:layout_width="20dp"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_remind_off" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:visibility="gone"
-                            android:id="@+id/editTask_tv_remind_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/montserrat_medium"
-                            android:maxLines="1"
-                            android:text="Will Remind you"
-                            android:textSize="10sp"
-                            android:textColor="@color/grey2" />
-
-                        <TextView
-                            android:id="@+id/editTask_tv_remind"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/montserrat_medium"
-                            android:maxLines="2"
-                            android:text="Set Remind"
-                            android:textSize="14sp"
-                            android:textColor="@color/grey4" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
                 <!-- DEADLINE  -->
 
                 <LinearLayout
@@ -345,6 +296,63 @@
 
                 </LinearLayout>
 
+                <!-- REMIND -->
+
+                <LinearLayout
+                    android:id="@+id/editTask_rl_btn_remind"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="40dp">
+
+                    <ImageView
+                        android:id="@+id/editTask_iv_remind"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_remind_off" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:visibility="gone"
+                            android:id="@+id/editTask_tv_remind_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:maxLines="1"
+                            android:text="Will Remind you"
+                            android:textSize="10sp"
+                            android:textColor="@color/grey2" />
+
+                        <TextView
+                            android:id="@+id/editTask_tv_remind"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:maxLines="2"
+                            android:text="Remind"
+                            android:textSize="14sp"
+                            android:textColor="@color/grey4" />
+
+                    </LinearLayout>
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lv_remind"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp" />
+
+                </LinearLayout>
+
                 <!-- SUBTASKS -->
 
                 <LinearLayout
@@ -352,7 +360,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="35dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginStart="40dp"
                     android:layout_marginEnd="40dp"
                     android:visibility="visible">

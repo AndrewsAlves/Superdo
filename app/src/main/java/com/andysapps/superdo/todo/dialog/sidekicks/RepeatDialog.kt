@@ -17,6 +17,7 @@ import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.Utils.monthDates
 import com.andysapps.superdo.todo.enums.RepeatType
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
+import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.sidekicks.Repeat
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -76,14 +77,13 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         dlg_repeat_spinner_monthdate.onItemSelectedListener = (object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                repeat.monthDate = position
+                repeat.monthDate = position + 1
                 dlg_repeat_tv_monthdates.text = monthDates.getItem(position)
                 updateUi()
             }
         })
 
         dlg_repeat_spinner_monthdate.adapter = monthDates
-
         dlg_repeat_spinner_monthdate.setSelection(0)
 
         ////// Ui
@@ -119,8 +119,6 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
             showTimePicker()
         }
 
-
-
         //////// UPDATE UI ////////
 
         if (repeat.repeatType != null) {
@@ -138,7 +136,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
                 }
                 RepeatType.Month -> {
                     dlg_repeat_spinner_dwm.setSelection(2)
-                    dlg_repeat_spinner_monthdate.setSelection(repeat.monthDate)
+                    dlg_repeat_spinner_monthdate.setSelection(repeat.monthDate - 1)
                 }
             }
 
@@ -176,9 +174,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         }
 
         if (repeat.startDate == null) {
-            repeat.startDate = Utils.getSuperdateFromTimeStamp(Calendar.getInstance().time.time)
-            repeat.startDate.hasDate = true
-            repeat.startDate.setTime(9, 0)
+            repeat.startDate = SuperDate(Calendar.getInstance())
         }
 
         if (!repeat.startDate.hasDate) {

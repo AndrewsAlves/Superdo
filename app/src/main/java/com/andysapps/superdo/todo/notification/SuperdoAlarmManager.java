@@ -109,6 +109,7 @@ public class SuperdoAlarmManager {
         Calendar todayCal = Calendar.getInstance();
 
         registerDailyNotificationAlarms(context);
+        registerDailyReminders(context);
     }
 
     public void registerDailyNotificationAlarms(Context context) {
@@ -156,7 +157,7 @@ public class SuperdoAlarmManager {
         alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeatInterval, pendingIntent);
     }
 
-    public void setRemindAlarm(Context context, Task task) {
+    /* public void setRemindAlarm(Context context, Task task) {
 
         AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationBroadcast.class);
@@ -284,7 +285,7 @@ public class SuperdoAlarmManager {
 
                 break;
         }
-    }
+    } */
 
     public void setDeadlineReminder(Context context, Task task) {
 

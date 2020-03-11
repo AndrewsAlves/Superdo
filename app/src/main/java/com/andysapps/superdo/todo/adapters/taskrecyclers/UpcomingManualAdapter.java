@@ -283,7 +283,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getRemind() != null && task.getRemind().isEnabled) {
+        if (task.isToRemind()) {
             h.ivRemind.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }

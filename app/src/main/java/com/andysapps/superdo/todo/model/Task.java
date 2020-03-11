@@ -53,6 +53,8 @@ public class Task implements Cloneable {
 
     Remind remind;
 
+    boolean toRemind;
+
     Focus focus;
 
     ContactCard contactCard;
@@ -227,10 +229,16 @@ public class Task implements Cloneable {
         this.subtasks = subtasks;
     }
 
-
-
     public void setRemind(Remind remind) {
         this.remind = remind;
+    }
+
+    public boolean isToRemind() {
+        return toRemind;
+    }
+
+    public void setToRemind(boolean toRemind) {
+        this.toRemind = toRemind;
     }
 
     public Focus getFocus() {

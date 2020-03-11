@@ -70,12 +70,12 @@ public class FirestoreManager {
 
     public static void initialise(Context context) {
         ourInstance = new FirestoreManager(context);
-        ourInstance.fetchUserData(false);
+        ourInstance.fetchUserData(context, false);
     }
 
     public static void initialiseAndRegisterAlarms(Context context) {
         ourInstance = new FirestoreManager(context);
-        ourInstance.fetchUserData(true);
+        ourInstance.fetchUserData(context, true);
     }
 
     public static void initialiseForNotification(Context context) {
@@ -101,7 +101,7 @@ public class FirestoreManager {
         return bucket;
     }
 
-    public void fetchUserData(boolean registerReminders) {
+    public void fetchUserData(Context context, boolean registerReminders) {
 
         Source source = Source.DEFAULT;
 
@@ -126,7 +126,7 @@ public class FirestoreManager {
                 TaskOrganiser.getInstance().organiseAllTasks();
 
                 if (registerReminders) {
-                    SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders();
+                    SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders(context);
                     return;
                 }
 

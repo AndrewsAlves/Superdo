@@ -166,7 +166,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getRemind() != null) {
+        if (task.isToRemind()) {
             h.ivRemind.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }

@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.RepeatType;
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.sidekicks.Repeat;
@@ -100,76 +101,6 @@ public class Utils {
         return TaskListing.UPCOMING;
     }
 
-    public static boolean isTaskToday(Task task) {
-
-        SuperDate superdate = task.getDoDate();
-        Repeat repeat = task.getRepeat();
-
-        if (repeat == null) {
-            return isSuperDateToday(superdate);
-        }
-
-        switch (RepeatType.valueOf(repeat.getRepeatType())) {
-            case Day:
-                if (repeat.getDaysInterval() == 1) {
-                    return true;
-                } else {
-
-                    if (isSuperDateToday(repeat.getStartDate())) {
-                        return true;
-                    }
-
-                    long msDiff = Calendar.getInstance().getTimeInMillis() -
-                            getCalenderFromSuperDate(repeat.getLastRepeatedDate()).getTimeInMillis();
-                    long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
-
-                    return daysDiff == repeat.getDaysInterval();
-                }
-            case Week:
-                return shouldRepeatWeeklyToday(repeat);
-            case Month:
-                Calendar calendar = Calendar.getInstance();
-                return repeat.getMonthDate() == calendar.get(Calendar.DAY_OF_MONTH);
-        }
-
-        return false;
-    }
-
-    public static boolean isTaskTomorrow(Task task) {
-
-        SuperDate superdate = task.getDoDate();
-        Repeat repeat = task.getRepeat();
-
-        if (repeat == null) {
-            return isSuperDateTomorrow(superdate);
-        }
-
-        switch (RepeatType.valueOf(repeat.getRepeatType())) {
-            case Day:
-                if (repeat.getDaysInterval() == 1) {
-                    return true;
-                } else {
-
-                    if (isSuperDateToday(repeat.getStartDate())) {
-                        return true;
-                    }
-
-                    long msDiff = Calendar.getInstance().getTimeInMillis() -
-                            getCalenderFromSuperDate(repeat.getLastRepeatedDate()).getTimeInMillis();
-                    long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
-
-                    return daysDiff == repeat.getDaysInterval();
-                }
-            case Week:
-                return shouldRepeatWeeklyToday(repeat);
-            case Month:
-                Calendar calendar = Calendar.getInstance();
-                return repeat.getMonthDate() == calendar.get(Calendar.DAY_OF_MONTH);
-        }
-
-        return false;
-    }
-
     public static boolean isSuperDateToday(SuperDate superdate) {
 
         if (superdate == null) {
@@ -214,6 +145,30 @@ public class Utils {
         if (superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
                 && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
                 && superdate.getDate() < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isSuperDateIsFuture(SuperDate superdate) {
+
+        if (superdate == null) {
+            return false;
+        }
+
+        if (superdate.getYear() > Calendar.getInstance().get(Calendar.YEAR)) {
+            return true;
+        }
+
+        if (superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
+                && superdate.getMonth() - 1 > Calendar.getInstance().get(Calendar.MONTH)) {
+            return true;
+        }
+
+        if (superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
+                && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH)
+                && superdate.getDate() > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
             return true;
         }
 
@@ -305,15 +260,9 @@ public class Utils {
                     return true;
                 } else {
 
-                    //task.getRepeat().setStartDate(new SuperDate(2, 3, 2020));
-
-                    getCalenderFromSuperDate(task.getRepeat().getStartDate());
-
                     long msDiff = Calendar.getInstance().getTimeInMillis() -
                             getCalenderFromSuperDate(task.getRepeat().getStartDate()).getTimeInMillis();
                     long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
-
-                    //Log.e(TAG, "shouldAddTaskRepeat: days diff : " + daysDiff);
 
                     Calendar intervalDate = getCalenderFromSuperDate(task.getRepeat().getStartDate());
 
@@ -325,14 +274,9 @@ public class Utils {
                         int month = intervalDate.get(Calendar.MONTH);
                         int year = intervalDate.get(Calendar.YEAR);
 
-                        //Log.e(TAG, "shouldAddTaskRepeat: incremented date : " + date + " month" + month);
-
                         if (date == calendar.get(Calendar.DAY_OF_MONTH)
                              && month == calendar.get(Calendar.MONTH) &&
                              year == calendar.get(Calendar.YEAR)) {
-
-                            //Log.e(TAG, "shouldAddTaskRepeat: today added task");
-
                             return true;
                         }
                     }
@@ -340,13 +284,113 @@ public class Utils {
                    return false;
                 }
             case Week:
-                return shouldRepeatWeeklyToday(task.getRepeat());
+                return isWeeklyRepeatFallsThisDate(Calendar.getInstance(), task.getRepeat());
             case Month:
                 return task.getRepeat().getMonthDate() == calendar.get(Calendar.DAY_OF_MONTH);
         }
 
         return false;
     }
+
+     public static void setNextDoDate(Task task) {
+
+         if (task.getRepeat() == null) {
+             return;
+         }
+
+         switch (RepeatType.valueOf(task.getRepeat().getRepeatType())) {
+             case Day:
+
+                 Log.e(TAG, "setNextDoDate: setting next do date Days ");
+
+                 if (task.getRepeat().getDaysInterval() == 1) {
+                     task.setDoDate(getSuperdateToday());
+                 } else {
+
+                     Calendar cal = Calendar.getInstance();
+                     cal.set(Calendar.DAY_OF_MONTH, 9);
+                     task.getRepeat().setStartDate(new SuperDate(cal));
+
+                     if (!isSuperDateIsPast(task.getRepeat().getStartDate())) {
+                         task.setDoDate(task.getRepeat().getStartDate());
+                         break;
+                     }
+
+                     long msDiff = Calendar.getInstance().getTimeInMillis() -
+                             getCalenderFromSuperDate(task.getRepeat().getStartDate()).getTimeInMillis();
+                     long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
+
+                     Calendar intervalDate = getCalenderFromSuperDate(task.getRepeat().getStartDate());
+                     intervalDate.set(Calendar.HOUR_OF_DAY, task.getRepeat().getStartDate().getHours());
+                     intervalDate.set(Calendar.MINUTE, task.getRepeat().getStartDate().getMinutes());
+
+                     while (isSuperDateIsPast(new SuperDate(intervalDate))) {
+                         intervalDate.add(Calendar.DAY_OF_MONTH, task.getRepeat().getDaysInterval());
+
+                         SuperDate superDate = new SuperDate(intervalDate);
+
+                         if (isSuperDateIsFuture(superDate)) {
+                             task.setDoDate(superDate);
+                             break;
+                         }
+                     }
+                 }
+
+                 break;
+             case Week:
+
+                 Log.e(TAG, "setNextDoDate: setting next do date Weekly ");
+
+                 Calendar calendar1 = Calendar.getInstance();
+                 for (int i = 0 ; i < 15 ; i++) {
+
+                     if (isWeeklyRepeatFallsThisDate(calendar1, task.getRepeat())) {
+                         calendar1.set(Calendar.HOUR, task.getRepeat().getStartDate().getHours());
+                         calendar1.set(Calendar.MINUTE, task.getRepeat().getStartDate().getMinutes());
+                         task.setDoDate(new SuperDate(calendar1));
+                         break;
+                     }
+
+                     calendar1.add(Calendar.DAY_OF_MONTH, 1);
+                 }
+
+                 break;
+
+             case Month:
+
+                 Log.e(TAG, "setNextDoDate: setting next do date monthly ");
+
+                 Calendar calendar2 = Calendar.getInstance();
+                 calendar2.set(Calendar.HOUR, task.getRepeat().getStartDate().getHours());
+                 calendar2.set(Calendar.MINUTE, task.getRepeat().getStartDate().getMinutes());
+
+                 if (calendar2.get(Calendar.DAY_OF_MONTH) > task.getRepeat().getMonthDate()) {
+                     calendar2.add(Calendar.MONTH, + 1);
+
+                     int maxDays = calendar2.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+                     if (maxDays < task.getRepeat().getMonthDate()) {
+                         calendar2.set(Calendar.DAY_OF_MONTH, maxDays);
+                     } else {
+                         calendar2.set(Calendar.DAY_OF_MONTH, task.getRepeat().getMonthDate());
+                     }
+
+                 } else {
+                     int maxDays = calendar2.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+                     if (maxDays < task.getRepeat().getMonthDate()) {
+                         calendar2.set(Calendar.DAY_OF_MONTH, maxDays);
+                     } else {
+                         calendar2.set(Calendar.DAY_OF_MONTH, task.getRepeat().getMonthDate());
+                     }
+                 }
+                 
+                 task.setDoDate(new SuperDate(calendar2));
+                 break;
+         }
+
+         FirestoreManager.getInstance().updateTask(task);
+     }
 
     public static SuperDate getRandomMonthDate() {
 
@@ -391,13 +435,13 @@ public class Utils {
         return new SuperDate(date, month, year, 0, 0);
     }
 
-    public static boolean shouldRepeatWeeklyToday(Repeat repeat) {
+    public static boolean isWeeklyRepeatFallsThisDate(Calendar calendar,Repeat repeat) {
 
         if (repeat == null) {
             return false;
         }
 
-        int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        int today = calendar.get(Calendar.DAY_OF_WEEK);
 
         switch (today) {
             case Calendar.SUNDAY:

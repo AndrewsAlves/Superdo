@@ -136,7 +136,7 @@ public class SuperdoNotificationManager {
         });
     }
 
-    public void postNotificationRemind(Context context, String taskDocId) {
+    /*public void postNotificationRemind(Context context, String taskDocId) {
 
         DocumentReference snapshot  = firestore.collection(DB_TASKS).document(taskDocId);
         snapshot.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -180,7 +180,7 @@ public class SuperdoNotificationManager {
                                             break;
                                         case Week:
 
-                                            if (Utils.shouldRepeatWeeklyToday(remindTask.getRemind().getRemindRepeat())) {
+                                            if (Utils.isWeeklyRepeatFallsThisDate(remindTask.getRemind().getRemindRepeat())) {
                                                 notification = new SimpleNotification();
                                                 notification.setContentTitle("Hey human, Weekly Reminder for you");
                                                 notification.setContentText(remindTask.getName());
@@ -212,7 +212,7 @@ public class SuperdoNotificationManager {
                 }
             }
         });
-    }
+    }*/
 
     public void pushRemindNotification(Context context, SimpleNotification notification, int requestCode) {
         createNotification(context,new Intent(context, MainActivity.class),

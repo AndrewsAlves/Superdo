@@ -53,7 +53,7 @@ public class NotificationBroadcast extends BroadcastReceiver {
                 SuperdoNotificationManager.getInstance().postNotificationDaily(context, intent.getExtras().getString(intent_key_notification_id));
 
             } else if (intent.getExtras().getString(intent_key_notification_id).equals(notification_id_remind)) {
-                SuperdoNotificationManager.getInstance().postNotificationRemind(context, intent.getExtras().getString(intent_key_task_id));
+                //SuperdoNotificationManager.getInstance().postNotificationRemind(context, intent.getExtras().getString(intent_key_task_id));
                 Log.e(TAG, "onReceive: Notification Remind triggered");
             } else if (intent.getExtras().getString(intent_key_notification_id).equals(notification_id_deadline)) {
                 SuperdoNotificationManager.getInstance().postNotificationDeadline(context, intent.getExtras().getString(intent_key_task_id), intent);
