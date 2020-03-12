@@ -1,5 +1,7 @@
 package com.andysapps.superdo.todo.model;
 
+import android.util.Log;
+
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.sidekicks.ContactCard;
@@ -15,6 +17,7 @@ import com.google.firebase.firestore.ServerTimestamp;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by Andrews on 19,October,2019
@@ -54,6 +57,8 @@ public class Task implements Cloneable {
     Remind remind;
 
     boolean toRemind;
+
+    int remindRequestCode;
 
     Focus focus;
 
@@ -272,6 +277,21 @@ public class Task implements Cloneable {
 
     public void setTaskCompletedDate(Date taskCompletedDate) {
         this.taskCompletedDate = taskCompletedDate;
+    }
+
+    public int getRemindRequestCode() {
+        return remindRequestCode;
+    }
+
+    public void setRemindRequestCode(int remindRequestCode) {
+        this.remindRequestCode = remindRequestCode;
+    }
+
+    public int generateNewRequestCode() {
+        Random random = new Random();
+        remindRequestCode = random.nextInt(1000) * random.nextInt(10);
+        Log.e("Task", "generateNewRequestCode: " + remindRequestCode);
+        return remindRequestCode;
     }
 
     public String getDoDateString() {

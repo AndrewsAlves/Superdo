@@ -103,9 +103,13 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     private fun initUi() {
 
         editTask_lottie_anim.setAnimation("anim_check2_1.json")
+
         lv_remind.setAnimation("check_box2.json")
         lv_remind.speed = 1.5f
 
+        if (task.isToRemind) {
+            lv_remind.progress = 0.60f // on
+        }
 
 
         editTask_et_taskName.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -348,7 +352,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     private fun initClicks() {
 
         editTask_rl_btn_do_date.setOnClickListener {
-            DoDateDialog.instance(task.doDate).show(fragmentManager!!, DoDateDialog().javaClass.name)
+            DoDateDialog.instance(task.doDate, task).show(fragmentManager!!, DoDateDialog().javaClass.name)
         }
 
         editTask_rl_btn_select_bucket.setOnClickListener {
@@ -366,15 +370,22 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         lv_remind.setOnClickListener {
             task.isToRemind = !task.isToRemind
 
+            updateUi()
+            TaskOrganiser.getInstance().organiseAllTasks()
+            FirestoreManager.getInstance().updateTask(task)
+
             if (task.isToRemind) {
                 lv_remind.setMinAndMaxProgress(0.20f, 0.50f) // on
+                if (task.remindRequestCode == 0) {
+                    task.generateNewRequestCode()
+                }
+
+                SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders(context)
             } else {
-                lv_remind.setMinAndMaxProgress(0.70f, 1.0f) // off
+                lv_remind.setMinAndMaxProgress(0.65f, 1.0f) // off
             }
 
             lv_remind.playAnimation()
-            updateUi()
-            //RemindDialog.instance(task.remind).show(fragmentManager!!, RemindDialog().javaClass.name)
         }
 
         ///// DELETE task
@@ -493,7 +504,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         }
 
         FirestoreManager.getInstance().updateTask(task)
-        SuperdoAlarmManager.getInstance().setDeadlineReminder(context, task)
+        SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders(context)
         updateUi()
     }
 

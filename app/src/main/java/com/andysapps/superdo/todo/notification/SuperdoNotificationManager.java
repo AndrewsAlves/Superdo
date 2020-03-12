@@ -1,8 +1,11 @@
 package com.andysapps.superdo.todo.notification;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -10,10 +13,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.activity.MainActivity;
-import com.andysapps.superdo.todo.enums.RemindType;
-import com.andysapps.superdo.todo.enums.RepeatType;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
@@ -44,6 +44,15 @@ public class SuperdoNotificationManager {
     private static final String TAG = "NotificationManager";
     private static SuperdoNotificationManager ourInstance;
 
+    public static final String CHANNEL_DAILY = "sd_notification_recursive";
+
+    public static final String CHANNEL_TASK = "sd_notification_tasks";
+    public static final String CHANNEL_DEADLINE = "sd_notification_deadline";
+    public static final String CHANNEL_REMINDER = "sd_notification_reminder";
+    public static final String CHANNEL_FOCUS = "sd_notification_focus";
+    public static final String CHANNEL_SUBSCRIPTIONS= "sd_notification_subscription";
+    public static final String CHANNEL_RANDOM = "sd_notification_random";
+
     public static final String notification_id_morning = "morning";
     public static final String notification_id_afternoon = "afternoon";
     public static final String notification_id_evening = "evening";
@@ -54,7 +63,7 @@ public class SuperdoNotificationManager {
     public static final String notification_id_task = "task";
 
     public static final String notification_id_deadline_daybefore = "deadline_day_before";
-    public static final String notification_id_deadline_3_hours_before = "deadline_3_hours_before";
+    public static final String notification_id_deadline_morning = "deadline_morning";
     public static final String notification_id_deadline_done = "deadline_done";
 
     private final FirebaseFirestore firestore;
@@ -66,11 +75,48 @@ public class SuperdoNotificationManager {
 
     private SuperdoNotificationManager(Context context) {
         firestore =  FirebaseFirestore.getInstance();
+        createNotificationChannels(context);
         //uploadDailyNotifications();
     }
 
     public static void initialise(Context context) {
         ourInstance = new SuperdoNotificationManager(context);
+    }
+
+    public void createNotificationChannels(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_DAILY, "Daily", importance);
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            for (int i = 1 ; i <= 7 ; i++) {
+                switch (i) {
+                    case 1:
+                        channel = new NotificationChannel(CHANNEL_DAILY, "Daily", importance);
+                        break;
+                    case 2:
+                        channel = new NotificationChannel(CHANNEL_TASK, "Tasks", importance);
+                        break;
+                    case 3:
+                        channel = new NotificationChannel(CHANNEL_DEADLINE, "Deadline", importance);
+                        break;
+                    case 4:
+                        channel = new NotificationChannel(CHANNEL_REMINDER, "Reminders", importance);
+                        break;
+                    case 5:
+                        channel = new NotificationChannel(CHANNEL_FOCUS, "Focus", importance);
+                        break;
+                    case 6:
+                        channel = new NotificationChannel(CHANNEL_SUBSCRIPTIONS, "Subscription", importance);
+                        break;
+                    case 7:
+                        channel = new NotificationChannel(CHANNEL_RANDOM, "Random", importance);
+                        break;
+                }
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
     }
 
     public void createNotification(Context context, Intent intent, String channelId, int smallIcon, String contentTitle, String contentText, String contentBogText, int notificationId) {
@@ -121,7 +167,7 @@ public class SuperdoNotificationManager {
                 SimpleNotification notification = getSimpleNotificationForDaily(notificationList);
 
                 createNotification(context,new Intent(context, MainActivity.class),
-                        SuperdoAlarmManager.CHANNEL_DAILY,
+                        CHANNEL_DAILY,
                         R.drawable.ic_notification,
                         notification.getContentTitle(),
                         notification.getContentText(),
@@ -214,9 +260,43 @@ public class SuperdoNotificationManager {
         });
     }*/
 
+     public void postNotificationRemind(Context context, String taskDocId) {
+
+        DocumentReference snapshot  = firestore.collection(DB_TASKS).document(taskDocId);
+        snapshot.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+
+                Task remindTask;
+
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        if (document.exists()) {
+                            remindTask = document.toObject(Task.class);
+
+                            SimpleNotification notification = new SimpleNotification();
+                            notification.setContentTitle("Reminder for you!");
+                            notification.setContentText(remindTask.getName());
+                            notification.setContextBigText(remindTask.getName());
+
+                            pushRemindNotification(context, notification , remindTask.getRemindRequestCode());
+
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
     public void pushRemindNotification(Context context, SimpleNotification notification, int requestCode) {
         createNotification(context,new Intent(context, MainActivity.class),
-                SuperdoAlarmManager.CHANNEL_REMINDER,
+                CHANNEL_REMINDER,
                 R.drawable.ic_notification,
                 notification.getContentTitle(),
                 notification.getContentText(),
@@ -226,7 +306,7 @@ public class SuperdoNotificationManager {
 
     public void pushDeadlineNotification(Context context, SimpleNotification notification, int requestCode) {
         createNotification(context,new Intent(context, MainActivity.class),
-                SuperdoAlarmManager.CHANNEL_DEADLINE,
+                CHANNEL_DEADLINE,
                 R.drawable.ic_notification,
                 notification.getContentTitle(),
                 notification.getContentText(),
@@ -247,6 +327,8 @@ public class SuperdoNotificationManager {
                     if (document.exists()) {
                         deadlineTask = document.toObject(Task.class);
 
+                        Log.e(TAG, "postNotificationDeadline: deadline executed" );
+
                         int requestCode = 0;
                         SimpleNotification notification = new SimpleNotification();
                         notification.setContentText(deadlineTask.getName());
@@ -258,12 +340,12 @@ public class SuperdoNotificationManager {
 
                         switch (intent.getExtras().getString(intent_key_notification_deadline_type)) {
 
-                            case notification_id_deadline_3_hours_before:
-                                notification.setContentTitle("Hey human, you have a deadline 3 hours from now");
+                            case notification_id_deadline_morning:
+                                notification.setContentTitle("Hey human, you have a deadline today.");
                                 requestCode = deadlineTask.getDeadline().getDeadlineRequestCode();
                                 break;
                             case notification_id_deadline_daybefore:
-                                notification.setContentTitle("Hey human, you have a deadline tomorrow from now");
+                                notification.setContentTitle("Hey human, you have a deadline tomorrow");
                                 requestCode = deadlineTask.getDeadline().getDeadlineRequestCode() + 1;
                                 break;
                             case notification_id_deadline_done:

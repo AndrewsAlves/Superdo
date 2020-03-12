@@ -1,6 +1,7 @@
 package com.andysapps.superdo.todo.dialog.sidekicks
 
 
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,13 +11,19 @@ import androidx.fragment.app.DialogFragment
 
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
+import com.andysapps.superdo.todo.dialog.alert.DeleteTaskDialog
+import com.andysapps.superdo.todo.dialog.alert.DoDateWithRepeatAlertDialog
+import com.andysapps.superdo.todo.events.ActionRemoveRepeatTask
 import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
 import com.andysapps.superdo.todo.events.sidekick.SetDoDateEvent
 import com.andysapps.superdo.todo.model.SuperDate
+import com.andysapps.superdo.todo.model.Task
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.fragment_dlg_deadline.*
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 /**
@@ -25,12 +32,14 @@ import java.util.*
 class DoDateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     var doDate : SuperDate = SuperDate()
+    var task : Task? = null
 
     companion object {
-        fun instance(superdate : SuperDate?) : DoDateDialog {
+        fun instance(superdate : SuperDate?, task: Task) : DoDateDialog {
             val fragment = DoDateDialog()
             if (superdate != null) {
                 fragment.doDate = superdate.clone()
+                fragment.task = task
             }
             return fragment
         }
@@ -44,9 +53,14 @@ class DoDateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, TimeP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        EventBus.getDefault().register(this)
         initUi()
         updateUi()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        EventBus.getDefault().unregister(this)
+        super.onDismiss(dialog)
     }
 
     fun updateUi() {
@@ -92,8 +106,12 @@ class DoDateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, TimeP
         }
 
         dlg_deadline_b_positive.setOnClickListener {
-            EventBus.getDefault().post(SetDoDateEvent(doDate))
-            dismiss()
+            if (task!!.repeat != null) {
+                DoDateWithRepeatAlertDialog().show(fragmentManager!!, "removerepeat")
+            } else {
+                EventBus.getDefault().post(SetDoDateEvent(doDate))
+                dismiss()
+            }
         }
 
         dlg_deadline_b_negative.setOnClickListener {
@@ -159,6 +177,15 @@ class DoDateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, TimeP
         doDate.setTime(hourOfDay, minute)
         doDate.hasTime = true
         updateUi()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event : ActionRemoveRepeatTask) {
+        if (event.isPositive) {
+            task!!.repeat = null
+            EventBus.getDefault().post(SetDoDateEvent(doDate))
+            dismiss()
+        }
     }
 
 }

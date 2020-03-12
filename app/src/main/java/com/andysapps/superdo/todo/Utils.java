@@ -240,17 +240,18 @@ public class Utils {
             return false;
         }
 
+        Repeat repeat = task.getRepeat();
         Calendar calendar = Calendar.getInstance();
 
         if (task.isTaskCompleted()) {
             if (task.getTaskCompletedDate() == null) {
                 return false;
             }
-            SuperDate conpletedDate = getSuperdateFromTimeStamp(task.getTaskCompletedDate().getTime());
+            SuperDate completedDate = getSuperdateFromTimeStamp(task.getTaskCompletedDate().getTime());
             SuperDate todayDate = getSuperdateToday();
-            if (conpletedDate.getDate() == todayDate.getDate()
-                    && conpletedDate.getMonth() == todayDate.getMonth()
-                    && conpletedDate.getYear() == todayDate.getYear()) {
+            if (completedDate.getDate() == todayDate.getDate()
+                    && completedDate.getMonth() == todayDate.getMonth()
+                    && completedDate.getYear() == todayDate.getYear()) {
                 return false;
             }
         }
@@ -261,24 +262,26 @@ public class Utils {
                     return true;
                 } else {
 
-                    long msDiff = Calendar.getInstance().getTimeInMillis() -
-                            getCalenderFromSuperDate(task.getRepeat().getStartDate()).getTimeInMillis();
-                    long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
+                    if (isSuperDateToday(repeat.getStartDate())) {
+                        return true;
+                    }
 
                     Calendar intervalDate = getCalenderFromSuperDate(task.getRepeat().getStartDate());
+                    intervalDate.set(Calendar.HOUR_OF_DAY, task.getRepeat().getStartDate().getHours());
+                    intervalDate.set(Calendar.MINUTE, task.getRepeat().getStartDate().getMinutes());
 
-                    for (int i = 0; i < daysDiff ; i++) {
+                    while (isSuperDateIsPast(new SuperDate(intervalDate))) {
 
                         intervalDate.add(Calendar.DAY_OF_MONTH, task.getRepeat().getDaysInterval());
 
-                        int date = intervalDate.get(Calendar.DAY_OF_MONTH);
-                        int month = intervalDate.get(Calendar.MONTH);
-                        int year = intervalDate.get(Calendar.YEAR);
+                        SuperDate superDate = new SuperDate(intervalDate);
 
-                        if (date == calendar.get(Calendar.DAY_OF_MONTH)
-                             && month == calendar.get(Calendar.MONTH) &&
-                             year == calendar.get(Calendar.YEAR)) {
+                        if (isSuperDateToday(superDate)) {
                             return true;
+                        }
+
+                        if (isSuperDateIsFuture(superDate)) {
+                            return false;
                         }
                     }
 
@@ -305,17 +308,13 @@ public class Utils {
                  Log.e(TAG, "setNextDoDate: setting next do date Days ");
 
                  if (task.getRepeat().getDaysInterval() == 1) {
-                     task.setDoDate(getSuperdateToday());
+                     task.setDoDate(task.getRepeat().getStartDate());
                  } else {
 
                      if (!isSuperDateIsPast(task.getRepeat().getStartDate())) {
                          task.setDoDate(task.getRepeat().getStartDate());
                          break;
                      }
-
-                     long msDiff = Calendar.getInstance().getTimeInMillis() -
-                             getCalenderFromSuperDate(task.getRepeat().getStartDate()).getTimeInMillis();
-                     long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
 
                      Calendar intervalDate = getCalenderFromSuperDate(task.getRepeat().getStartDate());
                      intervalDate.set(Calendar.HOUR_OF_DAY, task.getRepeat().getStartDate().getHours());
@@ -388,6 +387,9 @@ public class Utils {
 
          FirestoreManager.getInstance().updateTask(task);
      }
+
+
+
 
     public static SuperDate getRandomMonthDate() {
 
