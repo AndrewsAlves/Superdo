@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
     android:clickable="true"
+    android:background="@color/bg_white1"
     tools:context=".fragments.bucket.BucketFragment">
 
     <LinearLayout
@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="Buckets"
-                android:textSize="28sp"
+                android:textSize="24sp"
                 android:textColor="@color/lightRed"
                 android:layout_marginStart="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -38,7 +38,7 @@
                 android:scaleType="fitXY"
                 android:padding="2dp"
                 android:visibility="visible"
-                android:src="@drawable/ic_close"
+                android:src="@drawable/ic_close_mini"
                 android:layout_marginEnd="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -22,6 +22,8 @@ import com.andysapps.superdo.todo.events.TaskModifiedEvent;
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
+import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
+import com.andysapps.superdo.todo.fragments.bucket.BucketFragment;
 import com.github.florent37.viewanimator.ViewAnimator;
 
 import org.greenrobot.eventbus.EventBus;
@@ -156,6 +158,11 @@ public class TasksDayFragment extends Fragment {
         viewPagerTasks.setCurrentItem(2);
         EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.UPCOMING));
         updateUi();
+    }
+
+    @OnClick(R.id.ib_bucketList)
+    public void clickBucket() {
+        EventBus.getDefault().post(new OpenFragmentEvent(new BucketFragment(), true, BucketFragment.TAG));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

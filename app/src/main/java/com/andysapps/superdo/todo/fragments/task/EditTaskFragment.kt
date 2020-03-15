@@ -111,7 +111,6 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             lv_remind.progress = 0.60f // on
         }
 
-
         editTask_et_taskName.imeOptions = EditorInfo.IME_ACTION_DONE
         editTask_et_taskName.setRawInputType(InputType.TYPE_CLASS_TEXT)
 
@@ -141,7 +140,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         editTask_et_taskName.onFocusChangeListener = this
         editTask_et_desc.onFocusChangeListener = this
 
-        editTask_lottie_anim.setOnClickListener(View.OnClickListener {
+        editTask_lottie_anim.setOnClickListener({
 
             editTask_lottie_anim.setMinAndMaxProgress(0.0f, 1.0f)
 
@@ -178,7 +177,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         ///// SUBTASK RECYCLER
         //////////////
 
-        editTask_et_add_subtask.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+        editTask_et_add_subtask.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if( editTask_et_add_subtask.text.trim().isNotEmpty()) {
 
@@ -207,8 +206,8 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             }
 
             true
-        })
-        
+        }
+
         if (task.subtasks != null) {
             setSubtaskRecycler()
         }

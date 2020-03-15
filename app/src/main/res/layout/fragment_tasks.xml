@@ -21,13 +21,26 @@
                 android:id="@+id/tv_todaytitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
-                android:text="Tasks"
-                android:textSize="24sp"
-                android:textColor="@color/lightRed"
                 android:layout_marginStart="40dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="All Tasks"
+                android:textColor="@color/lightRed"
+                android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/ib_bucketList"
+                style="@style/ripple_background"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="40dp"
+                android:src="@drawable/ic_bucket_list"
+                android:background="@color/transparent"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout

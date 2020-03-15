@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
-
     <com.andysapps.superdo.todo.views.ViewPagerNoScroll
         android:id="@+id/vp_main"
         android:layout_width="match_parent"
@@ -18,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        app:cardElevation="10dp">
+        app:cardElevation="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
