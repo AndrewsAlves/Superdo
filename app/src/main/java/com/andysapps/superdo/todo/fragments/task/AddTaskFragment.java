@@ -27,6 +27,7 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment;
 import com.andysapps.superdo.todo.enums.BucketColors;
+import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent;
@@ -34,6 +35,7 @@ import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.DialogDismissEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
+import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -244,25 +246,25 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
            ivTime.setImageResource(R.drawable.ic_time_off);
        }
 
-       if (task.getBucketId() != null) {
+       if (task.getBucket() != null) {
 
-           bucketName.setText(task.getBucketName());
+           bucketName.setText(task.getBucket().getName());
 
-           switch (BucketColors.valueOf(task.getBucketColor())) {
-               case Red:
-                   ivTag.setImageResource(R.drawable.img_oval_light_red_mini);
+           switch (BucketType.valueOf(task.getBucket().getBucketType())) {
+               case Tasks:
+                   ivTag.setImageResource(R.drawable.ic_bc_tasks_on);
                    break;
-               case Green:
-                   ivTag.setImageResource(R.drawable.img_oval_light_green_mini);
+               case Gym:
+                   ivTag.setImageResource(R.drawable.ic_bc_gym_on);
                    break;
-               case SkyBlue:
-                   ivTag.setImageResource(R.drawable.img_oval_light_skyblue_mini);
+               case Work:
+                   ivTag.setImageResource(R.drawable.ic_bc_briefcase_on);
                    break;
-               case InkBlue:
-                   ivTag.setImageResource(R.drawable.img_oval_light_inkblue_mini);
+               case House:
+                   ivTag.setImageResource(R.drawable.ic_bc_house_on);
                    break;
-               case Orange:
-                   ivTag.setImageResource(R.drawable.img_oval_light_orange_mini);
+               case Personal:
+                   ivTag.setImageResource(R.drawable.ic_bc_personal_on);
                    break;
            }
        }
@@ -463,9 +465,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(SelectBucketEvent event) {
-        task.setBucketColor(event.getBucket().getTagColor());
-        task.setBucketId(event.getBucket().getDocumentId());
-        task.setBucketName(event.getBucket().getName());
+        task.setBucket(event.getBucket());
         updateUi();
     }
 

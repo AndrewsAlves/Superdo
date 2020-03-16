@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ import com.andysapps.superdo.todo.dialog.BucketActionBottomDialog;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
+import com.andysapps.superdo.todo.events.SetTasksFragment;
 import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
@@ -91,24 +93,6 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
 
         holder.tvBucketName.setText(bucket.getName());
 
-        switch (BucketColors.valueOf(bucket.getTagColor())) {
-            case Red:
-                holder.ivTag.setImageResource(R.drawable.img_oval_light_red_mini);
-                break;
-            case Green:
-                holder.ivTag.setImageResource(R.drawable.img_oval_light_green_mini);
-                break;
-            case SkyBlue:
-                holder.ivTag.setImageResource(R.drawable.img_oval_light_skyblue_mini);
-                break;
-            case InkBlue:
-                holder.ivTag.setImageResource(R.drawable.img_oval_light_inkblue_mini);
-                break;
-            case Orange:
-                holder.ivTag.setImageResource(R.drawable.img_oval_light_orange_mini);
-                break;
-        }
-
         switch (BucketType.valueOf(bucket.getBucketType())) {
             case Tasks:
                 holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_tasks_on);
@@ -132,10 +116,14 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
 
         holder.tvNoTasks.setText(taskDone);
 
-        holder.parentView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new SetBucketTaskListEvent(bucket));
+                if (holder.getAdapterPosition() == 0) {
+                    EventBus.getDefault().post(new SetTasksFragment(null));
+                } else {
+                    EventBus.getDefault().post(new SetTasksFragment(bucket));
+                }
             }
         });
 
@@ -143,11 +131,10 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
             return;
         }
 
-        holder.parentView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.ibBucketActions.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                 EventBus.getDefault().post(new OpenBottomFragmentEvent(BucketActionBottomDialog.Companion.instance(bucket)));
-                return true;
             }
         });
     }
@@ -159,8 +146,8 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
 
     public class PlaceViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.cv_parentview)
-        public CardView parentView;
+        @BindView(R.id.ic_bucket_actions)
+        ImageButton ibBucketActions;
 
         @BindView(R.id.tv_bucket_name)
         public TextView tvBucketName;

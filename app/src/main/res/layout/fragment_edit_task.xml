@@ -140,7 +140,7 @@
                             android:id="@+id/editTask_iv_bucket"
                             android:layout_width="23dp"
                             android:layout_height="23dp"
-                            android:scaleType="center"
+                            android:scaleType="centerInside"
                             android:src="@drawable/img_oval_light_red" />
 
                         <TextView
@@ -306,7 +306,7 @@
                     android:gravity="center_vertical"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginEnd="40dp">
+                    android:layout_marginEnd="25dp">
 
                     <ImageView
                         android:id="@+id/editTask_iv_remind"
@@ -384,6 +384,18 @@
                             android:fontFamily="@font/montserrat_medium"
                             android:text="Sub Tasks"
                             android:textSize="14sp" />
+                        
+                        <ImageButton
+                            android:visibility="visible"
+                            android:id="@+id/ib_clear_subtasks"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            style="@style/ripple_background"
+                            android:src="@drawable/ic_close_mini_black"
+                            android:scaleType="centerInside"
+                            android:padding="4dp"
+                            android:alpha="0.3"
+                            android:layout_alignParentEnd="true"/>
 
                     </RelativeLayout>
 

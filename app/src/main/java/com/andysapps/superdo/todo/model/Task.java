@@ -70,11 +70,7 @@ public class Task implements Cloneable {
     // BUCKET
     /////
 
-    String bucketId;
-
-    String bucketName;
-
-    String bucketColor;
+    Bucket bucket;
 
     ///////
     // OTHER
@@ -110,28 +106,12 @@ public class Task implements Cloneable {
         this.description = description;
     }
 
-    public String getBucketId() {
-        return bucketId;
+    public Bucket getBucket() {
+        return bucket;
     }
 
-    public void setBucketId(String bucketId) {
-        this.bucketId = bucketId;
-    }
-
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    public String getBucketColor() {
-        return bucketColor;
-    }
-
-    public void setBucketColor(String bucketColor) {
-        this.bucketColor = bucketColor;
+    public void setBucket(Bucket bucket) {
+        this.bucket = bucket;
     }
 
     public Date getCreated() {

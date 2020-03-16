@@ -308,7 +308,9 @@ public class Utils {
                  Log.e(TAG, "setNextDoDate: setting next do date Days ");
 
                  if (task.getRepeat().getDaysInterval() == 1) {
-                     task.setDoDate(task.getRepeat().getStartDate());
+                     SuperDate today = getSuperdateToday();
+                     today.setTime(task.getRepeat().getStartDate().getHours(), task.getRepeat().getStartDate().getMinutes());
+                     task.setDoDate(today);
                  } else {
 
                      if (!isSuperDateIsPast(task.getRepeat().getStartDate())) {

@@ -4,87 +4,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="60dp">
 
-    <androidx.cardview.widget.CardView
-        android:visibility="visible"
-        android:id="@+id/cv_parentview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardElevation="0dp"
-        app:cardCornerRadius="8dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp">
 
-        <RelativeLayout
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp">
+
+        <ImageView
+            android:id="@+id/iv_bucket_icon_1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:src="@drawable/ic_bc_tasks_on" />
 
-            <RelativeLayout
-                android:id="@+id/relativeLayout"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="10dp">
+    </RelativeLayout>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/bg_oval_bucketicon_red"
-                    android:visibility="visible" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="20dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/relativeLayout">
 
-                <ImageView
-                    android:id="@+id/iv_bucket_icon_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_bc_tasks_on" />
+        <TextView
+            android:id="@+id/tv_bucket_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="All Tasks"
+            android:textColor="@color/lightRed"
+            android:textSize="14sp" />
 
-            </RelativeLayout>
+    </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="20dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/relativeLayout">
+    <TextView
+        android:id="@+id/tv_no_tasks_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_medium"
+        android:text="0 / 0"
+        android:layout_marginEnd="70dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/grey3"
+        android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_bucket_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="All Tasks"
-                    android:textColor="@color/lightRed"
-                    android:textSize="14sp" />
+    <ImageButton
+        android:id="@+id/ic_bucket_actions"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="15dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_actions_bucket"
+        style="@style/ripple_background"
+        android:layout_alignParentEnd="true" />
 
-                <TextView
-                    android:id="@+id/tv_no_tasks_done"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:text="0 / 0"
-                    android:textColor="@color/grey3"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/iv_tag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:src="@drawable/img_oval_light_green_mini"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"/>
-
-        </RelativeLayout>
-
-    </androidx.cardview.widget.CardView>
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/iv_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:src="@drawable/img_oval_light_green_mini"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"/>
 
 </RelativeLayout>

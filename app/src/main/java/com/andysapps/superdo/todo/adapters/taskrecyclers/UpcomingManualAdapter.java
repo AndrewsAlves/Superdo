@@ -293,27 +293,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getBucketId() != null) {
-            switch (BucketColors.valueOf(task.getBucketColor())) {
-                case Red:
-                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_red);
-                    break;
-                case Green:
-                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_green);
-                    break;
-                case SkyBlue:
-                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_skyblue);
-                    break;
-                case InkBlue:
-                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_inkblue);
-                    break;
-                case Orange:
-                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_orange);
-                    break;
-            }
-        } else {
-            h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
-        }
+        h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
 
         h.lottieCheckView.addValueCallback(
                 new KeyPath("Shape Layer 1", "**"),
@@ -321,7 +301,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 new SimpleLottieValueCallback<ColorFilter>() {
                     @Override
                     public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
-                        return new PorterDuffColorFilter(Utils.getColor(context, task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
+                        return new PorterDuffColorFilter(context.getResources().getColor(R.color.grey3), PorterDuff.Mode.SRC_ATOP);
                     }
                 }
         );

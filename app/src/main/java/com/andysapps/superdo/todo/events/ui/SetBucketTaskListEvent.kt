@@ -6,4 +6,4 @@ import com.andysapps.superdo.todo.model.Bucket
  * Created by Admin on 14,November,2019
  */
 
-class SetBucketTaskListEvent (var bucket : Bucket)
+class SetBucketTaskListEvent (var bucket : Bucket?)

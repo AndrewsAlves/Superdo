@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_white1"
+    tools:context=".fragments.task.AllTasksFragment">
+
+    <LinearLayout
+        android:id="@+id/tasks_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="10dp">
+
+            <com.andysapps.superdo.todo.views.GradientTextView
+                android:id="@+id/tv_bucket_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="All Tasks"
+                android:textColor="@color/lightRed"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/ib_bucketList"
+                style="@style/ripple_background"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="40dp"
+                android:src="@drawable/ic_bucket_list"
+                android:background="@color/transparent"
+                android:scaleType="centerInside"
+                android:layout_alignParentEnd="true"/>
+
+            <ImageButton
+                android:visibility="gone"
+                android:id="@+id/btn_close__bucket"
+                style="@style/ripple_background"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="40dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_close_mini"
+                android:layout_alignParentEnd="true"/>
+
+            <ImageButton
+                android:visibility="gone"
+                android:id="@+id/btn_save__bucket"
+                style="@style/ripple_background"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="80dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_tick_red"
+                android:layout_alignParentEnd="true" />
+
+            <LinearLayout
+                android:id="@+id/ll_today_tomorrow_later"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_below="@id/tv_bucket_title">
+
+                <TextView
+                    android:id="@+id/btn_today"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Today"
+                    android:textSize="16sp"
+                    android:textColor="@color/lightRed" />
+
+                <TextView
+                    android:id="@+id/btn_tomorrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Tomorrow"
+                    android:textSize="16sp"
+                    android:textColor="@color/middleRedOrange" />
+
+                <TextView
+                    android:id="@+id/btn_someday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:gravity="end|center_vertical"
+                    android:text="Upcoming..."
+                    android:textSize="16sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:textColor="@color/lightOrange" />
+
+            </LinearLayout>
+
+            <!--/////////
+            //// NOTIFICATION
+            ////////// -->
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="40dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    app:lottie_fileName="lottie_bell_ring.json"
+                    app:lottie_autoPlay="true"
+                    app:lottie_repeatCount="5" />
+
+                <TextView
+                    android:id="@+id/tv_notification_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="3"
+                    android:textSize="10sp"
+                    android:textColor="@color/lightOrange"
+                    android:fontFamily="@font/montserrat_regular"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewpager_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.viewpager.widget.ViewPager>
+
+            <FrameLayout
+                android:id="@+id/fl_bucket_fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

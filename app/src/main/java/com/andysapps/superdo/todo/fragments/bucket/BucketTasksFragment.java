@@ -1,6 +1,7 @@
 package com.andysapps.superdo.todo.fragments.bucket;
 
 
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,12 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter;
+import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
@@ -44,6 +47,8 @@ import butterknife.OnClick;
 
 public class BucketTasksFragment extends Fragment {
 
+    public static final String TAG = "BucketTaskFragment";
+
     @BindView(R.id.recyclerView_task_list)
     RecyclerView recyclerView;
 
@@ -56,11 +61,14 @@ public class BucketTasksFragment extends Fragment {
     @BindView(R.id.ib_bucketList)
     ImageButton ibBuckets;
 
-    @BindView(R.id.tv_save)
-    TextView tvSave;
+    @BindView(R.id.btn_save__bucket)
+    ImageButton tvSave;
 
     @BindView(R.id.ib_close_edit_bucket_list)
     ImageButton ibClose;
+
+    @BindView(R.id.iv_bucket_type)
+    ImageView ivBucketType;
 
     @BindView(R.id.ll_notasks)
     LinearLayout llNoTasks;
@@ -108,6 +116,7 @@ public class BucketTasksFragment extends Fragment {
         adapter = new TasksRecyclerAdapter(getContext(), taskList);
         recyclerView.setAdapter(adapter);
 
+        initUi();
         updateUi();
 
         return v;
@@ -119,8 +128,7 @@ public class BucketTasksFragment extends Fragment {
         super.onDestroyView();
     }
 
-    public void updateUi() {
-
+    public void initUi() {
         etBucketDesc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -130,6 +138,9 @@ public class BucketTasksFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void updateUi() {
 
         tvBucketName.setText(bucket.getName());
         etBucketDesc.setText(bucket.getDescription());
@@ -152,6 +163,24 @@ public class BucketTasksFragment extends Fragment {
             tvBucketName.setVisibility(View.VISIBLE);
         }
 
+        switch (BucketType.valueOf(bucket.getBucketType())) {
+            case Tasks:
+                ivBucketType.setImageResource(R.drawable.ic_bc_tasks_on);
+                break;
+            case Personal:
+                ivBucketType.setImageResource(R.drawable.ic_bc_personal_on);
+                break;
+            case Gym:
+                ivBucketType.setImageResource(R.drawable.ic_bc_gym_on);
+                break;
+            case Work:
+                ivBucketType.setImageResource(R.drawable.ic_bc_briefcase_on);
+                break;
+            case House:
+                ivBucketType.setImageResource(R.drawable.ic_bc_house_on);
+                break;
+        }
+
         Log.e(getClass().getName(), "updateUi: " + isEditing);
 
         if(taskList.isEmpty()) {
@@ -159,9 +188,8 @@ public class BucketTasksFragment extends Fragment {
         }
     }
 
-    @OnClick(R.id.tv_save)
+    @OnClick(R.id.btn_save__bucket)
     public void saveEditing() {
-
         // Update firestore
         bucket.setDescription(etBucketDesc.getText().toString());
         FirestoreManager.getInstance().updateBucket(bucket);

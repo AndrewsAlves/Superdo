@@ -87,24 +87,6 @@ public class SelectBucketRecyclerAdapter extends RecyclerView.Adapter<SelectBuck
 
         holder.tvBucketName.setText(bucket.getName());
 
-        switch (BucketColors.valueOf(bucket.getTagColor())) {
-            case Red:
-                holder.ivTag.setImageResource(R.drawable.img_oval_light_red);
-                break;
-            case Green:
-                holder.ivTag.setImageResource(R.drawable.img_oval_light_green);
-                break;
-            case SkyBlue:
-                holder.ivTag.setImageResource(R.drawable.img_oval_light_skyblue);
-                break;
-            case InkBlue:
-                holder.ivTag.setImageResource(R.drawable.img_oval_light_inkblue);
-                break;
-            case Orange:
-                holder.ivTag.setImageResource(R.drawable.img_oval_light_orange);
-                break;
-        }
-
         switch (BucketType.valueOf(bucket.getBucketType())) {
             case Tasks:
                 holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_tasks_on);

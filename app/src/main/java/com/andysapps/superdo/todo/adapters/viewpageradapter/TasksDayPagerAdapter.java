@@ -5,9 +5,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.andysapps.superdo.todo.fragments.ProfileFragment;
-import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment;
-import com.andysapps.superdo.todo.fragments.task.TasksDayFragment;
 import com.andysapps.superdo.todo.fragments.task.TodayFragment;
 import com.andysapps.superdo.todo.fragments.task.TomorrowFragment;
 import com.andysapps.superdo.todo.fragments.task.UpcomingTasksFragment;

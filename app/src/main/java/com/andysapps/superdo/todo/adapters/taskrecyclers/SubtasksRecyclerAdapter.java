@@ -116,34 +116,14 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
 
         h.lottieSubtasks.pauseAnimation();
 
-        if (task.getBucketId() != null) {
-            switch (BucketColors.valueOf(task.getBucketColor())) {
-                case Red:
-                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_red);
-                    break;
-                case Green:
-                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_green);
-                    break;
-                case SkyBlue:
-                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_skyblue);
-                    break;
-                case InkBlue:
-                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_inkblue);
-                    break;
-                case Orange:
-                    h.ivCheck.setImageResource(R.drawable.img_oval_thin_orange);
-                    break;
-            }
-        } else {
-            h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
-        }
+        h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
 
         h.tvSubtaskName.setText(subtask.getTitle());
 
         h.lottieSubtasks.addValueCallback(
                 new KeyPath("Shape Layer 1", "**"),
                 LottieProperty.COLOR_FILTER,
-                frameInfo -> new PorterDuffColorFilter(getColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP)
+                frameInfo -> new PorterDuffColorFilter(context.getResources().getColor(R.color.grey3), PorterDuff.Mode.SRC_ATOP)
         );
 
         h.lottieSubtasks.setOnClickListener(new View.OnClickListener() {

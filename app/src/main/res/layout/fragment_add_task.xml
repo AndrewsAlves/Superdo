@@ -212,9 +212,10 @@
 
             <ImageView
                 android:id="@+id/iv_tag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/img_oval_light_red_mini"/>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_bc_tasks_on"/>
 
             <TextView
                 android:id="@+id/bucket_name"

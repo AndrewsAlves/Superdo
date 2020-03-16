@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/iv_bucket_type__selectbucket_item"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:visibility="visible"
         android:layout_marginStart="20dp"
         android:src="@drawable/ic_bc_briefcase_on"/>
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:text="Bucket Name"
         android:textSize="12sp"
-        android:fontFamily="@font/montserrat_regular"
+        android:fontFamily="@font/montserrat_medium"
         android:textColor="@color/grey3"
         android:layout_marginStart="20dp" />
 
@@ -28,7 +28,7 @@
         android:id="@+id/iv_colortag__selectbucket_item"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:src="@drawable/img_oval_light_red_mini"/>

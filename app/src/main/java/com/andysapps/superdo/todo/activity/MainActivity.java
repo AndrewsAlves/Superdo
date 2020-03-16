@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.ib_today)
     ImageView imgDayNight;
 
-    @BindView(R.id.ib_tasks)
-    ImageView imgTasks;
+    /*@BindView(R.id.ib_tasks)
+    ImageView imgTasks;*/
 
     @BindView(R.id.ib_profile)
     ImageView imgProfile;
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         updateTabUi(mainTabs);
     }
 
-    @OnClick(R.id.tab_2)
+   /* @OnClick(R.id.tab_2)
     public void clickTasks() {
 
         moonButton.setClickable(true);
@@ -173,13 +173,13 @@ public class MainActivity extends AppCompatActivity {
         mainViewPager.setCurrentItem(1);
         AnimationManager.getInstance().showMoonButton(moonButton);
         updateTabUi(mainTabs);
-    }
+    }*/
 
     @OnClick(R.id.tab_3)
     public void clickProfile() {
 
         mainTabs = MainTabs.PROFILE;
-        mainViewPager.setCurrentItem(2);
+        mainViewPager.setCurrentItem(1);
         viewPagerAdapter.getProfileFragment().updateUi();
         AnimationManager.getInstance().hideMoonButton(moonButton);
         moonButton.setClickable(false);
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateTabUi(MainTabs tabs) {
 
         imgDayNight.setImageResource(R.drawable.ic_today_tasks_off);
-        imgTasks.setImageResource(R.drawable.ic_bucket_tasks_off);
+        //imgTasks.setImageResource(R.drawable.ic_bucket_tasks_off);
         imgProfile.setImageResource(R.drawable.ic_profile_off);
 
         tvMsg.setText(" ");
@@ -225,9 +225,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 break;
-            case BUCKET_TASKS:
-                imgTasks.setImageResource(R.drawable.ic_bucket_tasks_on);
-                break;
+           // case BUCKET_TASKS:
+            //    imgTasks.setImageResource(R.drawable.ic_bucket_tasks_on);
+           //     break;
             case PROFILE:
                 imgProfile.setImageResource(R.drawable.ic_profile_on);
                 break;

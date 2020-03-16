@@ -28,16 +28,18 @@ import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
 import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DeadlineDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DoDateDialog
-import com.andysapps.superdo.todo.dialog.sidekicks.RemindDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.RepeatDialog
 import com.andysapps.superdo.todo.enums.BucketColors
-import com.andysapps.superdo.todo.enums.RemindType
+import com.andysapps.superdo.todo.enums.BucketType
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
-import com.andysapps.superdo.todo.events.sidekick.*
+import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
+import com.andysapps.superdo.todo.events.sidekick.SetDoDateEvent
+import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
+import com.andysapps.superdo.todo.events.sidekick.UpdateSubtasksEvent
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
@@ -45,12 +47,10 @@ import com.andysapps.superdo.todo.model.Task
 import com.andysapps.superdo.todo.model.sidekicks.Subtask
 import com.andysapps.superdo.todo.model.sidekicks.Subtasks
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
-import kotlinx.android.synthetic.main.fragment_create_habit_step2.*
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
@@ -140,7 +140,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         editTask_et_taskName.onFocusChangeListener = this
         editTask_et_desc.onFocusChangeListener = this
 
-        editTask_lottie_anim.setOnClickListener({
+        editTask_lottie_anim.setOnClickListener {
 
             editTask_lottie_anim.setMinAndMaxProgress(0.0f, 1.0f)
 
@@ -156,7 +156,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             FirestoreManager.getInstance().updateTask(task)
 
             editTask_lottie_anim.playAnimation()
-        })
+        }
 
         editTask_tick_save.setOnClickListener {
             validate()
@@ -238,35 +238,17 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         //////////////
         //// BUCKET & TASK COMPLETED UI
 
-        if (task.bucketId != null) {
-            editTask_tv_bucketName.text = task.bucketName
+        if (task.bucket != null) {
+            editTask_tv_bucketName.text = task.bucket.name
             editTask_tv_bucketName.setTextColor(resources.getColor(R.color.black))
-            when (BucketColors.valueOf(task.bucketColor)) {
-                BucketColors.Red -> {
-                    editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_red)
-                    iv_check_task.setImageResource(R.drawable.img_oval_light_red)
-                }
-                BucketColors.Green -> {
-                    editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_green)
-                    iv_check_task.setImageResource(R.drawable.img_oval_light_green)
-                }
-                BucketColors.SkyBlue -> {
-                    editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_skyblue)
-                    iv_check_task.setImageResource(R.drawable.img_oval_light_skyblue)
-                }
-                BucketColors.InkBlue -> {
-                    editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_inkblue)
-                    iv_check_task.setImageResource(R.drawable.img_oval_light_inkblue)
-                }
-                BucketColors.Orange -> {
-                    editTask_iv_bucket.setImageResource(R.drawable.img_oval_light_orange)
-                    iv_check_task.setImageResource(R.drawable.img_oval_light_orange)
-                }
-            }
 
-            editTask_lottie_anim.addValueCallback(KeyPath("Shape Layer 1", "**"), LottieProperty.COLOR_FILTER, SimpleLottieValueCallback {
-                PorterDuffColorFilter(Utils.getColor(context, task.bucketColor), PorterDuff.Mode.SRC_ATOP)
-            })
+            when (BucketType.valueOf(task.bucket.bucketType)) {
+                BucketType.Tasks -> editTask_iv_bucket.setImageResource(R.drawable.ic_bc_tasks_on)
+                BucketType.Gym -> editTask_iv_bucket.setImageResource(R.drawable.ic_bc_gym_on)
+                BucketType.Work -> editTask_iv_bucket.setImageResource(R.drawable.ic_bc_briefcase_on)
+                BucketType.House -> editTask_iv_bucket.setImageResource(R.drawable.ic_bc_house_on)
+                BucketType.Personal -> editTask_iv_bucket.setImageResource(R.drawable.ic_bc_personal_on)
+            }
         }
 
         isChecked = task.isTaskCompleted
@@ -334,9 +316,11 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         if (task.subtasks != null) {
             editTask_iv_subtasks.setImageResource(R.drawable.ic_subtasks_on)
             editTask_tv_subtasks.alpha = 1.0f
+            ib_clear_subtasks.visibility = View.VISIBLE
         } else {
             editTask_iv_subtasks.setImageResource(R.drawable.ic_subtasks_off)
             editTask_tv_subtasks.alpha = 0.5f
+            ib_clear_subtasks.visibility = View.GONE
         }
 
         //////////////
@@ -364,6 +348,15 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
         editTask_rl_btn_repeat.setOnClickListener {
             RepeatDialog.instance(task.repeat).show(fragmentManager!!, RepeatDialog().javaClass.name)
+        }
+
+        ib_clear_subtasks.setOnClickListener {
+            task.subtasks.subtaskList.clear()
+            subtaskAdapter!!.updateList()
+            task.subtasks = null
+            editTask_et_add_subtask.clearFocus()
+            FirestoreManager.getInstance().updateTask(task)
+            updateUi()
         }
 
         lv_remind.setOnClickListener {
@@ -455,9 +448,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SelectBucketEvent) {
-        task.bucketColor = event.bucket.tagColor
-        task.bucketId = event.bucket.documentId
-        task.bucketName = event.bucket.name
+        task.bucket = event.bucket
         updateUi()
         FirestoreManager.getInstance().updateTask(task)
     }

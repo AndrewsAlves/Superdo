@@ -7,23 +7,28 @@ import android.os.Bundle;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.TasksDayPagerAdapter;
 import com.andysapps.superdo.todo.enums.TaskListing;
-import com.andysapps.superdo.todo.events.TaskModifiedEvent;
+import com.andysapps.superdo.todo.events.EditBucketDescription;
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
+import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
 import com.andysapps.superdo.todo.fragments.bucket.BucketFragment;
+import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment;
+import com.andysapps.superdo.todo.model.Bucket;
 import com.github.florent37.viewanimator.ViewAnimator;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,9 +43,9 @@ import butterknife.OnClick;
  * A simple {@link Fragment} subclass.
  */
 
-public class TasksDayFragment extends Fragment {
+public class AllTasksFragment extends Fragment {
 
-    @BindView(R.id.tv_todaytitle)
+    @BindView(R.id.tv_bucket_title)
     TextView tvTitle;
 
     @BindView(R.id.btn_today)
@@ -52,13 +57,28 @@ public class TasksDayFragment extends Fragment {
     @BindView(R.id.btn_someday)
     TextView tvSomeday;
 
+    @BindView(R.id.btn_save__bucket)
+    ImageButton btnSave;
+
+    @BindView(R.id.btn_close__bucket)
+    ImageButton btnClose;
+
+    @BindView(R.id.ib_bucketList)
+    ImageButton btnBucketList;
+
     @BindView(R.id.viewpager_tasks)
     ViewPager viewPagerTasks;
 
     @BindView(R.id.tasks_parent)
     LinearLayout parentView;
 
+    @BindView(R.id.ll_today_tomorrow_later)
+    LinearLayout parentTodayTomorrow;
+
+
     TasksDayPagerAdapter viewPagerAdapter;
+
+    BucketTasksFragment bucketTasksFragment;
 
     int[] gradientColor = new int[2];
 
@@ -69,14 +89,18 @@ public class TasksDayFragment extends Fragment {
 
     TaskListing lasttaskListing;
 
-    public TasksDayFragment() {
+    Bucket bucket;
+
+    boolean isEditing = false;
+
+    public AllTasksFragment() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_tasks, container, false);
+        View v = inflater.inflate(R.layout.fragment_all_tasks, container, false);
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
 
@@ -135,6 +159,16 @@ public class TasksDayFragment extends Fragment {
         gradientColor[0] = Color.parseColor( "#F64F59");
         gradientColor[1] = Color.parseColor( "#FF8B57");
 
+        btnSave.setVisibility(View.GONE);
+        btnClose.setVisibility(View.GONE);
+        btnBucketList.setVisibility(View.VISIBLE);
+
+        if (isEditing) {
+            btnSave.setVisibility(View.VISIBLE);
+            btnClose.setVisibility(View.VISIBLE);
+            btnBucketList.setVisibility(View.GONE);
+        }
+
         animateTodayViews();
     }
 
@@ -167,6 +201,42 @@ public class TasksDayFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(FetchTasksEvent event) {
+        updateUi();
+    }
+
+    /*@Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(SetBucketTaskListEvent event) {
+
+        if (event.getBucket() == null) {
+            bucket = null;
+            tvTitle.setText("All Tasks");
+            parentTodayTomorrow.setVisibility(View.VISIBLE);
+
+            if (getChildFragmentManager().findFragmentById(R.id.fl_bucket_fragment_container) != null) {
+                getChildFragmentManager().beginTransaction().
+                        remove(getChildFragmentManager().findFragmentById(R.id.fl_bucket_fragment_container))
+                        .commitAllowingStateLoss();
+            }
+
+            getFragmentManager().popBackStack();
+
+            return;
+        }
+
+        parentTodayTomorrow.setVisibility(View.GONE);
+        tvTitle.setText(event.getBucket().getName());
+        bucket = event.getBucket();
+        bucketTasksFragment = BucketTasksFragment.getInstance(event.getBucket());
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        ft.replace(R.id.fl_bucket_fragment_container, bucketTasksFragment, BucketTasksFragment.TAG);
+        ft.commitAllowingStateLoss(); // save the change
+
+        getFragmentManager().popBackStack();
+    }*/
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(EditBucketDescription event) {
+        isEditing = event.isEditing;
         updateUi();
     }
 

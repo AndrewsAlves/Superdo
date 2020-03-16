@@ -305,7 +305,7 @@ public class TaskOrganiser {
         }
 
         for (Task task : allTaskList) {
-            if (task.getBucketId() != null && task.getBucketId().equals(bucket.getDocumentId())) {
+            if (task.getBucket() != null && task.getBucket().getDocumentId().equals(bucket.getDocumentId())) {
                 bucketList.add(task);
             }
         }
@@ -324,7 +324,7 @@ public class TaskOrganiser {
         }
 
         for (Task task : allTaskList) {
-            if (task.getBucketId() != null && task.getBucketId().equals( bucket.getDocumentId())) {
+            if (task.getBucket() != null && task.getBucket().getDocumentId().equals( bucket.getDocumentId())) {
                 tasksCount++;
             }
         }
@@ -346,7 +346,7 @@ public class TaskOrganiser {
         }
 
         for (Task task : allTaskList) {
-            if (task.getBucketId() != null && task.getBucketId().equals( bucket.getDocumentId())) {
+            if (task.getBucket() != null && task.getBucket().getDocumentId().equals( bucket.getDocumentId())) {
                 if (task.isTaskCompleted()) {
                     tasksDoneCount++;
                 }

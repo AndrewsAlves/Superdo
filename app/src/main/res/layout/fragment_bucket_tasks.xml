@@ -13,9 +13,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="130dp">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp">
 
             <com.andysapps.superdo.todo.views.GradientTextView
                 android:id="@+id/tv_bucket_name"
@@ -23,8 +24,9 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="All Tasks"
-                android:textSize="28sp"
+                android:textSize="24sp"
                 android:maxLines="1"
+                android:layout_centerVertical="true"
                 android:inputType="textNoSuggestions"
                 android:textColor="@color/lightRed"
                 android:layout_marginStart="40dp"
@@ -32,62 +34,55 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
-                android:text="SAVE"
-                android:textColor="@color/lightOrange"
-                android:textSize="14sp"
+            <ImageButton
+                style="@style/ripple_background"
+                android:id="@+id/btn_save__bucket"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:visibility="gone"
-                android:layout_marginEnd="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ib_close_edit_bucket_list"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginEnd="90dp"
+                android:src="@drawable/ic_tick_red"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"/>
 
             <ImageButton
                 android:visibility="visible"
                 android:id="@+id/ib_edit_bucket"
                 style="@style/ripple_background"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginEnd="30dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_edit"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ib_bucketList"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="90dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_actions_bucket_orange"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"/>
 
             <ImageButton
                 android:visibility="visible"
                 android:id="@+id/ib_bucketList"
                 style="@style/ripple_background"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginEnd="40dp"
-                android:scaleType="fitXY"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_bucket_list"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
 
             <ImageButton
                 android:id="@+id/ib_close_edit_bucket_list"
                 style="@style/ripple_background"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:scaleType="fitXY"
-                android:padding="2dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="centerInside"
+                android:padding="6dp"
                 android:visibility="gone"
-                android:src="@drawable/ic_close"
+                android:src="@drawable/ic_close_mini"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_alignParentEnd="true"/>
 
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -95,33 +90,37 @@
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
             android:focusableInTouchMode="true"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="40dp">
 
             <ImageView
+                android:id="@+id/iv_bucket_type"
                 android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_desc" />
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_bc_tasks_on" />
 
             <EditText
                 android:id="@+id/et_bucket_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:hint="About your Bucket or Project"
+                android:hint="Description "
                 android:textColorHint="@color/grey2"
                 android:textSize="14sp"
-                android:layout_marginStart="45dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="50dp"
                 android:maxLines="20"
                 android:fontFamily="@font/montserrat_regular"/>
 
         </RelativeLayout>
 
-        <TextView
+        <com.andysapps.superdo.todo.views.GradientTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tasks"
-            android:textColor="@color/lightOrange"
+            android:textColor="@color/lightRed"
             android:fontFamily="@font/montserrat_medium"
             android:textSize="16sp"
             android:layout_marginStart="40dp"/>
