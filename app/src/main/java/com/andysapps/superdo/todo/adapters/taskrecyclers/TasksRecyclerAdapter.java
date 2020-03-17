@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -47,7 +48,7 @@ import lib.mozidev.me.extextview.StrikeThroughPainting;
 public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdapter.TaskViewHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = "TasksRecyclerAdapter";
-    private List<Task> taskList;
+    public List<Task> taskList;
 
     private Context context;
     private Handler viewUpdateHandler;
@@ -129,6 +130,12 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         h.tvTaskName.setText(task.getName());
 
+        if (h.painting != null) {
+            h.painting.clearStrikeThrough();
+        }
+
+        h.painting = new StrikeThroughPainting(h.tvTaskName);
+
         /*if (task.getBucketColor() != null) {
             h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
         }*/
@@ -179,25 +186,22 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
 
         h.lottieCheckView.addValueCallback(new KeyPath("Shape Layer 1", "**"), LottieProperty.COLOR_FILTER,
-                frameInfo -> new PorterDuffColorFilter(context.getResources().getColor(R.color.grey3), PorterDuff.Mode.SRC_ATOP)
-        );
-        h.lottieCheckView.addValueCallback(new KeyPath("Shape Layer 3", "**"), LottieProperty.COLOR_FILTER,
-                frameInfo -> new PorterDuffColorFilter(context.getResources().getColor(R.color.grey3), PorterDuff.Mode.SRC_ATOP)
+                frameInfo -> new PorterDuffColorFilter(context.getResources().getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP)
         );
 
-        h.ivCheck.setOnClickListener(new View.OnClickListener() {
+        h.btnTaskCompleted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 h.lottieCheckView.setVisibility(View.VISIBLE);
                 h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
                 if (h.isChecked) {
-                    h.lottieCheckView.setSpeed(-3.5f);
+                    h.lottieCheckView.setSpeed(-2.0f);
                     h.isChecked = false;
                     //strikeInText(h);
                 } else {
-                    h.lottieCheckView.setSpeed(3.5f);
+                    h.lottieCheckView.setSpeed(2.0f);
                     h.isChecked = true;
-                    //strikeOutText(h);
+                    strikeOutText(h, 500);
                 }
 
                 task.setTaskCompleted(h.isChecked);
@@ -209,7 +213,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                         public void run() {
                             setTaskCompleted(h.getAdapterPosition(), task);
                         }
-                    }, 300);
+                    }, 500);
 
                 }
 
@@ -235,10 +239,10 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         TaskOrganiser.getInstance().organiseAllTasks();
     }
 
-    private void strikeOutText(TaskViewHolder holder) {
+    private void strikeOutText(TaskViewHolder holder, int speed) {
 
         float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                2,
+                1,
                 context.getResources().getDisplayMetrics());
 
         holder.painting.cutTextEdge(true)
@@ -254,7 +258,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 // differently to the following lines
                 .firstLinePosition(0.6F)
                 // default to 1_000 milliseconds, aka 1s
-                .totalTime(500)
+                .totalTime(speed)
                 // do the draw!
                 .strikeThrough();
     }
@@ -315,6 +319,9 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         @BindView(R.id.iv_repeat)
         public ImageView ivRepeat;
 
+        @BindView(R.id.btn_click_task_completed)
+        public ImageButton btnTaskCompleted;
+
         @BindView(R.id.iv_deadline)
         public ImageView ivDeadline;
 
@@ -339,11 +346,9 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             item = itemView;
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
 
             lottieCheckView.setAnimation("anim_check2.json");
-            painting = new StrikeThroughPainting(tvTaskName);
         }
-
     }
 }

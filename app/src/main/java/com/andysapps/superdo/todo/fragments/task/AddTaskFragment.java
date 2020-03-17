@@ -38,6 +38,7 @@ import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -163,16 +164,21 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
 
+        task = new Task();
+
         initUi();
         Utils.showSoftKeyboard(getContext(), etTaskName);
 
-        task = new Task();
+
         clickToday();
         // Inflate the layout for this fragment
         return v;
     }
 
     public void initUi() {
+
+        task.setBucket(TasksFragment.Companion.getBucket());
+
         etTaskName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -455,6 +461,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         if (event.getDocumentChange() != TaskUpdateType.Added) {
             return;
         }
+
         //task = new Task();
         task.setName("");
         //task.setHabitCategory(event.getTask().getHabitCategory());

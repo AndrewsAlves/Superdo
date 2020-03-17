@@ -1,6 +1,7 @@
 package com.andysapps.superdo.todo.fragments.task
 
 
+import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import butterknife.ButterKnife
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
+import com.airbnb.lottie.value.LottieFrameInfo
 import com.airbnb.lottie.value.SimpleLottieValueCallback
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
@@ -29,7 +31,6 @@ import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DeadlineDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DoDateDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.RepeatDialog
-import com.andysapps.superdo.todo.enums.BucketColors
 import com.andysapps.superdo.todo.enums.BucketType
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.TaskUpdateType
@@ -104,6 +105,12 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
         editTask_lottie_anim.setAnimation("anim_check2_1.json")
 
+        editTask_lottie_anim.addValueCallback(
+                KeyPath("Shape Layer 1", "**"),
+                LottieProperty.COLOR_FILTER,
+                { PorterDuffColorFilter(context!!.resources.getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP) }
+        )
+
         lv_remind.setAnimation("check_box2.json")
         lv_remind.speed = 1.5f
 
@@ -148,7 +155,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
                 editTask_lottie_anim.speed = -2f
                 isChecked = false
             } else {
-                editTask_lottie_anim.speed = 1.5f
+                editTask_lottie_anim.speed = 2.0f
                 isChecked = true
             }
 

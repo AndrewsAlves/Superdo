@@ -20,6 +20,7 @@ import com.andysapps.superdo.todo.adapters.viewpageradapter.MainViewPagerAdapter
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
+import com.andysapps.superdo.todo.events.SetTasksFragment;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.ShowSnakeBarNoMoonEvent;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
@@ -177,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.tab_3)
     public void clickProfile() {
-
         mainTabs = MainTabs.PROFILE;
         mainViewPager.setCurrentItem(1);
         viewPagerAdapter.getProfileFragment().updateUi();

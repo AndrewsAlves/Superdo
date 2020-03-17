@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -156,16 +157,20 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
 
         h.tvTaskName.setText(task.getName());
 
-        /*if (task.getBucketColor() != null) {
-            h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
-        }*/
+        if (h.painting != null) {
+            h.painting.clearStrikeThrough();
+        }
+
+        h.painting = new StrikeThroughPainting(h.tvTaskName);
 
         h.isChecked = task.isTaskCompleted();
 
         if (h.isChecked) {
             h.lottieCheckView.setMinAndMaxProgress(1.0f, 1.0f);
+            strikeOutText(h, 0);
         } else {
             h.lottieCheckView.setMinAndMaxProgress(0.0f, 0.0f);
+            h.painting.clearStrikeThrough();
         }
 
         h.lottieCheckView.playAnimation();
@@ -207,7 +212,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
         h.lottieCheckView.addValueCallback(
                 new KeyPath("Shape Layer 1", "**"),
                 LottieProperty.COLOR_FILTER,
-                frameInfo -> new PorterDuffColorFilter(context.getResources().getColor(R.color.grey3), PorterDuff.Mode.SRC_ATOP)
+                frameInfo -> new PorterDuffColorFilter(context.getResources().getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP)
         );
 
         if (!isSeleting) {
@@ -224,7 +229,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             });
         }
 
-        h.ivCheck.setOnClickListener(v -> {
+        h.btnTaskCompleted.setOnClickListener(v -> {
 
             if (isSeleting) {
                 return;
@@ -232,13 +237,13 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
 
             h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
             if (h.isChecked) {
-                h.lottieCheckView.setSpeed(-2f);
+                h.lottieCheckView.setSpeed(-2.0f);
                 h.isChecked = false;
                 strikeInText(h);
             } else {
-                h.lottieCheckView.setSpeed(1.5f);
+                h.lottieCheckView.setSpeed(2.0f);
                 h.isChecked = true;
-                //strikeOutText(h);
+                strikeOutText(h, 500);
             }
 
             task.setTaskCompleted(h.isChecked);
@@ -303,25 +308,29 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
     }
 
     public void setTaskCompleted(int position, Task task) {
+        viewUpdateHandler.postDelayed(() -> {
+            taskList.remove(position);
+            task.setTaskCompletedDate(Calendar.getInstance().getTime());
+            EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_COMPLETED));
+            notifyItemRemoved(position);
+        },500);
+
         Log.e(TAG, "run: position " + position);
-        taskList.remove(position);
-        task.setTaskCompletedDate(Calendar.getInstance().getTime());
-        EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_COMPLETED));
-        notifyItemRemoved(position);
     }
 
     public void setTaskNotCompleted(int position, Task task) {
-        Log.e(TAG, "run: position " + position);
-        taskList.remove(position);
-        task.setTaskCompletedDate(null);
-        EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_NOT_COMPLETED));
-        notifyItemRemoved(position);
+        viewUpdateHandler.postDelayed(() -> {
+            taskList.remove(position);
+            task.setTaskCompletedDate(null);
+            EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_NOT_COMPLETED));
+            notifyItemRemoved(position);
+        },500);
     }
 
-    private void strikeOutText(TaskViewHolder holder) {
+    private void strikeOutText(TaskViewHolder holder, int speed) {
 
         float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                2,
+                1,
                 context.getResources().getDisplayMetrics());
 
         holder.painting.cutTextEdge(true)
@@ -337,7 +346,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
                 // differently to the following lines
                 .firstLinePosition(0.6F)
                 // default to 1_000 milliseconds, aka 1s
-                .totalTime(500)
+                .totalTime(speed)
                 // do the draw!
                 .strikeThrough();
     }
@@ -396,6 +405,9 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
 
         @BindView(R.id.iv_repeat)
         public ImageView ivRepeat;
+
+        @BindView(R.id.btn_click_task_completed)
+        public ImageButton btnTaskCompleted;
 
         @BindView(R.id.iv_deadline)
         public ImageView ivDeadline;

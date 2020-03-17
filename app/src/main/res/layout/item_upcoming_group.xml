@@ -47,26 +47,32 @@
                 android:id="@+id/iv_check_task"
                 android:layout_width="21dp"
                 android:layout_height="21dp"
-                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
                 android:scaleType="center"
                 android:visibility="visible"
+                android:layout_marginStart="6dp"
                 android:src="@drawable/img_oval_thin_grey3"/>
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottie_check_view"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerInParent="true"
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_centerVertical="true"
                 app:lottie_fileName="anim_check2.json"
                 app:lottie_autoPlay="false" />
+
+            <ImageButton
+                android:id="@+id/btn_click_task_completed"
+                android:layout_width="50dp"
+                android:layout_height="33dp"
+                android:background="@color/transparent"/>
 
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="20dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"

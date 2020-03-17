@@ -566,8 +566,8 @@
 
         <ImageView
             android:id="@+id/iv_check_task"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
             android:layout_centerInParent="true"
             android:scaleType="center"
             android:src="@drawable/img_oval_light_green"
@@ -575,8 +575,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/editTask_lottie_anim"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerInParent="true"
             app:lottie_autoPlay="false"
             app:lottie_fileName="anim_check2_1.json" />

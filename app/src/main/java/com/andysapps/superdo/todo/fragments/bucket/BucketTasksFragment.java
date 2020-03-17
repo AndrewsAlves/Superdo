@@ -23,6 +23,7 @@ import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent;
+import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
@@ -81,7 +82,7 @@ public class BucketTasksFragment extends Fragment {
     TasksRecyclerAdapter adapter;
     Bucket bucket;
 
-    List<Task> taskList;
+    public List<Task> taskList;
 
     public BucketTasksFragment() {
         // Required empty public constructor
@@ -183,7 +184,7 @@ public class BucketTasksFragment extends Fragment {
 
         Log.e(getClass().getName(), "updateUi: " + isEditing);
 
-        if(taskList.isEmpty()) {
+        if(adapter.taskList == null || adapter.taskList.isEmpty()) {
             llNoTasks.setVisibility(View.VISIBLE);
         }
     }
@@ -226,6 +227,12 @@ public class BucketTasksFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateBucketTasksEvent event) {
         isEditing = false;
+        updateUi();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(TaskUpdatedEvent event) {
+        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket));
         updateUi();
     }
 

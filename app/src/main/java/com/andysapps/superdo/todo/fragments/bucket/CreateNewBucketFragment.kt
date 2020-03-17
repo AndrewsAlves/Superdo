@@ -186,6 +186,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
             bucket.name = et_create_bucket_name.text.toString()
             bucket.userId = FirestoreManager.getInstance().userId
             bucket.created = Calendar.getInstance().time
+            bucket.id = UUID.randomUUID().toString()
             if (isEditing) {
                 FirestoreManager.getInstance().updateBucket(bucket)
                 EventBus.getDefault().post(UpdateBucketTasksEvent())

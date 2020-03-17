@@ -10,6 +10,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -203,6 +204,12 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         Task task = taskList.get(position);
 
+        if (h.painting != null) {
+            h.painting.clearStrikeThrough();
+        }
+
+        h.painting = new StrikeThroughPainting(h.tvTaskName);
+
         if (task.getDocumentId().equals(dummyWeekTitle)
                 || task.getDocumentId().equals(dummyMonthTitle)
                 || task.getDocumentId().equals(dummyUpcomingTitle) ) {
@@ -298,15 +305,10 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         h.lottieCheckView.addValueCallback(
                 new KeyPath("Shape Layer 1", "**"),
                 LottieProperty.COLOR_FILTER,
-                new SimpleLottieValueCallback<ColorFilter>() {
-                    @Override
-                    public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
-                        return new PorterDuffColorFilter(context.getResources().getColor(R.color.grey3), PorterDuff.Mode.SRC_ATOP);
-                    }
-                }
+                frameInfo -> new PorterDuffColorFilter(context.getResources().getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP)
         );
 
-        h.lottieCheckView.setOnClickListener(new View.OnClickListener() {
+        h.btnTaskCompleted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
@@ -317,7 +319,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 } else {
                     h.lottieCheckView.setSpeed(3.5f);
                     h.isChecked = true;
-                    //strikeOutText(h);
+                    strikeOutText(h);
                 }
 
                 task.setTaskCompleted(h.isChecked);
@@ -343,6 +345,8 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 EventBus.getDefault().post(new OpenEditTaskEvent(task));
             }
         });
+
+
     }
 
     public void setTaskCompleted(int position, Task task) {
@@ -511,8 +515,6 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
     @Override
     public void onItemMoved() {
-        //reaarageGroupTasks();
-
     }
 
     @Override
@@ -530,6 +532,9 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         @BindView(R.id.tv_tasks_name)
         public ExTextView tvTaskName;
+
+        @BindView(R.id.btn_click_task_completed)
+        public ImageButton btnTaskCompleted;
 
         @BindView(R.id.iv_repeat)
         public ImageView ivRepeat;
@@ -569,7 +574,6 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             ButterKnife.bind(this,itemView);
 
             lottieCheckView.setAnimation("anim_check2.json");
-            painting = new StrikeThroughPainting(tvTaskName);
         }
     }
 }

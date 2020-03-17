@@ -55,6 +55,9 @@ public class TaskOrganiser {
 
         completedTaskList = new ArrayList<>();
         missedTaskList = new ArrayList<>();
+        recurringTask = new ArrayList<>();
+        deadlineTasks = new ArrayList<>();
+        remindingTasks = new ArrayList<>();
         pendingTaskList = new ArrayList<>();
         deletedTaskList = new ArrayList<>();
     }
@@ -305,7 +308,7 @@ public class TaskOrganiser {
         }
 
         for (Task task : allTaskList) {
-            if (task.getBucket() != null && task.getBucket().getDocumentId().equals(bucket.getDocumentId())) {
+            if (task.getBucket() != null && task.getBucket().getId().equals(bucket.getId())) {
                 bucketList.add(task);
             }
         }
@@ -324,7 +327,7 @@ public class TaskOrganiser {
         }
 
         for (Task task : allTaskList) {
-            if (task.getBucket() != null && task.getBucket().getDocumentId().equals( bucket.getDocumentId())) {
+            if (task.getBucket() != null && task.getBucket().getId().equals( bucket.getId())) {
                 tasksCount++;
             }
         }
@@ -346,7 +349,7 @@ public class TaskOrganiser {
         }
 
         for (Task task : allTaskList) {
-            if (task.getBucket() != null && task.getBucket().getDocumentId().equals( bucket.getDocumentId())) {
+            if (task.getBucket() != null && task.getBucket().getId().equals(bucket.getId())) {
                 if (task.isTaskCompleted()) {
                     tasksDoneCount++;
                 }

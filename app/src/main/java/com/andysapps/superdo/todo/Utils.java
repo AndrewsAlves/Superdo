@@ -3,9 +3,11 @@ package com.andysapps.superdo.todo;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.andysapps.superdo.todo.adapters.taskrecyclers.CPMDRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.RepeatType;
 import com.andysapps.superdo.todo.enums.TaskListing;
@@ -21,6 +23,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import lib.mozidev.me.extextview.StrikeThroughPainting;
 
 
 /**
