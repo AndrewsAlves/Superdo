@@ -48,11 +48,14 @@ public class SuperdoAlarmManager {
 
     public static final String intent_key_task_id = "task_id";
 
+    AlarmManager alarmManager;
+
     public static SuperdoAlarmManager getInstance() {
         return ourInstance;
     }
 
     private SuperdoAlarmManager(Context context) {
+        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
     public static void initialise(Context context) {
@@ -77,7 +80,6 @@ public class SuperdoAlarmManager {
         alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
     }
 
-
     public void registerDailyNotificationsAndReminders(Context context) {
         registerDailyNotificationAlarms(context);
         registerDailyReminders(context);
@@ -95,65 +97,82 @@ public class SuperdoAlarmManager {
 
     public void registerDailyReminders(Context context) {
 
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        /// REMIND REMINDING TASKS
+        for (Task task : TaskOrganiser.getInstance().remindingTasks) {
+           setRemind(context, task);
+        }
+
+        /// REMIND DEADLINED TASKS
+        for (Task task : TaskOrganiser.getInstance().deadlineTasks) {
+            setDeadlineRemind(context, task);
+        }
+    }
+
+    public void setRemind(Context context, Task task) {
         Intent intentRemind = new Intent(context, NotificationBroadcast.class);
         intentRemind.putExtra(intent_key_notification_id, notification_id_remind);
         PendingIntent pendingIntent;
 
-        for (Task task : TaskOrganiser.getInstance().remindingTasks) {
-            if (Utils.isSuperDateToday(task.getDoDate())) {
-                intentRemind.putExtra(intent_key_task_id, task.getDocumentId());
-                pendingIntent = PendingIntent.getBroadcast(context, task.getRemindRequestCode(), intentRemind, FLAG_CANCEL_CURRENT);
-                setAlarmExact(manager, Utils.getCalenderFromSuperDate(task.getDoDate()), pendingIntent);
-            }
+        if (task.getRemindRequestCode() == 0) {
+            task.generateNewRequestCode();
         }
+
+        if (Utils.isSuperDateToday(task.getDoDate())) {
+            intentRemind.putExtra(intent_key_task_id, task.getDocumentId());
+            pendingIntent = PendingIntent.getBroadcast(context, task.getRemindRequestCode(), intentRemind, FLAG_CANCEL_CURRENT);
+            setAlarmExact(context, Utils.getCalenderFromSuperDate(task.getDoDate()), pendingIntent);
+        }
+    }
+
+    public void setDeadlineRemind(Context context, Task task) {
 
         Intent intentDeadline = new Intent(context, NotificationBroadcast.class);
         intentDeadline.putExtra(intent_key_notification_id, notification_id_deadline);
+        PendingIntent pendingIntent;
 
-        for (Task task : TaskOrganiser.getInstance().deadlineTasks) {
+        Deadline deadline = task.getDeadline();
+        SuperDate superdate = new SuperDate(deadline.date, deadline.month, deadline.year, deadline.hours, deadline.minutes);
 
-            Deadline deadline = task.getDeadline();
-            SuperDate superdate = new SuperDate(deadline.date, deadline.month, deadline.year, deadline.hours, deadline.minutes);
+        if (task.getDeadline().getDeadlineRequestCode() == 0) {
+            task.getDeadline().generateNewRequestCode();
+        }
 
-            intentDeadline.putExtra(intent_key_task_id, task.getDocumentId());
+        intentDeadline.putExtra(intent_key_task_id, task.getDocumentId());
 
-            if (Utils.isSuperDateToday(superdate)) {
+        if (Utils.isSuperDateToday(superdate)) {
 
-                Calendar todayCalender = Calendar.getInstance();
-                todayCalender.set(Calendar.HOUR_OF_DAY, 9);
-                todayCalender.set(Calendar.MINUTE, 0);
-                todayCalender.set(Calendar.SECOND, 0);
+            Calendar todayCalender = Calendar.getInstance();
+            todayCalender.set(Calendar.HOUR_OF_DAY, 9);
+            todayCalender.set(Calendar.MINUTE, 0);
+            todayCalender.set(Calendar.SECOND, 0);
 
-                intentDeadline.putExtra(intent_key_notification_deadline_type, notification_id_deadline_morning);
-                pendingIntent = PendingIntent.getBroadcast(context, task.getDeadline().getDeadlineRequestCode() + 9, intentDeadline, FLAG_CANCEL_CURRENT);
-                setAlarmExact(manager, todayCalender, pendingIntent);
+            intentDeadline.putExtra(intent_key_notification_deadline_type, notification_id_deadline_morning);
+            pendingIntent = PendingIntent.getBroadcast(context, task.getDeadline().getDeadlineRequestCode() + 9, intentDeadline, FLAG_CANCEL_CURRENT);
+            setAlarmExact(context, todayCalender, pendingIntent);
 
-                todayCalender.set(Calendar.HOUR_OF_DAY, deadline.hours);
-                todayCalender.set(Calendar.MINUTE, deadline.minutes);
-                todayCalender.set(Calendar.SECOND, 0);
+            todayCalender.set(Calendar.HOUR_OF_DAY, deadline.hours);
+            todayCalender.set(Calendar.MINUTE, deadline.minutes);
+            todayCalender.set(Calendar.SECOND, 0);
 
-                intentDeadline.putExtra(intent_key_notification_deadline_type, notification_id_deadline_done);
-                pendingIntent = PendingIntent.getBroadcast(context, task.getDeadline().getDeadlineRequestCode(), intentDeadline, FLAG_CANCEL_CURRENT);
-                setAlarmExact(manager, todayCalender, pendingIntent);
-            }
+            intentDeadline.putExtra(intent_key_notification_deadline_type, notification_id_deadline_done);
+            pendingIntent = PendingIntent.getBroadcast(context, task.getDeadline().getDeadlineRequestCode(), intentDeadline, FLAG_CANCEL_CURRENT);
+            setAlarmExact(context, todayCalender, pendingIntent);
+        }
 
-            if (Utils.isSuperDateTomorrow(superdate)) {
+        if (Utils.isSuperDateTomorrow(superdate)) {
 
-                Calendar todayCalender = Calendar.getInstance();
-                todayCalender.set(Calendar.HOUR_OF_DAY, 18);
-                todayCalender.set(Calendar.MINUTE, 0);
-                todayCalender.set(Calendar.SECOND, 0);
+            Calendar todayCalender = Calendar.getInstance();
+            todayCalender.set(Calendar.HOUR_OF_DAY, 18);
+            todayCalender.set(Calendar.MINUTE, 0);
+            todayCalender.set(Calendar.SECOND, 0);
 
-                intentDeadline.putExtra(intent_key_notification_deadline_type, notification_id_deadline_daybefore);
-                pendingIntent = PendingIntent.getBroadcast(context, task.getDeadline().getDeadlineRequestCode() - 1, intentDeadline, FLAG_CANCEL_CURRENT);
-                setAlarmExact(manager, todayCalender, pendingIntent);
-            }
+            intentDeadline.putExtra(intent_key_notification_deadline_type, notification_id_deadline_daybefore);
+            pendingIntent = PendingIntent.getBroadcast(context, task.getDeadline().getDeadlineRequestCode() - 1, intentDeadline, FLAG_CANCEL_CURRENT);
+            setAlarmExact(context, todayCalender, pendingIntent);
         }
     }
 
     public void setAlarmRepeat(Context context, SuperDate date, String notificationId, int requestCode, long repeatInterval, int flag) {
-        AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationBroadcast.class);
         intent.putExtra(intent_key_notification_id, notificationId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, flag);
@@ -175,12 +194,8 @@ public class SuperdoAlarmManager {
 
         }
 
-        alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeatInterval, pendingIntent);
+        getAlarmManager(context).setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeatInterval, pendingIntent);
     }
-
-
-
-
 
     /* public void setRemindAlarm(Context context, Task task) {
 
@@ -312,7 +327,7 @@ public class SuperdoAlarmManager {
         }
     } */
 
-    public void setDeadlineReminder(Context context, Task task) {
+    /*public void setDeadlineReminder(Context context, Task task) {
 
         AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Deadline date = task.getDeadline();
@@ -392,16 +407,16 @@ public class SuperdoAlarmManager {
                 setAlarmExact(alarmManage, calendar, pendingIntent);
             }
         }
-    }
+    }*/
 
-    public void setAlarmExact(AlarmManager manager, Calendar calendar, PendingIntent pendingIntent) {
+    public void setAlarmExact(Context context,Calendar calendar, PendingIntent pendingIntent) {
 
         Log.e(TAG, "millies : " + calendar.getTimeInMillis());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            getAlarmManager(context).setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         } else {
-            manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            getAlarmManager(context).setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
 
@@ -409,7 +424,6 @@ public class SuperdoAlarmManager {
 
         Log.e(TAG, "setAlarmExact: setting notification alarm " + notificationId + " " + requestCode);
 
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationBroadcast.class);
         intent.putExtra(intent_key_notification_id, notificationId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, flag);
@@ -426,10 +440,18 @@ public class SuperdoAlarmManager {
         calendar.set(Calendar.MILLISECOND, 0);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            getAlarmManager(context).setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         } else {
-            manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            getAlarmManager(context).setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
+    }
+
+    public AlarmManager getAlarmManager(Context context) {
+        if (alarmManager == null) {
+            alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        }
+
+        return alarmManager;
     }
 
     public void clearAlarm(Context context, int requestCode) {

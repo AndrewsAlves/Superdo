@@ -21,7 +21,7 @@ public class SuperdoApplication extends Application {
 
         SuperdoAlarmManager.initialise(this);
         SuperdoAlarmManager.getInstance().registerBackgroundProcesses(this);
-        SuperdoAlarmManager.getInstance().registerDailyNotificationAlarms(this);
+        //SuperdoAlarmManager.getInstance().registerDailyNotificationAlarms(this);
         SuperdoNotificationManager.initialise(this);
     }
 }

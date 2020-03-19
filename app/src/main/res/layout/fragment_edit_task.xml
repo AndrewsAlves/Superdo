@@ -566,11 +566,11 @@
 
         <ImageView
             android:id="@+id/iv_check_task"
-            android:layout_width="21dp"
-            android:layout_height="21dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerInParent="true"
             android:scaleType="center"
-            android:src="@drawable/img_oval_light_green"
+            android:src="@drawable/img_oval_thin_grey3"
             android:visibility="visible" />
 
         <com.airbnb.lottie.LottieAnimationView

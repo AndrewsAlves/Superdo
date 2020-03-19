@@ -17,6 +17,7 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.dialog.BucketActionBottomDialog;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
+import com.andysapps.superdo.todo.events.ExitBucketTaskFragment;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.SetTasksFragment;
 import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
@@ -124,6 +125,7 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
                 } else {
                     EventBus.getDefault().post(new SetTasksFragment(bucket));
                 }
+                EventBus.getDefault().post(new ExitBucketTaskFragment());
             }
         });
 

@@ -1,7 +1,6 @@
 package com.andysapps.superdo.todo.fragments.task
 
 
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
@@ -20,8 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import butterknife.ButterKnife
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
-import com.airbnb.lottie.value.LottieFrameInfo
-import com.airbnb.lottie.value.SimpleLottieValueCallback
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
@@ -80,10 +77,8 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        val v = inflater.inflate(R.layout.fragment_edit_task, container, false)
-
         // Inflate the layout for this fragment
-        return v
+        return inflater.inflate(R.layout.fragment_edit_task, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -375,11 +370,12 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
             if (task.isToRemind) {
                 lv_remind.setMinAndMaxProgress(0.20f, 0.50f) // on
-                if (task.remindRequestCode == 0) {
-                    task.generateNewRequestCode()
+
+                SuperdoAlarmManager.getInstance().setRemind(context, task)
+                if (task.deadline != null) {
+                    SuperdoAlarmManager.getInstance().setDeadlineRemind(context, task)
                 }
 
-                SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders(context)
             } else {
                 lv_remind.setMinAndMaxProgress(0.65f, 1.0f) // off
             }
@@ -496,12 +492,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             return
         }
 
-        if (task.deadline.deadlineRequestCode == 0) {
-            task.deadline.generateNewRequestCode()
-        }
-
         FirestoreManager.getInstance().updateTask(task)
-        SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders(context)
         updateUi()
     }
 

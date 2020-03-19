@@ -28,6 +28,7 @@ import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
+import com.andysapps.superdo.todo.fragments.bucket.BucketFragment;
 import com.andysapps.superdo.todo.fragments.task.AddTaskFragment;
 import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment;
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment;
@@ -143,6 +144,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         FragmentManager fragmentManager = getSupportFragmentManager();
+
+        if (fragmentManager.findFragmentByTag(BucketFragment.TAG) != null) {
+            BucketFragment fragment = (BucketFragment) fragmentManager.findFragmentByTag(BucketFragment.TAG);
+            if (!fragment.animationEnded) {
+                fragment.exitCircularReveal();
+                return;
+            }
+        }
 
         if (fragmentManager.findFragmentByTag(CPMDTasksFragment.Companion.getTAG())  != null) {
             CPMDTasksFragment fragment = (CPMDTasksFragment)fragmentManager.findFragmentByTag(CPMDTasksFragment.Companion.getTAG());
@@ -263,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (fragmentManager.findFragmentById(R.id.fl_fragment_container) != null) {
 
+            fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_fade_out);
             fragmentManager.beginTransaction().
                     remove(fragmentManager.findFragmentById(R.id.fl_fragment_container))
                     .commitAllowingStateLoss();
@@ -270,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (fragmentManager.findFragmentById(R.id.fl_fragment_container_behind_add) != null) {
 
+            fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out,R.anim.fragment_fade_in, R.anim.fragment_fade_out);
             fragmentManager.beginTransaction().
                     remove(fragmentManager.findFragmentById(R.id.fl_fragment_container_behind_add))
                     .commitAllowingStateLoss();
@@ -297,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
     public void onMessageEvent(OpenEditTaskEvent event) {
         EditTaskFragment fragment = EditTaskFragment.Companion.instance(event.getTask());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out,R.anim.fragment_fade_in, R.anim.fragment_fade_out);
         ft.replace(R.id.fl_fragment_container, fragment, EditTaskFragment.Companion.getTAG());
         ft.addToBackStack(fragment.getClass().getName());
         ft.commitAllowingStateLoss(); // save the changes
@@ -305,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(OpenFragmentEvent event) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        //ft.setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_fade_out);
         if (event.behindMoonButton) {
             ft.replace(R.id.fl_fragment_container_behind_add, event.fragment, event.tag);
         } else {
@@ -363,5 +376,4 @@ public class MainActivity extends AppCompatActivity {
 
         snackbar.show();
     }
-
 }

@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clickable="true"
     android:background="@color/bg_white1"
+    android:id="@+id/root_view_bucket_fragment"
     tools:context=".fragments.bucket.BucketFragment">
 
     <LinearLayout

@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+
 /**
  * A simple [Fragment] subclass.
  */
@@ -55,7 +56,6 @@ class TasksFragment : Fragment() {
         }
 
         ft.commitAllowingStateLoss() // save the change
-        fragmentManager!!.popBackStack()
     }
 
 }

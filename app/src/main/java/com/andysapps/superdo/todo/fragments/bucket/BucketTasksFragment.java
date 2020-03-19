@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter;
+
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
@@ -93,6 +94,8 @@ public class BucketTasksFragment extends Fragment {
         fragment.bucket = bucket;
         return fragment;
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -237,3 +240,5 @@ public class BucketTasksFragment extends Fragment {
     }
 
 }
+
+

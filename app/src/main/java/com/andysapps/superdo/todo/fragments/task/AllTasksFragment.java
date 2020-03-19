@@ -306,12 +306,5 @@ public class AllTasksFragment extends Fragment {
                 .decelerate()
                 .duration(200)
                 .start();
-
-       /* ViewAnimator
-                .animate(view)
-                .textColor(color)
-                .decelerate()
-                .duration(1000)
-                .start();*/
     }
 }

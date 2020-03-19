@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.andysapps.superdo.todo.activity.MainActivity;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.andysapps.superdo.todo.notification.SuperdoNotificationManager;
 
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_notification_id;
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_task_id;
+import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.CHANNEL_DAILY;
 import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_afternoon;
 import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_deadline;
 import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_evening;
@@ -49,6 +51,13 @@ public class BackgroundBroadcast extends BroadcastReceiver {
 
                 if (FirestoreManager.getInstance() == null) {
                     FirestoreManager.initialiseAndRegisterAlarms(context);
+                    SuperdoNotificationManager.getInstance().createNotification(context,new Intent(context, MainActivity.class),
+                            CHANNEL_DAILY,
+                            R.drawable.ic_notification,
+                            "Registering reminders",
+                            "Tap to view your tasks!",
+                            "",
+                            101);
                 }
             }
         }
