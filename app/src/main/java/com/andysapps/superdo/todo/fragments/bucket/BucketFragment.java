@@ -178,6 +178,7 @@ public class BucketFragment extends Fragment{
             public void onAnimationEnd(Animator animator) {
                 rootLayout.setVisibility(View.INVISIBLE);
                 animationEnded = true;
+                EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
                 getActivity().getSupportFragmentManager().popBackStack();
             }
 

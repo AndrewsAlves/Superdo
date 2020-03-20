@@ -112,7 +112,8 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="50dp"
                 android:maxLines="20"
-                android:fontFamily="@font/montserrat_regular"/>
+                android:textColor="@color/grey4"
+                android:fontFamily="@font/montserrat_medium"/>
 
         </RelativeLayout>
 

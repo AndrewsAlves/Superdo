@@ -23,6 +23,8 @@ import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter;
 
 import com.andysapps.superdo.todo.enums.BucketType;
+import com.andysapps.superdo.todo.enums.MoonButtonType;
+import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
@@ -95,14 +97,13 @@ public class BucketTasksFragment extends Fragment {
         return fragment;
     }
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_bucket_tasks, container, false);
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
+        EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
 
         if (bucket == null) {
             bucket = FirestoreManager.getAllTasksBucket(getContext());

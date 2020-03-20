@@ -31,6 +31,7 @@ import com.google.firebase.firestore.Source;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Created by Andrews on 29,October,2019
@@ -94,6 +95,7 @@ public class FirestoreManager {
         Bucket bucket = new Bucket();
         bucket.setDocumentId("all_tasks");
         bucket.setName("All Tasks");
+        bucket.setId("id_all_tasks");
         bucket.setBucketType(BucketType.Tasks.toString());
         bucket.setDescription(SharedPrefsManager.getDescAllTasks(context));
         bucket.setTagColor(BucketColors.Red.toString()); // light Red

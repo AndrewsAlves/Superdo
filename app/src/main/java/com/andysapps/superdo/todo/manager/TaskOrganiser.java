@@ -5,6 +5,7 @@ import android.util.Log;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 
 import java.util.ArrayList;
@@ -113,12 +114,27 @@ public class TaskOrganiser {
                 remindingTasks.add(task);
             }
 
-            if (Utils.shouldAddTaskRepeat(task)) {
+            /*if (Utils.shouldAddTaskRepeat(task)) {
                 task.setListedIn(TaskListing.TODAY);
                 todayTaskList.add(task);
                 continue;
             } else if (task.getRepeat() != null) {
                 continue;
+            }*/
+
+            if (task.getRepeat() != null) {
+                if (task.isTaskCompleted()) {
+                    if (task.getTaskCompletedDate() != null) {
+                        SuperDate completedDate = Utils.getSuperdateFromTimeStamp(task.getTaskCompletedDate().getTime());
+                        SuperDate todayDate = Utils.getSuperdateToday();
+                        if (completedDate.getDate() == todayDate.getDate()
+                                && completedDate.getMonth() == todayDate.getMonth()
+                                && completedDate.getYear() == todayDate.getYear()) {
+                            completedTaskList.add(task);
+                            continue;
+                        }
+                    }
+                }
             }
 
             if (task.isTaskCompleted()) {
@@ -322,7 +338,7 @@ public class TaskOrganiser {
 
         int tasksCount = 0;
 
-        if (bucket.getDocumentId().equals("all_tasks")) {
+        if (bucket == null || bucket.getDocumentId().equals("all_tasks")) {
             return allTaskList.size();
         }
 
@@ -339,7 +355,7 @@ public class TaskOrganiser {
 
         int tasksDoneCount = 0;
 
-        if (bucket.getDocumentId().equals("all_tasks")) {
+        if (bucket == null || bucket.getDocumentId().equals("all_tasks")) {
             for (Task task : allTaskList) {
                 if (task.isTaskCompleted()) {
                     tasksDoneCount++;

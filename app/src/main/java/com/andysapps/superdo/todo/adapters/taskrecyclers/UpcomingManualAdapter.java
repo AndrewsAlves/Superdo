@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -275,28 +276,23 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         h.ivFocus.setVisibility(View.GONE);
         h.parentIcons.setVisibility(View.GONE);
 
-        if (task.getRepeat() != null && task.getRepeat().isEnabled) {
+        if (task.getRepeat() != null) {
             h.ivRepeat.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getDeadline() != null && task.getDeadline().isEnabled) {
+        if (task.getDeadline() != null) {
             h.ivDeadline.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
-        if (task.getSubtasks() != null && task.getSubtasks().isEnabled) {
+        if (task.getSubtasks() != null) {
             h.ivSubtasks.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.isToRemind()) {
             h.ivRemind.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
-        }
-
-        if (task.getFocus() != null && task.getFocus().isEnabled) {
-            h.ivFocus.setVisibility(View.VISIBLE);
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
@@ -394,6 +390,12 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
+
+        // dont move repeat tasks
+        if (taskList.get(fromPosition).getRepeat() != null) {
+            Toast.makeText(context, "Cannot move repeat task", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (toPosition == 0) {
             return;

@@ -19,8 +19,10 @@ import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.TasksDayPagerAdapter;
+import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.EditBucketDescription;
+import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
@@ -103,6 +105,7 @@ public class AllTasksFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_all_tasks, container, false);
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
+        EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
 
         fontBold = ResourcesCompat.getFont(getContext(), R.font.montserrat_bold);
         fontRegular = ResourcesCompat.getFont(getContext(), R.font.montserrat_regular);
