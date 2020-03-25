@@ -226,6 +226,7 @@ public class TaskOrganiser {
                 return o1.getTaskIndex() - o2.getTaskIndex();
             }
         });
+
     }
 
     public void organiseBuckets() {
@@ -233,11 +234,18 @@ public class TaskOrganiser {
         bucketList = new ArrayList<>();
 
         for (Bucket bucket : FirestoreManager.getInstance().getHasMapBucket().values()) {
-            if (bucket.isDeleted()) {
+            if (bucket.getDeleted()) {
                 continue;
             }
             bucketList.add(bucket);
         }
+
+       Collections.sort(bucketList, new Comparator<Bucket>() {
+           @Override
+           public int compare(Bucket o1, Bucket o2) {
+               return o1.getCreated().compareTo(o2.getCreated());
+           }
+       });
     }
 
     public List<Task> getCompletedTaskList() {
@@ -383,6 +391,7 @@ public class TaskOrganiser {
         if (FirestoreManager.getInstance().getHasMapBucket().containsKey(bucket.getDocumentId())) {
             Bucket bucket1 = FirestoreManager.getInstance().getHasMapBucket().get(bucket.getDocumentId());
             bucket1.setDeleted(true);
+            organiseAllTasks();
             FirestoreManager.getInstance().updateBucket(bucket1);
         }
     }

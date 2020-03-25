@@ -114,8 +114,11 @@ public class FirestoreManager {
 
         Source source = Source.DEFAULT;
 
-        taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", userId).whereEqualTo("isMovedToBin", false);
-        bucketQuery = firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId).whereEqualTo("isMovedToBin", false).orderBy("created", Query.Direction.DESCENDING);
+        taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", userId).whereEqualTo("deleted", false);
+        bucketQuery = firestore.collection(DB_BUCKETS)
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("deleted", false)
+                .orderBy("created", Query.Direction.DESCENDING);
 
         if (!registerReminders) initQuerySnapshots();
 

@@ -32,12 +32,13 @@ public class Bucket {
 
     boolean isFavorite;
 
+    @ServerTimestamp
     Date created;
 
     @ServerTimestamp
     Date lastEdited;
 
-    boolean isDeleted;
+    boolean deleted;
 
     public Bucket() {
     }
@@ -99,6 +100,14 @@ public class Bucket {
         this.created = created;
     }
 
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Date getLastEdited() {
         return lastEdited;
     }
@@ -107,13 +116,6 @@ public class Bucket {
         this.lastEdited = lastEdited;
     }
 
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
 
     public String getTagColor() {
         if (tagColor == null) {

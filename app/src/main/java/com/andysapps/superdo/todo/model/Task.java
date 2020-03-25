@@ -2,7 +2,6 @@ package com.andysapps.superdo.todo.model;
 
 import android.util.Log;
 
-import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.sidekicks.ContactCard;
 import com.andysapps.superdo.todo.model.sidekicks.Deadline;
@@ -80,7 +79,7 @@ public class Task implements Cloneable {
     Date created;
 
     boolean movedToBin;
-    boolean isDeleted;
+    boolean deleted;
 
     public Task() {
     }
@@ -139,11 +138,11 @@ public class Task implements Cloneable {
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
     }
 
     public TaskListing getListedIn() {
