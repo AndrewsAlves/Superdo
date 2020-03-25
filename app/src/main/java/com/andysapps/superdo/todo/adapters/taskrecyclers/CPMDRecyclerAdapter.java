@@ -33,6 +33,7 @@ import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -268,13 +269,15 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             h.lottieCheckView.playAnimation();
         });
 
-        h.itemView.setOnClickListener(v -> {
-            if (isSeleting) {
-                h.cbSelection.setChecked(!h.cbSelection.isChecked());
-                return;
-            }
-            EventBus.getDefault().post(new OpenEditTaskEvent(task));
-        });
+        PushDownAnim.setPushDownAnimTo(h.itemView)
+                .setScale(PushDownAnim.MODE_SCALE, 0.96f)
+                .setOnClickListener(v -> {
+                    if (isSeleting) {
+                        h.cbSelection.setChecked(!h.cbSelection.isChecked());
+                        return;
+                    }
+                    EventBus.getDefault().post(new OpenEditTaskEvent(task));
+                });
 
         if (isSeleting) {
             h.cbSelection.setVisibility(View.VISIBLE);

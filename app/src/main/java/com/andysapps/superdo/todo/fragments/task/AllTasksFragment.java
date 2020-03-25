@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
@@ -21,17 +20,17 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.TasksDayPagerAdapter;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.enums.TaskListing;
-import com.andysapps.superdo.todo.events.EditBucketDescription;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
+import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
-import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
 import com.andysapps.superdo.todo.fragments.bucket.BucketFragment;
 import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.github.florent37.viewanimator.ViewAnimator;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,6 +39,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.thekhaeng.pushdownanim.PushDownAnim.MODE_SCALE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -106,7 +107,18 @@ public class AllTasksFragment extends Fragment {
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
         EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
+        initUi();
 
+        return v;
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
+    }
+
+    public void initUi() {
         fontBold = ResourcesCompat.getFont(getContext(), R.font.montserrat_bold);
         fontRegular = ResourcesCompat.getFont(getContext(), R.font.montserrat_regular);
 
@@ -140,6 +152,10 @@ public class AllTasksFragment extends Fragment {
             public void onPageScrollStateChanged(int i) { }
         });
 
+        PushDownAnim.setPushDownAnimTo(btnBucketList)
+                .setScale(MODE_SCALE, 0.96f  )
+                .setOnClickListener(view -> EventBus.getDefault().post(new OpenFragmentEvent(new BucketFragment(), true, BucketFragment.TAG)));
+
         clickToday();
 
         listing= TaskListing.TODAY;
@@ -148,13 +164,8 @@ public class AllTasksFragment extends Fragment {
         lasttaskListing = TaskListing.UPCOMING;
         updateUi();
 
-        return v;
-    }
 
-    @Override
-    public void onDestroyView() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroyView();
+
     }
 
     public void updateUi() {
@@ -197,10 +208,7 @@ public class AllTasksFragment extends Fragment {
         updateUi();
     }
 
-    @OnClick(R.id.ib_bucketList)
-    public void clickBucket() {
-        EventBus.getDefault().post(new OpenFragmentEvent(new BucketFragment(), true, BucketFragment.TAG));
-    }
+    // bucket click listener is arranger to pushAnimation
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(FetchTasksEvent event) {
@@ -236,12 +244,6 @@ public class AllTasksFragment extends Fragment {
 
         getFragmentManager().popBackStack();
     }*/
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(EditBucketDescription event) {
-        isEditing = event.isEditing;
-        updateUi();
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskUpdatedEvent event) {

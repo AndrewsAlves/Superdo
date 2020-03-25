@@ -1,9 +1,11 @@
 package com.andysapps.superdo.todo.fragments.task
 
 
+import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -19,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import butterknife.ButterKnife
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
+import com.airbnb.lottie.value.LottieFrameInfo
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
@@ -40,6 +43,7 @@ import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
 import com.andysapps.superdo.todo.events.sidekick.UpdateSubtasksEvent
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
+import com.andysapps.superdo.todo.manager.SuperdoAudioManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
 import com.andysapps.superdo.todo.model.sidekicks.Subtask
@@ -103,7 +107,9 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         editTask_lottie_anim.addValueCallback(
                 KeyPath("Shape Layer 1", "**"),
                 LottieProperty.COLOR_FILTER,
-                { PorterDuffColorFilter(context!!.resources.getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP) }
+                fun(it: LottieFrameInfo<ColorFilter>): PorterDuffColorFilter {
+                    return PorterDuffColorFilter(context!!.resources.getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP)
+                }
         )
 
         lv_remind.setAnimation("check_box2.json")
@@ -147,17 +153,24 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             editTask_lottie_anim.setMinAndMaxProgress(0.0f, 1.0f)
 
             if (isChecked) {
-                editTask_lottie_anim.speed = -2f
+                editTask_lottie_anim.speed = -4f
                 isChecked = false
             } else {
-                editTask_lottie_anim.speed = 2.0f
+                editTask_lottie_anim.speed = 4.0f
                 isChecked = true
             }
 
             task.isTaskCompleted = isChecked
             FirestoreManager.getInstance().updateTask(task)
 
-            editTask_lottie_anim.playAnimation()
+            editTask_lottie_anim.progress = 1.0f
+
+            if (task.isTaskCompleted) {
+                SuperdoAudioManager.getInstance().playTaskCompleted()
+                EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Task_Completed, task))
+                fragmentManager!!.popBackStack()
+            }
+
         }
 
         editTask_tick_save.setOnClickListener {

@@ -6,6 +6,7 @@ package com.andysapps.superdo.todo.enums;
 public enum TaskUpdateType {
     Added,
     Deleted,
+    Task_Completed,
     Modified,
     Update
 }

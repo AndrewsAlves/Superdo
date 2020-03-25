@@ -44,7 +44,7 @@ class BucketActionBottomDialog : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btn_edit__BucketDialog.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CreateNewBucketFragment.instance(bucket, true), true, CreateNewBucketFragment.TAG))
+            EventBus.getDefault().post(OpenFragmentEvent(CreateNewBucketFragment.instance(bucket, true), true, CreateNewBucketFragment.TAG, true))
             dismiss()
         }
 

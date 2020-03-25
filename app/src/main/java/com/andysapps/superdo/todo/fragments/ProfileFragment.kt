@@ -2,16 +2,17 @@ package com.andysapps.superdo.todo.fragments
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.enums.CPMD
+import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment
 import com.andysapps.superdo.todo.manager.TaskOrganiser
+import com.thekhaeng.pushdownanim.PushDownAnim
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.greenrobot.eventbus.EventBus
 
@@ -33,24 +34,29 @@ class ProfileFragment : Fragment() {
     }
 
     fun initUi() {
-        profile_btn_completed_tasks.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.COMPLETED), false, CPMDTasksFragment.TAG))
-        }
-        profile_btn_pending_tasks.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.PENDING), false, CPMDTasksFragment.TAG))
-        }
-        profile_btn_missed_tasks.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.MISSED), false, CPMDTasksFragment.TAG))
-        }
-        profile_btn_recurring_tasks.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.RECURRING), false, CPMDTasksFragment.TAG))
-        }
-        profile_btn_deadline_tasks.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.DEADLINED), false, CPMDTasksFragment.TAG))
-        }
-        profile_btn_archived_tasks.setOnClickListener {
-            EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(CPMD.DELETED), false, CPMDTasksFragment.TAG))
-        }
+
+        PushDownAnim.setPushDownAnimTo(profile_btn_completed_tasks,
+                profile_btn_pending_tasks,
+                profile_btn_missed_tasks,
+                profile_btn_recurring_tasks,
+                profile_btn_deadline_tasks,
+                profile_btn_archived_tasks)
+                .setScale(PushDownAnim.MODE_SCALE, 0.96f)
+                .setOnClickListener(fun(view: View) {
+
+                    var cpmd = CPMD.COMPLETED
+
+                    when(view) {
+                        profile_btn_completed_tasks -> cpmd = CPMD.COMPLETED
+                        profile_btn_pending_tasks -> cpmd = CPMD.PENDING
+                        profile_btn_missed_tasks -> cpmd = CPMD.MISSED
+                        profile_btn_recurring_tasks -> cpmd = CPMD.RECURRING
+                        profile_btn_deadline_tasks -> cpmd = CPMD.DEADLINED
+                        profile_btn_archived_tasks -> cpmd = CPMD.DELETED
+                    }
+
+                    EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(cpmd), false, CPMDTasksFragment.TAG, true))
+                })
     }
 
     fun updateUi() {

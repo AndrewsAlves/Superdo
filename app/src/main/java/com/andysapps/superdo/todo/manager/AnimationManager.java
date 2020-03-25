@@ -53,4 +53,13 @@ public class AnimationManager {
                 .start();
         isMoonButtonHidded = false;
     }
+
+    public void scaleUp(View view) {
+        ViewAnimator
+                .animate(view)
+                .scale(0, 1)
+                .decelerate()
+                .duration(100)
+                .start();
+    }
 }

@@ -587,7 +587,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_regular"
-        android:text="Mark Done"
+        android:text="Done"
         android:textSize="16sp"
         android:layout_marginStart="10dp"
         app:layout_constraintTop_toTopOf="@id/editTask_rl_mark_done"

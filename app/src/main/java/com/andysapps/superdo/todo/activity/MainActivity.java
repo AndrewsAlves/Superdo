@@ -116,11 +116,11 @@ public class MainActivity extends AppCompatActivity {
                         mainTabs = MainTabs.TODAY_TASKS;
                         rippleBackground.startPulse();
                         break;
-                    case 1:
+                    /*case 1:
                         mainTabs = MainTabs.BUCKET_TASKS;
                         rippleBackground.stopPulse();
-                        break;
-                    case 2:
+                        break;*/
+                    case 1:
                         mainTabs = MainTabs.PROFILE;
                         rippleBackground.stopPulse();
                         break;
@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.tab_1)
     public void clickToday() {
-
         moonButton.setClickable(true);
         mainTabs = MainTabs.TODAY_TASKS;
         mainViewPager.setCurrentItem(0);
@@ -205,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
             case ADD_BUCKET:
                 onMessageEvent(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(new Bucket(), false),
                         true,
-                        CreateNewBucketFragment.Companion.getTAG()));
+                        CreateNewBucketFragment.Companion.getTAG(), true));
                 break;
             case SAVE_BUCKET:
                 EventBus.getDefault().post(new AddNewBucketEvent());
@@ -309,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
         EditTaskFragment fragment = EditTaskFragment.Companion.instance(event.getTask());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out,R.anim.fragment_fade_in, R.anim.fragment_fade_out);
-        ft.replace(R.id.fl_fragment_container, fragment, EditTaskFragment.Companion.getTAG());
+        ft.add(R.id.fl_fragment_container, fragment, EditTaskFragment.Companion.getTAG());
         ft.addToBackStack(fragment.getClass().getName());
         ft.commitAllowingStateLoss(); // save the changes
     }
@@ -317,11 +316,11 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(OpenFragmentEvent event) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        //ft.setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_fade_out);
+        ft.setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out,R.anim.fragment_fade_in, R.anim.fragment_fade_out);
         if (event.behindMoonButton) {
-            ft.replace(R.id.fl_fragment_container_behind_add, event.fragment, event.tag);
+            ft.add(R.id.fl_fragment_container_behind_add, event.fragment, event.tag);
         } else {
-            ft.replace(R.id.fl_fragment_container, event.fragment, event.tag);
+            ft.add(R.id.fl_fragment_container, event.fragment, event.tag);
         }
         ft.addToBackStack(null);
         ft.commitAllowingStateLoss(); // save the change

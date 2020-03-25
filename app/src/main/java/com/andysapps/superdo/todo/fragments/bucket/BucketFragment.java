@@ -16,8 +16,10 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.taskrecyclers.BucketsRecyclerAdapter;
@@ -29,9 +31,12 @@ import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
+import com.andysapps.superdo.todo.manager.AnimationManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.views.UiUtils;
+import com.github.florent37.viewanimator.ViewAnimator;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -43,6 +48,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.thekhaeng.pushdownanim.PushDownAnim.MODE_SCALE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,6 +64,9 @@ public class BucketFragment extends Fragment{
 
     @BindView(R.id.root_view_bucket_fragment)
     RelativeLayout rootLayout;
+
+    @BindView(R.id.ib_close_buckets)
+    ImageButton btnClose;
 
     BucketsRecyclerAdapter adapter;
 
@@ -78,6 +88,8 @@ public class BucketFragment extends Fragment{
         ButterKnife.bind(this, v);
 
         enterCircularReveal();
+        //AnimationManager.getInstance().scaleUp(btnClose);
+        initUi();
 
         EventBus.getDefault().register(this);
         EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_BUCKET));
@@ -95,6 +107,12 @@ public class BucketFragment extends Fragment{
         Log.e( getClass().getName(), "onCreateView: bucket fragment" );
 
         return v;
+    }
+
+    public void initUi() {
+        PushDownAnim.setPushDownAnimTo(btnClose)
+                .setScale(MODE_SCALE, 0.90f  )
+                .setOnClickListener(view -> exitCircularReveal());
     }
     
     @Override
@@ -190,8 +208,10 @@ public class BucketFragment extends Fragment{
             public void onAnimationRepeat(Animator animator) {
             }
         });
+
             circularReveal.setDuration(400);
             circularReveal.start();
+            animateColor(R.color.white, R.color.lightOrange_whitish);
     }
 
     private void circularRevealActivity() {
@@ -209,10 +229,17 @@ public class BucketFragment extends Fragment{
         // make the view visible and start the animation
         rootLayout.setVisibility(View.VISIBLE);
         circularReveal.start();
+        animateColor(R.color.lightOrange_whitish, R.color.white);
     }
 
-
-
+    public void animateColor(int color, int color2) {
+        ViewAnimator
+                .animate(rootLayout)
+                .backgroundColor(getResources().getColor(color),getResources().getColor(color2))
+                .duration(400)
+                .accelerate()
+                .start();
+    }
 }
 
 

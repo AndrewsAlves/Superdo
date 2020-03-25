@@ -16,11 +16,10 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:alpha="0.5"
-            android:src="@drawable/img_sloth" />
+            android:src="@drawable/illust_boy_wtih_coffee" />
 
         <TextView
             android:id="@+id/tv_no_tasks"
@@ -28,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/montserrat_medium"
             android:text="Great! you dont have \nany tasks Today"
             android:textAlignment="center"
             android:textSize="16sp" />
@@ -42,8 +41,6 @@
         android:layout_marginBottom="80dp"
         android:requiresFadingEdge="vertical"
         android:fadingEdgeLength="50dp"
-        tools:listitem="@layout/item_task"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        tools:listitem="@layout/item_task" />
 
 </RelativeLayout>

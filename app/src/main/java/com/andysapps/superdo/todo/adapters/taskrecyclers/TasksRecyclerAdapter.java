@@ -27,8 +27,10 @@ import com.andysapps.superdo.todo.enums.UndoType;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -136,15 +138,12 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         h.painting = new StrikeThroughPainting(h.tvTaskName);
 
-        /*if (task.getBucketColor() != null) {
-            h.ivCheck.setColorFilter(Color.parseColor(task.getBucketColor()), PorterDuff.Mode.SRC_ATOP);
-        }*/
-
         h.isChecked = task.isTaskCompleted();
 
         if (h.isChecked) {
             h.lottieCheckView.setVisibility(View.VISIBLE);
             h.lottieCheckView.setMinAndMaxProgress(1.0f, 1.0f);
+            strikeOutText(h, 0);
         } else {
             h.lottieCheckView.setVisibility(View.INVISIBLE);
             h.lottieCheckView.setMinAndMaxProgress(0.0f, 0.0f);
@@ -202,18 +201,14 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                     h.lottieCheckView.setSpeed(2.0f);
                     h.isChecked = true;
                     strikeOutText(h, 500);
+                    SuperdoAudioManager.getInstance().playTaskCompleted();
                 }
 
                 task.setTaskCompleted(h.isChecked);
 
                 //// SET TASK COMPLETED
                 if (h.isChecked) {
-                    viewUpdateHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setTaskCompleted(h.getAdapterPosition(), task);
-                        }
-                    }, 500);
+                    viewUpdateHandler.postDelayed(() -> setTaskCompleted(h.getAdapterPosition(), task), 500);
 
                 }
 
@@ -221,12 +216,11 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             }
         });
 
-        h.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EventBus.getDefault().post(new OpenEditTaskEvent(task));
-            }
-        });
+        PushDownAnim.setPushDownAnimTo(h.itemView)
+                .setScale(PushDownAnim.MODE_SCALE, 0.96f)
+                .setOnClickListener(v -> {
+                    EventBus.getDefault().post(new OpenEditTaskEvent(task));
+                });
     }
 
     public void setTaskCompleted(int position, Task task) {

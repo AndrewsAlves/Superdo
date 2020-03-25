@@ -1,10 +1,14 @@
 package com.andysapps.superdo.todo.manager;
 
 import android.content.Context;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.enums.BucketUpdateType;
@@ -49,6 +53,8 @@ public class FirestoreManager {
     public static final String DB_BUCKETS = "buckets";
     public static final String DB_NOTIFICATIONS = "notifications";
 
+
+
     HashMap<String, Task> taskHashMap;
     HashMap<String, Bucket> bucketHashMap;
 
@@ -67,6 +73,7 @@ public class FirestoreManager {
         firestore =  FirebaseFirestore.getInstance();
         taskHashMap = new HashMap<>();
         bucketHashMap = new HashMap<>();
+
     }
 
     public static void initialise(Context context) {
@@ -112,63 +119,45 @@ public class FirestoreManager {
 
         if (!registerReminders) initQuerySnapshots();
 
-        taskQuery.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+        taskQuery.get(source).addOnSuccessListener(queryDocumentSnapshots -> {
 
-                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
-                    if (documentSnapshot == null) {
-                        continue;
-                    }
-
-                    taskHashMap.put(documentSnapshot.getId(), documentSnapshot.toObject(Task.class));
+                if (documentSnapshot == null) {
+                    continue;
                 }
 
-                TaskOrganiser.getInstance().organiseAllTasks();
-
-                if (registerReminders) {
-                    SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders(context);
-                    return;
-                }
-
-                EventBus.getDefault().post(new FetchTasksEvent(true));
+                taskHashMap.put(documentSnapshot.getId(), documentSnapshot.toObject(Task.class));
             }
 
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                EventBus.getDefault().post(new FetchTasksEvent(false));
+            TaskOrganiser.getInstance().organiseAllTasks();
+
+            if (registerReminders) {
+                SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders(context);
+                return;
             }
-        });
+
+            EventBus.getDefault().post(new FetchTasksEvent(true));
+        }).addOnFailureListener(e -> EventBus.getDefault().post(new FetchTasksEvent(false)));
 
 
         if (registerReminders) {
             return;
         }
 
-        bucketQuery.get(source).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+        bucketQuery.get(source).addOnSuccessListener(queryDocumentSnapshots -> {
+            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
-                    if (documentSnapshot == null) {
-                        continue;
-                    }
-
-                    bucketHashMap.put(documentSnapshot.getId(), documentSnapshot.toObject(Bucket.class));
+                if (documentSnapshot == null) {
+                    continue;
                 }
 
-                TaskOrganiser.getInstance().organiseAllTasks();
-                EventBus.getDefault().post(new FetchBucketEvent(true));
+                bucketHashMap.put(documentSnapshot.getId(), documentSnapshot.toObject(Bucket.class));
             }
 
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                EventBus.getDefault().post(new FetchBucketEvent(false));
-            }
-        });
+            TaskOrganiser.getInstance().organiseAllTasks();
+            EventBus.getDefault().post(new FetchBucketEvent(true));
+        }).addOnFailureListener(e -> EventBus.getDefault().post(new FetchBucketEvent(false)));
     }
 
     public void initQuerySnapshots() {
@@ -284,19 +273,13 @@ public class FirestoreManager {
 
         firestore.collection(DB_TASKS).document()
                 .set(task)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        EventBus.getDefault().post(new UploadTaskSuccessEvent());
-                        Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!");
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    EventBus.getDefault().post(new UploadTaskSuccessEvent());
+                    Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!");
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        EventBus.getDefault().post(new UploadTaskFailureEvent());
-                        Log.e(TAG, "Error uploading task", e);
-                    }
+                .addOnFailureListener(e -> {
+                    EventBus.getDefault().post(new UploadTaskFailureEvent());
+                    Log.e(TAG, "Error uploading task", e);
                 });
     }
 
@@ -304,74 +287,38 @@ public class FirestoreManager {
 
         firestore.collection(DB_TASKS).document(task.getDocumentId())
                 .set(task)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Error uploading task", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error uploading task", e));
     }
 
     public void uploadBucket(Bucket bucket) {
 
         firestore.collection(DB_BUCKETS).document()
                 .set(bucket)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Error uploading bucket", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error uploading bucket", e));
     }
 
     public void uploadNotification(SimpleNotification notification) {
 
         firestore.collection(DB_NOTIFICATIONS).document()
                 .set(notification)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Error uploading bucket", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error uploading bucket", e));
     }
-
-
 
     public void updateBucket(Bucket bucket) {
 
         firestore.collection(DB_BUCKETS).document(bucket.getDocumentId())
                 .set(bucket)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Error uploading task", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error uploading task", e));
     }
+
+    ///////////////////////////////
+    ////// SOUNDS
+    /////////////////
+
+
 
 }

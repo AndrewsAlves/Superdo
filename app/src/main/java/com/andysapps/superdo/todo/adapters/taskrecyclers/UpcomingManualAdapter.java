@@ -33,8 +33,10 @@ import com.andysapps.superdo.todo.enums.UndoType;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -64,7 +66,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
     Task monthDumTask = new Task();
     Task upcomingDumTask = new Task();
 
-    private List<Task> taskList;
+    public List<Task> taskList;
 
     List<Task> weekTaskList;
     List<Task> monthTaskList;
@@ -205,12 +207,6 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         Task task = taskList.get(position);
 
-        if (h.painting != null) {
-            h.painting.clearStrikeThrough();
-        }
-
-        h.painting = new StrikeThroughPainting(h.tvTaskName);
-
         if (task.getDocumentId().equals(dummyWeekTitle)
                 || task.getDocumentId().equals(dummyMonthTitle)
                 || task.getDocumentId().equals(dummyUpcomingTitle) ) {
@@ -234,6 +230,12 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             h.parentTaskItem.setVisibility(View.GONE);
             return;
         }
+
+        if (h.painting != null) {
+            h.painting.clearStrikeThrough();
+        }
+
+        h.painting = new StrikeThroughPainting(h.tvTaskName);
 
         h.tvUpcomingTitle.setVisibility(View.GONE);
         h.parentTaskItem.setVisibility(View.VISIBLE);
@@ -263,6 +265,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         if (h.isChecked) {
             h.lottieCheckView.setMinAndMaxProgress(1.0f, 1.0f);
+            strikeOutText(h, 0);
         } else {
             h.lottieCheckView.setMinAndMaxProgress(0.0f, 0.0f);
         }
@@ -304,45 +307,40 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 frameInfo -> new PorterDuffColorFilter(context.getResources().getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP)
         );
 
-        h.btnTaskCompleted.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
-                if (h.isChecked) {
-                    h.lottieCheckView.setSpeed(-3.5f);
-                    h.isChecked = false;
-                    //strikeInText(h);
-                } else {
-                    h.lottieCheckView.setSpeed(3.5f);
-                    h.isChecked = true;
-                    strikeOutText(h);
-                }
-
-                task.setTaskCompleted(h.isChecked);
-
-                //// SET TASK COMPLETED
-                if (h.isChecked) {
-                    viewUpdateHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setTaskCompleted(h.getAdapterPosition(), task);
-                        }
-                    }, 300);
-
-                }
-
-                h.lottieCheckView.playAnimation();
+        h.btnTaskCompleted.setOnClickListener(v -> {
+            h.lottieCheckView.setMinAndMaxProgress(0.0f, 1.0f);
+            if (h.isChecked) {
+                h.lottieCheckView.setSpeed(-2.0f);
+                h.isChecked = false;
+                //strikeInText(h);
+            } else {
+                h.lottieCheckView.setSpeed(2.0f);
+                h.isChecked = true;
+                strikeOutText(h, 500);
+                SuperdoAudioManager.getInstance().playTaskCompleted();
             }
+
+            task.setTaskCompleted(h.isChecked);
+
+            //// SET TASK COMPLETED
+            if (h.isChecked) {
+                viewUpdateHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setTaskCompleted(h.getAdapterPosition(), task);
+                    }
+                }, 500);
+
+            }
+
+            h.lottieCheckView.playAnimation();
         });
 
-        h.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EventBus.getDefault().post(new OpenEditTaskEvent(task));
-            }
-        });
-
-
+        PushDownAnim.setPushDownAnimTo(h.itemView)
+                .setScale(PushDownAnim.MODE_SCALE, 0.96f)
+                .setOnClickListener(v -> {
+                    EventBus.getDefault().post(new OpenEditTaskEvent(task));
+                });
     }
 
     public void setTaskCompleted(int position, Task task) {
@@ -355,7 +353,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         TaskOrganiser.getInstance().organiseAllTasks();
     }
 
-    private void strikeOutText(TaskViewHolder holder) {
+    private void strikeOutText(TaskViewHolder holder, long duration) {
 
         float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 2,
@@ -374,7 +372,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 // differently to the following lines
                 .firstLinePosition(0.6F)
                 // default to 1_000 milliseconds, aka 1s
-                .totalTime(500)
+                .totalTime(duration)
                 // do the draw!
                 .strikeThrough();
     }

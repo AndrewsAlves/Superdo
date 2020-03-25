@@ -3,6 +3,7 @@ package com.andysapps.superdo.todo;
 import android.app.Application;
 
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.notification.SuperdoNotificationManager;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.firebase.FirebaseApp;
@@ -18,6 +19,7 @@ public class SuperdoApplication extends Application {
 
         FirebaseApp.initializeApp(this);
         FirestoreManager.initialise(this);
+        SuperdoAudioManager.init(this);
 
         SuperdoAlarmManager.initialise(this);
         SuperdoAlarmManager.getInstance().registerBackgroundProcesses(this);

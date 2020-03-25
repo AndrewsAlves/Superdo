@@ -212,7 +212,8 @@ public class BucketTasksFragment extends Fragment {
     public void clickProfile() {
         EventBus.getDefault().post(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(bucket, true),
                 true,
-                CreateNewBucketFragment.Companion.getTAG()));
+                CreateNewBucketFragment.Companion.getTAG(),
+                 true));
     }
 
     @OnClick(R.id.ib_bucketList)

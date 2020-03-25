@@ -35,12 +35,12 @@
 
             <ImageButton
                 android:id="@+id/ib_bucketList"
-                style="@style/ripple_background"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="40dp"
                 android:src="@drawable/ic_bucket_list"
                 android:scaleType="centerInside"
+                android:background="@color/transparent"
                 android:layout_alignParentEnd="true"/>
 
             <ImageButton

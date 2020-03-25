@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo.fragments.task
 
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,6 +76,12 @@ class UpcomingTasksFragment : Fragment() {
             }
             TaskUpdateType.Deleted -> {
                 adapter!!.removeTask(event.task)
+            }
+            TaskUpdateType.Task_Completed -> {
+                var index = adapter!!.taskList.indexOf(event.task)
+                if (index != -1) {
+                    var handler = Handler()
+                    handler.postDelayed({adapter!!.setTaskCompleted(index, event.task) }, 200)                 }
             }
             else -> {
                 adapter!!.updateList()

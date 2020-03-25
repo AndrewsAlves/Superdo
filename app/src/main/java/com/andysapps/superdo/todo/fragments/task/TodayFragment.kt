@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo.fragments.task
 
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,6 +70,7 @@ class TodayFragment : Fragment() {
 
         if (todayTaskList == null || todayTaskList!!.isEmpty()) {
             ll_notasks.visibility = View.VISIBLE
+            tv_no_tasks.text = "No tasks for today? \n Try to do something..."
         } else {
             ll_notasks.visibility = View.GONE
         }
@@ -95,6 +97,13 @@ class TodayFragment : Fragment() {
             }
             TaskUpdateType.Deleted -> {
                 adapter!!.removeTask(event.task)
+            }
+            TaskUpdateType.Task_Completed -> {
+                var index = adapter!!.taskList.indexOf(event.task)
+                if (index != -1) {
+                    var handler = Handler()
+                    handler.postDelayed({adapter!!.setTaskCompleted(index, event.task) }, 200)
+                }
             }
             else -> {
                 updateUi()
