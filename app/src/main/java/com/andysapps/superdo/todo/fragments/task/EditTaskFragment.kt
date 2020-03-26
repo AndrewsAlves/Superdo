@@ -167,6 +167,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
             if (task.isTaskCompleted) {
                 SuperdoAudioManager.getInstance().playTaskCompleted()
+                FirestoreManager.getInstance().updateTask(task)
                 EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Task_Completed, task))
                 fragmentManager!!.popBackStack()
             }

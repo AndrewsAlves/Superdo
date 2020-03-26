@@ -23,9 +23,11 @@ import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -52,8 +54,6 @@ public class FirestoreManager {
     public static final String DB_HABITS = "habits";
     public static final String DB_BUCKETS = "buckets";
     public static final String DB_NOTIFICATIONS = "notifications";
-
-
 
     HashMap<String, Task> taskHashMap;
     HashMap<String, Bucket> bucketHashMap;
@@ -319,9 +319,34 @@ public class FirestoreManager {
     }
 
     ///////////////////////////////
-    ////// SOUNDS
+    ////// ACTIONS
     /////////////////
 
+    public void actionMarkCompleted(String taskDocumentId) {
 
+        if (taskDocumentId == null) {
+            return;
+        }
+
+        DocumentReference docRef = firestore.collection(DB_TASKS).document(taskDocumentId);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Task task1 = document.toObject(Task.class);
+                        task1.setTaskCompleted(true);
+                        updateTask(task1);
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
 
 }

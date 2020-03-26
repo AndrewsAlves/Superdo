@@ -126,6 +126,13 @@ public class Task implements Cloneable {
     }
 
     public void setTaskCompleted(boolean taskCompleted) {
+
+        if (taskCompleted) {
+            taskCompletedDate = Calendar.getInstance().getTime();
+        } else {
+            taskCompletedDate = null;
+        }
+
         isTaskCompleted = taskCompleted;
     }
 

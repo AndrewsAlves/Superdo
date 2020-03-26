@@ -12,7 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.andysapps.superdo.todo.ActionBroadcast;
+import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.activity.MainActivity;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Task;
@@ -32,6 +35,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
+import io.grpc.okhttp.internal.Util;
+
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_NOTIFICATIONS;
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_TASKS;
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_notification_deadline_type;
@@ -39,6 +44,7 @@ import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent
 /**
  * Created by Andrews on 26,February,2020
  */
+
 public class SuperdoNotificationManager {
 
     private static final String TAG = "NotificationManager";
@@ -135,6 +141,23 @@ public class SuperdoNotificationManager {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(notificationId, builder.build());
+    }
+
+    public NotificationCompat.Builder getSimpleNotification(Context context, Intent intent, String channelId, int smallIcon, String contentTitle, String contentText, String contentBogText, int notificationId) {
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(smallIcon)
+                .setColor(context.getResources().getColor(R.color.lightOrange))
+                .setContentTitle(contentTitle)
+                .setContentText(contentText)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(contentBogText))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent);
+
+        return builder;
     }
 
     ////////////////////////////////////////////
@@ -275,12 +298,22 @@ public class SuperdoNotificationManager {
                         if (document.exists()) {
                             remindTask = document.toObject(Task.class);
 
+                            if (Utils.isSuperDateIsPast(remindTask.getDoDate())) {
+                                return;
+                            }
+
                             SimpleNotification notification = new SimpleNotification();
-                            notification.setContentTitle("Reminder for you!");
+
+                            if (Utils.isReminderMissed(remindTask.getDoDate())) {
+                                notification.setContentTitle("Missed reminder for you today");
+                            } else {
+                                notification.setContentTitle("Superdo Reminder, Done with this task!");
+                            }
+
                             notification.setContentText(remindTask.getName());
                             notification.setContextBigText(remindTask.getName());
 
-                            pushRemindNotification(context, notification , remindTask.getRemindRequestCode());
+                            pushRemindNotification(context, notification , remindTask);
 
                             Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         } else {
@@ -294,24 +327,66 @@ public class SuperdoNotificationManager {
         });
     }
 
-    public void pushRemindNotification(Context context, SimpleNotification notification, int requestCode) {
-        createNotification(context,new Intent(context, MainActivity.class),
+    public void pushRemindNotification(Context context, SimpleNotification notification, Task remindTask) {
+
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(Constants.key_taskid, remindTask.getDocumentId());
+
+        Intent actionMarkDoneIntent = new Intent(context, ActionBroadcast.class);
+        actionMarkDoneIntent.putExtra(Constants.key_action, Constants.value_action_markdone);
+        actionMarkDoneIntent.putExtra(Constants.key_taskid, remindTask.getDocumentId());
+        actionMarkDoneIntent.putExtra(Constants.key_notification_request_id, remindTask.getRemindRequestCode());
+
+        PendingIntent pendingActionIntent = PendingIntent.getBroadcast(context, remindTask.getRemindRequestCode(), actionMarkDoneIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = getSimpleNotification(context,intent,
                 CHANNEL_REMINDER,
-                R.drawable.ic_notification,
+                R.drawable.ic_notification_remind,
                 notification.getContentTitle(),
                 notification.getContentText(),
                 notification.getContextBigText(),
-                requestCode);
+                remindTask.getRemindRequestCode());
+
+        NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_notification_remind, "Mark Done", pendingActionIntent).build();
+        builder.setAutoCancel(true);
+        builder.addAction(action);
+
+        Log.e(TAG, "onReceive: notification id " + remindTask.getRemindRequestCode());
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(remindTask.getRemindRequestCode(), builder.build());
     }
 
-    public void pushDeadlineNotification(Context context, SimpleNotification notification, int requestCode) {
-        createNotification(context,new Intent(context, MainActivity.class),
+    public void pushDeadlineNotification(Context context, SimpleNotification notification, Task deadlineTask) {
+
+        int requestCode = deadlineTask.getDeadline().getDeadlineRequestCode();
+
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(Constants.key_taskid, deadlineTask.getDocumentId());
+
+        Intent actionMarkDoneIntent = new Intent(context, ActionBroadcast.class);
+        actionMarkDoneIntent.putExtra(Constants.key_action, Constants.value_action_markdone);
+        actionMarkDoneIntent.putExtra(Constants.key_taskid, deadlineTask.getDocumentId());
+        actionMarkDoneIntent.putExtra(Constants.key_notification_request_id, requestCode);
+
+        PendingIntent pendingActionIntent = PendingIntent.getBroadcast(context, requestCode, actionMarkDoneIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = getSimpleNotification(context,intent,
                 CHANNEL_DEADLINE,
-                R.drawable.ic_notification,
+                R.drawable.ic_notification_deadline,
                 notification.getContentTitle(),
                 notification.getContentText(),
                 notification.getContextBigText(),
                 requestCode);
+
+        NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_notification_deadline, "Mark Done", pendingActionIntent).build();
+        builder.setAutoCancel(true);
+        builder.addAction(action);
+
+        Log.e(TAG, "onReceive: notification id " + requestCode);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(requestCode, builder.build());
     }
 
     public void postNotificationDeadline(Context context, String taskDocId, Intent intent) {
@@ -329,7 +404,6 @@ public class SuperdoNotificationManager {
 
                         Log.e(TAG, "postNotificationDeadline: deadline executed" );
 
-                        int requestCode = 0;
                         SimpleNotification notification = new SimpleNotification();
                         notification.setContentText(deadlineTask.getName());
                         notification.setContextBigText(deadlineTask.getName());
@@ -342,19 +416,16 @@ public class SuperdoNotificationManager {
 
                             case notification_id_deadline_morning:
                                 notification.setContentTitle("Hey human, you have a deadline today.");
-                                requestCode = deadlineTask.getDeadline().getDeadlineRequestCode();
                                 break;
                             case notification_id_deadline_daybefore:
                                 notification.setContentTitle("Hey human, you have a deadline tomorrow");
-                                requestCode = deadlineTask.getDeadline().getDeadlineRequestCode() + 1;
                                 break;
                             case notification_id_deadline_done:
-                                notification.setContentTitle("Hey human, Have you done your deadline task? huh!");
-                                requestCode = deadlineTask.getDeadline().getDeadlineRequestCode() + 2;
+                                notification.setContentTitle("Hey human, Have you done your deadline task?");
                                 break;
                         }
 
-                        pushDeadlineNotification(context, notification, requestCode);
+                        pushDeadlineNotification(context, notification, deadlineTask);
 
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                     } else {

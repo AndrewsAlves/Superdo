@@ -227,6 +227,13 @@ public class TaskOrganiser {
             }
         });
 
+        Collections.sort(completedTaskList, new Comparator<Task>() {
+            @Override
+            public int compare(Task o1, Task o2) {
+                return o2.getTaskCompletedDate().compareTo(o1.getTaskCompletedDate());
+            }
+        });
+
     }
 
     public void organiseBuckets() {

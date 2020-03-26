@@ -25,6 +25,7 @@ import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
+import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
@@ -232,8 +233,16 @@ public class BucketTasksFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateBucketTasksEvent event) {
         isEditing = false;
+        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket));
         updateUi();
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(UpdateTaskListEvent event) {
+        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket));
+        updateUi();
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskUpdatedEvent event) {

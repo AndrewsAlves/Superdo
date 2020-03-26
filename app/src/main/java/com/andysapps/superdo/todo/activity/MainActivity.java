@@ -19,11 +19,13 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
+import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.SetTasksFragment;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.ShowSnakeBarNoMoonEvent;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
+import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
 import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
@@ -51,6 +53,8 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Main Activity";
+
+
     @BindView(R.id.ib_today)
     ImageView imgDayNight;
 
@@ -171,6 +175,13 @@ public class MainActivity extends AppCompatActivity {
         mainViewPager.setCurrentItem(0);
         AnimationManager.getInstance().showMoonButton(moonButton);
         updateTabUi(mainTabs);
+        updateAllTasks();
+    }
+
+    public void updateAllTasks() {
+        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.TODAY));
+        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.TOMORROW));
+        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.UPCOMING));
     }
 
    /* @OnClick(R.id.tab_2)

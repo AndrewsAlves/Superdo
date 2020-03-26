@@ -392,10 +392,14 @@ public class Utils {
          }
 
          FirestoreManager.getInstance().updateTask(task);
-     }
+    }
 
-
-
+    public static boolean isReminderMissed(SuperDate date) {
+        if (date.getHours() < Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+            return true;
+        }
+     return false;
+    }
 
     public static SuperDate getRandomMonthDate() {
 

@@ -31,6 +31,10 @@
             android:enabled="true"
             android:exported="true"/>
 
+        <receiver android:name=".ActionBroadcast"
+            android:enabled="true"
+            android:exported="true"/>
+
         <receiver android:name=".BackgroundBroadcast"
             android:enabled="true"
             android:exported="true"/>

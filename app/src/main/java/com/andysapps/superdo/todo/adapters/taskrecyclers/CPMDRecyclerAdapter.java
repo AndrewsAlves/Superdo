@@ -249,6 +249,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
 
             task.setTaskCompleted(h.isChecked);
 
+
             //// SET TASK COMPLETED
 
             if (!h.isChecked && cpmd == CPMD.COMPLETED) {
@@ -262,9 +263,6 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             if (h.isChecked && cpmd == CPMD.MISSED) {
                 setTaskCompleted(h.getAdapterPosition(), task);
             }
-
-            FirestoreManager.getInstance().updateTask(task);
-            TaskOrganiser.getInstance().organiseAllTasks();
 
             h.lottieCheckView.playAnimation();
         });
@@ -316,6 +314,8 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             task.setTaskCompletedDate(Calendar.getInstance().getTime());
             EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_COMPLETED));
             notifyItemRemoved(position);
+            FirestoreManager.getInstance().updateTask(task);
+            TaskOrganiser.getInstance().organiseAllTasks();
         },500);
 
         Log.e(TAG, "run: position " + position);
@@ -327,6 +327,8 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             task.setTaskCompletedDate(null);
             EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_NOT_COMPLETED));
             notifyItemRemoved(position);
+            FirestoreManager.getInstance().updateTask(task);
+            TaskOrganiser.getInstance().organiseAllTasks();
         },500);
     }
 
