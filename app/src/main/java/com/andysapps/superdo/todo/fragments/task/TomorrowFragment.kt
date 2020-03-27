@@ -17,6 +17,7 @@ import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
+import com.andysapps.superdo.todo.events.update.UpdateUiAllTasksEvent
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
 import kotlinx.android.synthetic.main.fragment_today.*
@@ -24,6 +25,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
@@ -54,29 +56,28 @@ class TomorrowFragment : Fragment() {
     }
 
     fun initUi() {
-        tomorrowTaskList = ArrayList()
         recyclerView_today.layoutManager = LinearLayoutManager(activity)
-        adapter = TasksRecyclerAdapter(context, tomorrowTaskList)
+        adapter = TasksRecyclerAdapter(context, ArrayList())
+        updateList()
 
         val callback: ItemTouchHelper.Callback = LongItemTouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(recyclerView_today)
         recyclerView_today.adapter = adapter
-
     }
 
     fun updateUi() {
-
-        tomorrowTaskList = TaskOrganiser.getInstance().getTasks(TaskListing.TOMORROW)
-
-        if (tomorrowTaskList == null || tomorrowTaskList!!.isEmpty()) {
+        if (adapter!!.taskList == null || adapter!!.taskList.isEmpty()) {
             ll_notasks.visibility = View.VISIBLE
             tv_no_tasks.text = "No tasks for tomorrow? \n Planning ahead will make life easier"
         } else {
             ll_notasks.visibility = View.GONE
         }
+    }
 
-        adapter!!.updateList(tomorrowTaskList)
+    fun updateList() {
+        adapter!!.updateList(TaskOrganiser.getInstance().getTasks(TaskListing.TOMORROW))
+        updateUi()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -105,16 +106,21 @@ class TomorrowFragment : Fragment() {
                     handler.postDelayed({adapter!!.setTaskCompleted(index, event.task) }, 200)                 }
             }
             else -> {
-                updateUi()
+                updateList()
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: UpdateUiAllTasksEvent) {
+        updateUi()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: UpdateTaskListEvent) {
         when (event.listType) {
             TaskListing.TOMORROW -> {
-                updateUi()
+                updateList()
             }
         }
     }

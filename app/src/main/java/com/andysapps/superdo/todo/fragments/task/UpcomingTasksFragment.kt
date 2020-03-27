@@ -17,6 +17,7 @@ import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
+import com.andysapps.superdo.todo.manager.TaskOrganiser
 import kotlinx.android.synthetic.main.fragment_today.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -54,7 +55,6 @@ class UpcomingTasksFragment : Fragment() {
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(recyclerView_today)
         recyclerView_today.adapter = adapter
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

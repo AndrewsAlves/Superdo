@@ -8,13 +8,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.enums.CPMD
+import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent
+import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.thekhaeng.pushdownanim.PushDownAnim
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  * A simple [Fragment] subclass.
@@ -29,6 +33,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        EventBus.getDefault().register(this)
         initUi()
         updateUi()
     }
@@ -66,5 +71,10 @@ class ProfileFragment : Fragment() {
         profile_tv_recurring_tasks.text = TaskOrganiser.getInstance().getRecurringTask().size.toString()
         profile_tv_deadline_tasks.text = TaskOrganiser.getInstance().getDeadlineTasks().size.toString()
         profile_tv_deleted_tasks.text = TaskOrganiser.getInstance().getDeletedTaskList().size.toString()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: UpdateProfileEvent) {
+        updateUi()
     }
 }

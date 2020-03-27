@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.MainViewPagerAdapter;
+import com.andysapps.superdo.todo.enums.CPMD;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.enums.TaskListing;
@@ -30,6 +31,8 @@ import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
+import com.andysapps.superdo.todo.events.update.UpdateProfileEvent;
+import com.andysapps.superdo.todo.events.update.UpdateUiEvent;
 import com.andysapps.superdo.todo.fragments.bucket.BucketFragment;
 import com.andysapps.superdo.todo.fragments.task.AddTaskFragment;
 import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment;
@@ -312,6 +315,19 @@ public class MainActivity extends AppCompatActivity {
                 moonIcon.setImageResource(R.drawable.ic_tick_create_bucket);
                 break;
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(UpdateUiEvent event) {
+       switch (mainTabs) {
+           case TODAY_TASKS:
+               updateAllTasks();
+               break;
+           case PROFILE:
+               EventBus.getDefault().post(new UpdateProfileEvent());
+               EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.CPMD));
+               break;
+       }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

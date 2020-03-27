@@ -26,6 +26,8 @@ import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.UndoType;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
+import com.andysapps.superdo.todo.events.update.UpdateUiAllTasksEvent;
+import com.andysapps.superdo.todo.events.update.UpdateUiCPMDEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
@@ -34,6 +36,7 @@ import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -56,7 +59,8 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     private Handler viewUpdateHandler;
 
     public TasksRecyclerAdapter(Context context, List<Task> taskList) {
-        this.taskList = taskList;
+        this.taskList = new ArrayList<>();
+        this.taskList.addAll(taskList);
         this.context = context;
         viewUpdateHandler = new Handler();
     }
@@ -107,6 +111,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
+        EventBus.getDefault().post(new UpdateUiAllTasksEvent());
     }
 
     public void undoMovedToBin(Task task,int position) {
@@ -114,6 +119,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         task.setMovedToBin(false);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
+        EventBus.getDefault().post(new UpdateUiAllTasksEvent());
     }
 
     public int getTaskIndex(Task task) {
@@ -227,6 +233,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         Log.e(TAG, "run: position " + position);
         taskList.remove(position);
         task.setTaskCompletedDate(Calendar.getInstance().getTime());
+        EventBus.getDefault().post(new UpdateUiAllTasksEvent());
         EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, position, UndoType.TASK_COMPLETED));
         notifyItemRemoved(position);
         FirestoreManager.getInstance().updateTask(task);

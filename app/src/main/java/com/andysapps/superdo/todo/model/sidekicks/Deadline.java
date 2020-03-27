@@ -1,6 +1,7 @@
 package com.andysapps.superdo.todo.model.sidekicks;
 
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.model.SuperDate;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -157,9 +158,11 @@ public class Deadline implements Cloneable {
 
         String duedate;
 
-        if (getDate() == Utils.getTomorrow().get(Calendar.DATE)) {
+        SuperDate superDate = new SuperDate(date,month,year,hours,minutes);
+
+        if (Utils.isSuperDateToday(superDate)) {
             return "Today by " + getTimeString();
-        } else if (getDate() == Utils.getTomorrow().get(Calendar.DATE)) {
+        } else if (Utils.isSuperDateTomorrow(superDate)) {
             return "Tomorrow by " + getTimeString();
         }
 

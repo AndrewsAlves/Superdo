@@ -42,6 +42,7 @@ import com.andysapps.superdo.todo.events.sidekick.SetDoDateEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
 import com.andysapps.superdo.todo.events.sidekick.UpdateSubtasksEvent
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
+import com.andysapps.superdo.todo.events.update.UpdateUiEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.SuperdoAudioManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
@@ -95,7 +96,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     }
 
     override fun onDestroyView() {
-        updateTasks()
+        //updateTasks()
         EventBus.getDefault().unregister(this)
         super.onDestroyView()
     }
@@ -153,25 +154,27 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             editTask_lottie_anim.setMinAndMaxProgress(0.0f, 1.0f)
 
             if (isChecked) {
-                editTask_lottie_anim.speed = -4f
                 isChecked = false
+                editTask_lottie_anim.progress = 0.0f
+                editTask_lottie_anim.speed = -2f
+                editTask_lottie_anim.playAnimation()
             } else {
-                editTask_lottie_anim.speed = 4.0f
                 isChecked = true
+                editTask_lottie_anim.progress = 1.0f
             }
 
             task.isTaskCompleted = isChecked
             FirestoreManager.getInstance().updateTask(task)
-
-            editTask_lottie_anim.progress = 1.0f
+            TaskOrganiser.getInstance().organiseAllTasks()
 
             if (task.isTaskCompleted) {
                 SuperdoAudioManager.getInstance().playTaskCompleted()
                 FirestoreManager.getInstance().updateTask(task)
                 EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Task_Completed, task))
                 fragmentManager!!.popBackStack()
+            } else {
+                updateTasks()
             }
-
         }
 
         editTask_tick_save.setOnClickListener {
@@ -181,6 +184,8 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             Utils.hideKeyboard(context, editTask_et_taskName)
             Utils.hideKeyboard(context, editTask_et_desc)
             FirestoreManager.getInstance().updateTask(task)
+            updateUi()
+            updateTasks()
         }
 
         if (task.isMovedToBin) {
@@ -425,9 +430,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     }
 
     fun updateTasks() {
-        EventBus.getDefault().post(UpdateTaskListEvent(TaskListing.TODAY))
-        EventBus.getDefault().post(UpdateTaskListEvent(TaskListing.TOMORROW))
-        EventBus.getDefault().post(UpdateTaskListEvent(TaskListing.UPCOMING))
+        EventBus.getDefault().post(UpdateUiEvent())
     }
 
     override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -486,9 +489,9 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     @Subscribe
     fun onMeessageEvent(event : SetDoDateEvent) {
         task.doDate = event.superDate.clone()
-        updateUi()
         FirestoreManager.getInstance().updateTask(task)
         TaskOrganiser.getInstance().organiseAllTasks()
+        updateUi()
         updateTasks()
     }
 
@@ -507,7 +510,9 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         }
 
         FirestoreManager.getInstance().updateTask(task)
+        TaskOrganiser.getInstance().organiseAllTasks()
         updateUi()
+        updateTasks()
     }
 
     @Subscribe
@@ -517,10 +522,10 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         if (event.deleted) {
             task.repeat = null
         }
-        updateUi()
-        TaskOrganiser.getInstance().organiseAllTasks()
-        updateTasks()
         FirestoreManager.getInstance().updateTask(task)
+        TaskOrganiser.getInstance().organiseAllTasks()
+        updateUi()
+        updateTasks()
     }
 
     /*@Subscribe

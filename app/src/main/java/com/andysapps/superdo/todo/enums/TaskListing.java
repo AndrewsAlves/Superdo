@@ -9,5 +9,6 @@ public enum TaskListing {
     TOMORROW,
     THIS_WEEK,
     THIS_MONTH,
-    UPCOMING
+    UPCOMING,
+    CPMD
 }

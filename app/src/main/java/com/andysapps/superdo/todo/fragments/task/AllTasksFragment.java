@@ -142,7 +142,7 @@ public class AllTasksFragment extends Fragment {
                         break;
                     case 2:
                         listing = TaskListing.UPCOMING;
-                        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.TODAY));
+                        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.UPCOMING));
                         break;
                 }
 
@@ -163,8 +163,6 @@ public class AllTasksFragment extends Fragment {
         updateUi();
         lasttaskListing = TaskListing.UPCOMING;
         updateUi();
-
-
 
     }
 

@@ -30,13 +30,16 @@ import com.andysapps.superdo.todo.events.ShowSnakeBarCPMDEvent;
 import com.andysapps.superdo.todo.events.UpdateCpmdTitleEvent;
 import com.andysapps.superdo.todo.events.profile.SelectProfileTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
+import com.andysapps.superdo.todo.events.update.UpdateUiCPMDEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Task;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,10 +57,8 @@ import lib.mozidev.me.extextview.StrikeThroughPainting;
 public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapter.TaskViewHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = "TasksRecyclerAdapter";
-    private List<Task> taskList;
+    public List<Task> taskList;
 
-    Task lastCompletedTask;
-    int lastCompletedTaskPos;
     boolean isSeleting;
     boolean selectAll;
 
@@ -68,7 +69,8 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
     private Handler viewUpdateHandler;
 
     public CPMDRecyclerAdapter(Context context, List<Task> taskList, CPMD cpmd) {
-        this.taskList = taskList;
+        this.taskList = new ArrayList<>();
+        this.taskList.addAll(taskList);
         this.context = context;
         this.cpmd = cpmd;
         viewUpdateHandler = new Handler();
@@ -116,6 +118,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
 
     public void undoTaskCompleted(Task task,int position) {
         taskList.add(position, task);
+        EventBus.getDefault().post(new UpdateUiCPMDEvent());
         task.setTaskCompleted(false);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
@@ -123,6 +126,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
 
     public void undoTaskNotCompleted(Task task,int position) {
         taskList.add(position, task);
+        EventBus.getDefault().post(new UpdateUiCPMDEvent());
         task.setTaskCompleted(true);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
@@ -245,10 +249,13 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
                 h.lottieCheckView.setSpeed(2.0f);
                 h.isChecked = true;
                 strikeOutText(h, 500);
+                SuperdoAudioManager.getInstance().playTaskCompleted();
             }
 
             task.setTaskCompleted(h.isChecked);
 
+            FirestoreManager.getInstance().updateTask(task);
+            TaskOrganiser.getInstance().organiseAllTasks();
 
             //// SET TASK COMPLETED
 
@@ -312,10 +319,9 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
         viewUpdateHandler.postDelayed(() -> {
             taskList.remove(position);
             task.setTaskCompletedDate(Calendar.getInstance().getTime());
+            EventBus.getDefault().post(new UpdateUiCPMDEvent());
             EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_COMPLETED));
             notifyItemRemoved(position);
-            FirestoreManager.getInstance().updateTask(task);
-            TaskOrganiser.getInstance().organiseAllTasks();
         },500);
 
         Log.e(TAG, "run: position " + position);
@@ -325,10 +331,9 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
         viewUpdateHandler.postDelayed(() -> {
             taskList.remove(position);
             task.setTaskCompletedDate(null);
+            EventBus.getDefault().post(new UpdateUiCPMDEvent());
             EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_NOT_COMPLETED));
             notifyItemRemoved(position);
-            FirestoreManager.getInstance().updateTask(task);
-            TaskOrganiser.getInstance().organiseAllTasks();
         },500);
     }
 

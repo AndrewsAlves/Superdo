@@ -14,9 +14,12 @@ import com.andysapps.superdo.todo.adapters.taskrecyclers.CPMDRecyclerAdapter
 import com.andysapps.superdo.todo.dialog.alert.DeleteTaskDialog
 import com.andysapps.superdo.todo.dialog.alert.RestoreTaskDialog
 import com.andysapps.superdo.todo.enums.CPMD
+import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.UndoType
 import com.andysapps.superdo.todo.events.*
 import com.andysapps.superdo.todo.events.profile.SelectProfileTaskEvent
+import com.andysapps.superdo.todo.events.update.UpdateUiCPMDEvent
+import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
@@ -64,6 +67,7 @@ class CPMDTasksFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        EventBus.getDefault().post(UpdateProfileEvent())
         EventBus.getDefault().unregister(this)
         super.onDestroyView()
     }
@@ -128,6 +132,7 @@ class CPMDTasksFragment : Fragment() {
     }
 
     fun updateUi() {
+
         ll_notasks.visibility = View.GONE
         if (taskList!!.isEmpty()) {
             ll_notasks.visibility = View.VISIBLE
@@ -147,24 +152,26 @@ class CPMDTasksFragment : Fragment() {
             }
         }
 
+        var count = adapter!!.taskList.size
+
         when(cpmd) {
             CPMD.COMPLETED -> {
-                tv_cpmd_name.text = "Completed tasks" + " (" + taskList!!.size + ")"
+                tv_cpmd_name.text = "Completed tasks ($count)"
             }
             CPMD.PENDING -> {
-                tv_cpmd_name.text = "Pending tasks" + " (" + taskList!!.size + ")"
+                tv_cpmd_name.text = "Pending tasks ($count)"
             }
             CPMD.MISSED -> {
-                tv_cpmd_name.text = "Missed tasks" + " (" + taskList!!.size + ")"
+                tv_cpmd_name.text = "Missed tasks ($count)"
             }
             CPMD.RECURRING -> {
-                tv_cpmd_name.text = "Recurring tasks" + " (" + taskList!!.size + ")"
+                tv_cpmd_name.text = "Recurring tasks ($count)"
             }
             CPMD.DEADLINED -> {
-                tv_cpmd_name.text = "Deadlined tasks" + " (" + taskList!!.size + ")"
+                tv_cpmd_name.text = "Deadlined tasks ($count)"
             }
             CPMD.DELETED -> {
-                tv_cpmd_name.text = "Deleted tasks" + " (" + taskList!!.size + ")"
+                tv_cpmd_name.text = "Deleted tasks ($count)"
             }
         }
     }
@@ -215,7 +222,15 @@ class CPMDTasksFragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: UpdateTaskListEvent) {
-        setTaskList()
+        if(event.listType == TaskListing.CPMD) {
+            setTaskList()
+            updateUi()
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: UpdateUiCPMDEvent) {
+        updateUi()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

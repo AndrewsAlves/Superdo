@@ -17,6 +17,7 @@ import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
+import com.andysapps.superdo.todo.events.update.UpdateUiAllTasksEvent
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
 import kotlinx.android.synthetic.main.fragment_today.*
@@ -24,6 +25,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
@@ -53,31 +55,30 @@ class TodayFragment : Fragment() {
     }
 
     fun initUi() {
-        todayTaskList = ArrayList()
         recyclerView_today.layoutManager = LinearLayoutManager(activity)
-        adapter = TasksRecyclerAdapter(context, todayTaskList)
+        adapter = TasksRecyclerAdapter(context, ArrayList())
+        updateList()
 
         val callback: ItemTouchHelper.Callback = LongItemTouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(recyclerView_today)
         recyclerView_today.adapter = adapter
-
     }
 
     fun updateUi() {
-
-        todayTaskList = TaskOrganiser.getInstance().getTasks(TaskListing.TODAY)
-
-        if (todayTaskList == null || todayTaskList!!.isEmpty()) {
+        if (adapter!!.taskList == null || adapter!!.taskList.isEmpty()) {
             ll_notasks.visibility = View.VISIBLE
             tv_no_tasks.text = "No tasks for today? \n Try to do something..."
         } else {
             ll_notasks.visibility = View.GONE
         }
-
-        adapter!!.updateList(todayTaskList)
     }
 
+    fun updateList() {
+        todayTaskList = TaskOrganiser.getInstance().getTasks(TaskListing.TODAY)
+        adapter!!.updateList(todayTaskList)
+        updateUi()
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: FetchTasksEvent) {
@@ -106,16 +107,21 @@ class TodayFragment : Fragment() {
                 }
             }
             else -> {
-                updateUi()
+                updateList()
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: UpdateUiAllTasksEvent) {
+        updateUi()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: UpdateTaskListEvent) {
         when (event.listType) {
             TaskListing.TODAY -> {
-                updateUi()
+                updateList()
             }
         }
     }
