@@ -109,6 +109,8 @@ class TomorrowFragment : Fragment() {
                 updateList()
             }
         }
+
+        updateUi()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

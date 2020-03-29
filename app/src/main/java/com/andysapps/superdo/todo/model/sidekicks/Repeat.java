@@ -28,6 +28,8 @@ public class Repeat implements Cloneable{
 
     SuperDate startDate;
 
+    SuperDate lastCompletedDate;
+
     SuperDate lastRepeatedDate;
 
     public Repeat() {
@@ -146,6 +148,14 @@ public class Repeat implements Cloneable{
 
     public void setOnSaturday(boolean onSaturday) {
         this.onSaturday = onSaturday;
+    }
+
+    public SuperDate getLastCompletedDate() {
+        return lastCompletedDate;
+    }
+
+    public void setLastCompletedDate(SuperDate lastCompletedDate) {
+        this.lastCompletedDate = lastCompletedDate;
     }
 
     public String getRepeatString() {

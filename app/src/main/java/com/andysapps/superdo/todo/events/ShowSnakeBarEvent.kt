@@ -8,4 +8,4 @@ import com.andysapps.superdo.todo.model.Task
 /**
  * Created by Admin on 24,February,2020
  */
-class ShowSnakeBarEvent (var tasksRecyclerAdapter: TasksRecyclerAdapter?, var upcomingRecyclerAdapter: UpcomingManualAdapter?, var task: Task, var position : Int, var undoType : UndoType)
+class ShowSnakeBarEvent (var tasksRecyclerAdapter: TasksRecyclerAdapter?, var upcomingRecyclerAdapter: UpcomingManualAdapter?, var task: Task, var position : Int, var undoType : UndoType, var snackbarTitle : String)

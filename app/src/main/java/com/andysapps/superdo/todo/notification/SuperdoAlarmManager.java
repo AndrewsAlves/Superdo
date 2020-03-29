@@ -72,7 +72,7 @@ public class SuperdoAlarmManager {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQ_CODE_BACKGROUND_PROCESS, intent, FLAG_CANCEL_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);

@@ -180,7 +180,6 @@ public class TaskOrganiser {
                 task.setListedIn(TaskListing.UPCOMING);
                 upcomingTaskList.add(task);
             }
-
         }
 
         // Sort the task by indexing

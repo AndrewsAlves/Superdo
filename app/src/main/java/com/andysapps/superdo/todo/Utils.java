@@ -306,15 +306,23 @@ public class Utils {
              return;
          }
 
+         if (task.getRepeat().getLastCompletedDate() != null) {
+
+         }
+
          switch (RepeatType.valueOf(task.getRepeat().getRepeatType())) {
              case Day:
 
                  Log.e(TAG, "setNextDoDate: setting next do date Days ");
 
                  if (task.getRepeat().getDaysInterval() == 1) {
-                     SuperDate today = getSuperdateToday();
-                     today.setTime(task.getRepeat().getStartDate().getHours(), task.getRepeat().getStartDate().getMinutes());
-                     task.setDoDate(today);
+                     if (isSuperDateIsPast(task.getRepeat().getStartDate())) {
+                         SuperDate today = getSuperdateToday();
+                         today.setTime(task.getRepeat().getStartDate().getHours(), task.getRepeat().getStartDate().getMinutes());
+                         task.setDoDate(today);
+                     } else {
+                         task.setDoDate(task.getRepeat().getStartDate());
+                     }
                  } else {
 
                      if (!isSuperDateIsPast(task.getRepeat().getStartDate())) {

@@ -110,6 +110,8 @@ class TodayFragment : Fragment() {
                 updateList()
             }
         }
+
+        updateUi()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

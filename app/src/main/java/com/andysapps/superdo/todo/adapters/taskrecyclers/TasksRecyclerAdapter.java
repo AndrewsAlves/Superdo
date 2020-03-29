@@ -81,7 +81,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         for (int i = 0 ; i < this.taskList.size() ; i++) {
             if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
                 notifyItemRemoved(i);
-                EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, i, UndoType.MOVED_TO_BIN));
+                EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, i, UndoType.MOVED_TO_BIN, context.getString(R.string.snackbar_moved_to_bin)));
                 this.taskList.remove(i);
             }
         }
@@ -214,8 +214,17 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
                 //// SET TASK COMPLETED
                 if (h.isChecked) {
-                    viewUpdateHandler.postDelayed(() -> setTaskCompleted(h.getAdapterPosition(), task), 500);
+                    viewUpdateHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (task.getRepeat() != null) {
+                                setRepeatTaskCompleted(h.getAdapterPosition(), task);
+                            } else {
+                                setTaskCompleted(h.getAdapterPosition(), task);
+                            }
 
+                        }
+                    }, 500);
                 }
 
                 h.lottieCheckView.playAnimation();
@@ -234,7 +243,18 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         taskList.remove(position);
         task.setTaskCompletedDate(Calendar.getInstance().getTime());
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
-        EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, position, UndoType.TASK_COMPLETED));
+        EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, position, UndoType.TASK_COMPLETED, context.getString(R.string.snackbar_taskcompleted)));
+        notifyItemRemoved(position);
+        FirestoreManager.getInstance().updateTask(task);
+        TaskOrganiser.getInstance().organiseAllTasks();
+    }
+
+    public void setRepeatTaskCompleted(int position, Task task) {
+        Log.e(TAG, "run: position " + position);
+        taskList.remove(position);
+        task.getRepeat().setLastCompletedDate(task.getDoDate());
+        EventBus.getDefault().post(new UpdateUiAllTasksEvent());
+        EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, position, UndoType.TASK_COMPLETED, context.getString(R.string.snackbar_taskcompleted)));
         notifyItemRemoved(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
