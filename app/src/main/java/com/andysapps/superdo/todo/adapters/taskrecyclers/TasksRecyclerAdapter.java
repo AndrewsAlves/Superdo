@@ -80,8 +80,9 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     public void removeTask(Task task) {
         for (int i = 0 ; i < this.taskList.size() ; i++) {
             if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
+                int position = i;
                 notifyItemRemoved(i);
-                EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, i, UndoType.MOVED_TO_BIN, context.getString(R.string.snackbar_moved_to_bin)));
+                EventBus.getDefault().post(new ShowSnakeBarEvent(context.getString(R.string.snackbar_moved_to_bin), v -> undoMovedToBin(task ,position)));
                 this.taskList.remove(i);
             }
         }
@@ -243,10 +244,10 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         taskList.remove(position);
         task.setTaskCompletedDate(Calendar.getInstance().getTime());
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
-        EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, position, UndoType.TASK_COMPLETED, context.getString(R.string.snackbar_taskcompleted)));
         notifyItemRemoved(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
+        EventBus.getDefault().post(new ShowSnakeBarEvent(context.getString(R.string.snackbar_taskcompleted), v -> undoTaskCompleted(task, position)));
     }
 
     public void setRepeatTaskCompleted(int position, Task task) {
@@ -254,7 +255,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         taskList.remove(position);
         task.getRepeat().setLastCompletedDate(task.getDoDate());
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
-        EventBus.getDefault().post(new ShowSnakeBarEvent(TasksRecyclerAdapter.this, null, task, position, UndoType.TASK_COMPLETED, context.getString(R.string.snackbar_taskcompleted)));
+       // EventBus.getDefault().post(new ShowSnakeBarEvent(R.string.snackbar_taskcompleted));
         notifyItemRemoved(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();

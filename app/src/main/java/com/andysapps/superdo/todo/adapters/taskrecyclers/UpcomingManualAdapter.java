@@ -161,9 +161,10 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             }
 
             if (this.taskList.get(i).getDocumentId().equals(task.getDocumentId())) {
+                int position = i;
                 this.taskList.remove(i);
                 notifyItemRemoved(i);
-                EventBus.getDefault().post(new ShowSnakeBarEvent(null, this, task, i, UndoType.MOVED_TO_BIN, context.getString(R.string.snackbar_moved_to_bin)));
+                EventBus.getDefault().post(new ShowSnakeBarEvent(context.getString(R.string.snackbar_moved_to_bin), v -> undoMovedToBin(task ,position)));
                 switch (task.getListedIn()) {
                     case THIS_WEEK:
                         notifyItemChanged(0);
@@ -347,7 +348,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         Log.e(TAG, "run: position " + position);
         taskList.remove(position);
         task.setTaskCompletedDate(Calendar.getInstance().getTime());
-        EventBus.getDefault().post(new ShowSnakeBarEvent(null, this, task, position, UndoType.TASK_COMPLETED, context.getString(R.string.snackbar_taskcompleted)));
+        EventBus.getDefault().post(new ShowSnakeBarEvent(context.getString(R.string.snackbar_taskcompleted), v -> undoTaskCompleted(task, position)));
         notifyItemRemoved(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();

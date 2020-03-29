@@ -101,11 +101,6 @@ public class TaskOrganiser {
 
             allTaskList.add(task);
 
-            if (task.getRepeat() != null) {
-                Utils.setNextDoDate(task);
-                recurringTask.add(task);
-            }
-
             if(task.getDeadline() != null) {
                 deadlineTasks.add(task);
             }
@@ -123,18 +118,12 @@ public class TaskOrganiser {
             }*/
 
             if (task.getRepeat() != null) {
-                if (task.isTaskCompleted()) {
-                    if (task.getTaskCompletedDate() != null) {
-                        SuperDate completedDate = Utils.getSuperdateFromTimeStamp(task.getTaskCompletedDate().getTime());
-                        SuperDate todayDate = Utils.getSuperdateToday();
-                        if (completedDate.getDate() == todayDate.getDate()
-                                && completedDate.getMonth() == todayDate.getMonth()
-                                && completedDate.getYear() == todayDate.getYear()) {
-                            completedTaskList.add(task);
-                            continue;
-                        }
-                    }
+                Utils.setNextDoDate(task);
+                recurringTask.add(task);
+                if (Utils.isSuperDateToday(task.getDoDate())) {
+                    todayTaskList.add(task);
                 }
+                continue;
             }
 
             if (task.isTaskCompleted()) {

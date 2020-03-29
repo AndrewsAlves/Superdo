@@ -306,9 +306,7 @@ public class Utils {
              return;
          }
 
-         if (task.getRepeat().getLastCompletedDate() != null) {
-
-         }
+         SuperDate startDate = task.getRepeat().getStartDate();
 
          switch (RepeatType.valueOf(task.getRepeat().getRepeatType())) {
              case Day:
@@ -316,12 +314,9 @@ public class Utils {
                  Log.e(TAG, "setNextDoDate: setting next do date Days ");
 
                  if (task.getRepeat().getDaysInterval() == 1) {
-                     if (isSuperDateIsPast(task.getRepeat().getStartDate())) {
+                     if (isSuperDateToday(startDate) || isSuperDateIsPast(startDate)) {
                          SuperDate today = getSuperdateToday();
                          today.setTime(task.getRepeat().getStartDate().getHours(), task.getRepeat().getStartDate().getMinutes());
-                         task.setDoDate(today);
-                     } else {
-                         task.setDoDate(task.getRepeat().getStartDate());
                      }
                  } else {
 
@@ -339,7 +334,7 @@ public class Utils {
 
                          SuperDate superDate = new SuperDate(intervalDate);
 
-                         if (isSuperDateIsFuture(superDate)) {
+                         if (isSuperDateIsFuture(superDate) || isSuperDateToday(superDate)) {
                              task.setDoDate(superDate);
                              break;
                          }

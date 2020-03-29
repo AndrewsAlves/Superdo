@@ -361,24 +361,14 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ShowSnakeBarEvent event) {
 
-        String title = "Error";
-
-        switch (event.getUndoType()) {
-            case TASK_COMPLETED:
-                title = "Task completed +1";
-                break;
-            case MOVED_TO_BIN:
-                title = "Moved to bin";
-                break;
-        }
-
-        Snackbar snackbar = Snackbar.make(fragmentContainerMoonBtn, title, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(fragmentContainerMoonBtn, event.getSnackbarTitle(), Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundColor(Color.WHITE);
         TextView tv = (TextView) snackbar.getView().findViewById(R.id.snackbar_text);
         tv.setTextColor(getResources().getColor(R.color.lightRed));
 
         snackbar.setActionTextColor(getResources().getColor(R.color.lightRed));
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        snackbar.setAction("Undo", event.getOnClickListener());
+        /*snackbar.setAction("Undo", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (event.getUndoType()) {
@@ -398,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
             }
-        });
+        });*/
 
         snackbar.show();
     }
