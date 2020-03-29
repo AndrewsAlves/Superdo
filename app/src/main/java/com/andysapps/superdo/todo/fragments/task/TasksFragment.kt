@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.events.SetTasksFragment
 import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment
+import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.Bucket
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -22,7 +23,16 @@ import org.greenrobot.eventbus.ThreadMode
 class TasksFragment : Fragment() {
 
     companion object {
-        var bucket : Bucket? = null
+
+        var taskBucket : Bucket? = null
+
+        fun getBucket() : Bucket{
+            if (taskBucket == null) {
+                return FirestoreManager.getAllTasksBucket();
+            } else {
+               return taskBucket as Bucket
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +55,7 @@ class TasksFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SetTasksFragment) {
 
-        bucket = event.bucket
+        taskBucket = event.bucket
 
         val ft = fragmentManager!!.beginTransaction()
 
