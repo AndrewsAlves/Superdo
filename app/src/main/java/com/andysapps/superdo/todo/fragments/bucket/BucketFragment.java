@@ -26,6 +26,7 @@ import com.andysapps.superdo.todo.adapters.taskrecyclers.BucketsRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.BucketUpdateType;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.ClickBucketEvent;
+import com.andysapps.superdo.todo.events.DeleteBucketEvent;
 import com.andysapps.superdo.todo.events.ExitBucketTaskFragment;
 import com.andysapps.superdo.todo.events.OpenAddBucketFragmentEvent;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
@@ -147,12 +148,15 @@ public class BucketFragment extends Fragment{
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(ClickBucketEvent event) {
+    public void onMessageEvent(DeleteBucketEvent event) {
+        TaskOrganiser.getInstance().deleteBucket(event.getBucket());
+        onMessageEvent(new BucketUpdatedEvent(BucketUpdateType.Deleted, event.getBucket()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(OpenAddBucketFragmentEvent event) {
         new AddBucketFragment().show(getFragmentManager(), "add bucket");
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

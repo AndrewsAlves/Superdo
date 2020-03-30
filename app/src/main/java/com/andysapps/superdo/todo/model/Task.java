@@ -3,6 +3,7 @@ package com.andysapps.superdo.todo.model;
 import android.util.Log;
 
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.sidekicks.ContactCard;
 import com.andysapps.superdo.todo.model.sidekicks.Deadline;
 import com.andysapps.superdo.todo.model.sidekicks.Focus;
@@ -69,7 +70,7 @@ public class Task implements Cloneable {
     // BUCKET
     /////
 
-    Bucket bucket;
+    String bucketId;
 
     ///////
     // OTHER
@@ -106,11 +107,19 @@ public class Task implements Cloneable {
     }
 
     public Bucket getBucket() {
-        return bucket;
+        if (FirestoreManager.getInstance().getHasMapBucket().containsKey(bucketId)) {
+            return FirestoreManager.getInstance().getHasMapBucket().get(bucketId);
+        } else {
+            return FirestoreManager.getAllTasksBucket();
+        }
     }
 
-    public void setBucket(Bucket bucket) {
-        this.bucket = bucket;
+    public void setBucketId(String bucket) {
+        this.bucketId = bucketId;
+    }
+
+    public String getBucketId() {
+        return bucketId;
     }
 
     public Date getCreated() {

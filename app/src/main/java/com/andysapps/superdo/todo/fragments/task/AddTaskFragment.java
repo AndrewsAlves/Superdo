@@ -26,7 +26,6 @@ import android.widget.TextView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment;
-import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
@@ -35,10 +34,8 @@ import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.DialogDismissEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
-import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -177,7 +174,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     public void initUi() {
 
-        task.setBucket(TasksFragment.Companion.getBucket());
+        task.setBucketId(TasksFragment.Companion.getBucket().getId());
 
         etTaskName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -472,7 +469,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(SelectBucketEvent event) {
-        task.setBucket(event.getBucket());
+        task.setBucketId(event.getBucket().getId());
         updateUi();
     }
 

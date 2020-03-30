@@ -386,6 +386,16 @@ public class TaskOrganiser {
         if (FirestoreManager.getInstance().getHasMapBucket().containsKey(bucket.getDocumentId())) {
             Bucket bucket1 = FirestoreManager.getInstance().getHasMapBucket().get(bucket.getDocumentId());
             bucket1.setDeleted(true);
+
+            for (Task task : FirestoreManager.getInstance().getHasMapTask().values()) {
+                if (task.getBucketId() != null) {
+                    if (task.getBucketId().equals(bucket1.getId())) {
+                        task.setDeleted(true);
+                        FirestoreManager.getInstance().updateTask(task);
+                    }
+                }
+            }
+
             organiseAllTasks();
             FirestoreManager.getInstance().updateBucket(bucket1);
         }

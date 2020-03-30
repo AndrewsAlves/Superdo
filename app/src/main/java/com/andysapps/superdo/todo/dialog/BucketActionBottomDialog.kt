@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.dialog.alert.DeleteBucketDialog
 import com.andysapps.superdo.todo.enums.BucketUpdateType
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent
@@ -49,8 +50,7 @@ class BucketActionBottomDialog : BottomSheetDialogFragment() {
         }
 
         btn_delete__BucketDialog.setOnClickListener {
-            TaskOrganiser.getInstance().deleteBucket(bucket)
-            EventBus.getDefault().post(BucketUpdatedEvent(BucketUpdateType.Deleted, bucket))
+            DeleteBucketDialog.instance(bucket).show(fragmentManager!!, "delete bucket alert")
             dismiss()
         }
 

@@ -98,13 +98,12 @@ public class FirestoreManager {
         return bucketHashMap;
     }
 
-    public static Bucket getAllTasksBucket(Context context) {
+    public static Bucket getAllTasksBucket() {
         Bucket bucket = new Bucket();
         bucket.setDocumentId("all_tasks");
         bucket.setName("All Tasks");
         bucket.setId("id_all_tasks");
         bucket.setBucketType(BucketType.Tasks.toString());
-        bucket.setDescription(SharedPrefsManager.getDescAllTasks(context));
         bucket.setTagColor(BucketColors.Red.toString()); // light Red
 
         return bucket;
