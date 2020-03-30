@@ -117,9 +117,8 @@ public class BucketFragment extends Fragment{
     
     @Override
     public void onDestroyView() {
-        //exitCircularReveal();
-        //EventBus.getDefault().unregister(this);
-        //EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
+        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
         super.onDestroyView();
     }
 

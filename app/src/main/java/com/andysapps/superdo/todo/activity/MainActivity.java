@@ -44,6 +44,7 @@ import com.andysapps.superdo.todo.model.Bucket;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.google.android.material.snackbar.Snackbar;
 import com.kuassivi.component.RipplePulseRelativeLayout;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,6 +53,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.thekhaeng.pushdownanim.PushDownAnim.MODE_SCALE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -142,6 +145,19 @@ public class MainActivity extends AppCompatActivity {
         clickToday();
     }
 
+    public void initUi() {
+        PushDownAnim.setPushDownAnimTo(moonButton)
+                .setScale(MODE_SCALE, 0.90f  )
+                .setDurationPush(400)
+                .setDurationRelease(400)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        clickAddTask();
+                    }
+                });
+    }
+
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
@@ -208,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
         updateTabUi(mainTabs);
     }
 
-    @OnClick(R.id.btn_add_task)
     public void clickAddTask() {
         switch (moonButtonType) {
             case ADD_TASK:
@@ -306,13 +321,16 @@ public class MainActivity extends AppCompatActivity {
 
         switch (moonButtonType) {
             case ADD_TASK:
-                moonIcon.setImageResource(R.drawable.ic_mb_add_task);
+                AnimationManager.getInstance().animateIconTransition(moonIcon, R.drawable.ic_mb_add_task);
+                //moonIcon.setImageResource(R.drawable.ic_mb_add_task);
                 break;
             case ADD_BUCKET:
-                moonIcon.setImageResource(R.drawable.ic_add_bucket);
+                AnimationManager.getInstance().animateIconTransition(moonIcon, R.drawable.ic_add_bucket);
+                //moonIcon.setImageResource(R.drawable.ic_add_bucket);
                 break;
             case SAVE_BUCKET:
-                moonIcon.setImageResource(R.drawable.ic_tick_create_bucket);
+                AnimationManager.getInstance().animateIconTransition(moonIcon, R.drawable.ic_tick_create_bucket);
+                //moonIcon.setImageResource(R.drawable.ic_tick_create_bucket);
                 break;
         }
     }

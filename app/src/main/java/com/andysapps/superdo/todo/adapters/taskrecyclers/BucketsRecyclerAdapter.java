@@ -20,10 +20,12 @@ import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.events.ExitBucketTaskFragment;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.SetTasksFragment;
+import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -117,17 +119,16 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
 
         holder.tvNoTasks.setText(taskDone);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.getAdapterPosition() == 0) {
-                    EventBus.getDefault().post(new SetTasksFragment(null));
-                } else {
-                    EventBus.getDefault().post(new SetTasksFragment(bucket));
-                }
-                EventBus.getDefault().post(new ExitBucketTaskFragment());
-            }
-        });
+        PushDownAnim.setPushDownAnimTo(holder.itemView)
+                .setScale(PushDownAnim.MODE_SCALE, 0.96f)
+                .setOnClickListener(v -> {
+                    if (holder.getAdapterPosition() == 0) {
+                        EventBus.getDefault().post(new SetTasksFragment(null));
+                    } else {
+                        EventBus.getDefault().post(new SetTasksFragment(bucket));
+                    }
+                    EventBus.getDefault().post(new ExitBucketTaskFragment());
+                });
 
         if (position == 0) {
             return;

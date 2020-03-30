@@ -1,6 +1,7 @@
 package com.andysapps.superdo.todo.manager;
 
 import android.view.View;
+import android.widget.ImageView;
 
 import com.github.florent37.viewanimator.ViewAnimator;
 
@@ -52,6 +53,24 @@ public class AnimationManager {
                 .duration(200)
                 .start();
         isMoonButtonHidded = false;
+    }
+
+    public void animateIconTransition(ImageView view, int toImg) {
+        ViewAnimator
+                .animate(view)
+                .scale(1, 0)
+                .accelerate()
+                .duration(100)
+                .start();
+
+        view.setImageResource(toImg);
+
+        ViewAnimator
+                .animate(view)
+                .scale(0, 1)
+                .decelerate()
+                .duration(100)
+                .start();
     }
 
     public void scaleUp(View view) {
