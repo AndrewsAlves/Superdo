@@ -44,7 +44,7 @@ class CPMDTasksFragment : Fragment() {
 
     companion object {
 
-        val TAG : String = "CPMDTasksFragment"
+        const val TAG : String = "CPMDTasksFragment"
 
         fun instance(cpmd : CPMD) : CPMDTasksFragment {
             val fragment = CPMDTasksFragment()

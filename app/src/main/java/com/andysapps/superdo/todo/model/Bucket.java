@@ -43,7 +43,6 @@ public class Bucket {
     public Bucket() {
     }
 
-
     public String getDocumentId() {
         return documentId;
     }

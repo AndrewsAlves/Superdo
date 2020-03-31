@@ -174,7 +174,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     public void initUi() {
 
-        task.setBucketId(TasksFragment.Companion.getBucket().getId());
+        task.setBucketId(TasksFragment.Companion.getBucket().getDocumentId());
 
         etTaskName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -469,7 +469,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(SelectBucketEvent event) {
-        task.setBucketId(event.getBucket().getId());
+        task.setBucketId(event.getBucket().getDocumentId());
         updateUi();
     }
 

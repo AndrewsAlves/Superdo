@@ -66,7 +66,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
     companion object {
 
-        val TAG : String = "EditTaskFragment"
+        const val TAG : String = "EditTaskFragment"
 
         fun instance(task : Task) : EditTaskFragment {
             val fragment = EditTaskFragment()
@@ -465,7 +465,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SelectBucketEvent) {
-        task.bucketId = event.bucket.id
+        task.bucketId = event.bucket.documentId
         updateUi()
         FirestoreManager.getInstance().updateTask(task)
     }

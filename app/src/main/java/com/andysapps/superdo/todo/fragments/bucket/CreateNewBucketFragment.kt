@@ -34,7 +34,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
 
     companion object {
 
-        val TAG : String = "CreateNewBucketFragment"
+        const val TAG : String = "CreateNewBucketFragment"
 
         fun instance(bucket : Bucket, isEditing: Boolean) : Fragment {
             val fragment = CreateNewBucketFragment()
@@ -63,6 +63,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         }
         Utils.showSoftKeyboard(context, et_create_bucket_name)
         updateUI()
+        ib_close_create_bucket
     }
 
     override fun onDestroyView() {
@@ -89,7 +90,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
                 bucket.bucketType = BucketType.House.name
             }
 
-            bucket_color_1.id -> {
+           /* bucket_color_1.id -> {
                 bucket.tagColor = BucketColors.Red.name
             }
             bucket_color_2.id -> {
@@ -103,9 +104,9 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
             }
             bucket_color_5.id -> {
                 bucket.tagColor = BucketColors.Orange.name
-            }
+            }*/
             ib_close_create_bucket.id -> {
-                activity!!.supportFragmentManager.popBackStack();
+                activity!!.supportFragmentManager.popBackStack()
                 //EventBus.getDefault().post(RemoveFragmentEvents())
             }
 
@@ -120,11 +121,11 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         bucket_icon_3.setOnClickListener(this)
         bucket_icon_4.setOnClickListener(this)
         bucket_icon_5.setOnClickListener(this)
-        bucket_color_1.setOnClickListener(this)
+       /* bucket_color_1.setOnClickListener(this)
         bucket_color_2.setOnClickListener(this)
         bucket_color_3.setOnClickListener(this)
         bucket_color_4.setOnClickListener(this)
-        bucket_color_5.setOnClickListener(this)
+        bucket_color_5.setOnClickListener(this)*/
         ib_close_create_bucket.setOnClickListener(this)
     }
 
@@ -142,11 +143,11 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         bg_bucket_icon_4.visibility = View.GONE
         bg_bucket_icon_5.visibility = View.GONE
 
-        bg_bucket_color_1.visibility = View.GONE
+       /* bg_bucket_color_1.visibility = View.GONE
         bg_bucket_color_2.visibility = View.GONE
         bg_bucket_color_3.visibility = View.GONE
         bg_bucket_color_4.visibility = View.GONE
-        bg_bucket_color_5.visibility = View.GONE
+        bg_bucket_color_5.visibility = View.GONE*/
 
         when(BucketType.valueOf(bucket.bucketType)) {
             BucketType.Tasks -> {
@@ -171,13 +172,13 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
             }
         }
 
-        when(BucketColors.valueOf(bucket.tagColor)) {
+       /* when(BucketColors.valueOf(bucket.tagColor)) {
             BucketColors.Red -> bg_bucket_color_1.visibility = View.VISIBLE
             BucketColors.SkyBlue -> bg_bucket_color_2.visibility = View.VISIBLE
             BucketColors.Green -> bg_bucket_color_3.visibility = View.VISIBLE
             BucketColors.InkBlue -> bg_bucket_color_4.visibility = View.VISIBLE
             BucketColors.Orange -> bg_bucket_color_5.visibility = View.VISIBLE
-        }
+        }*/
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -193,8 +194,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
             } else {
                 FirestoreManager.getInstance().uploadBucket(bucket)
             }
-            activity!!.supportFragmentManager.popBackStack()
-            MainActivity.moonButtonType = MoonButtonType.ADD_BUCKET
+            fragmentManager!!.popBackStack()
         }
     }
 

@@ -3,6 +3,7 @@ package com.andysapps.superdo.todo.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Main Activity";
 
-
     @BindView(R.id.ib_today)
     ImageView imgDayNight;
 
@@ -107,6 +107,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+        initUi();
+        clickToday();
+    }
+
+    public void initUi() {
+        PushDownAnim.setPushDownAnimTo(moonButton)
+                .setScale(MODE_SCALE, 0.97f  )
+                .setOnClickListener(view -> clickAddTask());
 
         viewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
         mainViewPager.setAdapter(viewPagerAdapter);
@@ -141,21 +149,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int i) { }
         });
-
-        clickToday();
-    }
-
-    public void initUi() {
-        PushDownAnim.setPushDownAnimTo(moonButton)
-                .setScale(MODE_SCALE, 0.90f  )
-                .setDurationPush(400)
-                .setDurationRelease(400)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        clickAddTask();
-                    }
-                });
     }
 
     @Override
@@ -168,6 +161,11 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
+        if (fragmentManager.findFragmentByTag(CreateNewBucketFragment.TAG) != null) {
+            super.onBackPressed();
+            return;
+        }
+
         if (fragmentManager.findFragmentByTag(BucketFragment.TAG) != null) {
             BucketFragment fragment = (BucketFragment) fragmentManager.findFragmentByTag(BucketFragment.TAG);
             if (!fragment.animationEnded) {
@@ -176,8 +174,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (fragmentManager.findFragmentByTag(CPMDTasksFragment.Companion.getTAG())  != null) {
-            CPMDTasksFragment fragment = (CPMDTasksFragment)fragmentManager.findFragmentByTag(CPMDTasksFragment.Companion.getTAG());
+        if (fragmentManager.findFragmentByTag(CPMDTasksFragment.TAG)  != null) {
+            CPMDTasksFragment fragment = (CPMDTasksFragment)fragmentManager.findFragmentByTag(CPMDTasksFragment.TAG);
             if (fragment.getSelectingTasks()) {
                 fragment.clearSelection();
                 return;
@@ -233,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
             case ADD_BUCKET:
                 onMessageEvent(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(new Bucket(), false),
                         true,
-                        CreateNewBucketFragment.Companion.getTAG(), true));
+                        CreateNewBucketFragment.TAG, true));
                 break;
             case SAVE_BUCKET:
                 EventBus.getDefault().post(new AddNewBucketEvent());
@@ -298,7 +296,21 @@ public class MainActivity extends AppCompatActivity {
     public void onMessageEvent(RemoveFragmentEvents events) {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        if (fragmentManager.findFragmentById(R.id.fl_fragment_container) != null) {
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            if (fragment.getTag() != null) {
+                switch (fragment.getTag()) {
+                    case CreateNewBucketFragment.TAG:
+                    case BucketFragment.TAG:
+                    case EditTaskFragment.TAG:
+                    case CPMDTasksFragment.TAG:
+                        fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+                        break;
+                }
+            }
+        }
+
+
+       /* if (fragmentManager.findFragmentById(R.id.fl_fragment_container) != null) {
 
             fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_fade_out);
             fragmentManager.beginTransaction().
@@ -312,12 +324,27 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().
                     remove(fragmentManager.findFragmentById(R.id.fl_fragment_container_behind_add))
                     .commitAllowingStateLoss();
-        }
+        }*/
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateMoonButtonType event) {
-        this.moonButtonType = event.moonButtonType;
+        moonButtonType = event.moonButtonType;
+
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            if (fragment.getTag() != null) {
+                switch (fragment.getTag()) {
+                    case CreateNewBucketFragment.TAG:
+                        moonButtonType = MoonButtonType.SAVE_BUCKET;
+                        break;
+                    case BucketFragment.TAG:
+                        moonButtonType = MoonButtonType.ADD_BUCKET;
+                        break;
+                        default:
+                            moonButtonType = MoonButtonType.ADD_TASK;
+                }
+            }
+        }
 
         switch (moonButtonType) {
             case ADD_TASK:
@@ -353,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
         EditTaskFragment fragment = EditTaskFragment.Companion.instance(event.getTask());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out,R.anim.fragment_fade_in, R.anim.fragment_fade_out);
-        ft.add(R.id.fl_fragment_container, fragment, EditTaskFragment.Companion.getTAG());
+        ft.add(R.id.fl_fragment_container, fragment, EditTaskFragment.TAG);
         ft.addToBackStack(fragment.getClass().getName());
         ft.commitAllowingStateLoss(); // save the changes
     }

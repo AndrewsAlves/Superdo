@@ -48,7 +48,7 @@ class TasksFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        EventBus.getDefault().register(this)
+        EventBus.getDefault().unregister(this)
         super.onDestroyView()
     }
 

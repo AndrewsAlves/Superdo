@@ -107,7 +107,7 @@ public class BucketTasksFragment extends Fragment {
         EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
 
         if (bucket == null) {
-            bucket = FirestoreManager.getAllTasksBucket(getContext());
+            bucket = FirestoreManager.getAllTasksBucket();
             etBucketDesc.setFocusable(false);
             ibEdit.setVisibility(View.GONE);
         }
@@ -213,7 +213,7 @@ public class BucketTasksFragment extends Fragment {
     public void clickProfile() {
         EventBus.getDefault().post(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(bucket, true),
                 true,
-                CreateNewBucketFragment.Companion.getTAG(),
+                CreateNewBucketFragment.TAG,
                  true));
     }
 

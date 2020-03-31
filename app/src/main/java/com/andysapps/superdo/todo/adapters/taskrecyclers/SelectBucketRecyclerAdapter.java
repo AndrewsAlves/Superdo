@@ -80,7 +80,7 @@ public class SelectBucketRecyclerAdapter extends RecyclerView.Adapter<SelectBuck
         Bucket bucket;
 
         if (position == 0) {
-            bucket = FirestoreManager.getAllTasksBucket(context);
+            bucket = FirestoreManager.getAllTasksBucket();
         } else {
             bucket = bucketList.get(position - 1);
         }

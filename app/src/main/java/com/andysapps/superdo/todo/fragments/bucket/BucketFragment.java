@@ -58,7 +58,7 @@ import static com.thekhaeng.pushdownanim.PushDownAnim.MODE_SCALE;
 
 public class BucketFragment extends Fragment{
 
-    public static String TAG = "BucketFragment";
+    public final static String TAG = "BucketFragment";
 
     @BindView(R.id.recyclerView_bucket_list)
     RecyclerView recyclerView;
@@ -119,8 +119,8 @@ public class BucketFragment extends Fragment{
     @Override
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
-        EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
         super.onDestroyView();
+        EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -192,14 +192,12 @@ public class BucketFragment extends Fragment{
         circularReveal.setInterpolator(new AccelerateDecelerateInterpolator());
         circularReveal.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animator) {
-            }
+            public void onAnimationStart(Animator animator) { }
 
             @Override
             public void onAnimationEnd(Animator animator) {
                 rootLayout.setVisibility(View.INVISIBLE);
                 animationEnded = true;
-                EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
                 getActivity().getSupportFragmentManager().popBackStack();
             }
 

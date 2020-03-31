@@ -114,7 +114,7 @@ public class Task implements Cloneable {
         }
     }
 
-    public void setBucketId(String bucket) {
+    public void setBucketId(String bucketId) {
         this.bucketId = bucketId;
     }
 

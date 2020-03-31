@@ -327,7 +327,7 @@ public class TaskOrganiser {
         }
 
         for (Task task : allTaskList) {
-            if (task.getBucket() != null && task.getBucket().getId().equals(bucket.getId())) {
+            if (task.getBucket() != null && task.getBucket().getDocumentId().equals(bucket.getDocumentId())) {
                 bucketList.add(task);
             }
         }
@@ -346,7 +346,7 @@ public class TaskOrganiser {
         }
 
         for (Task task : allTaskList) {
-            if (task.getBucket() != null && task.getBucket().getId().equals( bucket.getId())) {
+            if (task.getBucket() != null && task.getBucket().getDocumentId().equals( bucket.getDocumentId())) {
                 tasksCount++;
             }
         }
@@ -368,7 +368,7 @@ public class TaskOrganiser {
         }
 
         for (Task task : allTaskList) {
-            if (task.getBucket() != null && task.getBucket().getId().equals(bucket.getId())) {
+            if (task.getBucket() != null && task.getBucket().getDocumentId().equals(bucket.getDocumentId())) {
                 if (task.isTaskCompleted()) {
                     tasksDoneCount++;
                 }
@@ -389,7 +389,7 @@ public class TaskOrganiser {
 
             for (Task task : FirestoreManager.getInstance().getHasMapTask().values()) {
                 if (task.getBucketId() != null) {
-                    if (task.getBucketId().equals(bucket1.getId())) {
+                    if (task.getBucketId().equals(bucket1.getDocumentId())) {
                         task.setDeleted(true);
                         FirestoreManager.getInstance().updateTask(task);
                     }
