@@ -307,39 +307,39 @@ public class Utils {
          }
 
          SuperDate startDate = task.getRepeat().getStartDate();
+         SuperDate lastCompletedDate = task.getRepeat().getLastCompletedDate();
 
          switch (RepeatType.valueOf(task.getRepeat().getRepeatType())) {
              case Day:
 
-                 Log.e(TAG, "setNextDoDate: setting next do date Days ");
+                 if (!isSuperDateIsPast(startDate) && !isSuperDateToday(lastCompletedDate)) {
+                     task.setDoDate(task.getRepeat().getStartDate());
+                     break;
+                 }
 
-                 if (task.getRepeat().getDaysInterval() == 1) {
-                     if (isSuperDateToday(startDate) || isSuperDateIsPast(startDate)) {
-                         SuperDate today = getSuperdateToday();
-                         today.setTime(task.getRepeat().getStartDate().getHours(), task.getRepeat().getStartDate().getMinutes());
-                     }
-                 } else {
-
-                     if (!isSuperDateIsPast(task.getRepeat().getStartDate())) {
-                         task.setDoDate(task.getRepeat().getStartDate());
-                         break;
-                     }
+                 //Log.e(TAG, "setNextDoDate: setting next do date Days ");
 
                      Calendar intervalDate = getCalenderFromSuperDate(task.getRepeat().getStartDate());
                      intervalDate.set(Calendar.HOUR_OF_DAY, task.getRepeat().getStartDate().getHours());
                      intervalDate.set(Calendar.MINUTE, task.getRepeat().getStartDate().getMinutes());
 
-                     while (isSuperDateIsPast(new SuperDate(intervalDate))) {
-                         intervalDate.add(Calendar.DAY_OF_MONTH, task.getRepeat().getDaysInterval());
+                    SuperDate superDate = new SuperDate(intervalDate);
 
-                         SuperDate superDate = new SuperDate(intervalDate);
+                     while (isSuperDateIsPast(superDate) || isSuperDateToday(superDate) || isSuperDateIsFuture(superDate)) {
 
-                         if (isSuperDateIsFuture(superDate) || isSuperDateToday(superDate)) {
+                         if (isSuperDateIsFuture(superDate)) {
                              task.setDoDate(superDate);
                              break;
                          }
+
+                         if (isSuperDateToday(superDate) && !isSuperDateToday(lastCompletedDate)) {
+                             task.setDoDate(superDate);
+                             break;
+                         }
+
+                         intervalDate.add(Calendar.DAY_OF_MONTH, task.getRepeat().getDaysInterval());
+                         superDate = new SuperDate(intervalDate);
                      }
-                 }
 
                  break;
              case Week:
@@ -347,15 +347,14 @@ public class Utils {
                  Log.e(TAG, "setNextDoDate: setting next do date Weekly ");
 
                  Calendar calendar1 = Calendar.getInstance();
-                 for (int i = 0 ; i < 15 ; i++) {
+                 calendar1.set(Calendar.HOUR_OF_DAY, task.getRepeat().getStartDate().getHours());
+                 calendar1.set(Calendar.MINUTE, task.getRepeat().getStartDate().getMinutes());
 
-                     if (isWeeklyRepeatFallsThisDate(calendar1, task.getRepeat())) {
-                         calendar1.set(Calendar.HOUR, task.getRepeat().getStartDate().getHours());
-                         calendar1.set(Calendar.MINUTE, task.getRepeat().getStartDate().getMinutes());
+                 for (int i = 0 ; i < 15 ; i++) {
+                     if (isWeeklyRepeatFallsThisDate(calendar1, task.getRepeat()) && !isSuperDateToday(lastCompletedDate)) {
                          task.setDoDate(new SuperDate(calendar1));
                          break;
                      }
-
                      calendar1.add(Calendar.DAY_OF_MONTH, 1);
                  }
 
@@ -366,10 +365,10 @@ public class Utils {
                  Log.e(TAG, "setNextDoDate: setting next do date monthly ");
 
                  Calendar calendar2 = Calendar.getInstance();
-                 calendar2.set(Calendar.HOUR, task.getRepeat().getStartDate().getHours());
+                 calendar2.set(Calendar.HOUR_OF_DAY, task.getRepeat().getStartDate().getHours());
                  calendar2.set(Calendar.MINUTE, task.getRepeat().getStartDate().getMinutes());
 
-                 if (calendar2.get(Calendar.DAY_OF_MONTH) > task.getRepeat().getMonthDate()) {
+                 if (calendar2.get(Calendar.DAY_OF_MONTH) > task.getRepeat().getMonthDate() || isSuperDateToday(lastCompletedDate)) {
                      calendar2.add(Calendar.MONTH, + 1);
 
                      int maxDays = calendar2.getActualMaximum(Calendar.DAY_OF_MONTH);

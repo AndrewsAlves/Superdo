@@ -218,12 +218,12 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                     viewUpdateHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (task.getRepeat() != null) {
+                            /*if (task.getRepeat() != null) {
                                 setRepeatTaskCompleted(h.getAdapterPosition(), task);
                             } else {
-                                setTaskCompleted(h.getAdapterPosition(), task);
-                            }
 
+                            }*/
+                            setTaskCompleted(h.getAdapterPosition(), task);
                         }
                     }, 500);
                 }
@@ -243,6 +243,9 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         Log.e(TAG, "run: position " + position);
         taskList.remove(position);
         task.setTaskCompletedDate(Calendar.getInstance().getTime());
+        if (task.getRepeat() != null) {
+            task.getRepeat().setLastCompletedDate(task.getDoDate());
+        }
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
         notifyItemRemoved(position);
         FirestoreManager.getInstance().updateTask(task);
@@ -253,7 +256,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     public void setRepeatTaskCompleted(int position, Task task) {
         Log.e(TAG, "run: position " + position);
         taskList.remove(position);
-        task.getRepeat().setLastCompletedDate(task.getDoDate());
+
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
        // EventBus.getDefault().post(new ShowSnakeBarEvent(R.string.snackbar_taskcompleted));
         notifyItemRemoved(position);

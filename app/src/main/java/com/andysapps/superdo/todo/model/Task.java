@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo.model;
 
 import android.util.Log;
 
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.sidekicks.ContactCard;
@@ -310,6 +311,12 @@ public class Task implements Cloneable {
 
         if (doDate == null) {
             return "No Do Date";
+        }
+
+        if (repeat != null) {
+            if (!Utils.isSuperDateToday(doDate)) {
+                return "Do next " + doDate.getSuperDateString() + " by " + doDate.getTimeString();
+            }
         }
 
         return "Do " + doDate.getSuperDateString() + " by " + doDate.getTimeString();
