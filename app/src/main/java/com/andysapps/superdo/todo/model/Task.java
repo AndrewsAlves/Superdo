@@ -314,25 +314,12 @@ public class Task implements Cloneable {
         }
 
         if (repeat != null) {
-            if (!Utils.isSuperDateToday(doDate)) {
-                return "Do next " + doDate.getSuperDateString() + " by " + doDate.getTimeString();
+            if (!Utils.isSuperDateToday(doDate) && !Utils.isSuperDateTomorrow(doDate)) {
+                return "Repeat next" + doDate.getSuperDateString() + " by " + doDate.getTimeString();
             }
         }
 
         return "Do " + doDate.getSuperDateString() + " by " + doDate.getTimeString();
-
-        /*if (Utils.isSuperDateToday(doDate)) {
-            return "Do Today by " + getTimeString();
-        } else if (Utils.isSuperDateTomorrow(doDate)) {
-            return "Do Tomorrow by " + getTimeString();
-        }
-
-        if (doDate.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
-            duedate = "Do " + doDate.getMonthString() + " "+ doDate.getDate() + ", " + doDate.getYear() + " by " + getTimeString();
-        } else {
-            duedate = "Do " + doDate.getMonthString() + " "+ doDate.getDate() + " by " + getTimeString();
-        } */
-
     }
 
     public  String getTimeString() {
