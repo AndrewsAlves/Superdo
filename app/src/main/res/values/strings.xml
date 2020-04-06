@@ -6,4 +6,16 @@
 
     <string name="snackbar_taskcompleted">Task completed +1</string>
     <string name="snackbar_moved_to_bin">Task completed +1</string>
+
+    <string name="welcome_title1">Take Action.</string>
+    <string name="welcome_title2">Never Forget.</string>
+    <string name="welcome_title3">Enhance Productivity.</string>
+
+    <string name="welcome_description1">Set tasks, goals, sub-tasks that helps you stick around in the tranquilizing mellow of your life stress-free.</string>
+    <string name="welcome_description2">Superdo evokes your everyday tasks and to-dos with timely reminders and deadlines</string>
+    <string name="welcome_description3">Visualizing day to day progress becomes accessible, enhancing your productivity</string>
+
+    <string name="signup_description">The pocket manager helps you accomplish daily chores and never allows you to overlook</string>
+    <string name="signin_description">Superdo encourages and aids assistance to \nbecome Successful.</string>
+
 </resources>

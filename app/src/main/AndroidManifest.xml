@@ -12,7 +12,9 @@
         android:roundIcon="@drawable/ic_launcher_superdo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".activity.start_screens.SigninActivity"></activity>
+        <activity android:name=".activity.start_screens.SignUpActivity" />
+        <activity android:name=".activity.start_screens.WelcomeActivity" />
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,25 +22,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.MainActivity"
             android:windowSoftInputMode="adjustPan" />
-
         <activity android:name=".activity.FocusActivity" />
 
-        <receiver android:name=".NotificationBroadcast"
+        <receiver
+            android:name=".NotificationBroadcast"
             android:enabled="true"
-            android:exported="true"/>
-
-        <receiver android:name=".ActionBroadcast"
+            android:exported="true" />
+        <receiver
+            android:name=".ActionBroadcast"
             android:enabled="true"
-            android:exported="true"/>
-
-        <receiver android:name=".BackgroundBroadcast"
+            android:exported="true" />
+        <receiver
+            android:name=".BackgroundBroadcast"
             android:enabled="true"
-            android:exported="true"/>
-
+            android:exported="true" />
     </application>
 
 </manifest>

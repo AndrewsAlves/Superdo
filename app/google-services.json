@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1096631620491-m8iope3a9r41pvr2mvl23g1gff11cam4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.andysapps.superdo.todo",
+            "certificate_hash": "af25f2ddbf08003db128211b27541545bd904ffd"
+          }
+        },
+        {
           "client_id": "1096631620491-08q17a1h44ge1e3tsgigg116stlucggh.apps.googleusercontent.com",
           "client_type": 3
         }

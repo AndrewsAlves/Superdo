@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.start_screens.WelcomeActivity">
+
+    <ImageView
+        android:id="@+id/iv_welcome_pic"
+        android:layout_width="230dp"
+        android:layout_height="250dp"
+        android:scaleType="center"
+        android:src="@drawable/img_takeaction"
+        app:layout_constraintBottom_toTopOf="@+id/ll_welcome_texts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/ll_welcome_texts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btn_tv_letsgetstarted"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_welcome_pic">
+
+        <TextView
+            android:id="@+id/tv_welcome_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Take Action."
+            android:textColor="@color/lightOrange"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_welcome_description"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:lineSpacingExtra="6dp"
+            android:text="@string/welcome_description1"
+            android:textAlignment="center"
+            android:textColor="@color/grey2"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_tv_letsgetstarted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_gradient_capsule_button"
+        android:fontFamily="@font/montserrat_medium"
+        android:paddingStart="30dp"
+        android:paddingTop="12sp"
+        android:paddingEnd="30dp"
+        android:paddingBottom="12sp"
+        android:text="Let's get started"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_welcome_texts" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

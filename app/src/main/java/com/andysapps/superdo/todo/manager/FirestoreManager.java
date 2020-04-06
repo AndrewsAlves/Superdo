@@ -13,6 +13,8 @@ import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.enums.BucketUpdateType;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
+import com.andysapps.superdo.todo.events.FetchUserFailureEvent;
+import com.andysapps.superdo.todo.events.FetchUserSuccessEvent;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
@@ -21,6 +23,7 @@ import com.andysapps.superdo.todo.events.firestore.UploadTaskFailureEvent;
 import com.andysapps.superdo.todo.events.firestore.UploadTaskSuccessEvent;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
+import com.andysapps.superdo.todo.model.User;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -61,7 +64,9 @@ public class FirestoreManager {
     Query taskQuery;
     Query bucketQuery;
 
+    public User user;
     public String userId = "test_user";
+    public String documentID;
 
     FirebaseFirestore firestore;
 
@@ -107,6 +112,23 @@ public class FirestoreManager {
         bucket.setTagColor(BucketColors.Red.toString()); // light Red
 
         return bucket;
+    }
+
+    public void fetchUser() {
+        firestore.collection(DB_USER).document(documentID).get()
+                .addOnSuccessListener(documentSnapshot -> {
+
+                    if (documentSnapshot == null) {
+                        return;
+                    }
+
+                    user = documentSnapshot.toObject(User.class);
+                    EventBus.getDefault().post(new FetchUserSuccessEvent());
+                })
+                .addOnFailureListener(e -> {
+                    e.printStackTrace();
+                    EventBus.getDefault().post(new FetchUserFailureEvent());
+                });
     }
 
     public void fetchUserData(Context context, boolean registerReminders) {

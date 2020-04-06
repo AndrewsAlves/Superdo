@@ -2,10 +2,12 @@ package com.andysapps.superdo.todo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.andysapps.superdo.todo.adapters.taskrecyclers.CPMDRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
@@ -38,6 +40,22 @@ public class Utils {
     public static String[] monthDates = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th",
             "13th", "14th", "15th", "16th", "17th", "18th", "19th", "20th", "21st", "22nd", "23rd", "24th", "25th", "26th", "27th", "28th", "29th", "30th", "31st"};
 
+    public static boolean isNetworkConnected(Context context) {
+
+        boolean hasNetwork = false;
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        hasNetwork = cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+
+        if (!hasNetwork) {
+            makeToast(context, "Please connect to the internet");
+        }
+
+        return hasNetwork;
+    }
+
+    public static void makeToast(Context context, String msg) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    }
 
     public static void showSoftKeyboard(Context context, View view) {
         if (view.requestFocus()) {
