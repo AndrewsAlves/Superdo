@@ -7,6 +7,8 @@
     <string name="snackbar_taskcompleted">Task completed +1</string>
     <string name="snackbar_moved_to_bin">Task completed +1</string>
 
+    <string name="oauth_client_id">1096631620491-m8iope3a9r41pvr2mvl23g1gff11cam4.apps.googleusercontent.com</string>
+
     <string name="welcome_title1">Take Action.</string>
     <string name="welcome_title2">Never Forget.</string>
     <string name="welcome_title3">Enhance Productivity.</string>

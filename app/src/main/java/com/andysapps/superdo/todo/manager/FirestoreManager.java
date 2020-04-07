@@ -29,6 +29,7 @@ import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -78,7 +79,18 @@ public class FirestoreManager {
         firestore =  FirebaseFirestore.getInstance();
         taskHashMap = new HashMap<>();
         bucketHashMap = new HashMap<>();
+    }
 
+    public void initUser() {
+        firestore.collection(FirestoreManager.DB_USER).document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        user = task.getResult().toObject(User.class);
+                    }
+                });
+
+        userId = user.getUserId();
+        documentID = user.getDocumentId();
     }
 
     public static void initialise(Context context) {
@@ -115,7 +127,7 @@ public class FirestoreManager {
     }
 
     public void fetchUser() {
-        firestore.collection(DB_USER).document(documentID).get()
+        firestore.collection(DB_USER).document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get()
                 .addOnSuccessListener(documentSnapshot -> {
 
                     if (documentSnapshot == null) {

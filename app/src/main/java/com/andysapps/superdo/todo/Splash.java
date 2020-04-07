@@ -51,6 +51,7 @@ public class Splash extends AppCompatActivity {
 
     public void openDesiredActivity() {
 
+        auth.signOut();
         FirebaseUser firebaseUser = auth.getCurrentUser();
         if (firebaseUser == null) {
             Intent intent = new Intent(Splash.this, WelcomeActivity.class);

@@ -8,24 +8,22 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.activity.start_screens.SignInActivity;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.MainViewPagerAdapter;
-import com.andysapps.superdo.todo.enums.CPMD;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
-import com.andysapps.superdo.todo.events.SetTasksFragment;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
-import com.andysapps.superdo.todo.events.ShowSnakeBarNoMoonEvent;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
 import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
@@ -40,10 +38,12 @@ import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment;
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment;
 import com.andysapps.superdo.todo.fragments.task.EditTaskFragment;
 import com.andysapps.superdo.todo.manager.AnimationManager;
+import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.kuassivi.component.RipplePulseRelativeLayout;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
@@ -105,10 +105,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        verifyUser();
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         initUi();
         clickToday();
+    }
+
+    public void verifyUser() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent intent = new Intent(this, SignInActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            FirestoreManager.getInstance().fetchUser();
+        }
     }
 
     public void initUi() {

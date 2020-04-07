@@ -4,10 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.andysapps.superdo.todo.R
 
-class SigninActivity : AppCompatActivity() {
+class ProfileInfoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signin)
+        setContentView(R.layout.activity_profile_info)
     }
 }

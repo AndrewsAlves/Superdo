@@ -22,6 +22,8 @@ public class User {
     String firstName;
     String lastName;
 
+    int avatarIndex;
+
     GeoPoint geoLocation;
 
     @ServerTimestamp

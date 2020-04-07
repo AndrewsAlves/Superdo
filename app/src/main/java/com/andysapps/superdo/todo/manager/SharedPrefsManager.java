@@ -20,11 +20,11 @@ public class SharedPrefsManager {
     }
 
     public static String getUserId(Context context) {
-        return getSharedPreferences(context).getString(PREF_SUPERDO_USER_ID, null);
+        return getSharedPreferences(context).getString(PREF_SUPERDO_USER_ID, "null user");
     }
 
     public static String getUserDocumentId(Context context) {
-        return getSharedPreferences(context).getString(PREF_SUPERDO_USER_DOCUMENT_ID, null);
+        return getSharedPreferences(context).getString(PREF_SUPERDO_USER_DOCUMENT_ID, "null user");
     }
 
     public static void saveUserId(Context context, String userId, String documentId) {
