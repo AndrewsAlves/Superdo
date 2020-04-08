@@ -26,7 +26,8 @@
                 android:id="@+id/profile_iv_avatar"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_avatar1"
+                android:scaleType="fitCenter"
+                android:src="@drawable/img_avatar_1"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="30dp"/>
 
@@ -483,13 +484,14 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="40dp">
+            style="@style/ripple_background_bordered_grey">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_support"
                 android:scaleType="center"
+                android:layout_marginStart="40dp"
                 android:layout_centerVertical="true"/>
 
             <TextView
@@ -498,7 +500,7 @@
                 android:text="Support"
                 android:fontFamily="@font/montserrat_medium"
                 android:textColor="@color/black"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="80dp"
                 android:layout_centerVertical="true"/>
 
         </RelativeLayout>
@@ -507,13 +509,14 @@
             android:id="@+id/profile_btn_logout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginStart="40dp">
+            style="@style/ripple_background_bordered_grey">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_logout"
                 android:scaleType="center"
+                android:layout_marginStart="40dp"
                 android:layout_centerVertical="true"/>
 
             <TextView
@@ -522,7 +525,7 @@
                 android:text="Logout"
                 android:fontFamily="@font/montserrat_medium"
                 android:textColor="@color/black"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="80dp"
                 android:layout_centerVertical="true"/>
 
         </RelativeLayout>

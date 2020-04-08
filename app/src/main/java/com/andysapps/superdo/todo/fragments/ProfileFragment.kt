@@ -1,19 +1,23 @@
 package com.andysapps.superdo.todo.fragments
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.activity.start_screens.WelcomeActivity
+import com.andysapps.superdo.todo.dialog.alert.LogoutAlertDialog
 import com.andysapps.superdo.todo.enums.CPMD
-import com.andysapps.superdo.todo.events.UpdateTaskListEvent
-import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent
+import com.andysapps.superdo.todo.events.LogoutEvent
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent
 import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment
+import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
+import com.google.firebase.auth.FirebaseAuth
 import com.thekhaeng.pushdownanim.PushDownAnim
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.greenrobot.eventbus.EventBus
@@ -62,9 +66,27 @@ class ProfileFragment : Fragment() {
 
                     EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(cpmd), false, CPMDTasksFragment.TAG, true))
                 })
+
+        profile_btn_logout.setOnClickListener {
+            LogoutAlertDialog().show(fragmentManager!!, "alert_logout")
+        }
     }
 
     fun updateUi() {
+
+        if (FirestoreManager.getInstance().user.firstName != null) {
+            profile_tv_account_name.text = FirestoreManager.getInstance().user.firstName
+        }
+
+        when (FirestoreManager.getInstance().user!!.avatarIndex) {
+            0 -> profile_iv_avatar.setImageResource(R.drawable.img_avatar_1)
+            1 -> profile_iv_avatar.setImageResource(R.drawable.img_avatar_2)
+            2 -> profile_iv_avatar.setImageResource(R.drawable.img_avatar_3)
+            3 -> profile_iv_avatar.setImageResource(R.drawable.img_avatar_4)
+            4 -> profile_iv_avatar.setImageResource(R.drawable.img_avatar_5)
+            5 -> profile_iv_avatar.setImageResource(R.drawable.img_avatar_6)
+        }
+
         profile_tv_completed_tasks.text = TaskOrganiser.getInstance().getCompletedTaskList().size.toString()
         profile_tv_pending_tasks.text = TaskOrganiser.getInstance().getPendingTaskList().size.toString()
         profile_tv_missing_tasks.text = TaskOrganiser.getInstance().getMissedTaskList().size.toString()
@@ -76,5 +98,13 @@ class ProfileFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: UpdateProfileEvent) {
         updateUi()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: LogoutEvent) {
+        FirebaseAuth.getInstance().signOut()
+        var intent = Intent(context, WelcomeActivity::class.java)
+        startActivity(intent)
+        activity!!.finish()
     }
 }

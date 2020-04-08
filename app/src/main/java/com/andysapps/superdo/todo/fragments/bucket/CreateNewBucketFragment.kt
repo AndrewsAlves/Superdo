@@ -185,7 +185,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
     fun onMessageEvent(event : AddNewBucketEvent) {
         if (et_create_bucket_name.text.isNotEmpty()) {
             bucket.name = et_create_bucket_name.text.toString()
-            bucket.userId = FirestoreManager.getInstance().userId
+            bucket.userId = FirestoreManager.getInstance().user.userId
             bucket.created = Calendar.getInstance().time
             bucket.id = UUID.randomUUID().toString()
             if (isEditing) {

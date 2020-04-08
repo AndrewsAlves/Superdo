@@ -1,15 +1,21 @@
 package com.andysapps.superdo.todo.activity.start_screens
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.activity.MainActivity
+import com.andysapps.superdo.todo.events.CreateOrUpdateUserFailureEvent
+import com.andysapps.superdo.todo.events.CreateOrUpdateUserSuccessEvent
+import com.andysapps.superdo.todo.events.FetchUserFailureEvent
+import com.andysapps.superdo.todo.events.FetchUserSuccessEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.User
 import com.andysapps.superdo.todo.views.IndeterminantProgressBar
@@ -21,18 +27,16 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_signin.*
-import kotlinx.android.synthetic.main.activity_signin.btn_iv_showpass
-import kotlinx.android.synthetic.main.activity_signin.btn_rl_google
-import kotlinx.android.synthetic.main.activity_signin.btn_tv_signin
-import kotlinx.android.synthetic.main.activity_signin.et_email
-import kotlinx.android.synthetic.main.activity_signin.et_password
-import kotlinx.android.synthetic.main.activity_signin.ll_google
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class SignInActivity : AppCompatActivity() {
 
     public val TAG = "SignUpActivity"
+
+    var pressedBack = false
 
     private lateinit var auth: FirebaseAuth
 
@@ -51,6 +55,7 @@ class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
+        EventBus.getDefault().register(this)
 
         auth = FirebaseAuth.getInstance()
 
@@ -63,6 +68,22 @@ class SignInActivity : AppCompatActivity() {
 
         initUi()
         updateUi()
+    }
+
+    override fun onDestroy() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (!pressedBack) {
+            pressedBack = true
+            Toast.makeText(this, "Press again to exit", Toast.LENGTH_LONG).show()
+            var handler = Handler()
+            handler.postDelayed(Runnable {  pressedBack = false}, 3000)
+            return
+        }
+        super.onBackPressed()
     }
 
     fun initUi() {
@@ -145,7 +166,7 @@ class SignInActivity : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         Log.d(TAG, "createUserWithEmail:success")
-                        updateOrCreateUser()
+                        FirestoreManager.getInstance().fetchUser()
                     }
                 }.addOnFailureListener {
 
@@ -184,23 +205,17 @@ class SignInActivity : AppCompatActivity() {
         superdoUser.userId = auth.currentUser!!.uid
         superdoUser.email = auth.currentUser!!.email
 
-        Log.e(FirestoreManager.TAG, "update or create user" + superdoUser.userId)
+        if (auth.currentUser!!.displayName != null) {
+            var fullName = auth.currentUser!!.displayName
+            Log.e(TAG, "Display name : $fullName")
+            var names = fullName!!.split(' ')
+            superdoUser.firstName = names[0]
+            if (names.size >= 2) {
+                superdoUser.lastName = names[1]
+            }
+        }
 
-        FirebaseFirestore.getInstance().collection(FirestoreManager.DB_USER).document(superdoUser.userId)
-                .set(superdoUser)
-                .addOnSuccessListener {
-                    Log.e(FirestoreManager.TAG, "DocumentSnapshot : Task uploadedAccount successfully written!")
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-                .addOnFailureListener { e: Exception? ->
-                    emailSignup = false
-                    googelSignup = false
-                    updateUi()
-                    Log.e(FirestoreManager.TAG, "Error uploading task", e)
-                    Toast.makeText(this, "Error sign up", Toast.LENGTH_LONG).show()
-                }
+        FirestoreManager.getInstance().createOrUpdateUser(superdoUser)
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -223,7 +238,7 @@ class SignInActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        updateOrCreateUser()
+                        FirestoreManager.getInstance().fetchUser()
                     } else {
                         toastError()
                     }
@@ -232,5 +247,32 @@ class SignInActivity : AppCompatActivity() {
 
     fun toastError() {
         Toast.makeText(this, "Error signing up", Toast.LENGTH_LONG).show()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event : CreateOrUpdateUserSuccessEvent) {
+        val intent = Intent(this, ProfileInfoActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event : CreateOrUpdateUserFailureEvent) {
+        emailSignup = false
+        googelSignup = false
+        updateUi()
+        toastError()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: FetchUserSuccessEvent?) {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: FetchUserFailureEvent?) {
+        updateOrCreateUser()
     }
 }

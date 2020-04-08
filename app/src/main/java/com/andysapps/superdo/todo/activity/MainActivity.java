@@ -11,10 +11,12 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.activity.start_screens.SignInActivity;
@@ -97,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
     MainViewPagerAdapter viewPagerAdapter;
     MainTabs mainTabs;
 
+    boolean pressedBack = false;
+
     public static MoonButtonType moonButtonType = MoonButtonType.ADD_TASK;
 
     boolean isNight = false;
@@ -117,8 +121,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SignInActivity.class);
             startActivity(intent);
             finish();
-        } else {
-            FirestoreManager.getInstance().fetchUser();
         }
     }
 
@@ -191,6 +193,14 @@ public class MainActivity extends AppCompatActivity {
                 fragment.clearSelection();
                 return;
             }
+        }
+
+        if (!pressedBack) {
+            pressedBack = true;
+            Toast.makeText(this, "Press again to exit", Toast.LENGTH_LONG).show();
+            Handler handler = new Handler();
+            handler.postDelayed(() -> pressedBack = false, 3000);
+            return;
         }
 
         super.onBackPressed();

@@ -2,6 +2,8 @@ package com.andysapps.superdo.todo.activity.start_screens
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.andysapps.superdo.todo.R
 import com.github.florent37.viewanimator.ViewAnimator
@@ -11,10 +13,23 @@ class WelcomeActivity : AppCompatActivity() {
 
     private var slide = 1
 
+    var pressedBack = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
         initUi()
+    }
+
+    override fun onBackPressed() {
+        if (!pressedBack) {
+            pressedBack = true
+            Toast.makeText(this, "Press again to exit", Toast.LENGTH_LONG).show()
+            var handler = Handler()
+            handler.postDelayed(Runnable {  pressedBack = false}, 3000)
+            return
+        }
+        super.onBackPressed()
     }
 
     fun initUi() {
@@ -24,6 +39,7 @@ class WelcomeActivity : AppCompatActivity() {
         btn_tv_letsgetstarted.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 

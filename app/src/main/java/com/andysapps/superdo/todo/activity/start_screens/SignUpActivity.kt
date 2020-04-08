@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo.activity.start_screens
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
@@ -9,7 +10,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.andysapps.superdo.todo.R
-import com.andysapps.superdo.todo.activity.MainActivity
+import com.andysapps.superdo.todo.events.CreateOrUpdateUserFailureEvent
+import com.andysapps.superdo.todo.events.CreateOrUpdateUserSuccessEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.User
 import com.andysapps.superdo.todo.views.IndeterminantProgressBar
@@ -18,14 +20,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 class SignUpActivity : AppCompatActivity() {
@@ -46,10 +48,12 @@ class SignUpActivity : AppCompatActivity() {
     var emailSignup = false
     var googelSignup = false
 
+    var pressedBack = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
-
+        EventBus.getDefault().register(this)
         auth = FirebaseAuth.getInstance()
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -61,6 +65,22 @@ class SignUpActivity : AppCompatActivity() {
 
         initUi()
         updateUi()
+    }
+
+    override fun onDestroy() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (!pressedBack) {
+            pressedBack = true
+            Toast.makeText(this, "Press again to exit", Toast.LENGTH_LONG).show()
+            var handler = Handler()
+            handler.postDelayed(Runnable {  pressedBack = false}, 3000)
+            return
+        }
+        super.onBackPressed()
     }
 
     fun initUi() {
@@ -126,6 +146,24 @@ class SignUpActivity : AppCompatActivity() {
         progressBarSignup!!.setColor(R.color.white)
     }
 
+    fun createNewUser() {
+        var superdoUser = User()
+        superdoUser.userId = auth.currentUser!!.uid
+        superdoUser.email = auth.currentUser!!.email
+
+        if (auth.currentUser!!.displayName != null) {
+            var fullName = auth.currentUser!!.displayName
+            Log.e(TAG, "Display name : $fullName")
+            var names = fullName!!.split(' ')
+            superdoUser.firstName = names[0]
+            if (names.size >= 2) {
+                superdoUser.lastName = names[1]
+            }
+        }
+
+        FirestoreManager.getInstance().createOrUpdateUser(superdoUser)
+    }
+
     fun signUpUser() {
 
         val email = et_email.text.toString()
@@ -175,27 +213,6 @@ class SignUpActivity : AppCompatActivity() {
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
-    fun createNewUser() {
-        var superdoUser = User()
-        superdoUser.userId = auth.currentUser!!.uid
-        superdoUser.email = auth.currentUser!!.email
-
-        FirebaseFirestore.getInstance().collection(FirestoreManager.DB_USER).document(superdoUser.userId)
-                .set(superdoUser)
-                .addOnSuccessListener(fun(it: Void) {
-                    Log.d(FirestoreManager.TAG, "DocumentSnapshot : Task uploadedAccount successfully written!")
-                    val intent = Intent(this, ProfileInfoActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                })
-                .addOnFailureListener { e: Exception? ->
-                    emailSignup = false
-                    googelSignup = false
-                    updateUi()
-                    Log.e(FirestoreManager.TAG, "Error uploading task", e)
-                    Toast.makeText(this, "Error sign up", Toast.LENGTH_LONG).show() }
-    }
-
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -217,16 +234,6 @@ class SignUpActivity : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         createNewUser()
-
-                        /*FirebaseFirestore.getInstance().collection(FirestoreManager.DB_USER).document(auth.currentUser!!.uid)
-                                .get().addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        val intent = Intent(this, MainActivity::class.java)
-                                        startActivity(intent)
-                                        finish()
-                                    } else {
-                                    }
-                                }*/
                     } else {
                         toastError()
                     }
@@ -235,6 +242,25 @@ class SignUpActivity : AppCompatActivity() {
 
     fun toastError() {
         Toast.makeText(this, "Error signing up", Toast.LENGTH_LONG).show()
+    }
+
+    //////////////
+    ///// SUBSCRIBE
+    /////////////
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event : CreateOrUpdateUserSuccessEvent) {
+        val intent = Intent(this, ProfileInfoActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event : CreateOrUpdateUserFailureEvent) {
+        emailSignup = false
+        googelSignup = false
+        updateUi()
+        toastError()
     }
 }
 

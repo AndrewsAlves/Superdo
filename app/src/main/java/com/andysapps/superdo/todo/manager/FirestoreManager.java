@@ -8,11 +8,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.enums.BucketUpdateType;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
+import com.andysapps.superdo.todo.events.CreateOrUpdateUserFailureEvent;
+import com.andysapps.superdo.todo.events.CreateOrUpdateUserSuccessEvent;
 import com.andysapps.superdo.todo.events.FetchUserFailureEvent;
 import com.andysapps.superdo.todo.events.FetchUserSuccessEvent;
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
@@ -27,21 +28,15 @@ import com.andysapps.superdo.todo.model.User;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
-
 import org.greenrobot.eventbus.EventBus;
-
 import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * Created by Andrews on 29,October,2019
@@ -66,8 +61,6 @@ public class FirestoreManager {
     Query bucketQuery;
 
     public User user;
-    public String userId = "test_user";
-    public String documentID;
 
     FirebaseFirestore firestore;
 
@@ -81,21 +74,8 @@ public class FirestoreManager {
         bucketHashMap = new HashMap<>();
     }
 
-    public void initUser() {
-        firestore.collection(FirestoreManager.DB_USER).document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        user = task.getResult().toObject(User.class);
-                    }
-                });
-
-        userId = user.getUserId();
-        documentID = user.getDocumentId();
-    }
-
     public static void initialise(Context context) {
         ourInstance = new FirestoreManager(context);
-        ourInstance.fetchUserData(context, false);
     }
 
     public static void initialiseAndRegisterAlarms(Context context) {
@@ -128,18 +108,26 @@ public class FirestoreManager {
 
     public void fetchUser() {
         firestore.collection(DB_USER).document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get()
-                .addOnSuccessListener(documentSnapshot -> {
-
-                    if (documentSnapshot == null) {
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.d(TAG, "fetchUser() called is not successfull");
+                        EventBus.getDefault().post(new FetchUserFailureEvent());
                         return;
                     }
 
-                    user = documentSnapshot.toObject(User.class);
-                    EventBus.getDefault().post(new FetchUserSuccessEvent());
-                })
-                .addOnFailureListener(e -> {
-                    e.printStackTrace();
-                    EventBus.getDefault().post(new FetchUserFailureEvent());
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot == null) {
+                        EventBus.getDefault().post(new FetchUserFailureEvent());
+                        return;
+                    }
+
+                    if (documentSnapshot.exists()) {
+                        user = documentSnapshot.toObject(User.class);
+                        fetchUserData(null, false);
+                        EventBus.getDefault().post(new FetchUserSuccessEvent());
+                    } else {
+                        EventBus.getDefault().post(new FetchUserFailureEvent());
+                    }
                 });
     }
 
@@ -147,9 +135,9 @@ public class FirestoreManager {
 
         Source source = Source.DEFAULT;
 
-        taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", userId).whereEqualTo("deleted", false);
+        taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", user.getUserId()).whereEqualTo("deleted", false);
         bucketQuery = firestore.collection(DB_BUCKETS)
-                .whereEqualTo("userId", userId)
+                .whereEqualTo("userId", user.getUserId())
                 .whereEqualTo("deleted", false)
                 .orderBy("created", Query.Direction.DESCENDING);
 
@@ -198,7 +186,7 @@ public class FirestoreManager {
 
     public void initQuerySnapshots() {
 
-        firestore.collection(DB_TASKS).whereEqualTo("userId", userId)
+        firestore.collection(DB_TASKS).whereEqualTo("userId", user.getUserId())
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
 
             if (e != null) {
@@ -251,7 +239,7 @@ public class FirestoreManager {
         /// bucket query
         //////
 
-        firestore.collection(DB_BUCKETS).whereEqualTo("userId", userId)
+        firestore.collection(DB_BUCKETS).whereEqualTo("userId", user.getUserId())
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
 
             Log.e(TAG, "Query snapshot executed  : " + queryDocumentSnapshots);
@@ -303,6 +291,18 @@ public class FirestoreManager {
     public void updateTaskList(TaskUpdateType change, Task task) {
         TaskOrganiser.getInstance().organiseAllTasks();
         EventBus.getDefault().post(new TaskUpdatedEvent(change, task));
+    }
+
+    public void createOrUpdateUser(User user) {
+        firestore.collection(DB_USER).document(user.getUserId())
+                .set(user)
+                .addOnSuccessListener(aVoid -> {
+                    this.user = user;
+                    EventBus.getDefault().post(new CreateOrUpdateUserSuccessEvent());
+                })
+                .addOnFailureListener(e -> {
+                    EventBus.getDefault().post(new CreateOrUpdateUserFailureEvent());
+                });
     }
 
     public void uploadTask(Task task) {

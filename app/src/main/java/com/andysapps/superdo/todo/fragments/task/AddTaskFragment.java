@@ -380,7 +380,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @OnClick(R.id.ib_add_task)
     public void clickAddTask() {
         if (validate()) {
-            task.setUserId(FirestoreManager.getInstance().userId);
+            task.setUserId(FirestoreManager.getInstance().user.getUserId());
             task.setName(etTaskName.getText().toString());
             task.setTaskIndex(TaskOrganiser.getInstance().getTaskSize(task.getListedIn()));
             FirestoreManager.getInstance().uploadTask(task);

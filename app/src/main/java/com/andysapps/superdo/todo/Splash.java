@@ -50,24 +50,22 @@ public class Splash extends AppCompatActivity {
     }
 
     public void openDesiredActivity() {
-
-        auth.signOut();
         FirebaseUser firebaseUser = auth.getCurrentUser();
         if (firebaseUser == null) {
             Intent intent = new Intent(Splash.this, WelcomeActivity.class);
             startActivity(intent);
+            finish();
         } else {
-            FirestoreManager.getInstance().userId = SharedPrefsManager.getUserId(this);
-            FirestoreManager.getInstance().documentID = SharedPrefsManager.getUserDocumentId(this);
-            Log.e("document id", "openDesiredActivity: " + FirestoreManager.getInstance().documentID);
             FirestoreManager.getInstance().fetchUser();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(FetchUserSuccessEvent event) {
+        FirestoreManager.getInstance().fetchUserData(this, false);
         Intent intent =  new Intent(Splash.this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

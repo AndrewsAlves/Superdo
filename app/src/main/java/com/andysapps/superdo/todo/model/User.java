@@ -89,4 +89,12 @@ public class User {
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
     }
+
+    public int getAvatarIndex() {
+        return avatarIndex;
+    }
+
+    public void setAvatarIndex(int avatarIndex) {
+        this.avatarIndex = avatarIndex;
+    }
 }
