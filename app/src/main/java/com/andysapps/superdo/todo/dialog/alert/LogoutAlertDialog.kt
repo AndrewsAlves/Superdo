@@ -16,6 +16,7 @@ import com.andysapps.superdo.todo.events.RestoreTaskEvent
 import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.fragment_alert_logout_dialog.*
 import kotlinx.android.synthetic.main.fragment_delete_task_dialog.*
 import kotlinx.android.synthetic.main.fragment_restore_tasks_dialog.*
 import org.greenrobot.eventbus.EventBus
@@ -39,12 +40,12 @@ class LogoutAlertDialog : DialogFragment() {
 
     private fun initUi() {
 
-        restoreTask_b_possitive.setOnClickListener {
+        logout_b_possitive.setOnClickListener {
             EventBus.getDefault().post(LogoutEvent())
             dismiss()
         }
 
-        restoreTask_b_negative.setOnClickListener {
+        logout_b_negative.setOnClickListener {
             dismiss()
         }
     }

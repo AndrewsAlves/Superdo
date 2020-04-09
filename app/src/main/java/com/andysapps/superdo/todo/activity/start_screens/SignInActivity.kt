@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.android.synthetic.main.activity_profile_info.*
 import kotlinx.android.synthetic.main.activity_signin.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -34,7 +35,7 @@ import org.greenrobot.eventbus.ThreadMode
 
 class SignInActivity : AppCompatActivity() {
 
-    public val TAG = "SignUpActivity"
+    val TAG = "SignUpActivity"
 
     var pressedBack = false
 
@@ -111,8 +112,12 @@ class SignInActivity : AppCompatActivity() {
             signInUserGoogle()
         }
 
-        btn_tv_signin.setOnClickListener {
-            val intent = Intent(this, SignInActivity::class.java)
+        btn_tv_forgotpassword.setOnClickListener {
+
+        }
+
+        btn_tv_signup.setOnClickListener {
+            val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -149,17 +154,26 @@ class SignInActivity : AppCompatActivity() {
         progressBarSignup!!.setColor(R.color.white)
     }
 
+    fun stopLoading() {
+        emailSignup = false
+        googelSignup = false
+        updateUi()
+    }
+
     fun signInUser() {
 
         var email = et_email.text.toString()
         var password = et_password.text.toString()
 
-        if (email == null) {
-            email = " "
+        if (email.trim().isEmpty()) {
+            et_email.error = "Enter Email id"
+            et_email.requestFocus()
+            return
         }
-
-        if (password == null) {
-            password = " "
+        if (password.trim().isEmpty()) {
+            et_email.error = "Enter password"
+            et_email.requestFocus()
+            return
         }
 
         auth.signInWithEmailAndPassword(email, password)
@@ -169,11 +183,7 @@ class SignInActivity : AppCompatActivity() {
                         FirestoreManager.getInstance().fetchUser()
                     }
                 }.addOnFailureListener {
-
-                    emailSignup = false
-                    googelSignup = false
-                    updateUi()
-
+                    stopLoading()
                     var ex = it as FirebaseAuthException
 
                     when (ex.errorCode) {
@@ -183,7 +193,8 @@ class SignInActivity : AppCompatActivity() {
                             et_email.requestFocus()
                          }
                          "ERROR_WRONG_PASSWORD" -> {
-                             Toast.makeText(this, "Wrong password", Toast.LENGTH_LONG).show()
+                             et_password.error = "Wrong password."
+                             et_password.requestFocus()
                          }
                         "ERROR_USER_DISABLED" -> Toast.makeText(this, "The user account has been disabled by an administrator.", Toast.LENGTH_LONG).show()
                         else -> {
@@ -258,9 +269,7 @@ class SignInActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event : CreateOrUpdateUserFailureEvent) {
-        emailSignup = false
-        googelSignup = false
-        updateUi()
+        stopLoading()
         toastError()
     }
 

@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat_regular"
-            android:text="Welcome to"
+            android:text="Create an Account"
             android:textColor="@color/black"
             android:textSize="20dp" />
 
@@ -44,9 +44,10 @@
             android:textSize="10dp" />
 
         <RelativeLayout
+            android:id="@+id/parent_email"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/bg_round_rect_button_white">
 
             <EditText
@@ -63,9 +64,23 @@
                 android:inputType="textEmailAddress"
                 android:textSize="14sp" />
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_email_id_alert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="Email invalid!"
+                android:textColor="@color/lightRed"
+                android:textSize="12sp" />
+
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/parent_password"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
@@ -96,6 +111,19 @@
                 android:scaleType="center"
                 style="@style/ripple_background_grey"
                 android:src="@drawable/ic_eye" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_password_alert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="Invalid password!"
+                android:textColor="@color/grey2"
+                android:textSize="12sp" />
 
         </RelativeLayout>
 

@@ -107,10 +107,15 @@ public class FirestoreManager {
     }
 
     public void fetchUser() {
+        Log.e(TAG, "fetchUser() called user id " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         firestore.collection(DB_USER).document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get()
                 .addOnCompleteListener(task -> {
+
+                    Log.d(TAG, "fetchUser() called");
+
                     if (!task.isSuccessful()) {
-                        Log.d(TAG, "fetchUser() called is not successfull");
+                        Log.d(TAG, "fetchUser() called is not successful");
                         EventBus.getDefault().post(new FetchUserFailureEvent());
                         return;
                     }
@@ -122,18 +127,22 @@ public class FirestoreManager {
                     }
 
                     if (documentSnapshot.exists()) {
+                        Log.d(TAG, "fetchUser() called is successful");
                         user = documentSnapshot.toObject(User.class);
                         fetchUserData(null, false);
                         EventBus.getDefault().post(new FetchUserSuccessEvent());
                     } else {
                         EventBus.getDefault().post(new FetchUserFailureEvent());
                     }
+
                 });
     }
 
     public void fetchUserData(Context context, boolean registerReminders) {
 
         Source source = Source.DEFAULT;
+
+        Log.e(TAG, "fetchUserData() called with: user id " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", user.getUserId()).whereEqualTo("deleted", false);
         bucketQuery = firestore.collection(DB_BUCKETS)

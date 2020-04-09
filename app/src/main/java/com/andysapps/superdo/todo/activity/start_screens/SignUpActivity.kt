@@ -25,6 +25,14 @@ import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import kotlinx.android.synthetic.main.activity_sign_up.btn_iv_showpass
+import kotlinx.android.synthetic.main.activity_sign_up.btn_rl_google
+import kotlinx.android.synthetic.main.activity_sign_up.btn_tv_signin
+import kotlinx.android.synthetic.main.activity_sign_up.btn_tv_signup
+import kotlinx.android.synthetic.main.activity_sign_up.et_email
+import kotlinx.android.synthetic.main.activity_sign_up.et_password
+import kotlinx.android.synthetic.main.activity_sign_up.ll_google
+import kotlinx.android.synthetic.main.activity_signin.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -164,10 +172,29 @@ class SignUpActivity : AppCompatActivity() {
         FirestoreManager.getInstance().createOrUpdateUser(superdoUser)
     }
 
+    fun stopLoading () {
+        emailSignup = false
+        googelSignup = false
+        updateUi()
+    }
+
     fun signUpUser() {
 
-        val email = et_email.text.toString()
-        val password = et_password.text.toString()
+        var email = et_email.text.toString()
+        var password = et_password.text.toString()
+
+        if (email.trim().isEmpty()) {
+            et_email.error = "Enter Email id"
+            et_email.requestFocus()
+            stopLoading()
+            return
+        }
+        if (password.trim().isEmpty()) {
+            et_email.error = "Enter password"
+            et_email.requestFocus()
+            stopLoading()
+            return
+        }
 
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
@@ -177,26 +204,24 @@ class SignUpActivity : AppCompatActivity() {
                     }
                 }.addOnFailureListener {
 
-                    emailSignup = false
-                    googelSignup = false
-                    updateUi()
+                    stopLoading()
 
                     var ex = it as FirebaseAuthException
 
                     when (ex.errorCode) {
                         "ERROR_INVALID_CREDENTIAL" -> Toast.makeText(this, "The supplied auth credential is malformed or has expired.", Toast.LENGTH_LONG).show()
                         "ERROR_INVALID_EMAIL" -> {
-                            et_email.error = "The email address is badly formatted."
+                            et_email.error = "Invalid Email!"
                             et_email.requestFocus()
                         }
                         "ERROR_EMAIL_ALREADY_IN_USE" -> {
-                            et_email.error = "The email address is already in use by another account."
+                            et_email.error = "Email already exist"
                             et_email.requestFocus()
                         }
                         "ERROR_CREDENTIAL_ALREADY_IN_USE" -> Toast.makeText(this, "This credential is already associated with a different user account.", Toast.LENGTH_LONG).show()
                         "ERROR_USER_DISABLED" -> Toast.makeText(this, "The user account has been disabled by an administrator.", Toast.LENGTH_LONG).show()
                         "ERROR_WEAK_PASSWORD" -> {
-                            et_password.error = "The password is invalid it must 6 characters at least"
+                            et_password.error = "Weak Password!"
                             et_password.requestFocus()
                         }
                         else -> {
@@ -257,9 +282,7 @@ class SignUpActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event : CreateOrUpdateUserFailureEvent) {
-        emailSignup = false
-        googelSignup = false
-        updateUi()
+        stopLoading()
         toastError()
     }
 }

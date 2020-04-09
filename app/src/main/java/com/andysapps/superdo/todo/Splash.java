@@ -19,6 +19,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -43,13 +44,22 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
+
         auth = FirebaseAuth.getInstance();
 
         Handler handler = new Handler();
         handler.postDelayed(this::openDesiredActivity, 500);
     }
 
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
     public void openDesiredActivity() {
+        //auth.signOut();
         FirebaseUser firebaseUser = auth.getCurrentUser();
         if (firebaseUser == null) {
             Intent intent = new Intent(Splash.this, WelcomeActivity.class);
@@ -62,7 +72,6 @@ public class Splash extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(FetchUserSuccessEvent event) {
-        FirestoreManager.getInstance().fetchUserData(this, false);
         Intent intent =  new Intent(Splash.this, MainActivity.class);
         startActivity(intent);
         finish();
