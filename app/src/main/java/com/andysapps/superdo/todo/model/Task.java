@@ -73,6 +73,8 @@ public class Task implements Cloneable {
 
     String bucketId;
 
+    boolean espritRewarded;
+
     ///////
     // OTHER
     ///////

@@ -22,7 +22,7 @@ import io.grpc.okhttp.internal.Util;
 public class TaskOrganiser {
 
     private static final String TAG = "TaskOrganiser";
-    private static TaskOrganiser ourInstance = new TaskOrganiser();
+    private static TaskOrganiser ourInstance;
 
     public List<Task> allTaskList;
     public List<Task> todayTaskList;
@@ -44,6 +44,14 @@ public class TaskOrganiser {
 
     public static TaskOrganiser getInstance() {
         return ourInstance;
+    }
+
+    public static void initialise() {
+        ourInstance = new TaskOrganiser();
+    }
+
+    public static void destroy() {
+        ourInstance = null;
     }
 
     private TaskOrganiser() {

@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.activity.start_screens
+package com.andysapps.superdo.todo.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
-import com.andysapps.superdo.todo.activity.MainActivity
 import com.andysapps.superdo.todo.events.CreateOrUpdateUserFailureEvent
 import com.andysapps.superdo.todo.events.CreateOrUpdateUserSuccessEvent
 import com.andysapps.superdo.todo.events.FetchUserFailureEvent
@@ -27,7 +26,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
-import kotlinx.android.synthetic.main.activity_profile_info.*
 import kotlinx.android.synthetic.main.activity_signin.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -162,6 +160,11 @@ class SignInActivity : AppCompatActivity() {
 
     fun signInUser() {
 
+        if (!Utils.isNetworkConnected(this)) {
+            stopLoading()
+            return
+        }
+
         var email = et_email.text.toString()
         var password = et_password.text.toString()
 
@@ -207,6 +210,10 @@ class SignInActivity : AppCompatActivity() {
     }
 
     fun signInUserGoogle() {
+        if (!Utils.isNetworkConnected(this)) {
+            stopLoading()
+            return
+        }
         val signInIntent = googleSignInClient!!.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
@@ -262,6 +269,7 @@ class SignInActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event : CreateOrUpdateUserSuccessEvent) {
+        FirestoreManager.getInstance().updateBucket(FirestoreManager.getInstance().defaultPersonalbucket)
         val intent = Intent(this, ProfileInfoActivity::class.java)
         startActivity(intent)
         finish()

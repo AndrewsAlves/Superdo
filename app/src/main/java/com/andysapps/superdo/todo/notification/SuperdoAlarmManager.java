@@ -62,6 +62,10 @@ public class SuperdoAlarmManager {
         ourInstance = new SuperdoAlarmManager(context);
     }
 
+    public static void destroy() {
+        ourInstance = null;
+    }
+
     //////////////////////////////////////
     //////// ALARMS
 

@@ -44,11 +44,11 @@ import java.util.HashMap;
 
 public class FirestoreManager {
 
-    private static FirestoreManager ourInstance;
+    public static FirestoreManager ourInstance;
 
     public static final String TAG = "FirestoreManager";
 
-    public static final String DB_USER = "user";
+    public static final String DB_USER = "users";
     public static final String DB_TASKS = "tasks";
     public static final String DB_HABITS = "habits";
     public static final String DB_BUCKETS = "buckets";
@@ -66,6 +66,10 @@ public class FirestoreManager {
 
     public static FirestoreManager getInstance() {
         return ourInstance;
+    }
+
+    public static void destroy() {
+        ourInstance = null;
     }
 
     private FirestoreManager(Context context) {
@@ -87,6 +91,13 @@ public class FirestoreManager {
         ourInstance = new FirestoreManager(context);
     }
 
+    public void clearUserData() {
+        taskHashMap.clear();
+        taskHashMap = null;
+        bucketHashMap.clear();
+        bucketHashMap = null;
+    }
+
     public HashMap<String, Task> getHasMapTask() {
         return taskHashMap;
     }
@@ -101,6 +112,21 @@ public class FirestoreManager {
         bucket.setName("All Tasks");
         bucket.setId("id_all_tasks");
         bucket.setBucketType(BucketType.Tasks.toString());
+        bucket.setTagColor(BucketColors.Red.toString()); // light Red
+
+        return bucket;
+    }
+
+    public Bucket getDefaultPersonalbucket() {
+        Bucket bucket = new Bucket();
+        bucket.setDocumentId(user.getUserId());
+        if (user.getFirstName() != null) {
+            bucket.setName(user.getFirstName() + " Tasks");
+        } else {
+            bucket.setName("Personal");
+        }
+        bucket.setId(user.getUserId());
+        bucket.setBucketType(BucketType.Personal.toString());
         bucket.setTagColor(BucketColors.Red.toString()); // light Red
 
         return bucket;
@@ -142,11 +168,16 @@ public class FirestoreManager {
 
         Source source = Source.DEFAULT;
 
-        Log.e(TAG, "fetchUserData() called with: user id " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Log.e(TAG, "fetchUserData() called with: user id " + user.getUserId());
 
-        taskQuery = firestore.collection(DB_TASKS).whereEqualTo("userId", user.getUserId()).whereEqualTo("deleted", false);
-        bucketQuery = firestore.collection(DB_BUCKETS)
-                .whereEqualTo("userId", user.getUserId())
+        taskQuery = firestore.collection(DB_USER)
+                .document(user.getUserId())
+                .collection(DB_TASKS)
+                .whereEqualTo("deleted", false);
+
+        bucketQuery = firestore.collection(DB_USER)
+                .document(user.getUserId())
+                .collection(DB_BUCKETS)
                 .whereEqualTo("deleted", false)
                 .orderBy("created", Query.Direction.DESCENDING);
 
@@ -195,7 +226,9 @@ public class FirestoreManager {
 
     public void initQuerySnapshots() {
 
-        firestore.collection(DB_TASKS).whereEqualTo("userId", user.getUserId())
+        firestore.collection(DB_USER)
+                .document(user.getUserId())
+                .collection(DB_TASKS)
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
 
             if (e != null) {
@@ -248,7 +281,9 @@ public class FirestoreManager {
         /// bucket query
         //////
 
-        firestore.collection(DB_BUCKETS).whereEqualTo("userId", user.getUserId())
+        firestore.collection(DB_USER)
+                .document(user.getUserId())
+                .collection(DB_BUCKETS)
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
 
             Log.e(TAG, "Query snapshot executed  : " + queryDocumentSnapshots);
@@ -307,6 +342,7 @@ public class FirestoreManager {
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
                     this.user = user;
+                    fetchUserData(null, false);
                     EventBus.getDefault().post(new CreateOrUpdateUserSuccessEvent());
                 })
                 .addOnFailureListener(e -> {
@@ -316,7 +352,10 @@ public class FirestoreManager {
 
     public void uploadTask(Task task) {
 
-        firestore.collection(DB_TASKS).document()
+        firestore.collection(DB_USER)
+                .document(user.getUserId())
+                .collection(DB_TASKS)
+                .document()
                 .set(task)
                 .addOnSuccessListener(aVoid -> {
                     EventBus.getDefault().post(new UploadTaskSuccessEvent());
@@ -330,7 +369,10 @@ public class FirestoreManager {
 
     public void updateTask(Task task) {
 
-        firestore.collection(DB_TASKS).document(task.getDocumentId())
+        firestore.collection(DB_USER)
+                .document(user.getUserId())
+                .collection(DB_TASKS)
+                .document(task.getDocumentId())
                 .set(task)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error uploading task", e));
@@ -338,7 +380,10 @@ public class FirestoreManager {
 
     public void uploadBucket(Bucket bucket) {
 
-        firestore.collection(DB_BUCKETS).document()
+        firestore.collection(DB_USER)
+                .document(user.getUserId())
+                .collection(DB_BUCKETS)
+                .document()
                 .set(bucket)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error uploading bucket", e));
@@ -350,14 +395,19 @@ public class FirestoreManager {
                 .set(notification)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error uploading bucket", e));
+
     }
 
     public void updateBucket(Bucket bucket) {
 
-        firestore.collection(DB_BUCKETS).document(bucket.getDocumentId())
+        firestore.collection(DB_USER)
+                .document(user.getUserId())
+                .collection(DB_BUCKETS)
+                .document(bucket.getDocumentId())
                 .set(bucket)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error uploading task", e));
+
     }
 
     ///////////////////////////////

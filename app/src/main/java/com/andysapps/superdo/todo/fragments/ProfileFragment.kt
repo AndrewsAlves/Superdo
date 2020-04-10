@@ -8,7 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
-import com.andysapps.superdo.todo.activity.start_screens.WelcomeActivity
+import com.andysapps.superdo.todo.activity.EditProfileActivity
+import com.andysapps.superdo.todo.activity.WelcomeActivity
 import com.andysapps.superdo.todo.dialog.alert.LogoutAlertDialog
 import com.andysapps.superdo.todo.enums.CPMD
 import com.andysapps.superdo.todo.events.LogoutEvent
@@ -17,6 +18,8 @@ import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
+import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
+import com.andysapps.superdo.todo.notification.SuperdoNotificationManager
 import com.google.firebase.auth.FirebaseAuth
 import com.thekhaeng.pushdownanim.PushDownAnim
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -67,6 +70,10 @@ class ProfileFragment : Fragment() {
                     EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(cpmd), false, CPMDTasksFragment.TAG, true))
                 })
 
+        profile_iv_editprofile.setOnClickListener {
+            startActivity(Intent(context, EditProfileActivity::class.java))
+        }
+
         profile_btn_logout.setOnClickListener {
             LogoutAlertDialog().show(fragmentManager!!, "alert_logout")
         }
@@ -102,6 +109,11 @@ class ProfileFragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: LogoutEvent) {
+        FirestoreManager.destroy()
+        TaskOrganiser.destroy()
+        SuperdoAlarmManager.destroy()
+        SuperdoNotificationManager.destroy()
+
         FirebaseAuth.getInstance().signOut()
         var intent = Intent(context, WelcomeActivity::class.java)
         startActivity(intent)

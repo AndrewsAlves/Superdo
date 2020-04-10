@@ -44,8 +44,10 @@
                 android:text="Andrews" />
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:id="@+id/profile_iv_editprofile"
+                style="@style/ripple_background_grey"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:scaleType="center"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="20dp"
@@ -333,8 +335,8 @@
             android:fontFamily="@font/montserrat_medium"
             android:textColor="@color/black"
             android:text="Performance"
-            android:layout_marginTop="40dp"/>
-        
+            android:layout_marginTop="20dp"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="135dp"
@@ -346,8 +348,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
                 android:textSize="11sp"
                 android:fontFamily="@font/montserrat_medium"
                 android:textColor="@color/black"
@@ -358,10 +360,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
                 android:fontFamily="@font/montserrat_medium"
-                android:text="Overall \nPerformance "
+                android:text="Total Esprits "
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"
                 android:textSize="11sp" />
@@ -371,22 +373,22 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
                 android:fontFamily="@font/montserrat_bold"
-                android:text="66%"
+                android:text="1,230"
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"
-                android:textSize="22sp" />
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="45dp"
                 android:layout_marginEnd="100dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="20dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="15dp">
+                android:layout_marginStart="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -398,10 +400,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="S"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:gravity="center"
                         android:textColor="@color/lightRed"
-                        android:layout_margin="3dp"
                         android:fontFamily="@font/montserrat_bold"/>
 
                     <TextView
@@ -409,10 +410,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="M"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:gravity="center"
                         android:textColor="@color/lightRed"
-                        android:layout_margin="3dp"
                         android:fontFamily="@font/montserrat_bold"/>
 
                     <TextView
@@ -420,10 +420,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="T"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:gravity="center"
                         android:textColor="@color/lightRed"
-                        android:layout_margin="3dp"
                         android:fontFamily="@font/montserrat_bold"/>
 
 
@@ -432,34 +431,29 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="W"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:gravity="center"
                         android:textColor="@color/lightRed"
-                        android:layout_margin="3dp"
                         android:fontFamily="@font/montserrat_bold"/>
-
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="T"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:gravity="center"
                         android:textColor="@color/lightRed"
-                        android:layout_margin="3dp"
                         android:fontFamily="@font/montserrat_bold"/>
-
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="F"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:gravity="center"
                         android:textColor="@color/lightRed"
-                        android:layout_margin="3dp"
                         android:fontFamily="@font/montserrat_bold"/>
 
                     <TextView
@@ -467,10 +461,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="S"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:gravity="center"
                         android:textColor="@color/lightRed"
-                        android:layout_margin="3dp"
                         android:fontFamily="@font/montserrat_bold"/>
 
                 </LinearLayout>
@@ -478,6 +471,298 @@
             </LinearLayout>
 
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/black"
+            android:text="Go Premium"
+            android:layout_marginTop="20dp"/>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="300dp"
+                    android:layout_height="135dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/bg_capsul_white">
+
+                    <com.andysapps.superdo.todo.views.GradientTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginStart="20dp"
+                        android:textSize="18sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/black"
+                        android:text="Monthy" />
+
+                    <com.andysapps.superdo.todo.views.GradientTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="$ 4.99"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:src="@drawable/img_crown_monthy"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="100dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="20dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageButton
+                                style="@style/ripple_background"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:scaleType="fitCenter"
+                                android:visibility="visible"
+                                android:src="@drawable/ic_dlg_remind_on"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentStart="true" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat_regular"
+                                android:layout_marginStart="25dp"
+                                android:text="Unlimited reminders"
+                                android:layout_centerVertical="true"
+                                android:textColor="@color/black"
+                                android:textSize="10sp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp">
+
+                            <ImageButton
+                                style="@style/ripple_background"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:scaleType="fitCenter"
+                                android:visibility="visible"
+                                android:src="@drawable/ic_notification_deadline"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentStart="true" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat_regular"
+                                android:layout_marginStart="25dp"
+                                android:text="Unlimited Deadline"
+                                android:layout_centerVertical="true"
+                                android:textColor="@color/black"
+                                android:textSize="10sp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp">
+
+                            <ImageButton
+                                style="@style/ripple_background"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:scaleType="fitCenter"
+                                android:visibility="visible"
+                                android:src="@drawable/ic_repeating_tasks"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentStart="true" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat_regular"
+                                android:layout_marginStart="25dp"
+                                android:text="Repeat task as you wish"
+                                android:layout_centerVertical="true"
+                                android:textColor="@color/black"
+                                android:textSize="9sp" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="300dp"
+                    android:layout_height="135dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="40dp"
+                    android:background="@drawable/bg_capsul_white">
+
+                    <com.andysapps.superdo.todo.views.GradientTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginStart="20dp"
+                        android:textSize="18sp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textColor="@color/black"
+                        android:text="Yearly" />
+
+                    <com.andysapps.superdo.todo.views.GradientTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="$ 12.99"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:src="@drawable/img_crown_yearly"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="100dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="20dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageButton
+                                style="@style/ripple_background"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:scaleType="fitCenter"
+                                android:visibility="visible"
+                                android:src="@drawable/ic_dlg_remind_on"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentStart="true" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat_regular"
+                                android:layout_marginStart="25dp"
+                                android:text="Unlimited reminders"
+                                android:layout_centerVertical="true"
+                                android:textColor="@color/black"
+                                android:textSize="10sp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp">
+
+                            <ImageButton
+                                style="@style/ripple_background"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:scaleType="fitCenter"
+                                android:visibility="visible"
+                                android:src="@drawable/ic_notification_deadline"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentStart="true" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat_regular"
+                                android:layout_marginStart="25dp"
+                                android:text="Unlimited Deadline"
+                                android:layout_centerVertical="true"
+                                android:textColor="@color/black"
+                                android:textSize="10sp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp">
+
+                            <ImageButton
+                                style="@style/ripple_background"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:scaleType="fitCenter"
+                                android:visibility="visible"
+                                android:src="@drawable/ic_repeating_tasks"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentStart="true" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat_regular"
+                                android:layout_marginStart="25dp"
+                                android:text="Repeat task as you wish"
+                                android:layout_centerVertical="true"
+                                android:textColor="@color/black"
+                                android:textSize="9sp" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
 
         <RelativeLayout
             android:id="@+id/profile_btn_support"
@@ -529,7 +814,6 @@
                 android:layout_centerVertical="true"/>
 
         </RelativeLayout>
-
 
     </LinearLayout>
 

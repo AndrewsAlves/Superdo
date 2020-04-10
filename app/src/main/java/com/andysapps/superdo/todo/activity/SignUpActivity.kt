@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.activity.start_screens
+package com.andysapps.superdo.todo.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,8 +10,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.events.CreateOrUpdateUserFailureEvent
 import com.andysapps.superdo.todo.events.CreateOrUpdateUserSuccessEvent
+import com.andysapps.superdo.todo.events.FetchUserFailureEvent
+import com.andysapps.superdo.todo.events.FetchUserSuccessEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.User
 import com.andysapps.superdo.todo.views.IndeterminantProgressBar
@@ -23,7 +26,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.activity_sign_up.btn_iv_showpass
 import kotlinx.android.synthetic.main.activity_sign_up.btn_rl_google
@@ -32,7 +34,6 @@ import kotlinx.android.synthetic.main.activity_sign_up.btn_tv_signup
 import kotlinx.android.synthetic.main.activity_sign_up.et_email
 import kotlinx.android.synthetic.main.activity_sign_up.et_password
 import kotlinx.android.synthetic.main.activity_sign_up.ll_google
-import kotlinx.android.synthetic.main.activity_signin.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -180,6 +181,11 @@ class SignUpActivity : AppCompatActivity() {
 
     fun signUpUser() {
 
+        if (!Utils.isNetworkConnected(this)) {
+            stopLoading()
+            return
+        }
+
         var email = et_email.text.toString()
         var password = et_password.text.toString()
 
@@ -234,6 +240,10 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     fun signUpUserGoogle() {
+        if (!Utils.isNetworkConnected(this)) {
+            stopLoading()
+            return
+        }
         val signInIntent = googleSignInClient!!.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
@@ -258,7 +268,7 @@ class SignUpActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        createNewUser()
+                        FirestoreManager.getInstance().fetchUser()
                     } else {
                         toastError()
                     }
@@ -275,6 +285,7 @@ class SignUpActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event : CreateOrUpdateUserSuccessEvent) {
+        FirestoreManager.getInstance().updateBucket(FirestoreManager.getInstance().defaultPersonalbucket)
         val intent = Intent(this, ProfileInfoActivity::class.java)
         startActivity(intent)
         finish()
@@ -284,6 +295,18 @@ class SignUpActivity : AppCompatActivity() {
     fun onMessageEvent(event : CreateOrUpdateUserFailureEvent) {
         stopLoading()
         toastError()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: FetchUserSuccessEvent?) {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: FetchUserFailureEvent?) {
+        createNewUser()
     }
 }
 

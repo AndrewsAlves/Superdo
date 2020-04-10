@@ -198,8 +198,6 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         }
 
         dlg_repeat_tv_repeatString.text = repeat.repeatString
-
-
     }
 
     fun updateWeedaysUi() {

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="40dp"
+    android:orientation="vertical"
+    tools:context=".activity.ProductivityActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/ib_close_editprofile"
+            style="@style/ripple_background"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:scaleType="center"
+            android:visibility="visible"
+            android:src="@drawable/ic_back_red"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true" />
+
+        <com.andysapps.superdo.todo.views.GradientTextView
+            android:id="@+id/signup_tv_superdo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold"
+            android:layout_toRightOf="@id/ib_close_editprofile"
+            android:layout_marginStart="20dp"
+            android:text="Esprit Progress"
+            android:layout_centerVertical="true"
+            android:textColor="@color/lightRed"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:visibility="invisible"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="1,290"
+                android:textColor="@color/black"
+                android:layout_gravity="center_horizontal"
+                android:textSize="28sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="Total esprits"
+                android:textColor="@color/grey2"
+                android:layout_gravity="center_horizontal"
+                android:textSize="12sp" />
+
+            <RelativeLayout
+                android:layout_marginTop="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Week"
+                    android:layout_marginStart="20dp"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Month"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="20dp"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="All time"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Esprit points"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="120"
+                    android:layout_alignParentEnd="true"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Total tasks completed"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="5"
+                    android:layout_alignParentEnd="true"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Days active"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="4"
+                    android:layout_alignParentEnd="true"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

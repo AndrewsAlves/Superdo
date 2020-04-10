@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.activity.start_screens
+package com.andysapps.superdo.todo.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,9 +8,11 @@ import android.text.Editable
 import android.view.View
 import android.widget.Toast
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.activity.MainActivity
 import com.andysapps.superdo.todo.events.CreateOrUpdateUserFailureEvent
 import com.andysapps.superdo.todo.events.CreateOrUpdateUserSuccessEvent
+import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.model.User
 import kotlinx.android.synthetic.main.activity_profile_info.*
@@ -18,7 +20,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class ProfileInfoActivity : AppCompatActivity() {
+class EditProfileActivity : AppCompatActivity() {
 
     var user : User? = null
 
@@ -26,7 +28,7 @@ class ProfileInfoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile_info)
+        setContentView(R.layout.activity_edit_profile)
         EventBus.getDefault().register(this)
         user = FirestoreManager.getInstance().user
         init()
@@ -39,13 +41,6 @@ class ProfileInfoActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (!pressedBack) {
-            pressedBack = true
-            Toast.makeText(this, "Press again to exit", Toast.LENGTH_LONG).show()
-            var handler = Handler()
-            handler.postDelayed(Runnable {  pressedBack = false}, 3000)
-            return
-        }
         super.onBackPressed()
     }
 
@@ -84,21 +79,23 @@ class ProfileInfoActivity : AppCompatActivity() {
             updateUi()
         }
 
-        ib_save_profileinfo.setOnClickListener {
-            when {
-                et_firstname.text.trim().isEmpty() -> {
-                    Toast.makeText(this, "First name cannot be empty", Toast.LENGTH_SHORT).show()
-                }
-                et_lastname.text.trim().isEmpty() -> {
-                    Toast.makeText(this, "Last name cannot be empty", Toast.LENGTH_SHORT).show()
-                }
-                else -> {
-                    user!!.firstName = et_firstname.text.toString()
-                    user!!.lastName = et_lastname.text.toString()
-                    FirestoreManager.getInstance().createOrUpdateUser(user)
+        ib_save_profileinfo.setOnClickListener(fun(it: View) {
+            if (Utils.isNetworkConnected(this)) {
+                when {
+                    et_firstname.text.trim().isEmpty() -> {
+                        Toast.makeText(this, "First name cannot be empty", Toast.LENGTH_SHORT).show()
+                    }
+                    et_lastname.text.trim().isEmpty() -> {
+                        Toast.makeText(this, "Last name cannot be empty", Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        user!!.firstName = et_firstname.text.toString()
+                        user!!.lastName = et_lastname.text.toString()
+                        FirestoreManager.getInstance().createOrUpdateUser(user)
+                    }
                 }
             }
-        }
+        })
     }
 
     fun updateUi() {
@@ -121,15 +118,14 @@ class ProfileInfoActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event : CreateOrUpdateUserSuccessEvent) {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+        Toast.makeText(this, "Profile updated", Toast.LENGTH_SHORT).show()
+        EventBus.getDefault().post(UpdateProfileEvent())
         finish()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event : CreateOrUpdateUserFailureEvent) {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+        Toast.makeText(this, "error updating profile", Toast.LENGTH_SHORT).show()
         finish()
     }
 }

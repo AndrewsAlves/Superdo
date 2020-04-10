@@ -12,10 +12,13 @@
         android:roundIcon="@drawable/ic_launcher_superdo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.start_screens.ProfileInfoActivity"></activity>
-        <activity android:name=".activity.start_screens.SignInActivity" />
-        <activity android:name=".activity.start_screens.SignUpActivity" />
-        <activity android:name=".activity.start_screens.WelcomeActivity" />
+        <activity android:name=".activity.ProductivityActivity"></activity>
+        <activity android:name=".activity.SubscriptionActivity" />
+        <activity android:name=".activity.ProfileInfoActivity" />
+        <activity android:name=".activity.EditProfileActivity" />
+        <activity android:name=".activity.SignInActivity" />
+        <activity android:name=".activity.SignUpActivity" />
+        <activity android:name=".activity.WelcomeActivity" />
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

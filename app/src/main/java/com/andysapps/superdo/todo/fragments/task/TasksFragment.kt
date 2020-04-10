@@ -10,6 +10,7 @@ import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.events.SetTasksFragment
 import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment
 import com.andysapps.superdo.todo.manager.FirestoreManager
+import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Bucket
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -28,7 +29,7 @@ class TasksFragment : Fragment() {
 
         fun getBucket() : Bucket{
             if (taskBucket == null) {
-                return FirestoreManager.getAllTasksBucket();
+                return TaskOrganiser.getInstance().bucketList[0]
             } else {
                return taskBucket as Bucket
             }

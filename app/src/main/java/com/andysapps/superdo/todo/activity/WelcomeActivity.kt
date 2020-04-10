@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.activity.start_screens
+package com.andysapps.superdo.todo.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,10 @@ import android.os.Handler
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.manager.FirestoreManager
+import com.andysapps.superdo.todo.manager.TaskOrganiser
+import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
+import com.andysapps.superdo.todo.notification.SuperdoNotificationManager
 import com.github.florent37.viewanimator.ViewAnimator
 import kotlinx.android.synthetic.main.activity_welcome.*
 
@@ -19,6 +23,23 @@ class WelcomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
         initUi()
+        initInstances()
+    }
+
+    fun initInstances() {
+        if (FirestoreManager.getInstance() == null) {
+            FirestoreManager.initialise(this)
+        }
+        if (TaskOrganiser.getInstance() == null) {
+            TaskOrganiser.initialise()
+        }
+
+        if (SuperdoAlarmManager.getInstance() == null) {
+            SuperdoAlarmManager.initialise(this)
+        }
+        if (SuperdoNotificationManager.getInstance() == null) {
+            SuperdoNotificationManager.initialise(this)
+        }
     }
 
     override fun onBackPressed() {

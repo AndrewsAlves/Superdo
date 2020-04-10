@@ -31,7 +31,7 @@ import butterknife.ButterKnife;
 
 public class SelectBucketRecyclerAdapter extends RecyclerView.Adapter<SelectBucketRecyclerAdapter.PlaceViewHolder> {
 
-    private static final String TAG = "BucketRecyclerAdapter";
+    private static final String TAG = "SelectBucketAdapter";
     private List<Bucket> bucketList;
 
     private Context context;
@@ -48,22 +48,6 @@ public class SelectBucketRecyclerAdapter extends RecyclerView.Adapter<SelectBuck
         return new PlaceViewHolder(view);
     }
 
-    public void notifyBucketAdded(List<Bucket> bucketList) {
-        this.bucketList.clear();
-        this.bucketList.addAll(bucketList);
-        notifyDataSetChanged();
-        notifyItemInserted(bucketList.size() - 1);
-    }
-
-    public void notifyBucketRemoved(Bucket bucket) {
-        for (int i = 0 ; i < this.bucketList.size() ; i++) {
-            if (this.bucketList.get(i).getDocumentId().equals(bucket.getDocumentId())) {
-                notifyItemRemoved(i + 1);
-                this.bucketList.remove(i);
-            }
-        }
-    }
-
     public void updateList(List<Bucket> taskList) {
 
         Log.e(TAG, "updateList: data size" + this.bucketList.size());
@@ -77,13 +61,7 @@ public class SelectBucketRecyclerAdapter extends RecyclerView.Adapter<SelectBuck
     public void onBindViewHolder(@NonNull PlaceViewHolder holder, int i) {
         final int position = i;
 
-        Bucket bucket;
-
-        if (position == 0) {
-            bucket = FirestoreManager.getAllTasksBucket();
-        } else {
-            bucket = bucketList.get(position - 1);
-        }
+        Bucket bucket = bucketList.get(position);
 
         holder.tvBucketName.setText(bucket.getName());
 
@@ -107,15 +85,11 @@ public class SelectBucketRecyclerAdapter extends RecyclerView.Adapter<SelectBuck
 
         holder.item.setOnClickListener(v -> EventBus.getDefault().post(new SelectBucketEvent(bucket)));
 
-        if (position == 0) {
-            return;
-        }
-
     }
 
     @Override
     public int getItemCount() {
-        return bucketList.size() + 1;
+        return bucketList.size();
     }
 
     public class PlaceViewHolder extends RecyclerView.ViewHolder {

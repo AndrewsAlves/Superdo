@@ -5,17 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.activity.MainActivity;
-import com.andysapps.superdo.todo.activity.start_screens.WelcomeActivity;
+import com.andysapps.superdo.todo.activity.WelcomeActivity;
 import com.andysapps.superdo.todo.events.FetchUserFailureEvent;
 import com.andysapps.superdo.todo.events.FetchUserSuccessEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
-import com.andysapps.superdo.todo.manager.SharedPrefsManager;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -79,8 +75,8 @@ public class Splash extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(FetchUserFailureEvent event) {
-        if (!Utils.isNetworkConnected(this)) {
-            finish();
-        }
+        Intent intent =  new Intent(Splash.this, WelcomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

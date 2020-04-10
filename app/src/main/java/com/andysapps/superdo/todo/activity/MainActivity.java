@@ -11,15 +11,12 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.activity.start_screens.SignInActivity;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.MainViewPagerAdapter;
 import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
@@ -40,7 +37,6 @@ import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment;
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment;
 import com.andysapps.superdo.todo.fragments.task.EditTaskFragment;
 import com.andysapps.superdo.todo.manager.AnimationManager;
-import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.github.florent37.viewanimator.ViewAnimator;
@@ -195,13 +191,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (!pressedBack) {
+        /*if (!pressedBack) {
             pressedBack = true;
             Toast.makeText(this, "Press again to exit", Toast.LENGTH_LONG).show();
             Handler handler = new Handler();
             handler.postDelayed(() -> pressedBack = false, 3000);
             return;
-        }
+        }*/
 
         super.onBackPressed();
     }

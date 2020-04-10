@@ -89,6 +89,10 @@ public class SuperdoNotificationManager {
         ourInstance = new SuperdoNotificationManager(context);
     }
 
+    public static void destroy() {
+        ourInstance = null;
+    }
+
     public void createNotificationChannels(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 

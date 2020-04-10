@@ -44,6 +44,10 @@ class BucketActionBottomDialog : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (TaskOrganiser.getInstance().bucketList.size < 2) {
+            btn_delete__BucketDialog.visibility = View.GONE
+        }
+
         btn_edit__BucketDialog.setOnClickListener {
             EventBus.getDefault().post(OpenFragmentEvent(CreateNewBucketFragment.instance(bucket, true), true, CreateNewBucketFragment.TAG, true))
             dismiss()
