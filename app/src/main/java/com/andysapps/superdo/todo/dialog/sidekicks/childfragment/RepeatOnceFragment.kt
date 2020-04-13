@@ -12,7 +12,7 @@ import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.enums.RemindType
 import com.andysapps.superdo.todo.events.sidekick.SetRemindOnceEvent
 import com.andysapps.superdo.todo.events.ui.DismissRemindDialogEvent
-import com.andysapps.superdo.todo.model.sidekicks.Remind
+import com.andysapps.superdo.todo.model.taskfeatures.Remind
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.fragment_remind_once.*

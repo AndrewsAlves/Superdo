@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.andysapps.superdo.todo.Constants
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.activity.EditProfileActivity
+import com.andysapps.superdo.todo.activity.ProductivityActivity
 import com.andysapps.superdo.todo.activity.WelcomeActivity
 import com.andysapps.superdo.todo.dialog.alert.LogoutAlertDialog
 import com.andysapps.superdo.todo.enums.CPMD
@@ -21,11 +23,14 @@ import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
 import com.andysapps.superdo.todo.notification.SuperdoNotificationManager
 import com.google.firebase.auth.FirebaseAuth
+import com.hadiidbouk.charts.BarData
+import com.hadiidbouk.charts.ChartProgressBar
 import com.thekhaeng.pushdownanim.PushDownAnim
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+
 
 /**
  * A simple [Fragment] subclass.
@@ -70,6 +75,12 @@ class ProfileFragment : Fragment() {
                     EventBus.getDefault().post(OpenFragmentEvent(CPMDTasksFragment.instance(cpmd), false, CPMDTasksFragment.TAG, true))
                 })
 
+        PushDownAnim.setPushDownAnimTo(profile_btn_productivity)
+                .setScale(PushDownAnim.MODE_SCALE, 0.96f)
+                .setOnClickListener(fun(view: View) {
+                    startActivity(Intent(context, ProductivityActivity::class.java))
+                })
+
         profile_iv_editprofile.setOnClickListener {
             startActivity(Intent(context, EditProfileActivity::class.java))
         }
@@ -77,6 +88,12 @@ class ProfileFragment : Fragment() {
         profile_btn_logout.setOnClickListener {
             LogoutAlertDialog().show(fragmentManager!!, "alert_logout")
         }
+
+        var barlist : ArrayList<BarData> = ArrayList()
+        var max = 0.0f
+        ChartProgressBar.setMaxValue(max)
+        ChartProgressBar.setDataList(barlist)
+        ChartProgressBar.build()
     }
 
     fun updateUi() {
@@ -100,6 +117,33 @@ class ProfileFragment : Fragment() {
         profile_tv_recurring_tasks.text = TaskOrganiser.getInstance().getRecurringTask().size.toString()
         profile_tv_deadline_tasks.text = TaskOrganiser.getInstance().getDeadlineTasks().size.toString()
         profile_tv_deleted_tasks.text = TaskOrganiser.getInstance().getDeletedTaskList().size.toString()
+
+        var points = FirestoreManager.getInstance().user.espritPoints
+
+        for(x in 0..9) {
+            if (points >= Constants.trophyPoints[x]) {
+                profile_iv_trophy.setImageResource(Constants.trophySrc[x])
+            }
+        }
+
+        profile_tv_espritpoints.text = points.toString()
+
+        var barlist : ArrayList<BarData> = TaskOrganiser.getInstance().barDataForThisWeek
+        var max = 0.0f
+
+        for (bardate in barlist) {
+            if (bardate.barValue > max) {
+                max = bardate.barValue
+            }
+        }
+
+        if (max <= 0.0f) {
+            max = 5.0f
+        }
+
+        ChartProgressBar.setMaxValue(max)
+        ChartProgressBar.setDataList(barlist)
+        ChartProgressBar.build()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

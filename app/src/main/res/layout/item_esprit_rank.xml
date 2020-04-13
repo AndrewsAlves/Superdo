@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="130dp"
+    android:layout_height="150dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="visible"
+        android:id="@+id/cl_rank"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_trophy"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/trophy1"
+            android:scaleType="center"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/rl_lock"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_rank_locked"
+            android:scaleType="center"/>
+
+        <TextView
+            android:id="@+id/tv_rank_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="Reach 10000+"
+            android:textAlignment="center"
+            android:textColor="@color/grey2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:textSize="11sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

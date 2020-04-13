@@ -1,8 +1,6 @@
 package com.andysapps.superdo.todo.notification;
 
 import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +14,7 @@ import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
-import com.andysapps.superdo.todo.model.sidekicks.Deadline;
+import com.andysapps.superdo.todo.model.taskfeatures.Deadline;
 
 import java.util.Calendar;
 

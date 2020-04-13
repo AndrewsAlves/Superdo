@@ -6,21 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
-import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
-import com.andysapps.superdo.todo.events.DeleteTaskEvent
 import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
-import com.andysapps.superdo.todo.model.SuperDate
-import com.andysapps.superdo.todo.model.Task
-import com.andysapps.superdo.todo.model.sidekicks.Deadline
+import com.andysapps.superdo.todo.model.taskfeatures.Deadline
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
-import kotlinx.android.synthetic.main.fragment_delete_task_dialog.*
 import kotlinx.android.synthetic.main.fragment_dlg_deadline.*
 import org.greenrobot.eventbus.EventBus
 import java.util.*

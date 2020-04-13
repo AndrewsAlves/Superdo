@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.model.sidekicks;
+package com.andysapps.superdo.todo.model.taskfeatures;
 
 /**
  * Created by Andrews on 04,December,2019

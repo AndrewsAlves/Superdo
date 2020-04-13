@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/bg_white1"
     tools:context=".fragments.ProfileFragment">
 
@@ -320,7 +321,6 @@
 
                 </RelativeLayout>
 
-
             </LinearLayout>
 
         </HorizontalScrollView>
@@ -338,8 +338,9 @@
             android:layout_marginTop="20dp"/>
 
         <RelativeLayout
+            android:id="@+id/profile_btn_productivity"
             android:layout_width="match_parent"
-            android:layout_height="135dp"
+            android:layout_height="145dp"
             android:layout_marginTop="20dp"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
@@ -353,7 +354,7 @@
                 android:textSize="11sp"
                 android:fontFamily="@font/montserrat_medium"
                 android:textColor="@color/black"
-                android:text="Total habits " />
+                android:text="This Week " />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -368,29 +369,71 @@
                 android:textColor="@color/black"
                 android:textSize="11sp" />
 
+            <ImageView
+                android:id="@+id/profile_iv_trophy"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/trophy1"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp" />
+
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/profile_tv_espritpoints"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
                 android:fontFamily="@font/montserrat_bold"
-                android:text="1,230"
-                android:textAlignment="textEnd"
+                android:text="0"
+                android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="45dp"
+                android:layout_marginTop="36dp"
                 android:layout_marginEnd="100dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="20dp">
+                android:layout_marginStart="10dp">
 
-                <LinearLayout
+                <com.hadiidbouk.charts.ChartProgressBar
+                    android:id="@+id/ChartProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:hdBarCanBeClick="false"
+                    app:hdBarHeight="55dp"
+                    app:hdBarWidth="7dp"
+                    app:hdBarRadius="10dp"
+                    app:hdMaxValue="10"
+                    app:hdEmptyColor="@color/grey1_low"
+                    app:hdProgressColor="@color/lightRed"
+                    app:hdProgressClickColor="@color/progress_click"
+                    app:hdPinBackgroundColor="@color/transparent"
+                    app:hdPinTextColor="@color/pin_text"
+                    app:hdBarTitleColor="@color/black"
+                    app:hdBarTitleTxtSize="12sp"
+                    app:hdBarTitleMarginTop="3dp"
+
+                    app:hdPinPaddingBottom="0dp"
+                    app:hdPinTxtSize="0sp"
+                    app:hdPinMarginTop="0dp"
+                    app:hdPinMarginBottom="0dp"
+                    app:hdPinMarginEnd="0dp"
+                    app:hdPinPaddingTop="0dp"
+                    app:hdPinMarginStart="0dp"
+                    app:hdPinPaddingEnd="0dp"
+                    app:hdPinPaddingStart="0dp"
+                    app:hdPinDrawable="@color/transparent"
+
+                    app:hdProgressDisableColor="@color/progress_disable"
+                    app:hdBarTitleSelectedColor="@color/black"/>
+
+                <!--<LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="bottom">
@@ -466,7 +509,7 @@
                         android:textColor="@color/lightRed"
                         android:fontFamily="@font/montserrat_bold"/>
 
-                </LinearLayout>
+                </LinearLayout> -->
 
             </LinearLayout>
 

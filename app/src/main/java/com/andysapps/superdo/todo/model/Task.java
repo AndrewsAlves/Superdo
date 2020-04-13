@@ -5,13 +5,14 @@ import android.util.Log;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
-import com.andysapps.superdo.todo.model.sidekicks.ContactCard;
-import com.andysapps.superdo.todo.model.sidekicks.Deadline;
-import com.andysapps.superdo.todo.model.sidekicks.Focus;
-import com.andysapps.superdo.todo.model.sidekicks.Location;
-import com.andysapps.superdo.todo.model.sidekicks.Remind;
-import com.andysapps.superdo.todo.model.sidekicks.Repeat;
-import com.andysapps.superdo.todo.model.sidekicks.Subtasks;
+import com.andysapps.superdo.todo.model.taskfeatures.ContactCard;
+import com.andysapps.superdo.todo.model.taskfeatures.Deadline;
+import com.andysapps.superdo.todo.model.taskfeatures.Focus;
+import com.andysapps.superdo.todo.model.taskfeatures.Location;
+import com.andysapps.superdo.todo.model.taskfeatures.Remind;
+import com.andysapps.superdo.todo.model.taskfeatures.Repeat;
+import com.andysapps.superdo.todo.model.taskfeatures.Subtask;
+import com.andysapps.superdo.todo.model.taskfeatures.Subtasks;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -73,11 +74,13 @@ public class Task implements Cloneable {
 
     String bucketId;
 
-    boolean espritRewarded;
+
 
     ///////
     // OTHER
     ///////
+
+    int espritPoints;
 
     @ServerTimestamp
     Date created;
@@ -139,14 +142,17 @@ public class Task implements Cloneable {
 
     public void setTaskCompleted(boolean taskCompleted) {
 
+        isTaskCompleted = taskCompleted;
+
         if (taskCompleted) {
             taskCompletedDate = Calendar.getInstance().getTime();
+            setEspritPoints();
         } else {
             taskCompletedDate = null;
+            setEspritPoints();
         }
-
-        isTaskCompleted = taskCompleted;
     }
+
 
     public boolean isMovedToBin() {
         return movedToBin;
@@ -277,6 +283,10 @@ public class Task implements Cloneable {
         this.taskCompletedDate = taskCompletedDate;
     }
 
+    public int getEspritPoints() {
+        return espritPoints;
+    }
+
     public int getRemindRequestCode() {
         return remindRequestCode;
     }
@@ -290,6 +300,52 @@ public class Task implements Cloneable {
         remindRequestCode = random.nextInt(1000) * random.nextInt(10);
         Log.e("Task", "generateNewRequestCode: " + remindRequestCode);
         return remindRequestCode;
+    }
+
+    public void setEspritPoints() {
+        int taskCompleted = 5;
+        int deadlineTask = 20;
+        int remindedTask = 20;
+        int subTaskPoint = 1;
+        int completeMissesTask = 2;
+
+        espritPoints = 0;
+
+        if (!isTaskCompleted) {
+            return;
+        }
+
+        if (!Utils.isSuperDateIsPast(doDate)) {
+            Log.e("Task ", "setEspritPoints: task completed +5");
+            espritPoints += taskCompleted;
+        } else {
+            Log.e("Task ", "setEspritPoints: missed task +2");
+            espritPoints += completeMissesTask;
+        }
+
+        if (deadline != null) {
+            SuperDate deadlineDate = new SuperDate(deadline.date, deadline.month, deadline.year, deadline.hours, deadline.minutes);
+            if (!Utils.isSuperDateIsPast(deadlineDate)) {
+                Log.e("Task ", "setEspritPoints: Deadlined task +20");
+                espritPoints +=  deadlineTask;
+            }
+        }
+
+        if (isToRemind()) {
+            Log.e("Task ", "setEspritPoints: Reminded task +20");
+            espritPoints +=  remindedTask;
+        }
+
+        if (subtasks != null) {
+            int i = 0;
+            for (Subtask subtask : subtasks.getSubtaskList()) {
+                if (subtask.isTaskCompleted()) {
+                    i++;
+                    Log.e("Task ", "setEspritPoints: subtask task " + i + " +1");
+                    espritPoints++;
+                }
+            }
+        }
     }
 
     public String getDoDateString() {
@@ -345,7 +401,4 @@ public class Task implements Cloneable {
 
         return hours + " : " + min + meridien;
     }
-
-
-
 }

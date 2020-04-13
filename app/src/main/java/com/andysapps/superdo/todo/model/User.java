@@ -24,6 +24,8 @@ public class User {
 
     int avatarIndex;
 
+    int espritPoints;
+
     GeoPoint geoLocation;
 
     @ServerTimestamp
@@ -96,5 +98,13 @@ public class User {
 
     public void setAvatarIndex(int avatarIndex) {
         this.avatarIndex = avatarIndex;
+    }
+
+    public int getEspritPoints() {
+        return espritPoints;
+    }
+
+    public void setEspritPoints(int espritPoints) {
+        this.espritPoints = espritPoints;
     }
 }

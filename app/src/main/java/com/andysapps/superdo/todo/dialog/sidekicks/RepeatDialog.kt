@@ -18,7 +18,7 @@ import com.andysapps.superdo.todo.Utils.monthDates
 import com.andysapps.superdo.todo.enums.RepeatType
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
 import com.andysapps.superdo.todo.model.SuperDate
-import com.andysapps.superdo.todo.model.sidekicks.Repeat
+import com.andysapps.superdo.todo.model.taskfeatures.Repeat
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.fragment_dlg_repeat.*

@@ -26,7 +26,7 @@ import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.events.sidekick.UpdateSubtasksEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Task;
-import com.andysapps.superdo.todo.model.sidekicks.Subtask;
+import com.andysapps.superdo.todo.model.taskfeatures.Subtask;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -139,6 +139,7 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
                 }
 
                 subtask.setTaskCompleted(h.isChecked);
+                task.setEspritPoints();
                 FirestoreManager.getInstance().updateTask(task);
 
                 h.lottieSubtasks.playAnimation();

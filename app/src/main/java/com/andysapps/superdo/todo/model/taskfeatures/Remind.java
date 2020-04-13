@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.model.sidekicks;
+package com.andysapps.superdo.todo.model.taskfeatures;
 
 import com.andysapps.superdo.todo.enums.RemindType;
 import com.andysapps.superdo.todo.model.SuperDate;

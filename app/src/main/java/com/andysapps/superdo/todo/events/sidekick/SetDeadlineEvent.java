@@ -1,6 +1,6 @@
 package com.andysapps.superdo.todo.events.sidekick;
 
-import com.andysapps.superdo.todo.model.sidekicks.Deadline;
+import com.andysapps.superdo.todo.model.taskfeatures.Deadline;
 
 public class SetDeadlineEvent {
     public Deadline deadline;

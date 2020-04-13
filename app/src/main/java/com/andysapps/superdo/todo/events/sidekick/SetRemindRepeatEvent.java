@@ -1,6 +1,6 @@
 package com.andysapps.superdo.todo.events.sidekick;
 
-import com.andysapps.superdo.todo.model.sidekicks.Repeat;
+import com.andysapps.superdo.todo.model.taskfeatures.Repeat;
 
 public class SetRemindRepeatEvent {
 

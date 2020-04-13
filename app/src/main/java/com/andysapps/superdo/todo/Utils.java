@@ -4,19 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.andysapps.superdo.todo.adapters.taskrecyclers.CPMDRecyclerAdapter;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.RepeatType;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
-import com.andysapps.superdo.todo.model.sidekicks.Repeat;
+import com.andysapps.superdo.todo.model.taskfeatures.Repeat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,9 +22,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import lib.mozidev.me.extextview.StrikeThroughPainting;
 
 
 /**
@@ -195,6 +190,15 @@ public class Utils {
             return true;
         }
 
+        return false;
+    }
+
+    public static boolean isBothDateAreSameDay(Calendar date1, Calendar date2 ) {
+        if (date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
+                && date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH)
+                && date1.get(Calendar.DAY_OF_MONTH) == date2.get(Calendar.DAY_OF_MONTH)) {
+            return true;
+        }
         return false;
     }
 

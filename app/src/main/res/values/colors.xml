@@ -16,6 +16,7 @@
 
     <color name="bg_white1">#F8F8F8</color>
 
+    <color name="grey1_low">#E6E6E6</color>
     <color name="grey1">#D6D6D6</color>
     <color name="grey2">#9E9E9E</color>
     <color name="grey3">#606060</color>

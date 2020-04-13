@@ -1,6 +1,6 @@
 package com.andysapps.superdo.todo.events.sidekick;
 
-import com.andysapps.superdo.todo.model.sidekicks.Remind;
+import com.andysapps.superdo.todo.model.taskfeatures.Remind;
 
 public class SetRemindEvent {
     public Remind remind;

@@ -1,6 +1,5 @@
-package com.andysapps.superdo.todo.model.sidekicks;
+package com.andysapps.superdo.todo.model.taskfeatures;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

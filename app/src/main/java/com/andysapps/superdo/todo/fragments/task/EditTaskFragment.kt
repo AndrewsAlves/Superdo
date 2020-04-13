@@ -44,8 +44,8 @@ import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.SuperdoAudioManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
-import com.andysapps.superdo.todo.model.sidekicks.Subtask
-import com.andysapps.superdo.todo.model.sidekicks.Subtasks
+import com.andysapps.superdo.todo.model.taskfeatures.Subtask
+import com.andysapps.superdo.todo.model.taskfeatures.Subtasks
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus

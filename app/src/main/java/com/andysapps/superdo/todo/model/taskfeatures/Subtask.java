@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.model.sidekicks;
+package com.andysapps.superdo.todo.model.taskfeatures;
 
 public class Subtask {
 

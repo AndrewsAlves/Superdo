@@ -12,7 +12,8 @@
         android:roundIcon="@drawable/ic_launcher_superdo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.ProductivityActivity"></activity>
+        <activity android:name=".activity.PointRulesActivity"></activity>
+        <activity android:name=".activity.ProductivityActivity" />
         <activity android:name=".activity.SubscriptionActivity" />
         <activity android:name=".activity.ProfileInfoActivity" />
         <activity android:name=".activity.EditProfileActivity" />
