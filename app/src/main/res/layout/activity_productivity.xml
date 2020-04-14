@@ -128,7 +128,7 @@
                     app:hdMaxValue="10"
                     app:hdEmptyColor="@color/grey1_low"
                     app:hdProgressColor="@color/lightRed"
-                    app:hdProgressClickColor="@color/lightOrange"
+                    app:hdProgressClickColor="@color/whitish_light_red"
                     app:hdBarTitleColor="@color/black"
                     app:hdBarTitleTxtSize="12sp"
                     app:hdBarTitleMarginTop="5dp"
@@ -205,6 +205,16 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/productivity_tv_statetype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="This Week"
+                android:textColor="@color/lightRed"
+                android:layout_gravity="start"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp" />
 
             <RelativeLayout
                 android:layout_marginTop="20dp"
@@ -215,12 +225,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_regular"
-                    android:text="Total tasks completed"
+                    android:text="Esprits earned"
                     android:textColor="@color/black"
                     android:layout_gravity="center_horizontal"
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/productivity_tv_esprit_earned_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_bold"
@@ -241,12 +252,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_regular"
-                    android:text="Days active"
+                    android:text="Total Tasks completed"
                     android:textColor="@color/black"
                     android:layout_gravity="center_horizontal"
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/productivity_tv_total_tasks_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_bold"

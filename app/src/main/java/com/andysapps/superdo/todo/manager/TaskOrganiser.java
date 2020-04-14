@@ -4,8 +4,11 @@ import android.util.Log;
 
 import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.enums.EspritStatType;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.andysapps.superdo.todo.model.esprit.EspritStatPoint;
+import com.andysapps.superdo.todo.model.esprit.EspritStatistics;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.hadiidbouk.charts.BarData;
@@ -16,8 +19,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-
-import io.grpc.okhttp.internal.Util;
 
 /**
  * Created by Andrews on 06,November,2019
@@ -341,9 +342,6 @@ public class TaskOrganiser {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 
-
-
-
         HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
 
         BarData barData;
@@ -353,9 +351,10 @@ public class TaskOrganiser {
             Log.e(TAG, "getBarDataForThisWeek: week days " + c.get(Calendar.DAY_OF_MONTH));
 
             for (Task task : allTasks.values()) {
-                if (Utils.isBothDateAreSameDay(Utils.getCalenderFromSuperDate(task.getDoDate()), c)) {
-                    //Log.e(TAG, "getBarDataForThisWeek: this day " + i);
-                    if (task.isTaskCompleted()) {
+                if (task.isTaskCompleted()) {
+                    Calendar taskCompleteCalender = Calendar.getInstance();
+                    taskCompleteCalender.setTime(task.getTaskCompletedDate());
+                    if (Utils.isBothDateAreSameDay(taskCompleteCalender, c)) {
                         taskPoint += task.getEspritPoints();
                     }
                 }
@@ -371,63 +370,91 @@ public class TaskOrganiser {
         return barDataList;
     }
 
-    public ArrayList<BarData> getBarData(String statType) {
+    public EspritStatistics getEspritStatistics(String statType) {
 
-        ArrayList<BarData> barDataList = new ArrayList<>();
-        Calendar c = Calendar.getInstance();
+        Log.d(TAG, "getEspritStatistics() called with: statType = [" + statType + "]");
+
+        EspritStatistics espritStatistics = new EspritStatistics();
+        Calendar calender = Calendar.getInstance();
         int nod = 0;
 
         if (statType.equals(Constants.thisWeek)) {
-            c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+            espritStatistics.setStatType(EspritStatType.this_week);
+            calender.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
             nod = 7;
         } else if (statType.equals(Constants.lastWeek)) {
-            c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-            c.add(Calendar.DATE, -7);
+            espritStatistics.setStatType(EspritStatType.last_week);
+            calender.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+            calender.add(Calendar.DATE, -7);
             nod = 7;
-            Log.e(TAG, "getBarDataForThisWeek: last week first day date" + c.get(Calendar.DAY_OF_MONTH));
         } else if (statType.equals(Constants.thisMonth)) {
-            c.set(Calendar.DAY_OF_MONTH, 1);
-            nod = c.getActualMaximum(Calendar.DAY_OF_MONTH);
-            Log.e(TAG, "getBarDataForThisMonth: total number of days and date" + nod + Utils.getMonthStrLong(c.get(Calendar.MONTH) + 1));
+            espritStatistics.setStatType(EspritStatType.this_month);
+            calender.set(Calendar.DAY_OF_MONTH, 1);
+            nod = calender.getActualMaximum(Calendar.DAY_OF_MONTH);
         } else if (statType.equals(Constants.lastMonth)) {
-            c.add(Calendar.MONTH, -1);
-            nod = c.getActualMaximum(Calendar.DAY_OF_MONTH);
-            Log.e(TAG, "getBarDataForLastMonth: total number of days and date" + nod + Utils.getMonthStrLong(c.get(Calendar.MONTH) + 1));
+            espritStatistics.setStatType(EspritStatType.last_month);
+            calender.add(Calendar.MONTH, -1);
+            nod = calender.getActualMaximum(Calendar.DAY_OF_MONTH);
         }
 
         HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
 
         BarData barData;
+        EspritStatPoint espritStatPoint;
+
         for (int i = 0; i < nod; i++) {
-            int taskPoint = 0;
+            int espritPoint = 0;
+            int taskCompletedCount = 0;
             for (Task task : allTasks.values()) {
-                if (Utils.isBothDateAreSameDay(Utils.getCalenderFromSuperDate(task.getDoDate()), c)) {
-                    //Log.e(TAG, "getBarDataForThisWeek: this day " + i);
-                    if (task.isTaskCompleted()) {
-                        taskPoint += task.getEspritPoints();
+                if (task.isTaskCompleted()) {
+                    Calendar taskCompleteCalender = Calendar.getInstance();
+                    taskCompleteCalender.setTime(task.getTaskCompletedDate());
+                    if (Utils.isBothDateAreSameDay(taskCompleteCalender, calender)) {
+                        espritPoint += task.getEspritPoints();
+                        taskCompletedCount++;
                     }
                 }
             }
 
-            //Log.e(TAG, "getBarDataForThisWeek: task points " + taskPoint);
             if (statType.equals(Constants.thisWeek) || statType.equals(Constants.lastWeek)) {
-                barData = new BarData(Constants.weekShortTxt[i],taskPoint,String.valueOf(taskPoint));
+                barData = new BarData(Constants.weekShortTxt[i],espritPoint,String.valueOf(espritPoint));
             } else {
-
-                barData = new BarData("",taskPoint,String.valueOf(taskPoint));
-
-                //if (multiplesOfFive(i + 1)) {
-                //    barData = new BarData(String.valueOf(i + 1),taskPoint," ");
-                //} else {
-              //  }
+                barData = new BarData("",espritPoint,String.valueOf(espritPoint));
             }
 
-            barDataList.add(barData);
-            c.add(Calendar.DATE, 1);
+            espritStatPoint = new EspritStatPoint(Utils.getSuperdateFromTimeStamp(calender.getTimeInMillis()), espritPoint, taskCompletedCount);
+
+            espritStatistics.totalEsprit += espritPoint;
+            espritStatistics.totalTasksCompleted += taskCompletedCount;
+            espritStatistics.getBarData().add(barData);
+            espritStatistics.getEspritStatPoints().add(espritStatPoint);
+
+            // add next day to calender
+            calender.add(Calendar.DATE, 1);
         }
 
-        return barDataList;
+        return espritStatistics;
     }
+
+  /*  public EspritStatistics getStatForTheDate(SuperDate date) {
+        int taskPoint = 0;
+        int espritPoints = 0;
+        HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
+        for (Task task : allTasks.values()) {
+            if (task.isTaskCompleted()) {
+                if (task.isTaskCompleted()) {
+                    Calendar taskCompleteCalender = Calendar.getInstance();
+                    taskCompleteCalender.setTime(task.getTaskCompletedDate());
+                    if (Utils.isBothDateAreSameDay(taskCompleteCalender, Utils.getCalenderFromSuperDate(date))) {
+                        espritPoints += task.getEspritPoints();
+                        taskPoint++;
+                    }
+                }
+            }
+        }
+
+        return new EspritStatistics(date,espritPoints, taskPoint);
+    }*/
 
     private boolean multiplesOfFive(int n) {
         while ( n > 0 ) {

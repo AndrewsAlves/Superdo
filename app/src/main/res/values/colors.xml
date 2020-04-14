@@ -29,6 +29,8 @@
     <color name="white_a50">#50FFFFFF</color>
     <color name="transparent">#00ffffff</color>
 
+    <color name="whitish_light_red">#522d5b</color>
+
     ///// bucket color pallet
     <color name="yellow">#F0F64F</color>
     <color name="green">#4FF660</color>

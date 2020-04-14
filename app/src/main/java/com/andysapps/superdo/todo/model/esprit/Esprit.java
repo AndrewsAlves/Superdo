@@ -1,4 +1,4 @@
-package com.andysapps.superdo.todo.model;
+package com.andysapps.superdo.todo.model.esprit;
 
 /**
  * Created by Andrews on 11,April,2020
