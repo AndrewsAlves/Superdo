@@ -149,7 +149,17 @@
                     app:hdProgressDisableColor="@color/progress_disable"
                     app:hdBarTitleSelectedColor="@color/black"/>
 
+                <!--<ImageView
+                    android:id="@+id/productivity_iv_next_previous"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_go_next"
+                    android:scaleType="center"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"/>-->
+
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_marginBottom="15dp"
                     android:id="@+id/ll_month_date_title"
                     android:layout_width="match_parent"

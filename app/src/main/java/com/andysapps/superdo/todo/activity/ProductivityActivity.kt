@@ -12,7 +12,6 @@ import com.andysapps.superdo.todo.adapters.taskrecyclers.RanksRecyclerAdapter
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.esprit.EspritStatistics
-import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.esprit.EspritStatPoint
 import com.hadiidbouk.charts.BarData
 import com.yarolegovich.discretescrollview.transform.Pivot
@@ -26,7 +25,9 @@ class ProductivityActivity : AppCompatActivity() , AdapterView.OnItemSelectedLis
 
     var espritStatistics : EspritStatistics? = null
 
-    var isBarSeleced = 0
+    var selectedList = 0
+
+    var nextSegment = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,15 +70,39 @@ class ProductivityActivity : AppCompatActivity() , AdapterView.OnItemSelectedLis
         ChartProgressBarMain.build()
 
         ChartProgressBarMain.setOnBarClickedListener {
-            isBarSeleced = it
+            selectedList = it
             updateEspritStat(espritStatistics!!.getEspritStatPoints()[it])
         }
+
+       /* productivity_iv_next_previous.setOnClickListener {
+            nextSegment = !nextSegment
+            ChartProgressBarMain.selectBar(0)
+            updateView()
+        }*/
     }
 
     fun updateView() {
         productivity_tv_total_points.text = FirestoreManager.getInstance().user.espritPoints.toString()
 
-        if (selectedStat.equals(statType[1]) || selectedStat.equals(statType[3])) {
+
+        /*if (selectedStat == statType[1] || selectedStat == statType[3]) {
+            productivity_iv_next_previous.visibility = View.VISIBLE
+            if (nextSegment) {
+                for (i in 15 until espritStatistics!!.getBarData().size) {
+                    barDatalist.add(espritStatistics!!.getBarData()[i])
+                }
+            } else {
+                for (i in 0..14) {
+                    barDatalist.add(espritStatistics!!.getBarData()[i])
+                }
+            }
+        } else {
+            barDatalist = espritStatistics!!.getBarData()
+            productivity_iv_next_previous.visibility = View.GONE
+        }*/
+
+
+        if (selectedStat == statType[1] || selectedStat == statType[3]) {
             ll_month_date_title.visibility = View.VISIBLE
         } else {
             ll_month_date_title.visibility = View.GONE
@@ -95,7 +120,6 @@ class ProductivityActivity : AppCompatActivity() , AdapterView.OnItemSelectedLis
             max = 5.0f
         }
 
-        ChartProgressBarMain.deselectBar(isBarSeleced)
         ChartProgressBarMain.setMaxValue(max)
         ChartProgressBarMain.setDataList(espritStatistics!!.getBarData())
         ChartProgressBarMain.build()

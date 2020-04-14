@@ -417,9 +417,9 @@ public class TaskOrganiser {
             }
 
             if (statType.equals(Constants.thisWeek) || statType.equals(Constants.lastWeek)) {
-                barData = new BarData(Constants.weekShortTxt[i],espritPoint,String.valueOf(espritPoint));
+                barData = new BarData(Constants.weekShortTxt[i], espritPoint, String.valueOf(espritPoint));
             } else {
-                barData = new BarData("",espritPoint,String.valueOf(espritPoint));
+                barData = new BarData("", espritPoint, String.valueOf(espritPoint));
             }
 
             espritStatPoint = new EspritStatPoint(Utils.getSuperdateFromTimeStamp(calender.getTimeInMillis()), espritPoint, taskCompletedCount);
