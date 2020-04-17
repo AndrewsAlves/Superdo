@@ -158,6 +158,28 @@ public class Repeat implements Cloneable{
         this.lastCompletedDate = lastCompletedDate;
     }
 
+    public boolean isAtleastHavingOnceAWeek() {
+        if (isOnSunday() || isOnMonday() || isOnTuesday() || isOnWednesday()
+                || isOnThursday() || isOnFriday() || isOnSaturday()) {
+            return true;
+        }
+
+        setOnSunday(true);
+        return false;
+    }
+
+    public int getWeekDaysCount() {
+        int i = 0;
+        if (isOnSunday()) i++;
+        if (isOnMonday()) i++;
+        if (isOnTuesday()) i++;
+        if (isOnWednesday()) i++;
+        if (isOnThursday()) i++;
+        if (isOnFriday()) i++;
+        if (isOnSaturday()) i++;
+        return i;
+    }
+
     public String getRepeatString() {
 
         String repeatString = "";

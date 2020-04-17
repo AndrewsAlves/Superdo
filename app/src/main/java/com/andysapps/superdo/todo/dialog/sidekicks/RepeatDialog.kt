@@ -151,8 +151,12 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
     fun updateUi() {
 
         if (repeat.repeatType == RepeatType.Week.name) {
+
             dlg_repeat_ll_weekdays.visibility = View.VISIBLE
             dlg_repeat_rl_times.visibility = View.GONE
+            if (repeat.weekDaysCount == 0) {
+                repeat.isOnSunday = true
+            }
             updateWeedaysUi()
         } else {
             dlg_repeat_ll_weekdays.visibility = View.GONE
@@ -259,7 +263,9 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
     }
 
     override fun onClick(v: View?) {
+
         when (v!!.id) {
+
             dlg_repeat__btn_monday.id -> {
                 repeat.isOnMonday = !repeat.isOnMonday
             }
@@ -281,6 +287,11 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
             dlg_repeat__btn_sunday.id -> {
                 repeat.isOnSunday = !repeat.isOnSunday
             }
+        }
+
+        if (repeat.weekDaysCount == 0) {
+            onClick(v)
+            return
         }
 
         updateWeedaysUi()

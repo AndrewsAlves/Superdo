@@ -300,22 +300,12 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         dpd.show(getFragmentManager(), "Datepickerdialog");
     }
 
-    public void showTimePicker() {
-        Calendar now = Calendar.getInstance();
-        int hours = now.get(Calendar.HOUR);
-        int min = now.get(Calendar.MINUTE);
-
-        if (task.getDoDate() != null) {
-            hours = task.getDoDate().hours;
-            min = task.getDoDate().minutes;
-        }
-
+    public void showTimePicker(int hours , int min) {
         TimePickerDialog dpd = TimePickerDialog.newInstance(
                 this,
                 hours,
                 min,
                 false);
-
         dpd.setAccentColor(getResources().getColor(R.color.lightRed));
         dpd.show(getFragmentManager(), "Datepickerdialog");
     }
@@ -368,7 +358,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
             showDatePicker();
             return;
         }
-        showTimePicker();
+        showTimePicker(task.getDoDate().hours, task.getDoDate().minutes);
     }
 
     @OnClick(R.id.btn_buckets)
@@ -429,7 +419,9 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         }
 
         if (!task.getDoDate().hasTime) {
-            showTimePicker();
+            int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+            int min = Calendar.getInstance().get(Calendar.MINUTE);
+            showTimePicker(hour, min);
         }
 
         updateUi();

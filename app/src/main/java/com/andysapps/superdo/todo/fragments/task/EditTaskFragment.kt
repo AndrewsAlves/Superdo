@@ -38,6 +38,7 @@ import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
 import com.andysapps.superdo.todo.events.sidekick.SetDoDateEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
 import com.andysapps.superdo.todo.events.sidekick.UpdateSubtasksEvent
+import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
 import com.andysapps.superdo.todo.events.update.UpdateUiEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
@@ -47,6 +48,7 @@ import com.andysapps.superdo.todo.model.Task
 import com.andysapps.superdo.todo.model.taskfeatures.Subtask
 import com.andysapps.superdo.todo.model.taskfeatures.Subtasks
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
+import com.thekhaeng.pushdownanim.PushDownAnim
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -352,21 +354,27 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
     private fun initClicks() {
 
-        editTask_rl_btn_do_date.setOnClickListener {
-            DoDateDialog.instance(task.doDate, task).show(fragmentManager!!, DoDateDialog().javaClass.name)
-        }
-
-        editTask_rl_btn_select_bucket.setOnClickListener {
-            SelectBucketDialogFragment().show(fragmentManager!!, SelectBucketDialogFragment().javaClass.name)
-        }
-
-        editTask_rl_btn_deadline.setOnClickListener {
-            DeadlineDialog.instance(task.deadline).show(fragmentManager!!, DeadlineDialog().javaClass.name)
-        }
-
-        editTask_rl_btn_repeat.setOnClickListener {
-            RepeatDialog.instance(task.repeat).show(fragmentManager!!, RepeatDialog().javaClass.name)
-        }
+        PushDownAnim.setPushDownAnimTo(editTask_rl_btn_do_date,
+                editTask_rl_btn_select_bucket,
+                editTask_rl_btn_deadline,
+                editTask_rl_btn_repeat)
+                .setScale(PushDownAnim.MODE_SCALE, 0.96f)
+                .setOnClickListener(fun(v: View) {
+                    when(v) {
+                        editTask_rl_btn_do_date -> {
+                            DoDateDialog.instance(task.doDate, task).show(fragmentManager!!, DoDateDialog().javaClass.name)
+                        }
+                        editTask_rl_btn_select_bucket -> {
+                            SelectBucketDialogFragment().show(fragmentManager!!, SelectBucketDialogFragment().javaClass.name)
+                        }
+                        editTask_rl_btn_deadline -> {
+                            DeadlineDialog.instance(task.deadline).show(fragmentManager!!, DeadlineDialog().javaClass.name)
+                        }
+                        editTask_rl_btn_repeat -> {
+                            RepeatDialog.instance(task.repeat).show(fragmentManager!!, RepeatDialog().javaClass.name)
+                        }
+                    }
+                })
 
         ib_clear_subtasks.setOnClickListener {
             task.subtasks.subtaskList.clear()

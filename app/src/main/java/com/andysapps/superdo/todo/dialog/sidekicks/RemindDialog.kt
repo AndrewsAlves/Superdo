@@ -28,7 +28,7 @@ import org.greenrobot.eventbus.Subscribe
  * A simple [Fragment] subclass.
  */
 
-class RemindDialog : DialogFragment(){
+class RemindDialog : DialogFragment() {
 
     var remind : Remind = Remind()
 

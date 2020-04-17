@@ -184,6 +184,11 @@ public class SuperDate implements Cloneable {
         int hours1 = hours;
         String meridien = " AM";
 
+        if (hours == 0) {
+            hours1 = 12;
+            meridien = " AM";
+        }
+
         if (hours > 12) {
             hours1 = hours - 12;
             meridien = " PM";

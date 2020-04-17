@@ -92,7 +92,6 @@ class DoDateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, TimeP
             dlg_deadline_b_positive.isClickable = false
             dlg_deadline_b_positive.alpha = 0.5f
         }
-
     }
 
     private fun initUi() {
