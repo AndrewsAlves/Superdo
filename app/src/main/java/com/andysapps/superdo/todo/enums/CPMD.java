@@ -1,7 +1,7 @@
 package com.andysapps.superdo.todo.enums;
 
 /**
- * Created by Admin on 22,February,2020
+ * Created by Andrews on 22,February,2020
  */
 public enum CPMD {
     COMPLETED,
@@ -10,5 +10,6 @@ public enum CPMD {
     RECURRING,
     DEADLINED,
     REMIND,
-    DELETED
+    DELETED,
+    COMPLETED_TASK_IN_LIST
 }

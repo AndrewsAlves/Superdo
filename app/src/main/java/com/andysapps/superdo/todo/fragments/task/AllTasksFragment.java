@@ -20,6 +20,7 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.TasksDayPagerAdapter;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.enums.TaskListing;
+import com.andysapps.superdo.todo.enums.TaskUpdateType;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
@@ -245,6 +246,10 @@ public class AllTasksFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskUpdatedEvent event) {
+
+        if (event.getDocumentChange() != TaskUpdateType.Added) {
+            return;
+        }
 
         switch (event.getTask().getListedIn()) {
             case TODAY:

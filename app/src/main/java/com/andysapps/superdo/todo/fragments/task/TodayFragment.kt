@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
 import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter
@@ -30,7 +31,7 @@ import kotlin.collections.ArrayList
 /**
  * A simple [Fragment] subclass.
  */
-class TodayFragment : Fragment() {
+class TodayFragment : Fragment()  {
 
     var adapter: TasksRecyclerAdapter? = null
 

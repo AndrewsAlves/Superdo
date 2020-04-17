@@ -11,6 +11,7 @@ import com.andysapps.superdo.todo.Constants
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.activity.EditProfileActivity
 import com.andysapps.superdo.todo.activity.ProductivityActivity
+import com.andysapps.superdo.todo.activity.SubscriptionActivity
 import com.andysapps.superdo.todo.activity.WelcomeActivity
 import com.andysapps.superdo.todo.dialog.alert.LogoutAlertDialog
 import com.andysapps.superdo.todo.enums.CPMD
@@ -26,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.hadiidbouk.charts.BarData
 import com.hadiidbouk.charts.ChartProgressBar
 import com.thekhaeng.pushdownanim.PushDownAnim
+import kotlinx.android.synthetic.main.activity_subscription.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -81,6 +83,12 @@ class ProfileFragment : Fragment() {
                     startActivity(Intent(context, ProductivityActivity::class.java))
                 })
 
+        PushDownAnim.setPushDownAnimTo(profile_btn_sub_monthy)
+                .setScale(PushDownAnim.MODE_SCALE, 0.96f)
+                .setOnClickListener(fun(view: View) {
+                    startActivity(Intent(context, SubscriptionActivity::class.java))
+                })
+
         profile_iv_editprofile.setOnClickListener {
             startActivity(Intent(context, EditProfileActivity::class.java))
         }
@@ -101,6 +109,8 @@ class ProfileFragment : Fragment() {
         if (FirestoreManager.getInstance().user.firstName != null) {
             profile_tv_account_name.text = FirestoreManager.getInstance().user.firstName
         }
+
+        profile_tv_email.text = FirestoreManager.getInstance().user.email
 
         when (FirestoreManager.getInstance().user!!.avatarIndex) {
             0 -> profile_iv_avatar.setImageResource(R.drawable.img_avatar_1)

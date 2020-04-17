@@ -7,12 +7,14 @@ import android.util.Log;
 
 import com.andysapps.superdo.todo.activity.MainActivity;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.andysapps.superdo.todo.notification.SuperdoNotificationManager;
 
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_notification_id;
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_task_id;
 import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.CHANNEL_DAILY;
+import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.CHANNEL_REMINDER;
 import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_afternoon;
 import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_deadline;
 import static com.andysapps.superdo.todo.notification.SuperdoNotificationManager.notification_id_evening;
@@ -46,21 +48,28 @@ public class BackgroundBroadcast extends BroadcastReceiver {
         if (bgProcessId!= null) {
             if (bgProcessId.equals(id_process_register_daily_alarms)) {
 
+                if (TaskOrganiser.getInstance() == null) {
+                    TaskOrganiser.initialise();
+                }
+
                 SuperdoNotificationManager.initialise(context);
                 SuperdoAlarmManager.initialise(context);
+                SuperdoAlarmManager.getInstance().registerBackgroundProcesses(context, true);
 
                 if (FirestoreManager.getInstance() == null) {
                     FirestoreManager.initialiseAndRegisterAlarms(context);
-                    SuperdoNotificationManager.getInstance().createNotification(context,new Intent(context, MainActivity.class),
-                            CHANNEL_DAILY,
-                            R.drawable.ic_notification,
-                            "Registering reminders",
-                            "Tap to view your tasks!",
-                            "",
-                            101);
+                } else {
+                    SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders(context);
                 }
+
+                SuperdoNotificationManager.getInstance().createNotification(context,new Intent(context, MainActivity.class),
+                        CHANNEL_REMINDER,
+                        R.drawable.ic_notification,
+                        "Registering reminders",
+                        "Tap to view your tasks!",
+                        "",
+                        101);
             }
         }
-
     }
 }

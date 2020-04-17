@@ -32,6 +32,7 @@ import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
+import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
@@ -50,21 +51,22 @@ import lib.mozidev.me.extextview.StrikeThroughPainting;
  * Created by Andrews on 15,August,2019
  */
 
-public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdapter.TaskViewHolder> implements ItemTouchHelperAdapter {
+public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasksRecyclerAdapter.TaskViewHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = "TasksRecyclerAdapter";
     public List<Task> taskList;
+    public Bucket bucket;
 
     private Context context;
     private Handler viewUpdateHandler;
 
-    public TasksRecyclerAdapter(Context context, List<Task> taskList) {
+    public BucketTasksRecyclerAdapter(Context context, List<Task> taskList, Bucket bucket) {
+        this.context = context;
         this.taskList = new ArrayList<>();
         this.taskList.addAll(taskList);
-        this.context = context;
+        this.bucket = bucket;
         viewUpdateHandler = new Handler();
     }
-
 
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -91,11 +93,11 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
     public void updateList(List<Task> taskList) {
 
-        Log.e(TAG, "updateList: data size" + this.taskList.size());
+        Log.e(TAG, "updateList: data size " + this.taskList.size());
 
         this.taskList.clear();
         this.taskList.addAll(taskList);
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 
     public void undoTaskCompleted(Task task,int position) {
@@ -117,6 +119,28 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
     @Override
     public void onBindViewHolder(TaskViewHolder h, int position) {
+
+        /// last postion as completed task list
+        if (position == taskList.size()) {
+
+            h.parentTask.setVisibility(View.GONE);
+            h.lastSpace.setVisibility(View.VISIBLE);
+            h.tvCompletedTask.setVisibility(View.VISIBLE);
+
+            PushDownAnim.setPushDownAnimTo(h.tvCompletedTask)
+                    .setScale(PushDownAnim.MODE_SCALE, 0.96f)
+                    .setOnClickListener(v -> {
+                        EventBus.getDefault().post(new OpenFragmentEvent(
+                                CPMDTasksFragment.Companion.instance(CPMD.COMPLETED, bucket),
+                                false,
+                                CPMDTasksFragment.TAG, true));
+                    });
+            return;
+        }
+
+        h.parentTask.setVisibility(View.VISIBLE);
+        h.lastSpace.setVisibility(View.GONE);
+        h.tvCompletedTask.setVisibility(View.GONE);
 
         Task task = taskList.get(position);
 
@@ -190,7 +214,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 } else {
                     h.lottieCheckView.setSpeed(2.0f);
                     h.isChecked = true;
-                    strikeOutText(h, 0);
+                    strikeOutText(h, 500);
                     SuperdoAudioManager.getInstance().playTaskCompleted();
                 }
                 h.lottieCheckView.playAnimation();
@@ -255,7 +279,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return taskList.size();
+        return taskList.size() + 1;
     }
 
     @Override
@@ -319,6 +343,9 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         @BindView(R.id.parent_ll_task_icons)
         public LinearLayout parentIcons;
+
+        @BindView(R.id.ll_parent_task)
+        public LinearLayout parentTask;
 
         @BindView(R.id.last_element_space)
         public FrameLayout lastSpace;

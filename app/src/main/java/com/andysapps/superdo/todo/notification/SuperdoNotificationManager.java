@@ -18,11 +18,15 @@ import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.activity.MainActivity;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,8 +41,10 @@ import java.util.Random;
 
 import io.grpc.okhttp.internal.Util;
 
+import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_BUCKETS;
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_NOTIFICATIONS;
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_TASKS;
+import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_USER;
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_notification_deadline_type;
 
 /**
@@ -289,7 +295,13 @@ public class SuperdoNotificationManager {
 
      public void postNotificationRemind(Context context, String taskDocId) {
 
-        DocumentReference snapshot  = firestore.collection(DB_TASKS).document(taskDocId);
+         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+             return;
+         }
+
+         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        DocumentReference snapshot  = firestore.collection(DB_USER).document(user.getUid()).collection(DB_TASKS).document(taskDocId);
         snapshot.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
@@ -309,9 +321,9 @@ public class SuperdoNotificationManager {
                             SimpleNotification notification = new SimpleNotification();
 
                             if (Utils.isReminderMissed(remindTask.getDoDate())) {
-                                notification.setContentTitle("Missed reminder for you today");
+                                notification.setContentTitle("Hey " + SharedPrefsManager.getUserFirstName(context) + ", " + "Missed reminder for you today");
                             } else {
-                                notification.setContentTitle("Superdo Reminder, Done with this task!");
+                                notification.setContentTitle("Superdo Reminder," + SharedPrefsManager.getUserFirstName(context) + "," +  " Done with this task!");
                             }
 
                             notification.setContentText(remindTask.getName());
@@ -361,6 +373,61 @@ public class SuperdoNotificationManager {
         notificationManager.notify(remindTask.getRemindRequestCode(), builder.build());
     }
 
+    public void postNotificationDeadline(Context context, String taskDocId, Intent intent) {
+
+         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+             return;
+         }
+
+         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+         DocumentReference snapshot  = firestore.collection(DB_USER).document(user.getUid()).collection(DB_TASKS).document(taskDocId);
+         snapshot.get().addOnCompleteListener(task -> {
+
+            Task deadlineTask;
+
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document != null) {
+                    if (document.exists()) {
+                        deadlineTask = document.toObject(Task.class);
+
+                        Log.e(TAG, "postNotificationDeadline: deadline executed" );
+
+                        SimpleNotification notification = new SimpleNotification();
+                        notification.setContentText(deadlineTask.getName());
+                        notification.setContextBigText(deadlineTask.getName());
+
+                        if (intent.getExtras().getString(intent_key_notification_deadline_type) == null) {
+                            return;
+                        }
+
+                        switch (intent.getExtras().getString(intent_key_notification_deadline_type)) {
+
+                            case notification_id_deadline_morning:
+                                notification.setContentTitle("Hi " + SharedPrefsManager.getUserFirstName(context) + "," + " you have a deadline today.");
+                                break;
+                            case notification_id_deadline_daybefore:
+                                notification.setContentTitle("Hey " + SharedPrefsManager.getUserFirstName(context) + "," + " you have a deadline tomorrow");
+                                break;
+                            case notification_id_deadline_done:
+                                notification.setContentTitle("Hey " + SharedPrefsManager.getUserFirstName(context) + "," + " Have you done your deadline task?");
+                                break;
+                        }
+
+                        pushDeadlineNotification(context, notification, deadlineTask);
+
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                }
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+            }
+        });
+    }
+
     public void pushDeadlineNotification(Context context, SimpleNotification notification, Task deadlineTask) {
 
         int requestCode = deadlineTask.getDeadline().getDeadlineRequestCode();
@@ -391,55 +458,6 @@ public class SuperdoNotificationManager {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(requestCode, builder.build());
-    }
-
-    public void postNotificationDeadline(Context context, String taskDocId, Intent intent) {
-
-        DocumentReference snapshot  = firestore.collection(DB_TASKS).document(taskDocId);
-        snapshot.get().addOnCompleteListener(task -> {
-
-            Task deadlineTask;
-
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document != null) {
-                    if (document.exists()) {
-                        deadlineTask = document.toObject(Task.class);
-
-                        Log.e(TAG, "postNotificationDeadline: deadline executed" );
-
-                        SimpleNotification notification = new SimpleNotification();
-                        notification.setContentText(deadlineTask.getName());
-                        notification.setContextBigText(deadlineTask.getName());
-
-                        if (intent.getExtras().getString(intent_key_notification_deadline_type) == null) {
-                            return;
-                        }
-
-                        switch (intent.getExtras().getString(intent_key_notification_deadline_type)) {
-
-                            case notification_id_deadline_morning:
-                                notification.setContentTitle("Hey human, you have a deadline today.");
-                                break;
-                            case notification_id_deadline_daybefore:
-                                notification.setContentTitle("Hey human, you have a deadline tomorrow");
-                                break;
-                            case notification_id_deadline_done:
-                                notification.setContentTitle("Hey human, Have you done your deadline task?");
-                                break;
-                        }
-
-                        pushDeadlineNotification(context, notification, deadlineTask);
-
-                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    } else {
-                        Log.d(TAG, "No such document");
-                    }
-                }
-            } else {
-                Log.d(TAG, "get failed with ", task.getException());
-            }
-        });
     }
 
     public boolean validateNotificationTime(String notificationTimeZone) {

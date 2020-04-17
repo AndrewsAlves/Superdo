@@ -119,7 +119,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
     public void undoTaskCompleted(Task task,int position) {
         taskList.add(position, task);
         EventBus.getDefault().post(new UpdateUiCPMDEvent());
-        task.setTaskCompleted(false);
+        task.setTaskAction(false);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
     }
@@ -127,7 +127,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
     public void undoTaskNotCompleted(Task task,int position) {
         taskList.add(position, task);
         EventBus.getDefault().post(new UpdateUiCPMDEvent());
-        task.setTaskCompleted(true);
+        task.setTaskAction(true);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
     }
@@ -252,7 +252,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
                 SuperdoAudioManager.getInstance().playTaskCompleted();
             }
 
-            task.setTaskCompleted(h.isChecked);
+            task.setTaskAction(h.isChecked);
 
             FirestoreManager.getInstance().updateTask(task);
             TaskOrganiser.getInstance().organiseAllTasks();
@@ -318,7 +318,6 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
     public void setTaskCompleted(int position, Task task) {
         viewUpdateHandler.postDelayed(() -> {
             taskList.remove(position);
-            task.setTaskCompletedDate(Calendar.getInstance().getTime());
             EventBus.getDefault().post(new UpdateUiCPMDEvent());
             EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_COMPLETED));
             notifyItemRemoved(position);
@@ -330,7 +329,6 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
     public void setTaskNotCompleted(int position, Task task) {
         viewUpdateHandler.postDelayed(() -> {
             taskList.remove(position);
-            task.setTaskCompletedDate(null);
             EventBus.getDefault().post(new UpdateUiCPMDEvent());
             EventBus.getDefault().post(new ShowSnakeBarCPMDEvent(CPMDRecyclerAdapter.this, task, position, UndoType.TASK_NOT_COMPLETED));
             notifyItemRemoved(position);

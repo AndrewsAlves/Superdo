@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -381,6 +382,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateUiEvent event) {
+        Log.e(TAG, "onMessageEvent: UpdateUi");
        switch (mainTabs) {
            case TODAY_TASKS:
                updateAllTasks();

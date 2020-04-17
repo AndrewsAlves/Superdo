@@ -14,6 +14,7 @@ import com.andysapps.superdo.todo.events.CreateOrUpdateUserFailureEvent
 import com.andysapps.superdo.todo.events.CreateOrUpdateUserSuccessEvent
 import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
+import com.andysapps.superdo.todo.manager.SharedPrefsManager
 import com.andysapps.superdo.todo.model.User
 import kotlinx.android.synthetic.main.activity_profile_info.*
 import org.greenrobot.eventbus.EventBus
@@ -89,8 +90,9 @@ class EditProfileActivity : AppCompatActivity() {
                         Toast.makeText(this, "Last name cannot be empty", Toast.LENGTH_SHORT).show()
                     }
                     else -> {
-                        user!!.firstName = et_firstname.text.toString()
-                        user!!.lastName = et_lastname.text.toString()
+                        user!!.firstName = et_firstname.text.toString().trim()
+                        user!!.lastName = et_lastname.text.toString().trim()
+                        SharedPrefsManager.saveUserName(baseContext, user!!.firstName, user!!.lastName)
                         FirestoreManager.getInstance().createOrUpdateUser(user)
                     }
                 }

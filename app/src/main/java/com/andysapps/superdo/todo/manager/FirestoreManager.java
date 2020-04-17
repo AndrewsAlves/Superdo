@@ -29,6 +29,7 @@ import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotificatio
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -164,21 +165,27 @@ public class FirestoreManager {
                 });
     }
 
+    public CollectionReference getUserTaskCollection() {
+        return firestore.collection(DB_USER)
+                .document(user.getUserId())
+                .collection(DB_TASKS);
+    }
+
+    public CollectionReference getUserBucketCollection() {
+        return firestore.collection(DB_USER)
+                .document(user.getUserId())
+                .collection(DB_BUCKETS);
+    }
+
     public void fetchUserData(Context context, boolean registerReminders) {
 
         Source source = Source.DEFAULT;
 
         Log.e(TAG, "fetchUserData() called with: user id " + user.getUserId());
 
-        taskQuery = firestore.collection(DB_USER)
-                .document(user.getUserId())
-                .collection(DB_TASKS)
-                .whereEqualTo("deleted", false);
+        taskQuery = getUserTaskCollection().whereEqualTo("deleted", false);
 
-        bucketQuery = firestore.collection(DB_USER)
-                .document(user.getUserId())
-                .collection(DB_BUCKETS)
-                .whereEqualTo("deleted", false)
+        bucketQuery = getUserBucketCollection().whereEqualTo("deleted", false)
                 .orderBy("created", Query.Direction.DESCENDING);
 
         if (!registerReminders) initQuerySnapshots();
@@ -226,10 +233,7 @@ public class FirestoreManager {
 
     public void initQuerySnapshots() {
 
-        firestore.collection(DB_USER)
-                .document(user.getUserId())
-                .collection(DB_TASKS)
-                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+        getUserTaskCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
 
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e);
@@ -281,10 +285,7 @@ public class FirestoreManager {
         /// bucket query
         //////
 
-        firestore.collection(DB_USER)
-                .document(user.getUserId())
-                .collection(DB_BUCKETS)
-                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+        getUserBucketCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
 
             Log.e(TAG, "Query snapshot executed  : " + queryDocumentSnapshots);
 
@@ -352,11 +353,7 @@ public class FirestoreManager {
 
     public void uploadTask(Task task) {
 
-        firestore.collection(DB_USER)
-                .document(user.getUserId())
-                .collection(DB_TASKS)
-                .document()
-                .set(task)
+        getUserTaskCollection().document().set(task)
                 .addOnSuccessListener(aVoid -> {
                     EventBus.getDefault().post(new UploadTaskSuccessEvent());
                     Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!");
@@ -369,24 +366,25 @@ public class FirestoreManager {
 
     public void updateTask(Task task) {
 
-        firestore.collection(DB_USER)
-                .document(user.getUserId())
-                .collection(DB_TASKS)
-                .document(task.getDocumentId())
+        getUserTaskCollection().document(task.getDocumentId())
                 .set(task)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error uploading task", e));
     }
 
     public void uploadBucket(Bucket bucket) {
-
-        firestore.collection(DB_USER)
-                .document(user.getUserId())
-                .collection(DB_BUCKETS)
-                .document()
+        getUserBucketCollection().document()
                 .set(bucket)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error uploading bucket", e));
+    }
+
+    public void updateBucket(Bucket bucket) {
+       getUserBucketCollection()
+                .document(bucket.getDocumentId())
+                .set(bucket)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error uploading task", e));
     }
 
     public void uploadNotification(SimpleNotification notification) {
@@ -395,18 +393,6 @@ public class FirestoreManager {
                 .set(notification)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Bucket uploadedAccount successfully written!"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error uploading bucket", e));
-
-    }
-
-    public void updateBucket(Bucket bucket) {
-
-        firestore.collection(DB_USER)
-                .document(user.getUserId())
-                .collection(DB_BUCKETS)
-                .document(bucket.getDocumentId())
-                .set(bucket)
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!"))
-                .addOnFailureListener(e -> Log.e(TAG, "Error uploading task", e));
 
     }
 
@@ -420,7 +406,7 @@ public class FirestoreManager {
             return;
         }
 
-        DocumentReference docRef = firestore.collection(DB_TASKS).document(taskDocumentId);
+        DocumentReference docRef = getUserTaskCollection().document(taskDocumentId);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
@@ -428,7 +414,7 @@ public class FirestoreManager {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Task task1 = document.toObject(Task.class);
-                        task1.setTaskCompleted(true);
+                        task1.setTaskAction(true);
                         updateTask(task1);
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                     } else {

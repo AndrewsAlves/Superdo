@@ -267,6 +267,18 @@ public class TaskOrganiser {
         return completedTaskList;
     }
 
+    public List<Task> getCompletedTaskList(Bucket bucket) {
+         List<Task> taskList = new ArrayList<>();
+        for (Task task : getTasksInBucket(bucket, true)) {
+            if (task.isTaskCompleted()) {
+                taskList.add(task);
+                continue;
+            }
+        }
+        Collections.sort(taskList, (o1, o2) -> o2.getTaskCompletedDate().compareTo(o1.getTaskCompletedDate()));
+        return taskList;
+    }
+
     public List<Task> getMissedTaskList() {
         return missedTaskList;
     }
@@ -394,6 +406,7 @@ public class TaskOrganiser {
         } else if (statType.equals(Constants.lastMonth)) {
             espritStatistics.setStatType(EspritStatType.last_month);
             calender.add(Calendar.MONTH, -1);
+            calender.set(Calendar.DAY_OF_MONTH, 1);
             nod = calender.getActualMaximum(Calendar.DAY_OF_MONTH);
         }
 
@@ -408,8 +421,10 @@ public class TaskOrganiser {
             for (Task task : allTasks.values()) {
                 if (task.isTaskCompleted()) {
                     Calendar taskCompleteCalender = Calendar.getInstance();
-                    taskCompleteCalender.setTime(task.getTaskCompletedDate());
-                    if (Utils.isBothDateAreSameDay(taskCompleteCalender, calender)) {
+                    taskCompleteCalender.setTimeInMillis(task.getTaskCompletedDate().getTime());
+                    SuperDate date = Utils.getSuperdateFromTimeStamp(task.getTaskCompletedDate().getTime());
+                    Log.e(TAG, "getEspritStatistics: Date : " + date.getSuperDateString());
+                    if (Utils.isBothDateAreSameDay(Utils.getCalenderFromSuperDate(date), calender)) {
                         espritPoint += task.getEspritPoints();
                         taskCompletedCount++;
                     }
@@ -468,7 +483,7 @@ public class TaskOrganiser {
     /////////////////////
     //// BUCKET TASKS
 
-    public List<Task> getTasksInBucket(Bucket bucket) {
+    public List<Task> getTasksInBucket(Bucket bucket, boolean completedTasks) {
 
         List<Task> bucketList = new ArrayList<>();
 
@@ -478,7 +493,13 @@ public class TaskOrganiser {
 
         for (Task task : allTaskList) {
             if (task.getBucket() != null && task.getBucket().getDocumentId().equals(bucket.getDocumentId())) {
-                bucketList.add(task);
+                if (task.isTaskCompleted()) {
+                    if (completedTasks) {
+                        bucketList.add(task);
+                    }
+                } else {
+                    bucketList.add(task);
+                }
             }
         }
 

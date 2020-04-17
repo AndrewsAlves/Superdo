@@ -11,6 +11,7 @@ import android.util.Log;
 import com.andysapps.superdo.todo.BackgroundBroadcast;
 import com.andysapps.superdo.todo.NotificationBroadcast;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
@@ -67,27 +68,34 @@ public class SuperdoAlarmManager {
     //////////////////////////////////////
     //////// ALARMS
 
-    public void registerBackgroundProcesses(Context context) {
-        AlarmManager alarmManage = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    public void registerBackgroundProcesses(Context context, boolean reshedule) {
+
+        Log.i(TAG, "registerBackgroundProcesses() called with: context = [" + context + "], reshedule = [" + reshedule + "]");
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, BackgroundBroadcast.class);
         intent.putExtra(BackgroundBroadcast.key_id_background_process, BackgroundBroadcast.id_process_register_daily_alarms);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQ_CODE_BACKGROUND_PROCESS, intent, FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQ_CODE_BACKGROUND_PROCESS, intent, 0);
 
         Calendar calendar = Calendar.getInstance();
+        if (reshedule) {
+            calendar = Utils.getTomorrow();
+        }
         calendar.set(Calendar.HOUR_OF_DAY, 8);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        alarmManage.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     public void registerDailyNotificationsAndReminders(Context context) {
-        registerDailyNotificationAlarms(context);
+        registerDailyQuoteAlarms(context);
         registerDailyReminders(context);
+        SharedPrefsManager.saveBackgroundRegistriesTimeStamp(context, Calendar.getInstance().getTimeInMillis());
     }
 
-    public void registerDailyNotificationAlarms(Context context) {
+    public void registerDailyQuoteAlarms(Context context) {
         SuperDate date = new SuperDate();
         date.setTime(9,0);
         setAlarmExact(context, date, notification_id_morning, REQ_CODE_MORNING,  FLAG_CANCEL_CURRENT);

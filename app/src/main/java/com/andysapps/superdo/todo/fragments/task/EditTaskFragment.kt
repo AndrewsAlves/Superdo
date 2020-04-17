@@ -160,7 +160,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
                 editTask_lottie_anim.progress = 1.0f
             }
 
-            task.isTaskCompleted = isChecked
+            task.setTaskAction(isChecked)
             FirestoreManager.getInstance().updateTask(task)
             TaskOrganiser.getInstance().organiseAllTasks()
 

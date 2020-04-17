@@ -10,8 +10,10 @@ import android.preference.PreferenceManager;
 
 public class SharedPrefsManager {
 
-    static final String PREF_SUPERDO_USER_ID = "user_id";
-    static final String PREF_SUPERDO_USER_DOCUMENT_ID = "user_document_id";
+    static final String PREF_BACKGROUND_PROCESS_STARTED = "lastSceduledTime";
+
+    static final String PREF_SUPERDO_USER_FIRSTNAME = "user_first_name";
+    static final String PREF_SUPERDO_USER_LASTNAME = "user_last_name";
 
     static final String DESC_ALL_TASKS = "desc_all_tasks";
 
@@ -19,29 +21,30 @@ public class SharedPrefsManager {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
     }
 
-    public static String getUserId(Context context) {
-        return getSharedPreferences(context).getString(PREF_SUPERDO_USER_ID, "null user");
-    }
-
-    public static String getUserDocumentId(Context context) {
-        return getSharedPreferences(context).getString(PREF_SUPERDO_USER_DOCUMENT_ID, "null user");
-    }
-
-    public static void saveUserId(Context context, String userId, String documentId) {
+    public static void saveUserName(Context context, String firstName, String LastName) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(PREF_SUPERDO_USER_ID, userId);
-        editor.putString(PREF_SUPERDO_USER_DOCUMENT_ID, documentId);
+        editor.putString(PREF_SUPERDO_USER_FIRSTNAME, firstName);
+        editor.putString(PREF_SUPERDO_USER_LASTNAME, LastName);
         editor.apply();
     }
 
-    public static String getDescAllTasks(Context context) {
-        return getSharedPreferences(context).getString(DESC_ALL_TASKS, "Here you will see All of your tasks :)");
+    public static String getUserFirstName(Context context) {
+        return getSharedPreferences(context).getString(PREF_SUPERDO_USER_FIRSTNAME, "Human");
     }
 
-    public static void saveDesc(Context context, String desc) {
+    public static String getUserLastName(Context context) {
+        return getSharedPreferences(context).getString(PREF_SUPERDO_USER_LASTNAME, "Human");
+    }
+
+    public static void saveBackgroundRegistriesTimeStamp(Context context, long timestamp) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(DESC_ALL_TASKS, desc);
+        editor.putLong(PREF_BACKGROUND_PROCESS_STARTED, timestamp);
         editor.apply();
     }
+
+    public static long getLastBackgroundRegisteredTimestamp(Context context) {
+        return getSharedPreferences(context).getLong(PREF_BACKGROUND_PROCESS_STARTED, 0);
+    }
+
 
 }

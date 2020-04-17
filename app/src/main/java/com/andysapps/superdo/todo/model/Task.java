@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
+import static com.andysapps.superdo.todo.manager.FirestoreManager.TAG;
+
 /**
  * Created by Andrews on 19,October,2019
  */
@@ -74,8 +76,6 @@ public class Task implements Cloneable {
 
     String bucketId;
 
-
-
     ///////
     // OTHER
     ///////
@@ -96,6 +96,10 @@ public class Task implements Cloneable {
         return (Task) super.clone();
     }
 
+    ////////////////////////////////
+    ///////// GETTER AND SETTER
+    ///////////////////////////////
+
     public String getName() {
         return name;
     }
@@ -110,14 +114,6 @@ public class Task implements Cloneable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Bucket getBucket() {
-        if (FirestoreManager.getInstance().getHasMapBucket().containsKey(bucketId)) {
-            return FirestoreManager.getInstance().getHasMapBucket().get(bucketId);
-        } else {
-            return FirestoreManager.getAllTasksBucket();
-        }
     }
 
     public void setBucketId(String bucketId) {
@@ -141,18 +137,8 @@ public class Task implements Cloneable {
     }
 
     public void setTaskCompleted(boolean taskCompleted) {
-
-        isTaskCompleted = taskCompleted;
-
-        if (taskCompleted) {
-            taskCompletedDate = Calendar.getInstance().getTime();
-            setEspritPoints();
-        } else {
-            taskCompletedDate = null;
-            setEspritPoints();
-        }
+        this.isTaskCompleted = taskCompleted;
     }
-
 
     public boolean isMovedToBin() {
         return movedToBin;
@@ -274,7 +260,6 @@ public class Task implements Cloneable {
         this.location = location;
     }
 
-
     public Date getTaskCompletedDate() {
         return taskCompletedDate;
     }
@@ -287,12 +272,50 @@ public class Task implements Cloneable {
         return espritPoints;
     }
 
+    public void setEspritPoints(int espritPoints) {
+        this.espritPoints = espritPoints;
+    }
+
     public int getRemindRequestCode() {
         return remindRequestCode;
     }
 
     public void setRemindRequestCode(int remindRequestCode) {
         this.remindRequestCode = remindRequestCode;
+    }
+
+    ///////////////////////////////////
+    //////////// OTHER FUNCTIONS
+    //////////////////////////////////
+
+    public void setTaskAction(boolean taskCompleted) {
+        isTaskCompleted = taskCompleted;
+
+        if (taskCompleted) {
+            Log.e(TAG, "setTaskCompleted: Task completed SET DATE");
+            taskCompletedDate = Calendar.getInstance().getTime();
+            setEspritPoints();
+
+            if (getRepeat() != null) {
+                getRepeat().setLastCompletedDate(getDoDate());
+            }
+
+        } else {
+            taskCompletedDate = null;
+            setEspritPoints();
+
+            if (getRepeat() != null) {
+                getRepeat().setLastCompletedDate(null);
+            }
+        }
+    }
+
+    public Bucket getBucket() {
+        if (FirestoreManager.getInstance().getHasMapBucket().containsKey(bucketId)) {
+            return FirestoreManager.getInstance().getHasMapBucket().get(bucketId);
+        } else {
+            return FirestoreManager.getAllTasksBucket();
+        }
     }
 
     public int generateNewRequestCode() {

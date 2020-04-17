@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
+import com.andysapps.superdo.todo.adapters.taskrecyclers.BucketTasksRecyclerAdapter;
 import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter;
 
 import com.andysapps.superdo.todo.enums.BucketType;
@@ -83,7 +84,7 @@ public class BucketTasksFragment extends Fragment {
 
     boolean isEditing;
 
-    TasksRecyclerAdapter adapter;
+    BucketTasksRecyclerAdapter adapter;
     Bucket bucket;
 
     public List<Task> taskList;
@@ -114,12 +115,12 @@ public class BucketTasksFragment extends Fragment {
 
         taskList = new ArrayList<>();
 
-        if (!TaskOrganiser.getInstance().getTasksInBucket(bucket).isEmpty()) {
-            taskList.addAll(TaskOrganiser.getInstance().getTasksInBucket(bucket));
+        if (!TaskOrganiser.getInstance().getTasksInBucket(bucket, false).isEmpty()) {
+            taskList.addAll(TaskOrganiser.getInstance().getTasksInBucket(bucket, false));
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new TasksRecyclerAdapter(getContext(), taskList);
+        adapter = new BucketTasksRecyclerAdapter(getContext(), taskList, bucket);
         recyclerView.setAdapter(adapter);
 
         initUi();
@@ -189,6 +190,7 @@ public class BucketTasksFragment extends Fragment {
 
         Log.e(getClass().getName(), "updateUi: " + isEditing);
 
+        llNoTasks.setVisibility(View.GONE);
         if(adapter.taskList == null || adapter.taskList.isEmpty()) {
             llNoTasks.setVisibility(View.VISIBLE);
         }
@@ -226,27 +228,26 @@ public class BucketTasksFragment extends Fragment {
     public void onMessageEvent(SetBucketTaskListEvent event) {
         getFragmentManager().popBackStack();
         bucket = event.getBucket();
-        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket));
+        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket, false));
         updateUi();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateBucketTasksEvent event) {
         isEditing = false;
-        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket));
+        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket, false));
         updateUi();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateTaskListEvent event) {
-        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket));
+        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket, false));
         updateUi();
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskUpdatedEvent event) {
-        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket));
+        adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket, false));
         updateUi();
     }
 

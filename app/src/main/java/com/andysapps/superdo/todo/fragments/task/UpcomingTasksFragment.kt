@@ -3,6 +3,7 @@ package com.andysapps.superdo.todo.fragments.task
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,6 +66,8 @@ class UpcomingTasksFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: TaskUpdatedEvent) {
 
+        Log.d("Upcoming fragment", "executed")
+
         if (event.task.listedIn == TaskListing.TODAY
                 || event.task.listedIn == TaskListing.TOMORROW) {
             return
@@ -81,7 +84,8 @@ class UpcomingTasksFragment : Fragment() {
                 var index = adapter!!.taskList.indexOf(event.task)
                 if (index != -1) {
                     var handler = Handler()
-                    handler.postDelayed({adapter!!.setTaskCompleted(index, event.task) }, 200)                 }
+                    handler.postDelayed({adapter!!.setTaskCompleted(index, event.task) }, 200)
+                }
             }
             else -> {
                 adapter!!.updateList()

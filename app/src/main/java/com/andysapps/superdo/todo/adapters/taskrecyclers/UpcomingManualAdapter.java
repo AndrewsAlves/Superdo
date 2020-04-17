@@ -185,8 +185,9 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
     public void undoTaskCompleted(Task task,int position) {
         taskList.add(position, task);
-        task.setTaskCompleted(false);
+        task.setTaskAction(false);
         notifyItemInserted(position);
+        reaarageGroupTasks(-1);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
     }
@@ -195,6 +196,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         taskList.add(position, task);
         task.setMovedToBin(false);
         notifyItemInserted(position);
+        reaarageGroupTasks(-1);
         FirestoreManager.getInstance().updateTask(task);
     }
 
@@ -321,7 +323,8 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 SuperdoAudioManager.getInstance().playTaskCompleted();
             }
 
-            task.setTaskCompleted(h.isChecked);
+            Log.e(TAG, "onClick: clicked task completed in upcoming manager");
+            task.setTaskAction(h.isChecked);
 
             //// SET TASK COMPLETED
             if (h.isChecked) {
@@ -345,13 +348,13 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
     }
 
     public void setTaskCompleted(int position, Task task) {
-        Log.e(TAG, "run: position " + position);
         taskList.remove(position);
+        reaarageGroupTasks(-1);
         task.setTaskCompletedDate(Calendar.getInstance().getTime());
-        EventBus.getDefault().post(new ShowSnakeBarEvent(context.getString(R.string.snackbar_taskcompleted), v -> undoTaskCompleted(task, position)));
         notifyItemRemoved(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
+        EventBus.getDefault().post(new ShowSnakeBarEvent(context.getString(R.string.snackbar_taskcompleted), v -> undoTaskCompleted(task, position)));
     }
 
     private void strikeOutText(TaskViewHolder holder, long duration) {

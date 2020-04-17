@@ -17,11 +17,13 @@ import com.andysapps.superdo.todo.enums.CPMD
 import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.UndoType
 import com.andysapps.superdo.todo.events.*
+import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent
 import com.andysapps.superdo.todo.events.profile.SelectProfileTaskEvent
 import com.andysapps.superdo.todo.events.update.UpdateUiCPMDEvent
 import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
+import com.andysapps.superdo.todo.model.Bucket
 import com.andysapps.superdo.todo.model.Task
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_cpmdtasks.*
@@ -37,6 +39,8 @@ class CPMDTasksFragment : Fragment() {
     var cpmd : CPMD = CPMD.COMPLETED
 
     var taskList : List<Task>? = null
+    var bucket : Bucket? = null
+
     var adapter: CPMDRecyclerAdapter? = null
 
     var selectingTasks = false
@@ -49,6 +53,13 @@ class CPMDTasksFragment : Fragment() {
         fun instance(cpmd : CPMD) : CPMDTasksFragment {
             val fragment = CPMDTasksFragment()
             fragment.cpmd = cpmd
+            return fragment
+        }
+
+        fun instance(cpmd : CPMD, bucket : Bucket ) : CPMDTasksFragment {
+            val fragment = CPMDTasksFragment()
+            fragment.cpmd = cpmd
+            fragment.bucket = bucket
             return fragment
         }
     }
@@ -68,6 +79,9 @@ class CPMDTasksFragment : Fragment() {
 
     override fun onDestroyView() {
         EventBus.getDefault().post(UpdateProfileEvent())
+        if (bucket != null) {
+            EventBus.getDefault().post(UpdateBucketTasksEvent())
+        }
         EventBus.getDefault().unregister(this)
         super.onDestroyView()
     }
@@ -109,7 +123,11 @@ class CPMDTasksFragment : Fragment() {
 
         when(cpmd) {
             CPMD.COMPLETED -> {
-                taskList = TaskOrganiser.getInstance().getCompletedTaskList()
+                if (bucket != null) {
+                    taskList = TaskOrganiser.getInstance().getCompletedTaskList(bucket)
+                } else {
+                    taskList = TaskOrganiser.getInstance().getCompletedTaskList()
+                }
             }
             CPMD.PENDING -> {
                 taskList = TaskOrganiser.getInstance().getPendingTaskList()

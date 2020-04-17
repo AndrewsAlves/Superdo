@@ -8,7 +8,8 @@
     android:layout_marginEnd="40dp">
 
     <TextView
-        android:visibility="gone"
+        android:layout_marginBottom="20dp"
+        android:visibility="visible"
         android:id="@+id/tv_upcoming_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,7 +21,6 @@
         android:minLines="1"
         android:maxLines="1"
         android:inputType="text"
-        android:layout_marginTop="20dp"
         android:scrollHorizontally="true"
         android:imeOptions="actionDone"/>
 
@@ -38,7 +38,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginBottom="20dp">
 
         <RelativeLayout
             android:layout_width="wrap_content"

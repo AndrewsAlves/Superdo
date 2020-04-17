@@ -49,6 +49,7 @@ public class NotificationBroadcast extends BroadcastReceiver {
                     || notificationId.equals(notification_id_evening)
                     || notificationId.equals(notification_id_afternoon)
                     || notificationId.equals(notification_id_night)) {
+
                 SuperdoNotificationManager.getInstance().postNotificationDaily(context, intent.getExtras().getString(intent_key_notification_id));
 
             } else if (intent.getExtras().getString(intent_key_notification_id).equals(notification_id_remind)) {

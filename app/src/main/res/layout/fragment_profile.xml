@@ -44,6 +44,19 @@
                 android:textColor="@color/black"
                 android:text="Andrews" />
 
+            <TextView
+                android:id="@+id/profile_tv_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textSize="10sp"
+                android:layout_toEndOf="@+id/profile_iv_avatar"
+                android:layout_below="@id/profile_tv_account_name"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/grey2"
+                android:text="Your email" />
+
+
             <ImageView
                 android:id="@+id/profile_iv_editprofile"
                 style="@style/ripple_background_grey"
@@ -536,6 +549,7 @@
                 android:orientation="horizontal">
 
                 <RelativeLayout
+                    android:id="@+id/profile_btn_sub_monthy"
                     android:layout_width="300dp"
                     android:layout_height="135dp"
                     android:layout_marginTop="20dp"
@@ -669,6 +683,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/profile_btn_sub_yearly"
                     android:layout_width="300dp"
                     android:layout_height="135dp"
                     android:layout_marginTop="20dp"

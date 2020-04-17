@@ -1,115 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="40dp"
     android:layout_marginEnd="40dp"
-    android:layout_marginTop="20dp">
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/iv_check_task"
-            android:layout_width="21dp"
-            android:layout_height="21dp"
-            android:layout_centerVertical="true"
-            android:scaleType="center"
-            android:visibility="visible"
-            android:layout_marginStart="6dp"
-            android:src="@drawable/img_oval_thin_grey3"/>
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottie_check_view"
-            android:layout_width="33dp"
-            android:layout_height="33dp"
-            android:layout_centerVertical="true"
-            app:lottie_fileName="anim_check2.json"
-            app:lottie_autoPlay="false" />
-
-        <ImageButton
-            android:id="@+id/btn_click_task_completed"
-            android:layout_width="50dp"
-            android:layout_height="33dp"
-            android:background="@color/transparent"/>
-
-    </RelativeLayout>
+    android:layout_marginTop="0dp">
 
     <LinearLayout
+        android:id="@+id/ll_parent_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
 
-        <lib.mozidev.me.extextview.ExTextView
-            android:id="@+id/tv_tasks_name"
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="This is a task"
-            android:textSize="15sp"
-            android:gravity="center_vertical"
-            android:fontFamily="@font/montserrat_medium"
-            android:textColor="@color/grey3"
-            android:layout_marginTop="5dp"/>
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_check_task"
+                android:layout_width="21dp"
+                android:layout_height="21dp"
+                android:layout_centerVertical="true"
+                android:scaleType="center"
+                android:visibility="visible"
+                android:layout_marginStart="6dp"
+                android:src="@drawable/img_oval_thin_grey3"/>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_check_view"
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_centerVertical="true"
+                app:lottie_fileName="anim_check2.json"
+                app:lottie_autoPlay="false" />
+
+            <ImageButton
+                android:id="@+id/btn_click_task_completed"
+                android:layout_width="50dp"
+                android:layout_height="33dp"
+                android:background="@color/transparent"/>
+
+        </RelativeLayout>
 
         <LinearLayout
-            android:visibility="visible"
-            android:id="@+id/parent_ll_task_icons"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_marginTop="5dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:visibility="visible"
-                android:id="@+id/iv_repeat"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_mini_repeat"
-                android:scaleType="center"
-                android:layout_marginEnd="15dp"/>
+            <lib.mozidev.me.extextview.ExTextView
+                android:id="@+id/tv_tasks_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="This is a task"
+                android:textSize="15sp"
+                android:gravity="center_vertical"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/grey3"
+                android:layout_marginTop="5dp"/>
 
-            <ImageView
+            <LinearLayout
                 android:visibility="visible"
-                android:id="@+id/iv_deadline"
+                android:id="@+id/parent_ll_task_icons"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_mini_deadline"
-                android:scaleType="center"
-                android:layout_marginEnd="15dp"/>
+                android:layout_height="20dp"
+                android:layout_marginTop="5dp">
 
-            <ImageView
-                android:visibility="visible"
-                android:id="@+id/iv_subtasks"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_mini_subtasks"
-                android:scaleType="center"
-                android:layout_marginEnd="15dp"/>
+                <ImageView
+                    android:visibility="visible"
+                    android:id="@+id/iv_repeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_mini_repeat"
+                    android:scaleType="center"
+                    android:layout_marginEnd="15dp"/>
 
-            <ImageView
-                android:visibility="visible"
-                android:id="@+id/iv_remind"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_mini_remind"
-                android:scaleType="center"
-                android:layout_marginEnd="15dp"/>
+                <ImageView
+                    android:visibility="visible"
+                    android:id="@+id/iv_deadline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_mini_deadline"
+                    android:scaleType="center"
+                    android:layout_marginEnd="15dp"/>
 
-            <ImageView
-                android:visibility="visible"
-                android:id="@+id/iv_focus"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_mini_focus"
-                android:scaleType="center"
-                android:layout_marginEnd="15dp"/>
+                <ImageView
+                    android:visibility="visible"
+                    android:id="@+id/iv_subtasks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_mini_subtasks"
+                    android:scaleType="center"
+                    android:layout_marginEnd="15dp"/>
+
+                <ImageView
+                    android:visibility="visible"
+                    android:id="@+id/iv_remind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_mini_remind"
+                    android:scaleType="center"
+                    android:layout_marginEnd="15dp"/>
+
+                <ImageView
+                    android:visibility="visible"
+                    android:id="@+id/iv_focus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_mini_focus"
+                    android:scaleType="center"
+                    android:layout_marginEnd="15dp"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_tv_completedtask"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Completed tasks (0)"
+        android:fontFamily="@font/montserrat_bold"
+        android:textColor="@color/grey2"
+        android:textSize="12sp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp">
+    </TextView>
+
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/last_element_space"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"/>
 
 </LinearLayout>

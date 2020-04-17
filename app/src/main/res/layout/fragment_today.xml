@@ -38,7 +38,6 @@
         android:id="@+id/recyclerView_today"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="80dp"
         android:requiresFadingEdge="vertical"
         android:fadingEdgeLength="50dp"
         tools:listitem="@layout/item_task" />
