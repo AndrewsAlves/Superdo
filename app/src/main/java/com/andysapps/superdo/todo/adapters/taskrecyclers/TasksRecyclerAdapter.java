@@ -74,8 +74,9 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     }
 
     public void addTask(Task task) {
-        taskList.add(task);
-        notifyItemInserted(taskList.size() - 1);
+        taskList.add(0, task);
+        notifyItemInserted(0);
+        updateTasksIndexes();
     }
 
     public void removeTask(Task task) {
@@ -87,6 +88,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 this.taskList.remove(i);
             }
         }
+        updateTasksIndexes();
     }
 
     public void updateList(List<Task> taskList) {
@@ -102,8 +104,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         taskList.add(position, task);
         task.setTaskAction(false);
         notifyItemInserted(position);
-        FirestoreManager.getInstance().updateTask(task);
-        TaskOrganiser.getInstance().organiseAllTasks();
+        updateTasksIndexes();
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
     }
 
@@ -248,7 +249,6 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 .strikeThrough();
     }
 
-
     private void strikeInText(TaskViewHolder holder) {
         holder.painting.clearStrikeThrough();
     }
@@ -270,14 +270,18 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             }
         }
 
+        Log.e(TAG, "onItemMove: from : " + fromPosition);
+
+        updateTasksIndexes();
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    public void updateTasksIndexes() {
         for (Task task : taskList) {
             task.setTaskIndex(taskList.indexOf(task));
             FirestoreManager.getInstance().updateTask(task);
         }
-
-        Log.e(TAG, "onItemMove: from : " + fromPosition);
         TaskOrganiser.getInstance().organiseAllTasks();
-        notifyItemMoved(fromPosition, toPosition);
     }
 
     @Override

@@ -21,6 +21,6 @@
 
             <solid android:color="@color/bg_white1" />
         </shape>
-    </item>-
+    </item>
 
 </ripple>

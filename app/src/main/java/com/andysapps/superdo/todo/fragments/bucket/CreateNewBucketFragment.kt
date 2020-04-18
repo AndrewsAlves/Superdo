@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
-import com.andysapps.superdo.todo.activity.MainActivity
 import com.andysapps.superdo.todo.enums.BucketColors
 import com.andysapps.superdo.todo.enums.BucketType
 import com.andysapps.superdo.todo.enums.MoonButtonType
@@ -22,6 +22,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
@@ -31,6 +32,8 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
 
     var bucket : Bucket = Bucket()
     var isEditing : Boolean = false
+
+    var bucketTypeButtons : ArrayList<ImageView>? = null
 
     companion object {
 
@@ -57,7 +60,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         initUi()
         if (!isEditing) {
             bucket.tagColor = BucketColors.Red.name
-            bucket.bucketType = BucketType.Tasks.name
+            bucket.bucketIcon = 0
         } else {
             et_create_bucket_name.setText(bucket.name)
         }
@@ -72,39 +75,63 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         super.onDestroyView()
     }
 
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-            bucket_icon_1.id -> {
-                bucket.bucketType = BucketType.Tasks.name
-            }
-            bucket_icon_2.id -> {
-                bucket.bucketType = BucketType.Personal.name
-            }
-            bucket_icon_3.id -> {
-                bucket.bucketType = BucketType.Gym.name
-            }
-            bucket_icon_4.id -> {
-                bucket.bucketType = BucketType.Work.name
-            }
-            bucket_icon_5.id -> {
-                bucket.bucketType = BucketType.House.name
-            }
+    fun initUi() {
 
-           /* bucket_color_1.id -> {
-                bucket.tagColor = BucketColors.Red.name
+        bucketTypeButtons = ArrayList()
+
+        bucketTypeButtons!!.add(iv_bucket_icon_1)
+        bucketTypeButtons!!.add(iv_bucket_icon_2)
+        bucketTypeButtons!!.add(iv_bucket_icon_3)
+        bucketTypeButtons!!.add(iv_bucket_icon_4)
+        bucketTypeButtons!!.add(iv_bucket_icon_5)
+        bucketTypeButtons!!.add(iv_bucket_icon_6)
+        bucketTypeButtons!!.add(iv_bucket_icon_7)
+        bucketTypeButtons!!.add(iv_bucket_icon_8)
+        bucketTypeButtons!!.add(iv_bucket_icon_9)
+        bucketTypeButtons!!.add(iv_bucket_icon_10)
+        bucketTypeButtons!!.add(iv_bucket_icon_11)
+        bucketTypeButtons!!.add(iv_bucket_icon_12)
+        bucketTypeButtons!!.add(iv_bucket_icon_13)
+        bucketTypeButtons!!.add(iv_bucket_icon_14)
+        bucketTypeButtons!!.add(iv_bucket_icon_15)
+
+        for (iv in bucketTypeButtons!!) {
+            iv.setOnClickListener(this)
+        }
+
+        /* bucket_color_1.setOnClickListener(this)
+         bucket_color_2.setOnClickListener(this)
+         bucket_color_3.setOnClickListener(this)
+         bucket_color_4.setOnClickListener(this)
+         bucket_color_5.setOnClickListener(this)*/
+        ib_close_create_bucket.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+
+        for (iv in bucketTypeButtons!!) {
+            if (v == iv) {
+                bucket.bucketIcon = bucketTypeButtons!!.indexOf(iv)
             }
-            bucket_color_2.id -> {
-                bucket.tagColor = BucketColors.SkyBlue.name
-            }
-            bucket_color_3.id -> {
-                bucket.tagColor = BucketColors.Green.name
-            }
-            bucket_color_4.id -> {
-                bucket.tagColor = BucketColors.InkBlue.name
-            }
-            bucket_color_5.id -> {
-                bucket.tagColor = BucketColors.Orange.name
-            }*/
+        }
+
+        when (v!!.id) {
+
+            /* bucket_color_1.id -> {
+                 bucket.tagColor = BucketColors.Red.name
+             }
+             bucket_color_2.id -> {
+                 bucket.tagColor = BucketColors.SkyBlue.name
+             }
+             bucket_color_3.id -> {
+                 bucket.tagColor = BucketColors.Green.name
+             }
+             bucket_color_4.id -> {
+                 bucket.tagColor = BucketColors.InkBlue.name
+             }
+             bucket_color_5.id -> {
+                 bucket.tagColor = BucketColors.Orange.name
+             }*/
             ib_close_create_bucket.id -> {
                 activity!!.supportFragmentManager.popBackStack()
                 //EventBus.getDefault().post(RemoveFragmentEvents())
@@ -115,62 +142,23 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         updateUI()
     }
 
-    fun initUi() {
-        bucket_icon_1.setOnClickListener(this)
-        bucket_icon_2.setOnClickListener(this)
-        bucket_icon_3.setOnClickListener(this)
-        bucket_icon_4.setOnClickListener(this)
-        bucket_icon_5.setOnClickListener(this)
-       /* bucket_color_1.setOnClickListener(this)
-        bucket_color_2.setOnClickListener(this)
-        bucket_color_3.setOnClickListener(this)
-        bucket_color_4.setOnClickListener(this)
-        bucket_color_5.setOnClickListener(this)*/
-        ib_close_create_bucket.setOnClickListener(this)
-    }
-
     fun updateUI() {
 
-        bucket_icon_1.setImageResource(R.drawable.ic_bc_tasks_off)
-        bucket_icon_2.setImageResource(R.drawable.ic_bc_personal_off)
-        bucket_icon_3.setImageResource(R.drawable.ic_bc_gym_off)
-        bucket_icon_4.setImageResource(R.drawable.ic_bc_briefcase_off)
-        bucket_icon_5.setImageResource(R.drawable.ic_bc_house_off)
+        for (iv in bucketTypeButtons!!) {
+            iv.alpha = 0.5f
+        }
 
-        bg_bucket_icon_1.visibility = View.GONE
-        bg_bucket_icon_2.visibility = View.GONE
-        bg_bucket_icon_3.visibility = View.GONE
-        bg_bucket_icon_4.visibility = View.GONE
-        bg_bucket_icon_5.visibility = View.GONE
+        for (iv in bucketTypeButtons!!) {
+            if (bucket.bucketIcon == bucketTypeButtons!!.indexOf(iv)){
+                iv.alpha = 1.0f
+            }
+        }
 
        /* bg_bucket_color_1.visibility = View.GONE
         bg_bucket_color_2.visibility = View.GONE
         bg_bucket_color_3.visibility = View.GONE
         bg_bucket_color_4.visibility = View.GONE
         bg_bucket_color_5.visibility = View.GONE*/
-
-        when(BucketType.valueOf(bucket.bucketType)) {
-            BucketType.Tasks -> {
-                bucket_icon_1.setImageResource(R.drawable.ic_bc_tasks_on)
-                bg_bucket_icon_1.visibility = View.VISIBLE
-            }
-            BucketType.Personal -> {
-                bucket_icon_2.setImageResource(R.drawable.ic_bc_personal_on)
-                bg_bucket_icon_2.visibility = View.VISIBLE
-            }
-            BucketType.Gym -> {
-                bucket_icon_3.setImageResource(R.drawable.ic_bc_gym_on)
-                bg_bucket_icon_3.visibility = View.VISIBLE
-            }
-            BucketType.Work -> {
-                bucket_icon_4.setImageResource(R.drawable.ic_bc_briefcase_on)
-                bg_bucket_icon_4.visibility = View.VISIBLE
-            }
-            BucketType.House -> {
-                bucket_icon_5.setImageResource(R.drawable.ic_bc_house_on)
-                bg_bucket_icon_5.visibility = View.VISIBLE
-            }
-        }
 
        /* when(BucketColors.valueOf(bucket.tagColor)) {
             BucketColors.Red -> bg_bucket_color_1.visibility = View.VISIBLE

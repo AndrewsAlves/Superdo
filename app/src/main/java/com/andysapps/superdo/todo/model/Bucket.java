@@ -28,7 +28,7 @@ public class Bucket {
     String tagColor;
 
     // enum BucketType
-    String bucketType;
+    int bucketIcon;
 
     boolean isFavorite;
 
@@ -115,7 +115,6 @@ public class Bucket {
         this.lastEdited = lastEdited;
     }
 
-
     public String getTagColor() {
         if (tagColor == null) {
             return BucketColors.Red.name();
@@ -127,14 +126,11 @@ public class Bucket {
         this.tagColor = tagColor;
     }
 
-    public String getBucketType() {
-        if (bucketType == null) {
-            return BucketType.Tasks.name();
-        }
-        return bucketType;
+    public int getBucketIcon() {
+        return bucketIcon;
     }
 
-    public void setBucketType(String bucketType) {
-        this.bucketType = bucketType;
+    public void setBucketIcon(int bucketIcon) {
+        this.bucketIcon = bucketIcon;
     }
 }

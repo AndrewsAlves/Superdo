@@ -56,6 +56,7 @@ class DoDateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, TimeP
         EventBus.getDefault().register(this)
         initUi()
         updateUi()
+        showDatePicker()
     }
 
     override fun onDismiss(dialog: DialogInterface) {

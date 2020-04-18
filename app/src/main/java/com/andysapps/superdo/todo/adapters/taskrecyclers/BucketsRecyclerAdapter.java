@@ -10,18 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.dialog.BucketActionBottomDialog;
-import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.events.ExitBucketTaskFragment;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.SetTasksFragment;
-import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
-import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
@@ -96,23 +93,7 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
 
         holder.tvBucketName.setText(bucket.getName());
 
-        switch (BucketType.valueOf(bucket.getBucketType())) {
-            case Tasks:
-                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_tasks_on);
-                break;
-            case Personal:
-                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_personal_on);
-                break;
-            case Gym:
-                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_gym_on);
-                break;
-            case Work:
-                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_briefcase_on);
-                break;
-            case House:
-                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_house_on);
-                break;
-        }
+        holder.ivBucketIcon.setImageResource(Constants.bucketIcons[bucket.getBucketIcon()]);
 
         String taskDone = TaskOrganiser.getInstance().getBucketTasksDoneCount(bucket) + " / " +
                 TaskOrganiser.getInstance().getBucketTasksCount(bucket);

@@ -3,6 +3,7 @@ package com.andysapps.superdo.todo.fragments.task;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment;
@@ -34,8 +36,6 @@ import com.andysapps.superdo.todo.events.action.SelectBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.DialogDismissEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
-import com.andysapps.superdo.todo.manager.TaskOrganiser;
-import com.andysapps.superdo.todo.model.Performance;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
@@ -173,10 +173,18 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
         initUi();
         Utils.showSoftKeyboard(getContext(), etTaskName);
 
-        SuperDate date = Utils.getSuperdateToday();
-        date.setTime(Utils.getDefaultTime(), 0);
-        task.setDoDate(date);
-        updateUi();
+        if (Utils.getDefaultTime() > 18) {
+            SuperDate date = Utils.getSuperdateTomorrow();
+            date.setTime(9,0);
+            task.setDoDate(date);
+            updateUi();
+        } else {
+            SuperDate date = Utils.getSuperdateToday();
+            date.setTime(Utils.getDefaultTime(), 0);
+            task.setDoDate(date);
+            updateUi();
+        }
+
         // Inflate the layout for this fragment
         return v;
     }
@@ -236,68 +244,31 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
         tvToday.setText("Today");
         tvTomorrow.setText("Tomorrow");
         tvSomeday.setText("Set Date");
-        tvToday.setTextColor(getResources().getColor(R.color.grey2));
-        tvTomorrow.setTextColor(getResources().getColor(R.color.grey2));
-        tvSomeday.setTextColor(getResources().getColor(R.color.grey2));
+
+        btnToday.getBackground().setColorFilter(getResources().getColor(R.color.grey1), PorterDuff.Mode.SRC_ATOP);
+        btnTomorrow.getBackground().setColorFilter(getResources().getColor(R.color.grey1), PorterDuff.Mode.SRC_ATOP);
+        btnSomeday.getBackground().setColorFilter(getResources().getColor(R.color.grey1), PorterDuff.Mode.SRC_ATOP);
 
         if (task.getDoDate() != null) {
 
             if (Utils.isSuperDateToday(task.getDoDate())) {
                 tvToday.setText("Today by " + task.getDoDate().getTimeString());
-                tvToday.setTextColor(getResources().getColor(R.color.lightRed));
+                btnToday.getBackground().setColorFilter(getResources().getColor(R.color.lightRed), PorterDuff.Mode.SRC_ATOP);
             } else if (Utils.isSuperDateTomorrow(task.getDoDate())) {
                 tvTomorrow.setText("Tomorrow by " + task.getDoDate().getTimeString());
-                tvTomorrow.setTextColor(getResources().getColor(R.color.lightRed));
+                btnTomorrow.getBackground().setColorFilter(getResources().getColor(R.color.lightRed), PorterDuff.Mode.SRC_ATOP);
             } else {
                 tvSomeday.setText("Do " + task.getDoDate().getSuperDateString() + " "+ task.getDoDate().getTimeString());
-                tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
+                btnSomeday.getBackground().setColorFilter(getResources().getColor(R.color.lightRed), PorterDuff.Mode.SRC_ATOP);
             }
         } else {
             tvSomeday.setText("Do Someday");
-            tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
+            btnSomeday.getBackground().setColorFilter(getResources().getColor(R.color.lightRed), PorterDuff.Mode.SRC_ATOP);
         }
-
-        /*if (task.getDoDate() == null) {
-            ivDoDate.setImageResource(R.drawable.ic_duedate_off);
-            tvDoDate.setText("No Date");
-            tvDoDate.setTextColor(getResources().getColor(R.color.grey2));
-            bgDoDate.setBackground(null);
-        } else {
-            ivDoDate.setImageResource(R.drawable.ic_duedate_on_red);
-            tvDoDate.setText(task.getDoDateString());
-            tvDoDate.setTextColor(getResources().getColor(R.color.white));
-            bgDoDate.setBackgroundResource(R.drawable.bg_light_red);
-        }
-
-       if (task.getDoDate() != null) {
-           tvTime.setText(task.getTimeString());
-           ivTime.setImageResource(Utils.getTimeIcon(task.getDoDate().getHours()));
-       } else {
-           tvTime.setText("No Time");
-           ivTime.setImageResource(R.drawable.ic_time_off);
-       }*/
 
        if (task.getBucket() != null) {
-
            bucketName.setText(task.getBucket().getName());
-
-           switch (BucketType.valueOf(task.getBucket().getBucketType())) {
-               case Tasks:
-                   ivTag.setImageResource(R.drawable.ic_bc_tasks_on);
-                   break;
-               case Gym:
-                   ivTag.setImageResource(R.drawable.ic_bc_gym_on);
-                   break;
-               case Work:
-                   ivTag.setImageResource(R.drawable.ic_bc_briefcase_on);
-                   break;
-               case House:
-                   ivTag.setImageResource(R.drawable.ic_bc_house_on);
-                   break;
-               case Personal:
-                   ivTag.setImageResource(R.drawable.ic_bc_personal_on);
-                   break;
-           }
+           ivTag.setImageResource(Constants.bucketIcons[task.getBucket().getBucketIcon()]);
        }
     }
 
@@ -399,7 +370,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
             task.setUserId(FirestoreManager.getInstance().user.getUserId());
             task.setName(etTaskName.getText().toString());
             task.setListedIn(Utils.getTaskListed(task.getDoDate()));
-            task.setTaskIndex(TaskOrganiser.getInstance().getTaskSize(task.getListedIn()));
+            task.setTaskIndex(0);
 
             if (task.isToRemind()) {
                 SuperdoAlarmManager.getInstance().setRemind(getContext(), task);

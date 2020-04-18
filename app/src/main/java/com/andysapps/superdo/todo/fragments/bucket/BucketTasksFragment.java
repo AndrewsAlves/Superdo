@@ -1,7 +1,6 @@
 package com.andysapps.superdo.todo.fragments.bucket;
 
 
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -18,10 +17,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.taskrecyclers.BucketTasksRecyclerAdapter;
-import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter;
 
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
@@ -170,23 +169,7 @@ public class BucketTasksFragment extends Fragment {
             tvBucketName.setVisibility(View.VISIBLE);
         }
 
-        switch (BucketType.valueOf(bucket.getBucketType())) {
-            case Tasks:
-                ivBucketType.setImageResource(R.drawable.ic_bc_tasks_on);
-                break;
-            case Personal:
-                ivBucketType.setImageResource(R.drawable.ic_bc_personal_on);
-                break;
-            case Gym:
-                ivBucketType.setImageResource(R.drawable.ic_bc_gym_on);
-                break;
-            case Work:
-                ivBucketType.setImageResource(R.drawable.ic_bc_briefcase_on);
-                break;
-            case House:
-                ivBucketType.setImageResource(R.drawable.ic_bc_house_on);
-                break;
-        }
+        ivBucketType.setImageResource(Constants.bucketIcons[bucket.getBucketIcon()]);
 
         Log.e(getClass().getName(), "updateUi: " + isEditing);
 

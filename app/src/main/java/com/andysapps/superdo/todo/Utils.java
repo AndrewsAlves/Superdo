@@ -673,6 +673,8 @@ public class Utils {
             return 15;
         } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 18) {
             return 18;
+        } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 21) {
+            return 21;
         }
 
         return 9;

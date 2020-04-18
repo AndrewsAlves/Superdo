@@ -11,11 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent;
-import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.Bucket;
 
 import org.greenrobot.eventbus.EventBus;
@@ -65,23 +64,7 @@ public class SelectBucketRecyclerAdapter extends RecyclerView.Adapter<SelectBuck
 
         holder.tvBucketName.setText(bucket.getName());
 
-        switch (BucketType.valueOf(bucket.getBucketType())) {
-            case Tasks:
-                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_tasks_on);
-                break;
-            case Personal:
-                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_personal_on);
-                break;
-            case Gym:
-                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_gym_on);
-                break;
-            case Work:
-                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_briefcase_on);
-                break;
-            case House:
-                holder.ivBucketIcon.setImageResource(R.drawable.ic_bc_house_on);
-                break;
-        }
+        holder.ivBucketIcon.setImageResource(Constants.bucketIcons[bucket.getBucketIcon()]);
 
         holder.item.setOnClickListener(v -> EventBus.getDefault().post(new SelectBucketEvent(bucket)));
 

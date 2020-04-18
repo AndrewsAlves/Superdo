@@ -8,6 +8,11 @@ public class Constants {
     public static final int[] trophySrc = {R.drawable.trophy1, R.drawable.trophy2, R.drawable.trophy3, R.drawable.trophy4, R.drawable.trophy5,
             R.drawable.trophy6, R.drawable.trophy7, R.drawable.trophy8, R.drawable.trophy9, R.drawable.trophy10};
 
+    public static final int[] bucketIcons = {R.drawable.ic_bucket_1, R.drawable.ic_bucket_2, R.drawable.ic_bucket_3, R.drawable.ic_bucket_4, R.drawable.ic_bucket_5,
+            R.drawable.ic_bucket_6, R.drawable.ic_bucket_7, R.drawable.ic_bucket_8, R.drawable.ic_bucket_9, R.drawable.ic_bucket_10,
+            R.drawable.ic_bucket_11, R.drawable.ic_bucket_12, R.drawable.ic_bucket_13, R.drawable.ic_bucket_14, R.drawable.ic_bucket_15};
+
+
     public static final int[] trophyPoints = {0, 500, 1000, 2000, 4000, 6000, 8000, 11000, 13000, 15000};
     public static final String[] weekShortTxt = {"S", "M", "T", "W", "T", "F", "S"};
 

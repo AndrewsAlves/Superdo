@@ -21,6 +21,7 @@ import butterknife.ButterKnife
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
 import com.airbnb.lottie.value.LottieFrameInfo
+import com.andysapps.superdo.todo.Constants
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
@@ -38,7 +39,6 @@ import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
 import com.andysapps.superdo.todo.events.sidekick.SetDoDateEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
 import com.andysapps.superdo.todo.events.sidekick.UpdateSubtasksEvent
-import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent
 import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
 import com.andysapps.superdo.todo.events.update.UpdateUiEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
@@ -261,14 +261,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         if (task.bucket != null) {
             editTask_tv_bucketName.text = task.bucket.name
             editTask_tv_bucketName.setTextColor(resources.getColor(R.color.black))
-
-            when (BucketType.valueOf(task.bucket.bucketType)) {
-                BucketType.Tasks -> editTask_iv_bucket.setImageResource(R.drawable.ic_bc_tasks_on)
-                BucketType.Gym -> editTask_iv_bucket.setImageResource(R.drawable.ic_bc_gym_on)
-                BucketType.Work -> editTask_iv_bucket.setImageResource(R.drawable.ic_bc_briefcase_on)
-                BucketType.House -> editTask_iv_bucket.setImageResource(R.drawable.ic_bc_house_on)
-                BucketType.Personal -> editTask_iv_bucket.setImageResource(R.drawable.ic_bc_personal_on)
-            }
+            editTask_iv_bucket.setImageResource(Constants.bucketIcons[task.bucket.bucketIcon])
         }
 
         isChecked = task.isTaskCompleted

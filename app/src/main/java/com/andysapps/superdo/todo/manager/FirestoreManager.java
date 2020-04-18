@@ -1,9 +1,6 @@
 package com.andysapps.superdo.todo.manager;
 
 import android.content.Context;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -20,15 +17,12 @@ import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
-import com.andysapps.superdo.todo.events.firestore.UploadTaskFailureEvent;
-import com.andysapps.superdo.todo.events.firestore.UploadTaskSuccessEvent;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.User;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -114,7 +108,7 @@ public class FirestoreManager {
         bucket.setDocumentId("all_tasks");
         bucket.setName("All Tasks");
         bucket.setId("id_all_tasks");
-        bucket.setBucketType(BucketType.Tasks.toString());
+        bucket.setBucketIcon(0);
         bucket.setTagColor(BucketColors.Red.toString()); // light Red
 
         return bucket;
@@ -129,7 +123,7 @@ public class FirestoreManager {
             bucket.setName("Personal");
         }
         bucket.setId(user.getUserId());
-        bucket.setBucketType(BucketType.Personal.toString());
+        bucket.setBucketIcon(BucketType.personal.getValue());
         bucket.setTagColor(BucketColors.Red.toString()); // light Red
 
         return bucket;

@@ -74,117 +74,142 @@
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp">
 
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/iv_bucket_icon_1"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/bg_bucket_icon_1"
-                    android:layout_width="match_parent"
-                    android:scaleType="fitCenter"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:src="@drawable/bg_oval_bucketicon_red"/>
-
-                <ImageView
-                    android:id="@+id/bucket_icon_1"
-                    android:layout_width="match_parent"
-                    android:scaleType="center"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_bc_tasks_off"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_1"/>
+            <ImageView
+                android:id="@+id/iv_bucket_icon_2"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="match_parent">
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_2"/>
 
-                <ImageView
-                    android:id="@+id/bg_bucket_icon_2"
-                    android:layout_width="match_parent"
-                    android:scaleType="fitCenter"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:src="@drawable/bg_oval_bucketicon_red"/>
-
-                <ImageView
-                    android:id="@+id/bucket_icon_2"
-                    android:layout_width="match_parent"
-                    android:scaleType="center"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_bc_gym_off"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/iv_bucket_icon_3"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="match_parent">
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_3"/>
 
-                <ImageView
-                    android:id="@+id/bg_bucket_icon_3"
-                    android:layout_width="match_parent"
-                    android:scaleType="fitCenter"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:src="@drawable/bg_oval_bucketicon_red"/>
-
-                <ImageView
-                    android:id="@+id/bucket_icon_3"
-                    android:layout_width="match_parent"
-                    android:scaleType="center"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_bc_personal_off"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/iv_bucket_icon_4"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="match_parent">
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_4"/>
 
-                <ImageView
-                    android:id="@+id/bg_bucket_icon_4"
-                    android:layout_width="match_parent"
-                    android:scaleType="fitCenter"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:src="@drawable/bg_oval_bucketicon_red"/>
-
-                <ImageView
-                    android:id="@+id/bucket_icon_4"
-                    android:layout_width="match_parent"
-                    android:scaleType="center"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_bc_briefcase_off"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/iv_bucket_icon_5"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="match_parent">
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_5"/>
 
-                <ImageView
-                    android:id="@+id/bg_bucket_icon_5"
-                    android:layout_width="match_parent"
-                    android:scaleType="fitCenter"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:src="@drawable/bg_oval_bucketicon_red"/>
-
-                <ImageView
-                    android:id="@+id/bucket_icon_5"
-                    android:layout_width="match_parent"
-                    android:scaleType="center"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_bc_house_off"/>
-
-            </RelativeLayout>
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp">
+
+            <ImageView
+                android:id="@+id/iv_bucket_icon_6"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_6"/>
+            <ImageView
+                android:id="@+id/iv_bucket_icon_7"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_7"/>
+
+            <ImageView
+                android:id="@+id/iv_bucket_icon_8"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_8"/>
+
+            <ImageView
+                android:id="@+id/iv_bucket_icon_9"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_9"/>
+
+            <ImageView
+                android:id="@+id/iv_bucket_icon_10"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_10"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp">
+
+            <ImageView
+                android:id="@+id/iv_bucket_icon_11"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_11"/>
+            <ImageView
+                android:id="@+id/iv_bucket_icon_12"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_12"/>
+
+            <ImageView
+                android:id="@+id/iv_bucket_icon_13"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_13"/>
+
+            <ImageView
+                android:id="@+id/iv_bucket_icon_14"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_14"/>
+
+            <ImageView
+                android:id="@+id/iv_bucket_icon_15"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_bucket_15"/>
+
+        </LinearLayout>
+
 
         <!--<TextView
             android:layout_width="wrap_content"

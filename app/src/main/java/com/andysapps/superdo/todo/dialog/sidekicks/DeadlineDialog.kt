@@ -44,9 +44,9 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initUi()
         updateUi()
+        showDatePicker()
     }
 
     private fun initUi() {
@@ -161,6 +161,7 @@ class DeadlineDialog : DialogFragment(), DatePickerDialog.OnDateSetListener, Tim
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
         deadline.setDoDate(dayOfMonth, monthOfYear + 1, year)
         deadline.hasDate = true
+        showTimePicker()
         updateUi()
     }
 
