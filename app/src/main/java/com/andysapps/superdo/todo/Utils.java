@@ -86,6 +86,11 @@ public class Utils {
         return new SuperDate(c.get(Calendar.DATE), c.get(Calendar.MONTH) + 1, c.get(Calendar.YEAR));
     }
 
+    public static SuperDate getSuperdateTomorrow() {
+        Calendar c = getTomorrow();
+        return new SuperDate(c.get(Calendar.DATE), c.get(Calendar.MONTH) + 1, c.get(Calendar.YEAR));
+    }
+
     public static Calendar getTomorrow() {
         Date dt = new Date();
         Calendar c = Calendar.getInstance();
@@ -658,23 +663,16 @@ public class Utils {
         return calendar;
     }
 
-    public static int getDefaultTime(TaskListing listing) {
+    public static int getDefaultTime() {
 
-        switch (listing) {
-            case TODAY:
-                if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 9 ) {
-                    return 9;
-                } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 12) {
-                    return 12;
-                } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 15) {
-                    return 15;
-                } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 18) {
-                    return 18;
-                }
-                break;
-            case TOMORROW:
-            case UPCOMING:
-                return 9;
+        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 9 ) {
+            return 9;
+        } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 12) {
+            return 12;
+        } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 15) {
+            return 15;
+        } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 18) {
+            return 18;
         }
 
         return 9;

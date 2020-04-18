@@ -298,11 +298,11 @@ public class SuperdoNotificationManager {
          if (FirebaseAuth.getInstance().getCurrentUser() == null) {
              return;
          }
-
+         
          FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        DocumentReference snapshot  = firestore.collection(DB_USER).document(user.getUid()).collection(DB_TASKS).document(taskDocId);
-        snapshot.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+         DocumentReference snapshot  = firestore.collection(DB_USER).document(user.getUid()).collection(DB_TASKS).document(taskDocId);
+         snapshot.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
 

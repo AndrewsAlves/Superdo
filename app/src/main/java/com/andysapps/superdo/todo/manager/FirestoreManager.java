@@ -28,7 +28,9 @@ import com.andysapps.superdo.todo.model.User;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -252,31 +254,6 @@ public class FirestoreManager {
                         taskHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Task.class));
                         updateTaskList(TaskUpdateType.Added,taskHashMap.get(dc.getDocument().getId()));
                         break;
-                    /*case MODIFIED:
-                        if(taskHashMap.containsKey(dc.getDocument().getId())) {
-                            taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
-                            updateTaskList(TaskUpdateType.Modified,taskHashMap.get(dc.getDocument().getId()));
-                        }
-                        break;*/
-                  /*  case MODIFIED:
-                        if(taskHashMap.containsKey(documentId)) {
-                            // only the task completed task Update
-                            if (taskHashMap.get(documentId).isHabitDone() != task.isHabitDone()) {
-                                taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
-                                TaskOrganiser.getInstance().organiseAllTasks();
-                                Log.e(TAG, "Query snapshot only Checking :");
-                            } else {
-                                taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
-                                updateTaskList(DocumentChange.Type.MODIFIED,taskHashMap.get(dc.getDocument().getId()));
-                            }
-                        }
-                        break;
-                    case REMOVED:
-                        if(taskHashMap.containsKey(dc.getDocument().getId())) {
-                            taskHashMap.remove(dc.getDocument().getId());
-                            updateTaskList(DocumentChange.Type.REMOVED,taskHashMap.get(dc.getDocument().getId()));
-                        }
-                        break;*/
                 }
             }
         });
@@ -334,7 +311,6 @@ public class FirestoreManager {
     }
 
     public void updateTaskList(TaskUpdateType change, Task task) {
-        TaskOrganiser.getInstance().organiseAllTasks();
         EventBus.getDefault().post(new TaskUpdatedEvent(change, task));
     }
 
@@ -351,17 +327,10 @@ public class FirestoreManager {
                 });
     }
 
-    public void uploadTask(Task task) {
-
-        getUserTaskCollection().document().set(task)
-                .addOnSuccessListener(aVoid -> {
-                    EventBus.getDefault().post(new UploadTaskSuccessEvent());
-                    Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!");
-                })
-                .addOnFailureListener(e -> {
-                    EventBus.getDefault().post(new UploadTaskFailureEvent());
-                    Log.e(TAG, "Error uploading task", e);
-                });
+    public String uploadTask(Task task) {
+        String id = getUserTaskCollection().document().getId();
+        getUserTaskCollection().document(id).set(task);
+        return id;
     }
 
     public void updateTask(Task task) {
@@ -406,7 +375,9 @@ public class FirestoreManager {
             return;
         }
 
-        DocumentReference docRef = getUserTaskCollection().document(taskDocumentId);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        DocumentReference docRef = firestore.collection(DB_USER).document(user.getUid()).collection(DB_TASKS).document(taskDocumentId);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {

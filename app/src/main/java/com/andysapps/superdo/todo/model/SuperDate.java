@@ -175,7 +175,7 @@ public class SuperDate implements Cloneable {
         return duedate;
     }
 
-    public  String getTimeString() {
+    public String getTimeString() {
 
         if (!hasTime) {
             return "00 : 00 AM";
@@ -192,6 +192,10 @@ public class SuperDate implements Cloneable {
         if (hours > 12) {
             hours1 = hours - 12;
             meridien = " PM";
+        }
+
+        if (minutes == 0) {
+            return hours1 + meridien;
         }
 
         // format to two decimal

@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment;
@@ -34,8 +35,10 @@ import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.DialogDismissEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
+import com.andysapps.superdo.todo.model.Performance;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
+import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -56,7 +59,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddTaskFragment extends BottomSheetDialogFragment implements  DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnDismissListener {
+public class AddTaskFragment extends BottomSheetDialogFragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnDismissListener {
 
     private static final String TAG = "Add Task Fragment";
     @BindView(R.id.et_add_task)
@@ -68,25 +71,31 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     @BindView(R.id.btn_today)
     LinearLayout btnToday;
 
-    @BindView(R.id.iv_dot_today)
-    ImageView ivDotToday;
+    //@BindView(R.id.iv_dot_today)
+    //ImageView ivDotToday;
 
     @BindView(R.id.tv_today)
     TextView tvToday;
     @BindView(R.id.btn_tomorrow)
     LinearLayout btnTomorrow;
 
-    @BindView(R.id.iv_dot_tomorrow)
-    ImageView ivDotTomorrow;
+  //  @BindView(R.id.iv_dot_tomorrow)
+   // ImageView ivDotTomorrow;
     @BindView(R.id.tv_tomorrow)
     TextView tvTomorrow;
 
-    @BindView(R.id.iv_dot_someday)
-    ImageView ivDotSomeday;
+    //@BindView(R.id.iv_dot_someday)
+   // ImageView ivDotSomeday;
+    @BindView(R.id.btn_someday)
+    LinearLayout btnSomeday;
+
     @BindView(R.id.tv_someday)
     TextView tvSomeday;
 
-    @BindView(R.id.iv_do_date)
+    @BindView(R.id.lv_remind)
+    LottieAnimationView lvRemind;
+
+    /*@BindView(R.id.iv_do_date)
     ImageView ivDoDate;
     @BindView(R.id.ll_bg_do_date)
     LinearLayout bgDoDate;
@@ -99,7 +108,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
 
     @BindView(R.id.tv_do_date)
-    TextView tvDoDate;
+    TextView tvDoDate;*/
 
     @BindView(R.id.btn_buckets)
     LinearLayout btnBuckets;
@@ -161,18 +170,20 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         ButterKnife.bind(this, v);
         EventBus.getDefault().register(this);
 
-        task = new Task();
-
         initUi();
         Utils.showSoftKeyboard(getContext(), etTaskName);
 
-
-        clickToday();
+        SuperDate date = Utils.getSuperdateToday();
+        date.setTime(Utils.getDefaultTime(), 0);
+        task.setDoDate(date);
+        updateUi();
         // Inflate the layout for this fragment
         return v;
     }
 
     public void initUi() {
+
+        task = new Task();
 
         task.setBucketId(TasksFragment.Companion.getBucket().getDocumentId());
 
@@ -188,6 +199,26 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
                 return true;
             }
         });
+
+        lvRemind.setAnimation("check_box2.json");
+        lvRemind.setSpeed(1.5f);
+
+        lvRemind.setOnClickListener(v -> {
+            task.setToRemind(!task.isToRemind());
+
+            updateUi();
+            //TaskOrganiser.getInstance().organiseAllTasks();
+            //FirestoreManager.getInstance().updateTask(task);
+
+            if (task.isToRemind()) {
+                lvRemind.setMinAndMaxProgress(0.20f, 0.50f); // on
+            } else {
+                lvRemind.setMinAndMaxProgress(0.65f, 1.0f); // off
+            }
+
+            lvRemind.playAnimation();
+        });
+
     }
 
     @Override
@@ -198,38 +229,35 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     public void updateUi() {
 
-        ivDotToday.setImageResource(R.drawable.bg_oval_grey);
-        ivDotTomorrow.setImageResource(R.drawable.bg_oval_grey);
-        ivDotSomeday.setImageResource(R.drawable.bg_oval_grey);
+      //  ivDotToday.setImageResource(R.drawable.bg_oval_grey);
+       // ivDotTomorrow.setImageResource(R.drawable.bg_oval_grey);
+      //  ivDotSomeday.setImageResource(R.drawable.bg_oval_grey);
 
+        tvToday.setText("Today");
+        tvTomorrow.setText("Tomorrow");
+        tvSomeday.setText("Set Date");
         tvToday.setTextColor(getResources().getColor(R.color.grey2));
         tvTomorrow.setTextColor(getResources().getColor(R.color.grey2));
         tvSomeday.setTextColor(getResources().getColor(R.color.grey2));
 
-        switch (task.getListedIn()) {
+        if (task.getDoDate() != null) {
 
-            case TODAY:
-
-            default:
-                ivDotToday.setImageResource(R.drawable.bg_oval_light_red);
+            if (Utils.isSuperDateToday(task.getDoDate())) {
+                tvToday.setText("Today by " + task.getDoDate().getTimeString());
                 tvToday.setTextColor(getResources().getColor(R.color.lightRed));
-                break;
-
-            case TOMORROW:
-                ivDotTomorrow.setImageResource(R.drawable.bg_oval_light_red);
+            } else if (Utils.isSuperDateTomorrow(task.getDoDate())) {
+                tvTomorrow.setText("Tomorrow by " + task.getDoDate().getTimeString());
                 tvTomorrow.setTextColor(getResources().getColor(R.color.lightRed));
-                break;
-
-            case THIS_WEEK:
-            case THIS_MONTH:
-            case UPCOMING:
-                ivDotSomeday.setImageResource(R.drawable.bg_oval_light_red);
+            } else {
+                tvSomeday.setText("Do " + task.getDoDate().getSuperDateString() + " "+ task.getDoDate().getTimeString());
                 tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
-                break;
-
+            }
+        } else {
+            tvSomeday.setText("Do Someday");
+            tvSomeday.setTextColor(getResources().getColor(R.color.lightRed));
         }
 
-        if (task.getDoDate() == null) {
+        /*if (task.getDoDate() == null) {
             ivDoDate.setImageResource(R.drawable.ic_duedate_off);
             tvDoDate.setText("No Date");
             tvDoDate.setTextColor(getResources().getColor(R.color.grey2));
@@ -247,7 +275,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
        } else {
            tvTime.setText("No Time");
            ivTime.setImageResource(R.drawable.ic_time_off);
-       }
+       }*/
 
        if (task.getBucket() != null) {
 
@@ -312,30 +340,41 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
 
     @OnClick(R.id.btn_today)
     public void clickToday() {
-        task.setListedIn(TaskListing.TODAY);
-        SuperDate date = new SuperDate(Calendar.getInstance().getTime());
-        date.setDate(Calendar.getInstance().get(Calendar.DATE));
-        date.setMonth(Calendar.getInstance().get(Calendar.MONTH) + 1);
-        date.setYear(Calendar.getInstance().get(Calendar.YEAR));
+
+        if (!Utils.isSuperDateToday(task.getDoDate())) {
+            SuperDate date = Utils.getSuperdateToday();
+            date.setTime(Utils.getDefaultTime(),0);
+            task.setDoDate(date);
+        }
+
+        showTimePicker(task.getDoDate().hours, task.getDoDate().minutes);
+        updateUi();
+
+        /*if (!Utils.isSuperDateToday(task.getDoDate())) {
+            task.setDoDate(new SuperDate());
+        }
+
+        SuperDate date = Utils.getSuperdateToday();
         if (!isTimeSet) {
-            date.setTime(Utils.getDefaultTime(task.getListedIn()), 0);
+            date.setTime(Utils.getDefaultTime(), 0);
+        } else {
+            date.setTime(task.getDoDate().hours, task.getDoDate().minutes);
         }
         task.setDoDate(date);
-        updateUi();
+        showTimePicker(task.getDoDate().hours, task.getDoDate().minutes);
+        updateUi();*/
     }
 
     @OnClick(R.id.btn_tomorrow)
     public void clickTomorrow() {
-        task.setListedIn(TaskListing.TOMORROW);
-        Calendar tomorrow = Utils.getTomorrow();
-        SuperDate date = new SuperDate(tomorrow.getTime());
-        date.setDate(tomorrow.get(Calendar.DATE));
-        date.setMonth(tomorrow.get(Calendar.MONTH) + 1);
-        date.setYear(tomorrow.get(Calendar.YEAR));
-        if (!isTimeSet) {
-            date.setTime(Utils.getDefaultTime(task.getListedIn()), 0);
+
+        if (!Utils.isSuperDateTomorrow(task.getDoDate())) {
+            SuperDate date = Utils.getSuperdateTomorrow();
+            date.setTime(9,0);
+            task.setDoDate(date);
         }
-        task.setDoDate(date);
+
+        showTimePicker(task.getDoDate().hours, task.getDoDate().minutes);
         updateUi();
     }
 
@@ -343,22 +382,9 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     public void clickSomeday() {
         task.setListedIn(TaskListing.UPCOMING);
         task.setDoDate(null);
+        isTimeSet = false;
+        showDatePicker();
         updateUi();
-        showDatePicker();
-    }
-
-    @OnClick(R.id.tv_do_date)
-    public void clickDuedate() {
-        showDatePicker();
-    }
-
-    @OnClick(R.id.add_task_ll_time_btn)
-    public void clickTime() {
-        if (task.getDoDate() == null) {
-            showDatePicker();
-            return;
-        }
-        showTimePicker(task.getDoDate().hours, task.getDoDate().minutes);
     }
 
     @OnClick(R.id.btn_buckets)
@@ -372,13 +398,20 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
         if (validate()) {
             task.setUserId(FirestoreManager.getInstance().user.getUserId());
             task.setName(etTaskName.getText().toString());
+            task.setListedIn(Utils.getTaskListed(task.getDoDate()));
             task.setTaskIndex(TaskOrganiser.getInstance().getTaskSize(task.getListedIn()));
-            FirestoreManager.getInstance().uploadTask(task);
+
+            if (task.isToRemind()) {
+                SuperdoAlarmManager.getInstance().setRemind(getContext(), task);
+            }
+
+            String id = FirestoreManager.getInstance().uploadTask(task);
+            task.setDocumentId(id);
         }
     }
 
     public boolean validate() {
-        if (etTaskName.getText().toString().isEmpty()) {
+        if (etTaskName.getText().toString().trim().isEmpty()) {
             return false;
         }
         return true;
@@ -398,33 +431,21 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         SuperDate date = new SuperDate(dayOfMonth, monthOfYear + 1, year);
 
-        if (Utils.isSuperDateToday(date)) {
-            clickToday();
-            return;
-        } else if (Utils.isSuperDateTomorrow(date)) {
-            clickTomorrow();
-            return;
-        } else if(Utils.isSuperdateThisWeek(date)) {
-            task.setListedIn(TaskListing.THIS_WEEK);
-        } else if(Utils.isSuperdateThisMonth(date)) {
-            task.setListedIn(TaskListing.THIS_MONTH);
-        } else if(Utils.isSuperdateIsUpcoming(date)) {
-            task.setListedIn(TaskListing.UPCOMING);
-        }
-
         if (task.getDoDate() != null) {
             task.getDoDate().setDoDate(dayOfMonth, monthOfYear + 1, year);
         } else {
             task.setDoDate(date);
         }
 
+        updateUi();
+
         if (!task.getDoDate().hasTime) {
             int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
             int min = Calendar.getInstance().get(Calendar.MINUTE);
             showTimePicker(hour, min);
+            return;
         }
 
-        updateUi();
         showKeyboradAsync();
     }
 
@@ -451,10 +472,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
             return;
         }
 
-        //task = new Task();
         task.setName("");
-        //task.setHabitCategory(event.getTask().getHabitCategory());
-        //task.setDoDate(event.getTask().getDoDate());
         etTaskName.getText().clear();
         updateUi();
     }
@@ -469,5 +487,6 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements  DateP
     public void onMessageEvent(DialogDismissEvent event) {
         showKeyboradAsync();
     }
+
 
 }
