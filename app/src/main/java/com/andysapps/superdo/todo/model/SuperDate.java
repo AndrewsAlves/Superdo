@@ -159,6 +159,10 @@ public class SuperDate implements Cloneable {
             return "Set Date";
         }
 
+        if (Utils.isSuperDateYesterday(this)) {
+            return "Yesterday";
+        }
+
         if (Utils.isSuperDateToday(this)) {
             return "Today";
         }
@@ -167,10 +171,14 @@ public class SuperDate implements Cloneable {
             return "Tomorrow";
         }
 
+        if (Utils.isSuperdateThisWeek(this)) {
+            return Utils.getWeekDayStr(this, true);
+        }
+
         if (getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
             duedate = Utils.getDateStr(this) + ", " + getMonthStringLong()  + ", " + getYear();
         } else {
-            duedate = Utils.getDateStr(this) +" "+ Utils.getWeekDayStr(this) +  ", " + getMonthStringLong();
+            duedate = Utils.getDateStr(this) +" "+ Utils.getWeekDayStr(this, false) +  ", " + getMonthStringLong();
         }
 
         return duedate;

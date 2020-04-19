@@ -22,6 +22,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
@@ -70,8 +71,8 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     }
 
     public void addTask(Task task) {
-        taskList.add(0, task);
-        notifyItemInserted(0);
+        taskList.add(task.getTaskIndex(), task);
+        notifyItemInserted(task.getTaskIndex());
         //updateTasksIndexes();
     }
 
@@ -140,6 +141,15 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         h.ivRemind.setVisibility(View.GONE);
         h.ivFocus.setVisibility(View.GONE);
         h.parentIcons.setVisibility(View.GONE);
+
+        if (Utils.isSuperDateIsPast(task.getDoDate())) {
+            h.ivDoDate.setVisibility(View.VISIBLE);
+            h.tvDoDate.setVisibility(View.VISIBLE);
+            h.ivDoDate.setImageResource(R.drawable.ic_missed_mini);
+            h.tvDoDate.setTextColor(context.getResources().getColor(R.color.lightRed));
+            h.tvDoDate.setText(task.getDoDate().getSuperDateString());
+            h.parentIcons.setVisibility(View.VISIBLE);
+        }
 
         if (task.getRepeat() != null) {
             h.ivRepeat.setVisibility(View.VISIBLE);
@@ -221,7 +231,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     private void strikeOutText(TaskViewHolder holder, int speed) {
 
         float pix = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                1,
+                1.5f,
                 context.getResources().getDisplayMetrics());
 
         holder.painting.cutTextEdge(true)
@@ -322,6 +332,12 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         @BindView(R.id.btn_tv_completedtask)
         public TextView tvCompletedTask;
+
+        @BindView(R.id.tv_task_dodate)
+        public TextView tvDoDate;
+
+        @BindView(R.id.iv_date)
+        public ImageView ivDoDate;
 
         StrikeThroughPainting painting;
 

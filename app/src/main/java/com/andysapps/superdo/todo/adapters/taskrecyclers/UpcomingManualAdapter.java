@@ -242,13 +242,13 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         h.tvTaskName.setText(task.getTitle());
 
-        if (task.getDoDate() == null) {
+        /*if (task.getDoDate() == null) {
             h.tvUpcomingDate.setVisibility(View.GONE);
         } else {
             h.tvUpcomingDate.setVisibility(View.VISIBLE);
             switch (task.getListedIn()) {
                 case THIS_WEEK:
-                    h.tvUpcomingDate.setText(Utils.getWeekDayStr(task.getDoDate()));
+                    h.tvUpcomingDate.setText(Utils.getWeekDayStr(task.getDoDate(), false));
                     break;
                 case THIS_MONTH:
                     h.tvUpcomingDate.setText(Utils.monthDates[task.getDoDate().getDate() - 1]);
@@ -257,9 +257,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                     h.tvUpcomingDate.setText(Utils.getMonthString(task.getDoDate().getMonth()) + " " + Utils.monthDates[task.getDoDate().getDate() - 1]);
                     break;
             }
-
-
-        }
+        }*/
 
         if (h.isChecked) {
             h.lottieCheckView.setMinAndMaxProgress(1.0f, 1.0f);
@@ -270,31 +268,46 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         h.lottieCheckView.playAnimation();
 
+
+        h.parentIcons.setVisibility(View.VISIBLE);
+        h.ivDoDate.setVisibility(View.GONE);
+        h.tvDoDate.setVisibility(View.VISIBLE);
+
+        if (task.getDoDate() != null) {
+            if (Utils.isSuperDateIsPast(task.getDoDate())) {
+                h.ivDoDate.setVisibility(View.GONE);
+                h.ivDoDate.setImageResource(R.drawable.ic_missed_mini);
+                h.tvDoDate.setTextColor(context.getResources().getColor(R.color.lightRed));
+                h.tvDoDate.setText(task.getDoDate().getSuperDateString());
+            } else {
+                h.ivDoDate.setImageResource(R.drawable.ic_dodate_mini);
+                h.tvDoDate.setTextColor(context.getResources().getColor(R.color.grey2));
+                h.tvDoDate.setText("Do " + task.getDoDate().getSuperDateString());
+            }
+        } else {
+            h.ivDoDate.setImageResource(R.drawable.ic_dodate_mini);
+            h.tvDoDate.setText("Do Someday");
+        }
         h.ivRepeat.setVisibility(View.GONE);
         h.ivDeadline.setVisibility(View.GONE);
         h.ivSubtasks.setVisibility(View.GONE);
         h.ivRemind.setVisibility(View.GONE);
         h.ivFocus.setVisibility(View.GONE);
-        h.parentIcons.setVisibility(View.GONE);
 
         if (task.getRepeat() != null) {
             h.ivRepeat.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.getDeadline() != null) {
             h.ivDeadline.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.getSubtasks() != null) {
             h.ivSubtasks.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.isToRemind()) {
             h.ivRemind.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
@@ -561,6 +574,12 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         @BindView(R.id.tv_upcoming_task_date)
         public TextView tvUpcomingDate;
+
+        @BindView(R.id.tv_task_dodate)
+        public TextView tvDoDate;
+
+        @BindView(R.id.iv_date)
+        public ImageView ivDoDate;
 
         StrikeThroughPainting painting;
         public View item;

@@ -6,7 +6,9 @@
     android:background="@color/white"
     android:clickable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.bucket.BucketTasksFragment">
+    tools:context=".fragments.bucket.BucketTasksFragment"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -84,96 +86,110 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
-            android:focusableInTouchMode="true"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp">
-
-            <ImageView
-                android:id="@+id/iv_bucket_type"
-                android:layout_marginTop="4dp"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_bc_tasks_on" />
-
-            <EditText
-                android:id="@+id/et_bucket_desc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:hint="Description "
-                android:textColorHint="@color/grey2"
-                android:textSize="14sp"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="50dp"
-                android:maxLines="20"
-                android:textColor="@color/grey4"
-                android:fontFamily="@font/montserrat_medium"/>
-
-        </RelativeLayout>
-
-        <com.andysapps.superdo.todo.views.GradientTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tasks"
-            android:textColor="@color/lightRed"
-            android:fontFamily="@font/montserrat_medium"
-            android:textSize="16sp"
-            android:layout_marginStart="40dp"/>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:requiresFadingEdge="vertical"
+            android:scrollbars="none"
+            android:fadingEdgeLength="20dp">
 
             <LinearLayout
-                android:id="@+id/ll_notasks"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imageView"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="40dp"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="40dp">
+
+                    <ImageView
+                        android:id="@+id/iv_bucket_type"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_bc_tasks_on" />
+
+                    <EditText
+                        android:id="@+id/et_bucket_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="Description "
+                        android:textColorHint="@color/grey2"
+                        android:textSize="14sp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="50dp"
+                        android:maxLines="20"
+                        android:textColor="@color/grey4"
+                        android:fontFamily="@font/montserrat_medium"/>
+
+                </RelativeLayout>
+
+                <com.andysapps.superdo.todo.views.GradientTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:alpha="0.5"
-                    android:src="@drawable/ic_empty_box" />
+                    android:text="Tasks"
+                    android:textColor="@color/lightRed"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textSize="16sp"
+                    android:layout_marginStart="40dp"/>
 
-                <TextView
-                    android:id="@+id/tv_no_tasks"
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/ll_notasks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:layout_marginTop="80dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:alpha="0.5"
+                            android:src="@drawable/ic_empty_box" />
+
+                        <TextView
+                            android:id="@+id/tv_no_tasks"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:text="Your bucket list is empty"
+                            android:textAlignment="center"
+                            android:textColor="@color/grey2"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView_task_list"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="Your bucket list is empty"
-                    android:textAlignment="center"
-                    android:textColor="@color/grey2"
-                    android:textSize="16sp" />
+                    android:layout_marginTop="20dp" />
 
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_task_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
-                android:requiresFadingEdge="vertical"
-                android:fadingEdgeLength="50dp" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 

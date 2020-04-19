@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.enums.BucketUpdateType
+import com.andysapps.superdo.todo.events.DeleteBucketEvent
 import com.andysapps.superdo.todo.events.SetTasksFragment
+import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent
 import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment
-import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Bucket
 import org.greenrobot.eventbus.EventBus
@@ -67,6 +69,13 @@ class TasksFragment : Fragment() {
         }
 
         ft.commitAllowingStateLoss() // save the change
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: DeleteBucketEvent) {
+        if (taskBucket!!.documentId == event.bucket.documentId) {
+            onMessageEvent(SetTasksFragment(null))
+        }
     }
 
 }

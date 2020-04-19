@@ -106,7 +106,6 @@
 
             </LinearLayout>
 
-
             <LinearLayout
                 android:visibility="visible"
                 android:id="@+id/parent_ll_task_icons"
@@ -115,12 +114,31 @@
                 android:layout_marginTop="5dp">
 
                 <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/iv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_dodate_mini"
+                    android:scaleType="center"
+                    android:layout_marginEnd="5dp"/>
+
+                <TextView
+                    android:id="@+id/tv_task_dodate"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:text="Wednesday"
+                    android:textSize="11sp"
+                    android:layout_marginEnd="15dp"/>
+
+                <ImageView
                     android:visibility="visible"
                     android:id="@+id/iv_repeat"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_mini_repeat"
-                    android:scaleType="center"
+                    android:scaleType="centerInside"
                     android:layout_marginEnd="15dp"/>
 
                 <ImageView
@@ -129,7 +147,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_mini_deadline"
-                    android:scaleType="center"
+                    android:scaleType="centerInside"
                     android:layout_marginEnd="15dp"/>
 
                 <ImageView
@@ -138,7 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_mini_subtasks"
-                    android:scaleType="center"
+                    android:scaleType="centerInside"
                     android:layout_marginEnd="15dp"/>
 
                 <ImageView
@@ -147,7 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_mini_remind"
-                    android:scaleType="center"
+                    android:scaleType="centerInside"
                     android:layout_marginEnd="15dp"/>
 
                 <ImageView
@@ -156,7 +174,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_mini_focus"
-                    android:scaleType="center"
+                    android:scaleType="centerInside"
                     android:layout_marginEnd="15dp"/>
 
             </LinearLayout>

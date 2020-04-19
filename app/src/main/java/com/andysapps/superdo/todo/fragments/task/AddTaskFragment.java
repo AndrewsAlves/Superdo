@@ -373,9 +373,14 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
             uploadingTask.setUserId(FirestoreManager.getInstance().user.getUserId());
             uploadingTask.setTitle(etTaskName.getText().toString().trim());
             uploadingTask.setBucketId(task.getBucketId());
-            uploadingTask.setDoDate(new SuperDate(Utils.getCalenderFromSuperDate(task.getDoDate())));
+            if (task.getDoDate() == null) {
+                uploadingTask.setDoDate(null);
+            } else {
+                uploadingTask.setDoDate(new SuperDate(Utils.getCalenderFromSuperDate(task.getDoDate())));
+            }
+
             uploadingTask.setListedIn(Utils.getTaskListed(task.getDoDate()));
-            uploadingTask.setTaskIndex(TaskOrganiser.getInstance().todayTaskList.size());
+            uploadingTask.setTaskIndex(TaskOrganiser.getInstance().getTasks(uploadingTask.getListedIn()).size());
             uploadingTask.setToRemind(task.isToRemind());
 
             String id = FirestoreManager.getInstance().uploadTask(uploadingTask);
@@ -463,6 +468,4 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
     public void onMessageEvent(DialogDismissEvent event) {
         showKeyboradAsync();
     }
-
-
 }

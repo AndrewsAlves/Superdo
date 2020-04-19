@@ -378,6 +378,12 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         }
 
         lv_remind.setOnClickListener {
+
+            if (task.doDate == null) {
+                editTask_rl_btn_do_date.performClick()
+                return@setOnClickListener
+            }
+
             task.isToRemind = !task.isToRemind
 
             updateUi()
@@ -386,13 +392,11 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
             if (task.isToRemind) {
                 lv_remind.setMinAndMaxProgress(0.20f, 0.50f) // on
-
-                SuperdoAlarmManager.getInstance().setRemind(context, task)
-                if (task.deadline != null) {
-                    SuperdoAlarmManager.getInstance().setDeadlineRemind(context, task)
-                }
-
+                setTaskReminder()
+                setDealineReminder()
             } else {
+                clearTaskReminder()
+                clearDeadlineReminder()
                 lv_remind.setMinAndMaxProgress(0.65f, 1.0f) // off
             }
 
@@ -417,6 +421,32 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         }
 
         ///// Mark done
+    }
+
+    fun setTaskReminder() {
+        if (task.isToRemind) {
+            SuperdoAlarmManager.getInstance().setRemind(context, task)
+        }
+    }
+
+    fun clearTaskReminder() {
+        SuperdoAlarmManager.getInstance().clearAlarm(context, task.remindRequestCode)
+    }
+
+    fun setDealineReminder() {
+        if (task.isToRemind) {
+            if (task.deadline != null) {
+                SuperdoAlarmManager.getInstance().setDeadlineRemind(context, task)
+            }
+        }
+    }
+
+    fun clearDeadlineReminder() {
+        if (task.deadline != null) {
+            SuperdoAlarmManager.getInstance().clearAlarm(context, task.deadline.deadlineRequestCode)
+            SuperdoAlarmManager.getInstance().clearAlarm(context, task.deadline.deadlineRequestCode + 1)
+            SuperdoAlarmManager.getInstance().clearAlarm(context, task.deadline.deadlineRequestCode + 2)
+        }
     }
 
     fun validate() {
@@ -483,9 +513,12 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
        updateUi()
     }
 
+
+
     @Subscribe
     fun onMeessageEvent(event : SetDoDateEvent) {
         task.doDate = event.superDate.clone()
+        setTaskReminder()
         FirestoreManager.getInstance().updateTask(task)
         TaskOrganiser.getInstance().organiseAllTasks()
         updateUi()
@@ -498,14 +531,13 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
         if (event.deleted) {
             task.deadline = null
+            clearDeadlineReminder()
             FirestoreManager.getInstance().updateTask(task)
             updateUi()
-            SuperdoAlarmManager.getInstance().clearAlarm(context, task.deadline.deadlineRequestCode)
-            SuperdoAlarmManager.getInstance().clearAlarm(context, task.deadline.deadlineRequestCode + 1)
-            SuperdoAlarmManager.getInstance().clearAlarm(context, task.deadline.deadlineRequestCode + 2)
             return
         }
 
+        setDealineReminder()
         FirestoreManager.getInstance().updateTask(task)
         TaskOrganiser.getInstance().organiseAllTasks()
         updateUi()

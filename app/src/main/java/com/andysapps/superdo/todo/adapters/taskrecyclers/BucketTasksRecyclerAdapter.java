@@ -22,6 +22,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.enums.CPMD;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
@@ -121,7 +122,7 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
     public void onBindViewHolder(TaskViewHolder h, int position) {
 
         /// last postion as completed task list
-        if (position == taskList.size()) {
+        /*if (position == taskList.size()) {
 
             h.parentTask.setVisibility(View.GONE);
             h.lastSpace.setVisibility(View.VISIBLE);
@@ -136,7 +137,7 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
                                 CPMDTasksFragment.TAG, true));
                     });
             return;
-        }
+        }*/
 
         h.parentTask.setVisibility(View.VISIBLE);
         h.lastSpace.setVisibility(View.GONE);
@@ -164,36 +165,51 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
         }
 
         h.lottieCheckView.playAnimation();
+
+        h.parentIcons.setVisibility(View.VISIBLE);
+        h.ivDoDate.setVisibility(View.GONE);
+        h.tvDoDate.setVisibility(View.VISIBLE);
+
+        if (task.getDoDate() != null) {
+            if (Utils.isSuperDateIsPast(task.getDoDate())) {
+                h.ivDoDate.setVisibility(View.VISIBLE);
+                h.ivDoDate.setImageResource(R.drawable.ic_missed_mini);
+                h.tvDoDate.setTextColor(context.getResources().getColor(R.color.lightRed));
+                h.tvDoDate.setText(task.getDoDate().getSuperDateString());
+            } else {
+                h.ivDoDate.setImageResource(R.drawable.ic_dodate_mini);
+                h.tvDoDate.setTextColor(context.getResources().getColor(R.color.grey2));
+                h.tvDoDate.setText("Do " + task.getDoDate().getSuperDateString());
+            }
+        } else {
+            h.ivDoDate.setImageResource(R.drawable.ic_dodate_mini);
+            h.tvDoDate.setText("Do Someday");
+        }
+
         h.ivRepeat.setVisibility(View.GONE);
         h.ivDeadline.setVisibility(View.GONE);
         h.ivSubtasks.setVisibility(View.GONE);
         h.ivRemind.setVisibility(View.GONE);
         h.ivFocus.setVisibility(View.GONE);
-        h.parentIcons.setVisibility(View.GONE);
 
         if (task.getRepeat() != null) {
             h.ivRepeat.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.getDeadline() != null) {
             h.ivDeadline.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.getSubtasks() != null && task.getSubtasks().subtaskList.size() > 0) {
             h.ivSubtasks.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.isToRemind()) {
             h.ivRemind.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.getFocus() != null) {
             h.ivFocus.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
@@ -279,7 +295,7 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
 
     @Override
     public int getItemCount() {
-        return taskList.size() + 1;
+        return taskList.size() ;
     }
 
     @Override
@@ -352,6 +368,12 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
 
         @BindView(R.id.btn_tv_completedtask)
         public TextView tvCompletedTask;
+
+        @BindView(R.id.tv_task_dodate)
+        public TextView tvDoDate;
+
+        @BindView(R.id.iv_date)
+        public ImageView ivDoDate;
 
         StrikeThroughPainting painting;
 

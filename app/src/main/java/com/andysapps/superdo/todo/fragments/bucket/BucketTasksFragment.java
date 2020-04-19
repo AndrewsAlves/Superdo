@@ -7,8 +7,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -81,7 +84,7 @@ public class BucketTasksFragment extends Fragment {
     @BindView(R.id.et_bucket_desc)
     EditText etBucketDesc;
 
-    boolean isEditing;
+    boolean isEditing = false;
 
     BucketTasksRecyclerAdapter adapter;
     Bucket bucket;
@@ -138,9 +141,14 @@ public class BucketTasksFragment extends Fragment {
         etBucketDesc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    isEditing = true;
-                    updateUi();
+                if (v.getId() == etBucketDesc.getId()) {
+                    if (hasFocus) {
+                        isEditing = true;
+                        updateUi();
+                    } else {
+                        isEditing = false;
+                        updateUi();
+                    }
                 }
             }
         });
@@ -196,6 +204,7 @@ public class BucketTasksFragment extends Fragment {
 
     @OnClick(R.id.ib_edit_bucket)
     public void clickProfile() {
+        Utils.hideKeyboard(getContext(), etBucketDesc);
         EventBus.getDefault().post(new OpenFragmentEvent(CreateNewBucketFragment.Companion.instance(bucket, true),
                 true,
                 CreateNewBucketFragment.TAG,
@@ -229,11 +238,11 @@ public class BucketTasksFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(TaskUpdatedEvent event) {
+        public void onMessageEvent(TaskUpdatedEvent event) {
+        if (!bucket.getId().equals(event.getTask().getBucketId())) return;
         adapter.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket, false));
         updateUi();
     }
-
 }
 
 

@@ -66,7 +66,6 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
         }
         Utils.showSoftKeyboard(context, et_create_bucket_name)
         updateUI()
-        ib_close_create_bucket
     }
 
     override fun onDestroyView() {
@@ -133,7 +132,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
                  bucket.tagColor = BucketColors.Orange.name
              }*/
             ib_close_create_bucket.id -> {
-                activity!!.supportFragmentManager.popBackStack()
+                activity!!.onBackPressed()
                 //EventBus.getDefault().post(RemoveFragmentEvents())
             }
 
@@ -182,7 +181,7 @@ class CreateNewBucketFragment : Fragment() , View.OnClickListener {
             } else {
                 FirestoreManager.getInstance().uploadBucket(bucket)
             }
-            fragmentManager!!.popBackStack()
+            activity!!.onBackPressed()
         }
     }
 

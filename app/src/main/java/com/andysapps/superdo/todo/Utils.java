@@ -135,6 +135,17 @@ public class Utils {
                 && superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR);
     }
 
+    public static boolean isSuperDateYesterday(SuperDate superdate) {
+
+        Calendar c1 = Calendar.getInstance(); // today
+        c1.add(Calendar.DAY_OF_YEAR, -1); // yesterday
+
+        Calendar c2 = getCalenderFromSuperDate(superdate);
+
+        return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR));
+    }
+
     public static boolean isSuperDateTomorrow(SuperDate superdate) {
 
         if (superdate == null) {
@@ -533,7 +544,7 @@ public class Utils {
         }
     }
 
-    public static String getWeekDayStr(SuperDate date) {
+    public static String getWeekDayStr(SuperDate date, boolean fullString) {
 
         if (date == null) {
             return " ";
@@ -545,6 +556,25 @@ public class Utils {
         c.set(Calendar.YEAR, date.getYear());
 
         int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+
+        if (fullString) {
+            switch (dayOfWeek) {
+                case 1:
+                    return "Sunday";
+                case 2:
+                    return "Monday";
+                case 3:
+                    return "Tuesday";
+                case 4:
+                    return "Wednesday";
+                case 5:
+                    return "Thursday";
+                case 6:
+                    return "Friday";
+                case 7:
+                    return "Saturday";
+            }
+        }
 
         switch (dayOfWeek) {
             case 1:
@@ -573,6 +603,15 @@ public class Utils {
         }
 
         return monthDates[date.getDate() - 1];
+    }
+
+    public static String getDoDateString(SuperDate date) {
+
+        if (isSuperDateToday(date)) return "Today";
+        if (isSuperDateTomorrow(date)) return "Tomorrow";
+        if (isSuperdateThisWeek(date)) return getWeekDayStr(date, true);
+
+        return date.getSuperDateString();
     }
 
     public static String getMonthStrLong(int month) {
@@ -608,6 +647,8 @@ public class Utils {
     }
 
     public static String getDateString(Date date) {
+
+
 
         String dateString = new SimpleDateFormat("dd-MM-yyyy").format(date);
         String[] splits = dateString.split("-");
@@ -648,6 +689,10 @@ public class Utils {
     }
 
     public static Calendar getCalenderFromSuperDate(SuperDate date) {
+
+        if (date == null) {
+            return null;
+        }
 
         Calendar calendar = Calendar.getInstance();
         if (date.isHasDate()) {

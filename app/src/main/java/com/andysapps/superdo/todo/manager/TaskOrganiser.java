@@ -23,6 +23,7 @@ import java.util.List;
 /**
  * Created by Andrews on 06,November,2019
  */
+
 public class TaskOrganiser {
 
     private static final String TAG = "TaskOrganiser";
@@ -310,29 +311,15 @@ public class TaskOrganiser {
                 return todayTaskList;
             case TOMORROW:
                 return tomorrowTaskList;
+            case THIS_WEEK:
+                return weekTaskList;
+            case THIS_MONTH:
+                return monthTaskList;
             case UPCOMING:
                 return upcomingTaskList;
         }
 
         return allTaskList;
-    }
-
-    public int getTaskSize(TaskListing listing) {
-
-        switch (listing) {
-            case TODAY:
-                return todayTaskList.size();
-            case TOMORROW:
-                return tomorrowTaskList.size();
-            case THIS_WEEK:
-                return weekTaskList.size();
-            case THIS_MONTH:
-                return monthTaskList.size();
-            case UPCOMING:
-                return upcomingTaskList.size();
-        }
-
-        return allTaskList.size();
     }
 
     public List<Task> getMonthTaskList() {
@@ -502,7 +489,19 @@ public class TaskOrganiser {
             }
         }
 
-        Log.e(TAG, "organiseAllTasks: bucketList size : " + bucketList.size());
+        Collections.sort(bucketList, (o1, o2) -> {
+            Calendar c1 = Utils.getCalenderFromSuperDate(o1.getDoDate());
+            Calendar c2 = Utils.getCalenderFromSuperDate(o2.getDoDate());
+
+            if (c1 == null) {
+                return (c2 == null) ? 0 : 1;
+            }
+            if (c2 == null) {
+                return -1;
+            }
+
+            return c1.getTime().compareTo(c2.getTime());
+        });
 
         return bucketList;
     }
@@ -520,6 +519,8 @@ public class TaskOrganiser {
                 tasksCount++;
             }
         }
+
+
 
         return tasksCount;
     }
