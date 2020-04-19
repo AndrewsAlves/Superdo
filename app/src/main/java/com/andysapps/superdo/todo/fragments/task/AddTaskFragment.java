@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.andysapps.superdo.todo.Constants;
@@ -449,6 +450,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
         task.setTitle("");
         etTaskName.getText().clear();
         updateUi();
+        Toast.makeText(getContext(), "Task added!",Toast.LENGTH_SHORT).show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

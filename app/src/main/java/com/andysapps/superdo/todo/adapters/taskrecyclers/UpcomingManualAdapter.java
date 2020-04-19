@@ -144,7 +144,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 break;
         }
 
-        reaarageGroupTasks(-1);
+        //reaarageGroupTasks(-1);
     }
 
     public void removeTask(Task task) {
@@ -175,7 +175,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             }
         }
 
-        reaarageGroupTasks(-1);
+        //reaarageGroupTasks(-1);
     }
 
     public void undoTaskCompleted(Task task,int position) {
