@@ -21,9 +21,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
 import com.andysapps.superdo.todo.R;
-import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
-import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.CPMD;
 import com.andysapps.superdo.todo.enums.UndoType;
 import com.andysapps.superdo.todo.events.ShowSnakeBarCPMDEvent;
@@ -40,7 +38,6 @@ import com.thekhaeng.pushdownanim.PushDownAnim;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -160,7 +157,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
 
         Task task = taskList.get(position);
 
-        h.tvTaskName.setText(task.getName());
+        h.tvTaskName.setText(task.getTitle());
 
         if (h.painting != null) {
             h.painting.clearStrikeThrough();

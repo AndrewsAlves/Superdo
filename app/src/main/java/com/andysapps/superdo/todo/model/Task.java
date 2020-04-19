@@ -34,7 +34,7 @@ public class Task implements Cloneable {
 
     String userId;
 
-    String name;
+    String title;
 
     String description;
 
@@ -100,12 +100,12 @@ public class Task implements Cloneable {
     ///////// GETTER AND SETTER
     ///////////////////////////////
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

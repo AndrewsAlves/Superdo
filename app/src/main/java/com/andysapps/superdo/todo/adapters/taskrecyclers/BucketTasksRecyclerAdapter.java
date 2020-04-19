@@ -144,7 +144,7 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
 
         Task task = taskList.get(position);
 
-        h.tvTaskName.setText(task.getName());
+        h.tvTaskName.setText(task.getTitle());
 
         if (h.painting != null) {
             h.painting.clearStrikeThrough();

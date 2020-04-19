@@ -69,6 +69,7 @@ public class SuperDate implements Cloneable {
         year = calendar.get(Calendar.YEAR);
         hours = calendar.get(Calendar.HOUR_OF_DAY);
         minutes = calendar.get(Calendar.MINUTE);
+        timestamp = calendar.getTime();
 
         hasDate = true;
         hasTime = true;
@@ -189,8 +190,10 @@ public class SuperDate implements Cloneable {
             meridien = " AM";
         }
 
-        if (hours > 12) {
-            hours1 = hours - 12;
+        if (hours > 11) {
+            if (hours > 12) {
+                hours1 = hours - 12;
+            }
             meridien = " PM";
         }
 

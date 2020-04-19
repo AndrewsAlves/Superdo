@@ -23,12 +23,9 @@ import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
-import com.andysapps.superdo.todo.enums.CPMD;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
-import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.update.UpdateUiAllTasksEvent;
-import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
@@ -65,7 +62,6 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         viewUpdateHandler = new Handler();
     }
 
-
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
@@ -76,7 +72,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     public void addTask(Task task) {
         taskList.add(0, task);
         notifyItemInserted(0);
-        updateTasksIndexes();
+        //updateTasksIndexes();
     }
 
     public void removeTask(Task task) {
@@ -88,13 +84,10 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 this.taskList.remove(i);
             }
         }
-        updateTasksIndexes();
+        //updateTasksIndexes();
     }
 
     public void updateList(List<Task> taskList) {
-
-        Log.e(TAG, "updateList: data size" + this.taskList.size());
-
         this.taskList.clear();
         this.taskList.addAll(taskList);
         notifyDataSetChanged();
@@ -104,7 +97,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         taskList.add(position, task);
         task.setTaskAction(false);
         notifyItemInserted(position);
-        updateTasksIndexes();
+        FirestoreManager.getInstance().updateTask(task);
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
     }
 
@@ -121,7 +114,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         Task task = taskList.get(position);
 
-        h.tvTaskName.setText(task.getName());
+        h.tvTaskName.setText(task.getTitle());
 
         if (h.painting != null) {
             h.painting.clearStrikeThrough();

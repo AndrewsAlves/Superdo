@@ -1,7 +1,6 @@
 package com.andysapps.superdo.todo.adapters.taskrecyclers;
 
 import android.content.Context;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Handler;
@@ -22,14 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
-import com.airbnb.lottie.value.LottieFrameInfo;
-import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
-import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.TaskListing;
-import com.andysapps.superdo.todo.enums.UndoType;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
@@ -56,7 +51,7 @@ import lib.mozidev.me.extextview.StrikeThroughPainting;
 
 public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAdapter.TaskViewHolder> implements ItemTouchHelperAdapter {
 
-    private static final String TAG = "TasksRecyclerAdapter";
+    private static final String TAG = "UpcomingManualAdapter";
 
     private static final String dummyWeekTitle = "1";
     private static final String dummyMonthTitle = "2";
@@ -245,7 +240,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         h.isChecked = task.isTaskCompleted();
 
-        h.tvTaskName.setText(task.getName());
+        h.tvTaskName.setText(task.getTitle());
 
         if (task.getDoDate() == null) {
             h.tvUpcomingDate.setVisibility(View.GONE);

@@ -677,7 +677,7 @@ public class Utils {
             return 21;
         }
 
-        return 9;
+        return Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
     }
 
     public static int getTimeIcon(int hours) {

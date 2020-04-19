@@ -29,13 +29,13 @@ import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment;
-import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.events.ui.DialogDismissEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
@@ -367,17 +367,20 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
     @OnClick(R.id.ib_add_task)
     public void clickAddTask() {
         if (validate()) {
-            task.setUserId(FirestoreManager.getInstance().user.getUserId());
-            task.setName(etTaskName.getText().toString());
-            task.setListedIn(Utils.getTaskListed(task.getDoDate()));
-            task.setTaskIndex(0);
 
+            Task uploadingTask = new Task();
+            uploadingTask.setUserId(FirestoreManager.getInstance().user.getUserId());
+            uploadingTask.setTitle(etTaskName.getText().toString().trim());
+            uploadingTask.setBucketId(task.getBucketId());
+            uploadingTask.setDoDate(new SuperDate(Utils.getCalenderFromSuperDate(task.getDoDate())));
+            uploadingTask.setListedIn(Utils.getTaskListed(task.getDoDate()));
+            uploadingTask.setTaskIndex(TaskOrganiser.getInstance().todayTaskList.size());
+            uploadingTask.setToRemind(task.isToRemind());
+
+            String id = FirestoreManager.getInstance().uploadTask(uploadingTask);
             if (task.isToRemind()) {
-                SuperdoAlarmManager.getInstance().setRemind(getContext(), task);
+                SuperdoAlarmManager.getInstance().setRemind(getContext(), uploadingTask);
             }
-
-            String id = FirestoreManager.getInstance().uploadTask(task);
-            task.setDocumentId(id);
         }
     }
 
@@ -443,7 +446,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
             return;
         }
 
-        task.setName("");
+        task.setTitle("");
         etTaskName.getText().clear();
         updateUi();
     }

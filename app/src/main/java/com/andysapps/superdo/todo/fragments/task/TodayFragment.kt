@@ -96,6 +96,7 @@ class TodayFragment : Fragment()  {
         when (event.documentChange) {
             TaskUpdateType.Added -> {
                 adapter!!.addTask(event.task)
+                //recyclerView_today.scrollToPosition(0)
             }
             TaskUpdateType.Deleted -> {
                 adapter!!.removeTask(event.task)

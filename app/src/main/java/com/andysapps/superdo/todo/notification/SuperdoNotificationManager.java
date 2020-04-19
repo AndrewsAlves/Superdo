@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,9 +38,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
-import io.grpc.okhttp.internal.Util;
-
-import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_BUCKETS;
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_NOTIFICATIONS;
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_TASKS;
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_USER;
@@ -326,8 +322,8 @@ public class SuperdoNotificationManager {
                                 notification.setContentTitle("Superdo Reminder," + SharedPrefsManager.getUserFirstName(context) + "," +  " Done with this task!");
                             }
 
-                            notification.setContentText(remindTask.getName());
-                            notification.setContextBigText(remindTask.getName());
+                            notification.setContentText(remindTask.getTitle());
+                            notification.setContextBigText(remindTask.getTitle());
 
                             pushRemindNotification(context, notification , remindTask);
 
@@ -395,8 +391,8 @@ public class SuperdoNotificationManager {
                         Log.e(TAG, "postNotificationDeadline: deadline executed" );
 
                         SimpleNotification notification = new SimpleNotification();
-                        notification.setContentText(deadlineTask.getName());
-                        notification.setContextBigText(deadlineTask.getName());
+                        notification.setContentText(deadlineTask.getTitle());
+                        notification.setContextBigText(deadlineTask.getTitle());
 
                         if (intent.getExtras().getString(intent_key_notification_deadline_type) == null) {
                             return;

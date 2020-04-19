@@ -23,6 +23,8 @@ import com.andysapps.superdo.todo.model.User;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -175,7 +177,7 @@ public class FirestoreManager {
 
     public void fetchUserData(Context context, boolean registerReminders) {
 
-        Source source = Source.DEFAULT;
+        Source source = Source.SERVER;
 
         Log.e(TAG, "fetchUserData() called with: user id " + user.getUserId());
 
@@ -242,11 +244,10 @@ public class FirestoreManager {
             }
 
             for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-
                 switch (dc.getType()) {
                     case ADDED:
-                        taskHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Task.class));
-                        updateTaskList(TaskUpdateType.Added,taskHashMap.get(dc.getDocument().getId()));
+                        taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
+                        updateTaskList(TaskUpdateType.Added, taskHashMap.get(dc.getDocument().getId()));
                         break;
                 }
             }
@@ -305,6 +306,7 @@ public class FirestoreManager {
     }
 
     public void updateTaskList(TaskUpdateType change, Task task) {
+        TaskOrganiser.getInstance().organiseAllTasks();
         EventBus.getDefault().post(new TaskUpdatedEvent(change, task));
     }
 
@@ -323,16 +325,19 @@ public class FirestoreManager {
 
     public String uploadTask(Task task) {
         String id = getUserTaskCollection().document().getId();
-        getUserTaskCollection().document(id).set(task);
+        task.setDocumentId(id);
+        getUserTaskCollection().document(id).set(task)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error uploading task", e));
         return id;
     }
 
     public void updateTask(Task task) {
-
+        Log.d(TAG, "updateTask() called with: task = [" + task + "]");
         getUserTaskCollection().document(task.getDocumentId())
                 .set(task)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!"))
-                .addOnFailureListener(e -> Log.e(TAG, "Error uploading task", e));
+                .addOnFailureListener(e -> Log.e(TAG, "Error updating task", e));
     }
 
     public void uploadBucket(Bucket bucket) {

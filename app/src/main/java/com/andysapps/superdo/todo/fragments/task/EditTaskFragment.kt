@@ -31,7 +31,6 @@ import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DeadlineDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DoDateDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.RepeatDialog
-import com.andysapps.superdo.todo.enums.BucketType
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.action.SelectBucketEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
@@ -124,7 +123,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
         editTask_et_taskName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                task.name = s.toString()
+                task.title = s.toString()
             }
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
@@ -246,8 +245,8 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
     private fun updateUi() {
 
-        Log.e(TAG, " task name ${task.name}")
-        editTask_et_taskName.setText(task.name)
+        Log.e(TAG, " task name ${task.title}")
+        editTask_et_taskName.setText(task.title)
 
         // setDescription
         if (task.description != null) {
@@ -421,8 +420,8 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     }
 
     fun validate() {
-        if (task.name.isEmpty()) {
-            task.name = nonEditedTask.name
+        if (task.title.isEmpty()) {
+            task.title = nonEditedTask.title
             updateUi()
         }
     }

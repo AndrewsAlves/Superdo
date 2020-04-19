@@ -349,6 +349,8 @@ public class TaskOrganiser {
 
     public ArrayList<BarData> getBarDataForThisWeek() {
 
+        Log.d(TAG, "getBarDataForThisWeek() called");
+
         ArrayList<BarData> barDataList = new ArrayList<>();
 
         Calendar c = Calendar.getInstance();
@@ -359,8 +361,6 @@ public class TaskOrganiser {
         BarData barData;
         for (int i = 0; i < 7; i++) {
             int taskPoint = 0;
-
-            Log.e(TAG, "getBarDataForThisWeek: week days " + c.get(Calendar.DAY_OF_MONTH));
 
             for (Task task : allTasks.values()) {
                 if (task.isTaskCompleted()) {
@@ -423,7 +423,6 @@ public class TaskOrganiser {
                     Calendar taskCompleteCalender = Calendar.getInstance();
                     taskCompleteCalender.setTimeInMillis(task.getTaskCompletedDate().getTime());
                     SuperDate date = Utils.getSuperdateFromTimeStamp(task.getTaskCompletedDate().getTime());
-                    Log.e(TAG, "getEspritStatistics: Date : " + date.getSuperDateString());
                     if (Utils.isBothDateAreSameDay(Utils.getCalenderFromSuperDate(date), calender)) {
                         espritPoint += task.getEspritPoints();
                         taskCompletedCount++;
