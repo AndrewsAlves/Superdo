@@ -31,8 +31,6 @@ public class TaskOrganiser {
     public List<Task> allTaskList;
     public List<Task> todayTaskList;
     public List<Task> tomorrowTaskList;
-    public List<Task> weekTaskList;
-    public List<Task> monthTaskList;
     public List<Task> upcomingTaskList;
 
     /// profile list
@@ -62,8 +60,6 @@ public class TaskOrganiser {
         allTaskList = new ArrayList<>();
         todayTaskList = new ArrayList<>();
         tomorrowTaskList = new ArrayList<>();
-        weekTaskList = new ArrayList<>();
-        monthTaskList = new ArrayList<>();
         upcomingTaskList = new ArrayList<>();
 
         completedTaskList = new ArrayList<>();
@@ -80,8 +76,6 @@ public class TaskOrganiser {
         allTaskList = new ArrayList<>();
         todayTaskList = new ArrayList<>();
         tomorrowTaskList = new ArrayList<>();
-        weekTaskList = new ArrayList<>();
-        monthTaskList = new ArrayList<>();
         upcomingTaskList = new ArrayList<>();
 
         completedTaskList = new ArrayList<>();
@@ -128,14 +122,6 @@ public class TaskOrganiser {
                 remindingTasks.add(task);
             }
 
-            /*if (Utils.shouldAddTaskRepeat(task)) {
-                task.setListedIn(TaskListing.TODAY);
-                todayTaskList.add(task);
-                continue;
-            } else if (task.getRepeat() != null) {
-                continue;
-            }*/
-
             if (task.getRepeat() != null) {
                 Utils.setNextDoDate(task);
                 recurringTask.add(task);
@@ -172,19 +158,7 @@ public class TaskOrganiser {
                 continue;
             }
 
-            if (Utils.isSuperdateThisWeek(task.getDoDate())) {
-                task.setListedIn(TaskListing.THIS_WEEK);
-                weekTaskList.add(task);
-                continue;
-            }
-
-            if (Utils.isSuperdateThisMonth(task.getDoDate())) {
-                task.setListedIn(TaskListing.THIS_MONTH);
-                monthTaskList.add(task);
-                continue;
-            }
-
-            if (Utils.isSuperdateIsUpcoming(task.getDoDate())) {
+            if (Utils.isSuperDateIsFuture(task.getDoDate()) && !Utils.isSuperDateTomorrow(task.getDoDate()) ) {
                 task.setListedIn(TaskListing.UPCOMING);
                 upcomingTaskList.add(task);
             }
@@ -200,47 +174,17 @@ public class TaskOrganiser {
     }
 
     public void sortTasks() {
-        Collections.sort(todayTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getTaskIndex() - o2.getTaskIndex();
-            }
+        Collections.sort(todayTaskList, (o1, o2) -> o1.getTaskIndex() - o2.getTaskIndex());
+
+        Collections.sort(tomorrowTaskList, (o1, o2) -> o1.getTaskIndex() - o2.getTaskIndex());
+
+        Collections.sort(upcomingTaskList, (o1, o2) -> {
+            Calendar c1 = Utils.getCalenderFromSuperDate(o1.getDoDate());
+            Calendar c2 = Utils.getCalenderFromSuperDate(o2.getDoDate());
+            return c1.getTime().compareTo(c2.getTime());
         });
 
-        Collections.sort(tomorrowTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getTaskIndex() - o2.getTaskIndex();
-            }
-        });
-
-        Collections.sort(weekTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getTaskIndex() - o2.getTaskIndex();
-            }
-        });
-
-        Collections.sort(monthTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getTaskIndex() - o2.getTaskIndex();
-            }
-        });
-
-        Collections.sort(upcomingTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getTaskIndex() - o2.getTaskIndex();
-            }
-        });
-
-        Collections.sort(completedTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o2.getTaskCompletedDate().compareTo(o1.getTaskCompletedDate());
-            }
-        });
+        Collections.sort(completedTaskList, (o1, o2) -> o2.getTaskCompletedDate().compareTo(o1.getTaskCompletedDate()));
 
     }
 
@@ -315,32 +259,6 @@ public class TaskOrganiser {
         }
 
         return allTaskList;
-    }
-
-    public int getTaskSize(TaskListing listing) {
-
-        switch (listing) {
-            case TODAY:
-                return todayTaskList.size();
-            case TOMORROW:
-                return tomorrowTaskList.size();
-            case THIS_WEEK:
-                return weekTaskList.size();
-            case THIS_MONTH:
-                return monthTaskList.size();
-            case UPCOMING:
-                return upcomingTaskList.size();
-        }
-
-        return allTaskList.size();
-    }
-
-    public List<Task> getMonthTaskList() {
-        return monthTaskList;
-    }
-
-    public List<Task> getWeekTaskList() {
-        return weekTaskList;
     }
 
     public List<Task> getUpcomingTaskList() {

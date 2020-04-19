@@ -52,9 +52,9 @@ class UpcomingTasksFragment : Fragment() {
         recyclerView_today.layoutManager = LinearLayoutManager(activity)
         adapter = UpcomingManualAdapter(context)
 
-        val callback: ItemTouchHelper.Callback = LongItemTouchHelperCallback(adapter)
-        val touchHelper = ItemTouchHelper(callback)
-        touchHelper.attachToRecyclerView(recyclerView_today)
+        //val callback: ItemTouchHelper.Callback = LongItemTouchHelperCallback(adapter)
+        //val touchHelper = ItemTouchHelper(callback)
+        //touchHelper.attachToRecyclerView(recyclerView_today)
         recyclerView_today.adapter = adapter
     }
 

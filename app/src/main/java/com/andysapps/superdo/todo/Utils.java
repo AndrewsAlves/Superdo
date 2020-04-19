@@ -265,6 +265,10 @@ public class Utils {
         return false;
     }
 
+    public static String getUpcomingDoDayString(Super) {
+
+    }
+
     public static boolean shouldAddTaskRepeat(Task task) {
 
         if (task.getRepeat() == null) {

@@ -13,7 +13,7 @@
         android:id="@+id/tv_upcoming_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="This week"
+        android:text="24th June"
         android:textSize="16sp"
         android:fontFamily="@font/montserrat_medium"
         android:textColor="@color/lightRed"

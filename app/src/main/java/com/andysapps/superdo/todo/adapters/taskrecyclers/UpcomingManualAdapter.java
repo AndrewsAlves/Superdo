@@ -71,13 +71,15 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
     private Context context;
 
+    String lastOrderedString;
+
     public UpcomingManualAdapter(Context context) {
         this.context = context;
         this.viewUpdateHandler = new Handler();
-        setUpcomingTaskList();
+        updateList();
     }
 
-    public void setUpcomingTaskList() {
+    /*public void setUpcomingTaskList() {
 
         weekTaskList = new ArrayList<>();
         monthTaskList = new ArrayList<>();
@@ -102,7 +104,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         taskList.addAll(upcomingTasklist);
 
         Log.e(TAG, "Task updated");
-    }
+    }*/
 
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -111,7 +113,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         return new TaskViewHolder(view);
     }
 
-    public void addTask(Task task) {
+    /*public void addTask(Task task) {
 
         int addIndex;
 
@@ -144,10 +146,10 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 break;
         }
 
-        reaarageGroupTasks(-1);
-    }
+        //reaarageGroupTasks(-1);
+    }*/
 
-    public void removeTask(Task task) {
+   /* public void removeTask(Task task) {
 
         for (int i = 0 ; i < this.taskList.size() ; i++) {
 
@@ -175,14 +177,14 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             }
         }
 
-        reaarageGroupTasks(-1);
-    }
+        //reaarageGroupTasks(-1);
+    }*/
 
     public void undoTaskCompleted(Task task,int position) {
         taskList.add(position, task);
         task.setTaskAction(false);
         notifyItemInserted(position);
-        reaarageGroupTasks(-1);
+        //reaarageGroupTasks(-1);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
     }
@@ -191,12 +193,14 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         taskList.add(position, task);
         task.setMovedToBin(false);
         notifyItemInserted(position);
-        reaarageGroupTasks(-1);
+        //reaarageGroupTasks(-1);
         FirestoreManager.getInstance().updateTask(task);
     }
 
     public void updateList() {
-        setUpcomingTaskList();
+        taskList.clear();
+        taskList.addAll(TaskOrganiser.getInstance().getUpcomingTaskList());
+        //setUpcomingTaskList();
         notifyDataSetChanged();
     }
 
@@ -205,7 +209,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
         Task task = taskList.get(position);
 
-        if (task.getDocumentId().equals(dummyWeekTitle)
+       /* if (task.getDocumentId().equals(dummyWeekTitle)
                 || task.getDocumentId().equals(dummyMonthTitle)
                 || task.getDocumentId().equals(dummyUpcomingTitle) ) {
 
@@ -227,7 +231,9 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             h.itemView.setClickable(false); // disable click for
             h.parentTaskItem.setVisibility(View.GONE);
             return;
-        }
+        }*/
+
+
 
         if (h.painting != null) {
             h.painting.clearStrikeThrough();
@@ -344,7 +350,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
     public void setTaskCompleted(int position, Task task) {
         taskList.remove(position);
-        reaarageGroupTasks(-1);
+        //reaarageGroupTasks(-1);
         task.setTaskCompletedDate(Calendar.getInstance().getTime());
         notifyItemRemoved(position);
         FirestoreManager.getInstance().updateTask(task);
@@ -398,7 +404,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             return;
         }
 
-        viewUpdateHandler.removeCallbacksAndMessages(null);
+        //viewUpdateHandler.removeCallbacksAndMessages(null);
 
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
@@ -410,20 +416,20 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             }
         }
 
-        updateTasks(toPosition);
+       // updateTasks(toPosition);
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    public void updateTasks(int toPostion) {
+    /*public void updateTasks(int toPostion) {
         viewUpdateHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 reaarageGroupTasks(toPostion);
             }
         }, 800);
-    }
+    }*/
 
-    public void reaarageGroupTasks(int toPostion) {
+    /*public void reaarageGroupTasks(int toPostion) {
 
         String curruntQueryGroup = dummyWeekTitle;
 
@@ -510,7 +516,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             }
 
         }
-    }
+    }*/
 
     @Override
     public void onItemMoved() {
