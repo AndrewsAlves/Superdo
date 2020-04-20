@@ -19,6 +19,7 @@ import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.manager.TaskOrganiser
+import com.andysapps.superdo.todo.model.Task
 import kotlinx.android.synthetic.main.fragment_today.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -58,6 +59,10 @@ class UpcomingTasksFragment : Fragment() {
         recyclerView_today.adapter = adapter
     }
 
+    fun isContainsInList(task : Task) : Boolean {
+        return adapter!!.taskList.contains(task)
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: FetchTasksEvent) {
         adapter!!.updateList()
@@ -68,8 +73,13 @@ class UpcomingTasksFragment : Fragment() {
 
         Log.d("Upcoming fragment", "executed")
 
-        if (event.task.listedIn == TaskListing.TODAY
-                || event.task.listedIn == TaskListing.TOMORROW) {
+        if (event.task.listedIn != TaskListing.THIS_WEEK
+                && event.task.listedIn != TaskListing.THIS_MONTH
+                && event.task.listedIn != TaskListing.UPCOMING) {
+
+            if (isContainsInList(event.task)) {
+                adapter!!.updateList()
+            }
             return
         }
 
@@ -93,7 +103,7 @@ class UpcomingTasksFragment : Fragment() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    /*@Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: UpdateTaskListEvent) {
         when (event.listType) {
             TaskListing.THIS_WEEK ,
@@ -102,6 +112,6 @@ class UpcomingTasksFragment : Fragment() {
                 adapter!!.updateList()
             }
         }
-    }
+    }*/
 
 }

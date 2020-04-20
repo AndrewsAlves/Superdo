@@ -18,7 +18,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp">
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="@dimen/main_margin"
+            android:layout_marginEnd="@dimen/main_margin">
 
             <com.andysapps.superdo.todo.views.GradientTextView
                 android:id="@+id/tv_bucket_name"
@@ -31,7 +33,6 @@
                 android:layout_centerVertical="true"
                 android:inputType="textNoSuggestions"
                 android:textColor="@color/lightRed"
-                android:layout_marginStart="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -53,7 +54,7 @@
                 style="@style/ripple_background"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="90dp"
+                android:layout_marginEnd="50dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_actions_bucket_orange"
                 android:layout_centerVertical="true"
@@ -65,7 +66,6 @@
                 style="@style/ripple_background"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="40dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_bucket_list"
                 android:layout_centerVertical="true"
@@ -81,7 +81,6 @@
                 android:visibility="gone"
                 android:src="@drawable/ic_close_mini"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="40dp"
                 android:layout_alignParentEnd="true"/>
 
         </RelativeLayout>
@@ -101,11 +100,11 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"
+                    android:layout_marginStart="@dimen/main_margin"
+                    android:layout_marginEnd="@dimen/main_margin"
                     android:focusableInTouchMode="true"
                     android:layout_marginTop="40dp"
-                    android:layout_marginBottom="40dp">
+                    android:layout_marginBottom="35dp">
 
                     <ImageView
                         android:id="@+id/iv_bucket_type"
@@ -131,14 +130,52 @@
 
                 </RelativeLayout>
 
-                <com.andysapps.superdo.todo.views.GradientTextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tasks"
-                    android:textColor="@color/lightRed"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:textSize="16sp"
-                    android:layout_marginStart="40dp"/>
+                    android:layout_marginStart="@dimen/main_margin"
+                    android:layout_marginEnd="@dimen/main_margin">
+
+                    <com.andysapps.superdo.todo.views.GradientTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tasks"
+                        android:textColor="@color/lightRed"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textSize="16sp"
+                        android:layout_centerVertical="true"/>
+
+                    <RelativeLayout
+                        android:id="@+id/btn_rl_completedtask"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true">
+
+                        <ImageView
+                            android:id="@+id/iv_completed_tasks"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_completed_tasks"/>
+
+                        <TextView
+                            android:id="@+id/tv_completetask_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:textColor="@color/lightOrange"
+                            android:layout_alignParentEnd="true"
+                            android:textSize="12sp"
+                            android:layout_marginTop="-2dp"
+                            />
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -184,8 +221,10 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView_task_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:nestedScrollingEnabled="true"
+                    android:paddingBottom="50dp"/>
 
             </LinearLayout>
 

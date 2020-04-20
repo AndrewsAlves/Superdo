@@ -26,6 +26,7 @@ import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.enums.CPMD;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
+import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksUiEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.update.UpdateUiAllTasksEvent;
@@ -76,9 +77,9 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
         return new TaskViewHolder(view);
     }
 
-    public void addTask(Task task) {
-        taskList.add(task);
-        notifyItemInserted(taskList.size() - 1);
+    public void addTask(Task task, int position) {
+        taskList.add(position, task);
+        notifyItemInserted(position);
     }
 
     public void removeTask(Task task) {
@@ -107,6 +108,7 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
+        EventBus.getDefault().post(new UpdateBucketTasksUiEvent());
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
     }
 
@@ -261,6 +263,7 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
         notifyItemRemoved(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
+        EventBus.getDefault().post(new UpdateBucketTasksUiEvent());
         EventBus.getDefault().post(new ShowSnakeBarEvent(context.getString(R.string.snackbar_taskcompleted), v -> undoTaskCompleted(task, position)));
     }
 

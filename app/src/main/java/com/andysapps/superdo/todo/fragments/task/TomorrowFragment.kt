@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
 import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter
 import com.andysapps.superdo.todo.enums.TaskListing
@@ -70,6 +71,7 @@ class TomorrowFragment : Fragment() {
         if (adapter!!.taskList == null || adapter!!.taskList.isEmpty()) {
             ll_notasks.visibility = View.VISIBLE
             tv_no_tasks.text = "No tasks for tomorrow? \n Planning ahead will make life easier"
+            iv_no_tasks.setImageResource(R.drawable.img_girl_with_coffee)
         } else {
             ll_notasks.visibility = View.GONE
         }
@@ -78,6 +80,10 @@ class TomorrowFragment : Fragment() {
     fun updateList() {
         adapter!!.updateList(TaskOrganiser.getInstance().getTasks(TaskListing.TOMORROW))
         updateUi()
+    }
+
+    fun isContainsInList(task : Task) : Boolean {
+        return adapter!!.taskList.contains(task)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -89,6 +95,9 @@ class TomorrowFragment : Fragment() {
     fun onMessageEvent(event: TaskUpdatedEvent) {
 
         if (event.task.listedIn != TaskListing.TOMORROW) {
+            if (isContainsInList(event.task)) {
+                updateList()
+            }
             return
         }
 
@@ -118,13 +127,5 @@ class TomorrowFragment : Fragment() {
         updateUi()
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: UpdateTaskListEvent) {
-        when (event.listType) {
-            TaskListing.TOMORROW -> {
-                updateList()
-            }
-        }
-    }
 
 }

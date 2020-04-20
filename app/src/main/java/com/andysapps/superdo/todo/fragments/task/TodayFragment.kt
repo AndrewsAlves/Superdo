@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.andysapps.superdo.todo.R
+import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
 import com.andysapps.superdo.todo.adapters.taskrecyclers.TasksRecyclerAdapter
 import com.andysapps.superdo.todo.enums.TaskListing
@@ -69,7 +70,8 @@ class TodayFragment : Fragment()  {
     fun updateUi() {
         if (adapter!!.taskList == null || adapter!!.taskList.isEmpty()) {
             ll_notasks.visibility = View.VISIBLE
-            tv_no_tasks.text = "No tasks for today? \n Try to do something..."
+            tv_no_tasks.text = Utils.getNoTasksText()
+            iv_no_tasks.setImageResource(Utils.getNoTasksImg())
         } else {
             ll_notasks.visibility = View.GONE
         }
@@ -81,6 +83,10 @@ class TodayFragment : Fragment()  {
         updateUi()
     }
 
+    fun isContainsInList(task : Task) : Boolean {
+        return adapter!!.taskList.contains(task)
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: FetchTasksEvent) {
         updateUi()
@@ -90,13 +96,15 @@ class TodayFragment : Fragment()  {
     fun onMessageEvent(event: TaskUpdatedEvent) {
 
         if (event.task.listedIn != TaskListing.TODAY) {
+            if (isContainsInList(event.task)) {
+                updateList()
+            }
             return
         }
 
         when (event.documentChange) {
             TaskUpdateType.Added -> {
                 adapter!!.addTask(event.task)
-                //recyclerView_today.scrollToPosition(0)
             }
             TaskUpdateType.Deleted -> {
                 adapter!!.removeTask(event.task)
@@ -120,14 +128,4 @@ class TodayFragment : Fragment()  {
     fun onMessageEvent(event: UpdateUiAllTasksEvent) {
         updateUi()
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: UpdateTaskListEvent) {
-        when (event.listType) {
-            TaskListing.TODAY -> {
-                updateList()
-            }
-        }
-    }
-
 }

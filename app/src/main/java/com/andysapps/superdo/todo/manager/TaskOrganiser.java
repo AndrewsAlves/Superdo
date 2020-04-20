@@ -256,28 +256,11 @@ public class TaskOrganiser {
             bucketList.add(bucket);
         }
 
-       Collections.sort(bucketList, new Comparator<Bucket>() {
-           @Override
-           public int compare(Bucket o1, Bucket o2) {
-               return o1.getCreated().compareTo(o2.getCreated());
-           }
-       });
+       Collections.sort(bucketList, (o1, o2) -> o1.getCreated().compareTo(o2.getCreated()));
     }
 
     public List<Task> getCompletedTaskList() {
         return completedTaskList;
-    }
-
-    public List<Task> getCompletedTaskList(Bucket bucket) {
-         List<Task> taskList = new ArrayList<>();
-        for (Task task : getTasksInBucket(bucket, true)) {
-            if (task.isTaskCompleted()) {
-                taskList.add(task);
-                continue;
-            }
-        }
-        Collections.sort(taskList, (o1, o2) -> o2.getTaskCompletedDate().compareTo(o1.getTaskCompletedDate()));
-        return taskList;
     }
 
     public List<Task> getMissedTaskList() {
@@ -333,6 +316,75 @@ public class TaskOrganiser {
     public List<Task> getUpcomingTaskList() {
         return upcomingTaskList;
     }
+
+    /////////////////////
+    //// BUCKET TASKS
+
+    public List<Task> getBucketTasks(Bucket bucket, boolean completedTasks) {
+
+        List<Task> bucketList = new ArrayList<>();
+
+        if (bucket.getDocumentId().equals("all_tasks")) {
+            return allTaskList;
+        }
+
+        for (Task task : allTaskList) {
+            if (task.getBucket() != null && task.getBucket().getDocumentId().equals(bucket.getDocumentId())) {
+                if (completedTasks) {
+                    if (task.isTaskCompleted()) {
+                        bucketList.add(task);
+                    }
+                } else {
+                    if (!task.isTaskCompleted()) {
+                        bucketList.add(task);
+                    }
+                }
+            }
+        }
+
+        if (completedTasks) {
+            Collections.sort(bucketList, new Comparator<Task>() {
+                @Override
+                public int compare(Task o1, Task o2) {
+
+                    if (o2.getTaskCompletedDate() == null) {
+                        return (o1.getTaskCompletedDate() == null) ? 0 : 1;
+                    }
+                    if (o1.getTaskCompletedDate() == null) {
+                        return -1;
+                    }
+
+                    return o2.getTaskCompletedDate().compareTo(o1.getTaskCompletedDate());
+                }
+            });
+            return bucketList;
+        }
+
+        Collections.sort(bucketList, (o1, o2) -> {
+            Calendar c1 = Utils.getCalenderFromSuperDate(o1.getDoDate());
+            Calendar c2 = Utils.getCalenderFromSuperDate(o2.getDoDate());
+
+            if (c1 == null) {
+                return (c2 == null) ? 0 : 1;
+            }
+            if (c2 == null) {
+                return -1;
+            }
+
+            // sort by created time when both dodate are same
+            if (c1.getTime().compareTo(c2.getTime()) == 0) {
+                return o1.getCreated().compareTo(o2.getCreated());
+            }
+
+            return c1.getTime().compareTo(c2.getTime());
+        });
+
+        return bucketList;
+    }
+
+    ////////////////////////////
+    ////////// ESPRITS
+    ///////////////////////////
 
     public ArrayList<BarData> getBarDataForThisWeek() {
 
@@ -437,26 +489,6 @@ public class TaskOrganiser {
         return espritStatistics;
     }
 
-  /*  public EspritStatistics getStatForTheDate(SuperDate date) {
-        int taskPoint = 0;
-        int espritPoints = 0;
-        HashMap<String, Task> allTasks = FirestoreManager.getInstance().getHasMapTask();
-        for (Task task : allTasks.values()) {
-            if (task.isTaskCompleted()) {
-                if (task.isTaskCompleted()) {
-                    Calendar taskCompleteCalender = Calendar.getInstance();
-                    taskCompleteCalender.setTime(task.getTaskCompletedDate());
-                    if (Utils.isBothDateAreSameDay(taskCompleteCalender, Utils.getCalenderFromSuperDate(date))) {
-                        espritPoints += task.getEspritPoints();
-                        taskPoint++;
-                    }
-                }
-            }
-        }
-
-        return new EspritStatistics(date,espritPoints, taskPoint);
-    }*/
-
     private boolean multiplesOfFive(int n) {
         while ( n > 0 ) {
             n = n - 5;
@@ -464,89 +496,6 @@ public class TaskOrganiser {
             if ( n == 0 ) return true;
         }
         return false;
-    }
-
-    /////////////////////
-    //// BUCKET TASKS
-
-    public List<Task> getTasksInBucket(Bucket bucket, boolean completedTasks) {
-
-        List<Task> bucketList = new ArrayList<>();
-
-        if (bucket.getDocumentId().equals("all_tasks")) {
-            return allTaskList;
-        }
-
-        for (Task task : allTaskList) {
-            if (task.getBucket() != null && task.getBucket().getDocumentId().equals(bucket.getDocumentId())) {
-                if (task.isTaskCompleted()) {
-                    if (completedTasks) {
-                        bucketList.add(task);
-                    }
-                } else {
-                    bucketList.add(task);
-                }
-            }
-        }
-
-        Collections.sort(bucketList, (o1, o2) -> {
-            Calendar c1 = Utils.getCalenderFromSuperDate(o1.getDoDate());
-            Calendar c2 = Utils.getCalenderFromSuperDate(o2.getDoDate());
-
-            if (c1 == null) {
-                return (c2 == null) ? 0 : 1;
-            }
-            if (c2 == null) {
-                return -1;
-            }
-
-            return c1.getTime().compareTo(c2.getTime());
-        });
-
-        return bucketList;
-    }
-
-    public int getBucketTasksCount(Bucket bucket) {
-
-        int tasksCount = 0;
-
-        if (bucket == null || bucket.getDocumentId().equals("all_tasks")) {
-            return allTaskList.size();
-        }
-
-        for (Task task : allTaskList) {
-            if (task.getBucket() != null && task.getBucket().getDocumentId().equals( bucket.getDocumentId())) {
-                tasksCount++;
-            }
-        }
-
-
-
-        return tasksCount;
-    }
-
-    public int getBucketTasksDoneCount(Bucket bucket) {
-
-        int tasksDoneCount = 0;
-
-        if (bucket == null || bucket.getDocumentId().equals("all_tasks")) {
-            for (Task task : allTaskList) {
-                if (task.isTaskCompleted()) {
-                    tasksDoneCount++;
-                }
-            }
-            return tasksDoneCount;
-        }
-
-        for (Task task : allTaskList) {
-            if (task.getBucket() != null && task.getBucket().getDocumentId().equals(bucket.getDocumentId())) {
-                if (task.isTaskCompleted()) {
-                    tasksDoneCount++;
-                }
-            }
-        }
-
-        return tasksDoneCount;
     }
 
     //////////////////////////////////////

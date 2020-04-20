@@ -218,6 +218,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
                     subtaskAdapter!!.notifyItemInserted(task.subtasks.subtaskList.size - 1)
                     editTask_et_add_subtask.setText("")
                     updateUi()
+                    updateTasks()
                 } else {
                     Utils.hideKeyboard(context, editTask_et_add_subtask)
                     editTask_et_add_subtask.clearFocus()
@@ -234,7 +235,6 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     }
 
     fun setSubtaskRecycler() {
-
         editTask_rv_subtasks.layoutManager = LinearLayoutManager(activity)
         subtaskAdapter = SubtasksRecyclerAdapter(context, task.subtasks.subtaskList, task)
         val callback: ItemTouchHelper.Callback = LongItemTouchHelperCallback(subtaskAdapter)
@@ -375,6 +375,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             editTask_et_add_subtask.clearFocus()
             FirestoreManager.getInstance().updateTask(task)
             updateUi()
+            updateTasks()
         }
 
         lv_remind.setOnClickListener {
@@ -387,8 +388,9 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             task.isToRemind = !task.isToRemind
 
             updateUi()
-            TaskOrganiser.getInstance().organiseAllTasks()
             FirestoreManager.getInstance().updateTask(task)
+            TaskOrganiser.getInstance().organiseAllTasks()
+            updateTasks()
 
             if (task.isToRemind) {
                 lv_remind.setMinAndMaxProgress(0.20f, 0.50f) // on
@@ -410,9 +412,9 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             fragmentManager!!.popBackStack()
         }
 
-        editTask_btn_add_sidekicks.setOnClickListener {
+        /*editTask_btn_add_sidekicks.setOnClickListener {
             SelectSideKickDialog.instance(task).show(fragmentManager!!, SelectSideKickDialog().javaClass.name)
-        }
+        }*/
 
         ///// Close Fragment
         editTask_close.setOnClickListener {
@@ -457,7 +459,8 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     }
 
     fun updateTasks() {
-        EventBus.getDefault().post(UpdateUiEvent())
+        EventBus.getDefault().post(TaskUpdatedEvent(TaskUpdateType.Update, task))
+        //EventBus.getDefault().post(UpdateUiEvent())
     }
 
     override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -486,18 +489,19 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     /// EVENTS
     ///////////
 
-    @Subscribe
+   /* @Subscribe
     fun onMeessageEvent(event : SideKicksSelectedEvent) {
         task = event.task.clone()
         updateUi()
         FirestoreManager.getInstance().updateTask(task)
-    }
+    }*/
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SelectBucketEvent) {
         task.bucketId = event.bucket.documentId
-        updateUi()
         FirestoreManager.getInstance().updateTask(task)
+        updateUi()
+        updateTasks()
     }
 
     //////////////
@@ -509,10 +513,10 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         if (task.subtasks.getSubtaskList().size == 0) {
             task.subtasks = null
             FirestoreManager.getInstance().updateTask(task)
+            updateTasks()
         }
        updateUi()
     }
-
 
 
     @Subscribe

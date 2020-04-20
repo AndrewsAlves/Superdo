@@ -382,6 +382,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
             uploadingTask.setListedIn(Utils.getTaskListed(task.getDoDate()));
             uploadingTask.setTaskIndex(TaskOrganiser.getInstance().getTasks(uploadingTask.getListedIn()).size());
             uploadingTask.setToRemind(task.isToRemind());
+            uploadingTask.setCreated(Calendar.getInstance().getTime());
 
             String id = FirestoreManager.getInstance().uploadTask(uploadingTask);
             if (task.isToRemind()) {

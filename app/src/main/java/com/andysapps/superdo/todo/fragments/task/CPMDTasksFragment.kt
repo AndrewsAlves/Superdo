@@ -18,6 +18,7 @@ import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.UndoType
 import com.andysapps.superdo.todo.events.*
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent
+import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.events.profile.SelectProfileTaskEvent
 import com.andysapps.superdo.todo.events.update.UpdateUiCPMDEvent
 import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
@@ -124,7 +125,7 @@ class CPMDTasksFragment : Fragment() {
         when(cpmd) {
             CPMD.COMPLETED -> {
                 if (bucket != null) {
-                    taskList = TaskOrganiser.getInstance().getCompletedTaskList(bucket)
+                    taskList = TaskOrganiser.getInstance().getBucketTasks(bucket,true)
                 } else {
                     taskList = TaskOrganiser.getInstance().getCompletedTaskList()
                 }
@@ -239,11 +240,9 @@ class CPMDTasksFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: UpdateTaskListEvent) {
-        if(event.listType == TaskListing.CPMD) {
-            setTaskList()
-            updateUi()
-        }
+    fun onMessageEvent(event: TaskUpdatedEvent) {
+        setTaskList()
+        updateUi()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

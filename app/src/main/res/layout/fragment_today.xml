@@ -15,22 +15,22 @@
         android:visibility="gone">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/iv_no_tasks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:src="@drawable/illust_boy_wtih_coffee" />
+            android:src="@drawable/img_girl_with_coffee" />
 
         <TextView
             android:id="@+id/tv_no_tasks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/montserrat_medium"
             android:text="Great! you dont have \nany tasks Today"
             android:textAlignment="center"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 

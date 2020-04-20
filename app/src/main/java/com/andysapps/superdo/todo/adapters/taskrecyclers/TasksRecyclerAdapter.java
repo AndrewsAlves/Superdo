@@ -194,7 +194,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 } else {
                     h.lottieCheckView.setSpeed(2.0f);
                     h.isChecked = true;
-                    strikeOutText(h, 0);
+                    strikeOutText(h, 500);
                     SuperdoAudioManager.getInstance().playTaskCompleted();
                 }
                 h.lottieCheckView.playAnimation();

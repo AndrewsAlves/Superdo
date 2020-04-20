@@ -144,10 +144,6 @@ public class MainActivity extends AppCompatActivity {
                         mainTabs = MainTabs.TODAY_TASKS;
                         rippleBackground.startPulse();
                         break;
-                    /*case 1:
-                        mainTabs = MainTabs.BUCKET_TASKS;
-                        rippleBackground.stopPulse();
-                        break;*/
                     case 1:
                         mainTabs = MainTabs.PROFILE;
                         rippleBackground.stopPulse();
@@ -192,14 +188,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        /*if (!pressedBack) {
-            pressedBack = true;
-            Toast.makeText(this, "Press again to exit", Toast.LENGTH_LONG).show();
-            Handler handler = new Handler();
-            handler.postDelayed(() -> pressedBack = false, 3000);
-            return;
-        }*/
-
         super.onBackPressed();
     }
 
@@ -210,13 +198,16 @@ public class MainActivity extends AppCompatActivity {
         mainViewPager.setCurrentItem(0);
         AnimationManager.getInstance().showMoonButton(moonButton);
         updateTabUi(mainTabs);
-        updateAllTasks();
     }
 
-    public void updateAllTasks() {
-        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.TODAY));
-        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.TOMORROW));
-        EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.UPCOMING));
+    @OnClick(R.id.tab_3)
+    public void clickProfile() {
+        mainTabs = MainTabs.PROFILE;
+        mainViewPager.setCurrentItem(1);
+        viewPagerAdapter.getProfileFragment().updateUi();
+        AnimationManager.getInstance().hideMoonButton(moonButton);
+        moonButton.setClickable(false);
+        updateTabUi(mainTabs);
     }
 
    /* @OnClick(R.id.tab_2)
@@ -230,15 +221,6 @@ public class MainActivity extends AppCompatActivity {
         updateTabUi(mainTabs);
     }*/
 
-    @OnClick(R.id.tab_3)
-    public void clickProfile() {
-        mainTabs = MainTabs.PROFILE;
-        mainViewPager.setCurrentItem(1);
-        viewPagerAdapter.getProfileFragment().updateUi();
-        AnimationManager.getInstance().hideMoonButton(moonButton);
-        moonButton.setClickable(false);
-        updateTabUi(mainTabs);
-    }
 
     public void clickAddTask() {
         switch (moonButtonType) {
@@ -378,20 +360,6 @@ public class MainActivity extends AppCompatActivity {
                 //moonIcon.setImageResource(R.drawable.ic_tick_create_bucket);
                 break;
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(UpdateUiEvent event) {
-        Log.e(TAG, "onMessageEvent: UpdateUi");
-       switch (mainTabs) {
-           case TODAY_TASKS:
-               updateAllTasks();
-               break;
-           case PROFILE:
-               EventBus.getDefault().post(new UpdateProfileEvent());
-               EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.CPMD));
-               break;
-       }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

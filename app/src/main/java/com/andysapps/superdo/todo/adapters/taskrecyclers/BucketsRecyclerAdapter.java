@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.R;
 import com.andysapps.superdo.todo.dialog.BucketActionBottomDialog;
-import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.events.ExitBucketTaskFragment;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.SetTasksFragment;
@@ -95,8 +94,10 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
 
         holder.ivBucketIcon.setImageResource(Constants.bucketIcons[bucket.getBucketIcon()]);
 
-        String taskDone = TaskOrganiser.getInstance().getBucketTasksDoneCount(bucket) + " / " +
-                TaskOrganiser.getInstance().getBucketTasksCount(bucket);
+
+        int totalTasks = TaskOrganiser.getInstance().getBucketTasks(bucket,false).size();
+        int completeTasks = TaskOrganiser.getInstance().getBucketTasks(bucket,true).size();
+        String taskDone = completeTasks + " / " + totalTasks;
 
         holder.tvNoTasks.setText(taskDone);
 
