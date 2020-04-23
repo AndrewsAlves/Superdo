@@ -369,6 +369,8 @@ public class Task implements Cloneable {
                 }
             }
         }
+
+        FirestoreManager.getInstance().addEspritScore(espritPoints);
     }
 
     public String getDoDateString() {

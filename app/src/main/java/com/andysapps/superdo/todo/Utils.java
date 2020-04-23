@@ -796,6 +796,16 @@ public class Utils {
         return R.drawable.img_girl_with_coffee;
     }
 
+    public static int getRankFromPoints(int points) {
+        for (int i : Constants.trophyPoints) {
+            if (points >= i) {
+                return i+1;
+            }
+        }
+
+        return 1;
+    }
+
     ///////////////////
     ////// HABITS
     //////////////////

@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.andysapps.superdo.todo.Constants;
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
 import com.andysapps.superdo.todo.enums.BucketUpdateType;
@@ -323,6 +325,8 @@ public class FirestoreManager {
                 });
     }
 
+
+
     public String uploadTask(Task task) {
         String id = getUserTaskCollection().document().getId();
         task.setDocumentId(id);
@@ -363,6 +367,27 @@ public class FirestoreManager {
                 .addOnFailureListener(e -> Log.e(TAG, "Error uploading bucket", e));
 
     }
+
+
+    ///////////////////////////
+    ////// ESPRIT FUNCTIONS
+    /////////////////
+
+    public void addEspritScore(int score) {
+        int points = user.getEspritPoints() + score;
+
+        if (isLeveUp(user.getEspritPoints(), points)) {
+            Log.e(TAG, "addEspritScore: Level ups ");
+        }
+
+        user.setEspritPoints(points);
+        createOrUpdateUser(user);
+    }
+
+    public boolean isLeveUp(int oldPoint, int newPoint) {
+        return Utils.getRankFromPoints(newPoint) > Utils.getRankFromPoints(oldPoint);
+    }
+
 
     ///////////////////////////////
     ////// ACTIONS

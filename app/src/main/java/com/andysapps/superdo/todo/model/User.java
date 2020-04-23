@@ -20,6 +20,7 @@ public class User {
     String email;
 
     String firstName;
+
     String lastName;
 
     int avatarIndex;
@@ -27,6 +28,10 @@ public class User {
     int espritPoints;
 
     GeoPoint geoLocation;
+
+    boolean isUserPremium;
+
+    PurchaseDetails purchaseDetails;
 
     @ServerTimestamp
     Date createAt;
@@ -106,5 +111,21 @@ public class User {
 
     public void setEspritPoints(int espritPoints) {
         this.espritPoints = espritPoints;
+    }
+
+    public boolean isUserPremium() {
+        return isUserPremium;
+    }
+
+    public void setUserPremium(boolean userPremium) {
+        isUserPremium = userPremium;
+    }
+
+    public PurchaseDetails getPurchaseDetails() {
+        return purchaseDetails;
+    }
+
+    public void setPurchaseDetails(PurchaseDetails purchaseDetails) {
+        this.purchaseDetails = purchaseDetails;
     }
 }

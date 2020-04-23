@@ -13,7 +13,7 @@ public class Constants {
             R.drawable.ic_bucket_11, R.drawable.ic_bucket_12, R.drawable.ic_bucket_13, R.drawable.ic_bucket_14, R.drawable.ic_bucket_15};
 
 
-    public static final int[] trophyPoints = {0, 500, 1000, 2000, 4000, 6000, 8000, 11000, 13000, 15000};
+    public static final int[] trophyPoints = {0, 500, 1000, 2000, 4000, 6000, 8000, 11000, 14000, 20000};
     public static final String[] weekShortTxt = {"S", "M", "T", "W", "T", "F", "S"};
 
     public static final String thisWeek = "This Week";
