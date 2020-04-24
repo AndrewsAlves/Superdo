@@ -13,7 +13,8 @@
         android:roundIcon="@drawable/ic_launcher_superdo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.PointRulesActivity"></activity>
+
+        <activity android:name=".activity.PointRulesActivity"/>
         <activity android:name=".activity.ProductivityActivity" />
         <activity android:name=".activity.SubscriptionActivity" />
         <activity android:name=".activity.ProfileInfoActivity" />
@@ -21,6 +22,7 @@
         <activity android:name=".activity.SignInActivity" />
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.WelcomeActivity" />
+
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.MainActivity"
             android:windowSoftInputMode="adjustPan" />
@@ -41,14 +44,18 @@
             android:name=".ActionBroadcast"
             android:enabled="true"
             android:exported="true" />
+
         <receiver
             android:name=".BackgroundBroadcast"
             android:enabled="true"
             android:exported="true" >
+
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
+
         </receiver>
+
     </application>
 
 </manifest>

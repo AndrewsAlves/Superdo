@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.andysapps.superdo.todo.activity.MainActivity;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.PurchaseManager;
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
@@ -26,9 +27,10 @@ public class SuperdoApplication extends Application {
 
         FirebaseApp.initializeApp(this);
         FirestoreManager.initialise(this);
+        PurchaseManager.initialise(this);
+
         TaskOrganiser.initialise();
         SuperdoAudioManager.init(this);
-
         SuperdoAlarmManager.initialise(this);
         SuperdoNotificationManager.initialise(this);
     }
