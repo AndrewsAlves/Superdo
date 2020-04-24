@@ -40,7 +40,7 @@ public class PurchaseManager implements PurchasesUpdatedListener{
 
     private PurchaseManager(Context context) {
 
-        billingClient = BillingClient.newBuilder(context).setListener(this).build();
+        billingClient = BillingClient.newBuilder(context).enablePendingPurchases().setListener(this).build();
 
         billingClient.startConnection(new BillingClientStateListener() {
             @Override

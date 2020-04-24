@@ -193,6 +193,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
         notifyItemInserted(position);
         reaarageGroupTasks(-1);
         FirestoreManager.getInstance().updateTask(task);
+        TaskOrganiser.getInstance().organiseAllTasks();
     }
 
     public void updateList() {

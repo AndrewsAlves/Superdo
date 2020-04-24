@@ -272,7 +272,7 @@ public class Task implements Cloneable {
         return espritPoints;
     }
 
-    public void setEspritPoints(int espritPoints) {
+    public void calculateEspritPoints(int espritPoints) {
         this.espritPoints = espritPoints;
     }
 
@@ -294,7 +294,7 @@ public class Task implements Cloneable {
         if (taskCompleted) {
             Log.e(TAG, "setTaskCompleted: Task completed SET DATE");
             taskCompletedDate = Calendar.getInstance().getTime();
-            setEspritPoints();
+            calculateEspritPoints();
 
             if (getRepeat() != null) {
                 getRepeat().setLastCompletedDate(getDoDate());
@@ -302,7 +302,7 @@ public class Task implements Cloneable {
 
         } else {
             taskCompletedDate = null;
-            setEspritPoints();
+            calculateEspritPoints();
 
             if (getRepeat() != null) {
                 getRepeat().setLastCompletedDate(null);
@@ -325,16 +325,18 @@ public class Task implements Cloneable {
         return remindRequestCode;
     }
 
-    public void setEspritPoints() {
+    public void calculateEspritPoints() {
         int taskCompleted = 5;
         int deadlineTask = 20;
         int remindedTask = 20;
         int subTaskPoint = 1;
         int completeMissesTask = 2;
 
-        espritPoints = 0;
-
         if (!isTaskCompleted) {
+            return;
+        }
+
+        if (espritPoints != 0) {
             return;
         }
 

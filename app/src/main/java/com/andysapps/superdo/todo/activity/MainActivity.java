@@ -28,11 +28,14 @@ import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
+import com.andysapps.superdo.todo.fragments.ProfileFragment;
 import com.andysapps.superdo.todo.fragments.bucket.BucketFragment;
 import com.andysapps.superdo.todo.fragments.task.AddTaskFragment;
 import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment;
+import com.andysapps.superdo.todo.fragments.task.AllTasksFragment;
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment;
 import com.andysapps.superdo.todo.fragments.task.EditTaskFragment;
+import com.andysapps.superdo.todo.fragments.task.TasksFragment;
 import com.andysapps.superdo.todo.manager.AnimationManager;
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
 import com.andysapps.superdo.todo.manager.TimeManager;
@@ -66,9 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.ib_profile)
     ImageView imgProfile;
-
-    @BindView(R.id.vp_main)
-    ViewPager mainViewPager;
 
     @BindView(R.id.tv_today_msg)
     TextView tvMsg;
@@ -136,13 +136,13 @@ public class MainActivity extends AppCompatActivity {
                 .setOnClickListener(view -> clickAddTask());
 
         viewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
-        mainViewPager.setAdapter(viewPagerAdapter);
+        //mainViewPager.setAdapter(viewPagerAdapter);
 
         if (TimeManager.getHour() >= 18 || TimeManager.getHour() <= 6 ) {
             isNight = true;
         }
 
-        mainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        /*mainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) { }
             @Override
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onPageScrollStateChanged(int i) { }
-        });
+        });*/
     }
 
     @Override
@@ -202,21 +202,29 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.tab_1)
     public void clickToday() {
-        moonButton.setClickable(true);
+        setMainFragments(new TasksFragment(), TasksFragment.TAG);
         mainTabs = MainTabs.TODAY_TASKS;
-        mainViewPager.setCurrentItem(0);
-        AnimationManager.getInstance().showMoonButton(moonButton);
         updateTabUi(mainTabs);
+        rippleBackground.startPulse();
+        moonButton.setClickable(true);
+        AnimationManager.getInstance().showMoonButton(moonButton);
     }
 
     @OnClick(R.id.tab_3)
     public void clickProfile() {
+        setMainFragments(new ProfileFragment(), ProfileFragment.TAG);
         mainTabs = MainTabs.PROFILE;
-        mainViewPager.setCurrentItem(1);
-        viewPagerAdapter.getProfileFragment().updateUi();
-        AnimationManager.getInstance().hideMoonButton(moonButton);
-        moonButton.setClickable(false);
         updateTabUi(mainTabs);
+        rippleBackground.stopPulse();
+        moonButton.setClickable(false);
+        AnimationManager.getInstance().hideMoonButton(moonButton);
+    }
+
+    public void setMainFragments(Fragment fragment, String tag) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out,R.anim.fragment_fade_in, R.anim.fragment_fade_out);
+        ft.replace(R.id.frame_main, fragment, tag);
+        ft.commitAllowingStateLoss(); // save the changes
     }
 
    /* @OnClick(R.id.tab_2)

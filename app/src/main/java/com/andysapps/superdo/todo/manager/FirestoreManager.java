@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.andysapps.superdo.todo.Constants;
+import com.andysapps.superdo.todo.Tools;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.BucketColors;
 import com.andysapps.superdo.todo.enums.BucketType;
@@ -58,12 +59,16 @@ public class FirestoreManager {
     HashMap<String, Task> taskHashMap;
     HashMap<String, Bucket> bucketHashMap;
 
+    public boolean isFetching;
+
     Query taskQuery;
     Query bucketQuery;
 
     public User user;
 
     FirebaseFirestore firestore;
+
+    public int oldEspritScore;
 
     public static FirestoreManager getInstance() {
         return ourInstance;
@@ -184,10 +189,9 @@ public class FirestoreManager {
 
         Log.e(TAG, "fetchUserData() called with: user id " + user.getUserId());
 
-        taskQuery = getUserTaskCollection().whereEqualTo("deleted", false);
+        taskQuery = getUserTaskCollection();
 
-        bucketQuery = getUserBucketCollection().whereEqualTo("deleted", false)
-                .orderBy("created", Query.Direction.DESCENDING);
+        bucketQuery = getUserBucketCollection();
 
         if (!registerReminders) initQuerySnapshots();
 
@@ -228,7 +232,9 @@ public class FirestoreManager {
             }
 
             TaskOrganiser.getInstance().organiseAllTasks();
+
             EventBus.getDefault().post(new FetchBucketEvent(true));
+
         }).addOnFailureListener(e -> EventBus.getDefault().post(new FetchBucketEvent(false)));
     }
 
@@ -247,9 +253,17 @@ public class FirestoreManager {
             }
 
             for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+
+                Task task = dc.getDocument().toObject(Task.class);
+
+                if (task.getCreated().getTime() < Tools.get30SecondsLessCalender().getTime().getTime()) {
+                    Log.e(TAG, "initQuerySnapshots: this task is old");
+                    return;
+                }
+
                 switch (dc.getType()) {
                     case ADDED:
-                        taskHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Task.class));
+                        taskHashMap.put(dc.getDocument().getId(), task);
                         updateTaskList(TaskUpdateType.Added, taskHashMap.get(dc.getDocument().getId()));
                         break;
                 }
@@ -274,20 +288,23 @@ public class FirestoreManager {
                 return;
             }
 
-            Log.e(TAG, "Query snapshot not null : " + queryDocumentSnapshots);
-
             for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
 
-                Log.e(TAG, "Query snapshot buckets: ");
+                Bucket bucket = dc.getDocument().toObject(Bucket.class);
+
+                if (bucket.getCreated().getTime() < Tools.get30SecondsLessCalender().getTime().getTime()) {
+                    Log.e(TAG, "initQuerySnapshots: this bucket is old");
+                    return;
+                }
 
                 switch (dc.getType()) {
                     case ADDED:
-                        bucketHashMap.put(dc.getDocument().getId(),dc.getDocument().toObject(Bucket.class));
+                        bucketHashMap.put(dc.getDocument().getId(),bucket);
                         updateBucketList(BucketUpdateType.Added,bucketHashMap.get(dc.getDocument().getId()));
                         break;
                     case MODIFIED:
                         if(bucketHashMap.containsKey(dc.getDocument().getId())) {
-                            bucketHashMap.put(dc.getDocument().getId(), dc.getDocument().toObject(Bucket.class));
+                            bucketHashMap.put(dc.getDocument().getId(), bucket);
                             updateBucketList(BucketUpdateType.Modified,bucketHashMap.get(dc.getDocument().getId()));
                         }
                         break;
@@ -391,7 +408,7 @@ public class FirestoreManager {
         }
 
         user.setEspritPoints(points);
-        createOrUpdateUser(user);
+        firestore.collection(DB_USER).document(user.getUserId()).update("espritPoints", user.getEspritPoints());
     }
 
     public boolean isLeveUp(int oldPoint, int newPoint) {

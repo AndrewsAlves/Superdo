@@ -117,6 +117,7 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
         task.setMovedToBin(false);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
+        TaskOrganiser.getInstance().organiseAllTasks();
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
     }
 

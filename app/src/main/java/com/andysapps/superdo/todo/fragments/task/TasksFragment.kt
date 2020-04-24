@@ -25,7 +25,10 @@ import org.greenrobot.eventbus.ThreadMode
 
 class TasksFragment : Fragment() {
 
+
     companion object {
+
+        const val TAG = "TasksFragment"
 
         var taskBucket : Bucket? = null
 

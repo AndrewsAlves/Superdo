@@ -39,6 +39,10 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class ProfileFragment : Fragment() {
 
+   companion object {
+       const val TAG = "ProfileFragment"
+   }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment

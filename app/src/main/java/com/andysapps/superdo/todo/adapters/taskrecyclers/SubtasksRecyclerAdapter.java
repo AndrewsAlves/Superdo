@@ -139,7 +139,7 @@ public class SubtasksRecyclerAdapter extends RecyclerView.Adapter<SubtasksRecycl
                 }
 
                 subtask.setTaskCompleted(h.isChecked);
-                task.setEspritPoints();
+                task.calculateEspritPoints();
                 FirestoreManager.getInstance().updateTask(task);
 
                 h.lottieSubtasks.playAnimation();

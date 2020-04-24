@@ -101,13 +101,13 @@ public class TaskOrganiser {
 
         // Divided the tasks based on listing
 
-        FirestoreManager.getInstance().user.setEspritPoints(0);
+        //FirestoreManager.getInstance().user.setEspritPoints(0);
 
         for (Task task : allTasks.values()) {
 
             // set esprit points
-            int totalEsprtiPoints = FirestoreManager.getInstance().user.getEspritPoints() + task.getEspritPoints();
-            FirestoreManager.getInstance().user.setEspritPoints(totalEsprtiPoints);
+            //int totalEsprtiPoints = FirestoreManager.getInstance().user.getEspritPoints() + task.getEspritPoints();
+            //FirestoreManager.getInstance().user.setEspritPoints(totalEsprtiPoints);
 
             if (task.isDeleted()) {
                 continue;

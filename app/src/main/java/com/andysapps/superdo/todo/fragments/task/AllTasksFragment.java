@@ -9,6 +9,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,8 @@ import static com.thekhaeng.pushdownanim.PushDownAnim.MODE_SCALE;
  */
 
 public class AllTasksFragment extends Fragment {
+
+    private static final String TAG = "AllTasksFragment";
 
     @BindView(R.id.tv_bucket_title)
     TextView tvTitle;
@@ -243,6 +246,8 @@ public class AllTasksFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(TaskUpdatedEvent event) {
+
+        Log.e(TAG, "onMessageEvent() called with: event = [" + event + "]");
 
         if (event.getDocumentChange() != TaskUpdateType.Added) {
             return;

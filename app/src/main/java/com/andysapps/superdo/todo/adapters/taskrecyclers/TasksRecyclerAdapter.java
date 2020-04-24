@@ -99,6 +99,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         task.setTaskAction(false);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
+        TaskOrganiser.getInstance().organiseAllTasks();
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
     }
 
@@ -107,6 +108,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         task.setMovedToBin(false);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
+        TaskOrganiser.getInstance().organiseAllTasks();
         EventBus.getDefault().post(new UpdateUiAllTasksEvent());
     }
 
