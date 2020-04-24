@@ -141,6 +141,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         h.ivRemind.setVisibility(View.GONE);
         h.ivFocus.setVisibility(View.GONE);
         h.parentIcons.setVisibility(View.GONE);
+        h.ivDoDate.setVisibility(View.GONE);
 
         if (Utils.isSuperDateIsPast(task.getDoDate())) {
             h.ivDoDate.setVisibility(View.VISIBLE);
@@ -148,6 +149,11 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             h.ivDoDate.setImageResource(R.drawable.ic_missed_mini);
             h.tvDoDate.setTextColor(context.getResources().getColor(R.color.lightRed));
             h.tvDoDate.setText(task.getDoDate().getSuperDateString());
+            h.parentIcons.setVisibility(View.VISIBLE);
+        } else {
+            h.tvDoDate.setVisibility(View.VISIBLE);
+            h.tvDoDate.setText("Do " + task.getDoDate().getTimeString());
+            h.tvDoDate.setTextColor(context.getResources().getColor(R.color.grey2));
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 

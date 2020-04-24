@@ -135,15 +135,12 @@ public class AllTasksFragment extends Fragment {
                 switch (i) {
                     case 0:
                         listing = TaskListing.TODAY;
-                        //EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.TODAY));
                         break;
                     case 1:
                         listing = TaskListing.TOMORROW;
-                        //EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.TOMORROW));
                         break;
                     case 2:
                         listing = TaskListing.UPCOMING;
-                        //EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.UPCOMING));
                         break;
                 }
 

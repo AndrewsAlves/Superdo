@@ -83,7 +83,7 @@ public class FirestoreManager {
 
     public static void initialiseAndRegisterAlarms(Context context) {
         ourInstance = new FirestoreManager(context);
-        ourInstance.fetchUserData(context, true);
+        ourInstance.fetchUser(context, true);
     }
 
     public static void initialiseForNotification(Context context) {
@@ -131,7 +131,7 @@ public class FirestoreManager {
         return bucket;
     }
 
-    public void fetchUser() {
+    public void fetchUser(Context context, boolean remindAlarms) {
         Log.e(TAG, "fetchUser() called user id " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         firestore.collection(DB_USER).document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get()
@@ -154,7 +154,8 @@ public class FirestoreManager {
                     if (documentSnapshot.exists()) {
                         Log.d(TAG, "fetchUser() called is successful");
                         user = documentSnapshot.toObject(User.class);
-                        fetchUserData(null, false);
+
+                        fetchUserData(context, remindAlarms);
                         EventBus.getDefault().post(new FetchUserSuccessEvent());
                     } else {
                         EventBus.getDefault().post(new FetchUserFailureEvent());
@@ -316,6 +317,17 @@ public class FirestoreManager {
                 .addOnSuccessListener(aVoid -> {
                     this.user = user;
                     fetchUserData(null, false);
+                    EventBus.getDefault().post(new CreateOrUpdateUserSuccessEvent());
+                })
+                .addOnFailureListener(e -> {
+                    EventBus.getDefault().post(new CreateOrUpdateUserFailureEvent());
+                });
+    }
+
+    public void updateUser(User user) {
+        firestore.collection(DB_USER).document(user.getUserId())
+                .set(user)
+                .addOnSuccessListener(aVoid -> {
                     EventBus.getDefault().post(new CreateOrUpdateUserSuccessEvent());
                 })
                 .addOnFailureListener(e -> {

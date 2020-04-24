@@ -31,18 +31,6 @@ public class SuperdoApplication extends Application {
 
         SuperdoAlarmManager.initialise(this);
         SuperdoNotificationManager.initialise(this);
-        
-        registedReminders();
     }
 
-    public void registedReminders() {
-
-        long lastRegistryTimestamp = SharedPrefsManager.getLastBackgroundRegisteredTimestamp(this);
-
-        if (lastRegistryTimestamp == 0) {
-            SuperdoAlarmManager.getInstance().registerBackgroundProcesses(this, false);
-        } else if (!Utils.isSuperDateToday(Utils.getSuperdateFromTimeStamp(lastRegistryTimestamp))) {
-            SuperdoAlarmManager.getInstance().registerBackgroundProcesses(this, false);
-        }
-    }
 }

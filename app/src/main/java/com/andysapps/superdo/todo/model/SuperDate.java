@@ -186,10 +186,6 @@ public class SuperDate implements Cloneable {
 
     public String getTimeString() {
 
-        if (!hasTime) {
-            return "00 : 00 AM";
-        }
-
         int hours1 = hours;
         String meridien = " AM";
 

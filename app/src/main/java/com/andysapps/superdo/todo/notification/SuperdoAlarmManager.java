@@ -90,6 +90,7 @@ public class SuperdoAlarmManager {
     }
 
     public void registerDailyNotificationsAndReminders(Context context) {
+        Log.e(TAG, "registerDailyNotificationsAndReminders() called with: context = [" + context + "]");
         registerDailyQuoteAlarms(context);
         registerDailyReminders(context);
         SharedPrefsManager.saveBackgroundRegistriesTimeStamp(context, Calendar.getInstance().getTimeInMillis());
@@ -106,6 +107,8 @@ public class SuperdoAlarmManager {
     }
 
     public void registerDailyReminders(Context context) {
+
+        Log.e(TAG, "registerDailyReminders() called with: context = [" + context + "]");
 
         /// REMIND REMINDING TASKS
         for (Task task : TaskOrganiser.getInstance().remindingTasks) {

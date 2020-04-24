@@ -62,7 +62,7 @@ public class Splash extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
-            FirestoreManager.getInstance().fetchUser();
+            FirestoreManager.getInstance().fetchUser(null, false);
         }
     }
 

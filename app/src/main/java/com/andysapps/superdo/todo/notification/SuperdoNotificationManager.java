@@ -15,6 +15,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.andysapps.superdo.todo.ActionBroadcast;
 import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Splash;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.activity.MainActivity;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
@@ -195,7 +196,7 @@ public class SuperdoNotificationManager {
 
                 SimpleNotification notification = getSimpleNotificationForDaily(notificationList);
 
-                createNotification(context,new Intent(context, MainActivity.class),
+                createNotification(context,new Intent(context, Splash.class),
                         CHANNEL_DAILY,
                         R.drawable.ic_notification,
                         notification.getContentTitle(),
@@ -310,6 +311,10 @@ public class SuperdoNotificationManager {
                         if (document.exists()) {
                             remindTask = document.toObject(Task.class);
 
+                            if (remindTask.isTaskCompleted()) {
+                                return;
+                            }
+
                             if (Utils.isSuperDateIsPast(remindTask.getDoDate())) {
                                 return;
                             }
@@ -341,7 +346,7 @@ public class SuperdoNotificationManager {
 
     public void pushRemindNotification(Context context, SimpleNotification notification, Task remindTask) {
 
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, Splash.class);
         intent.putExtra(Constants.key_taskid, remindTask.getDocumentId());
 
         Intent actionMarkDoneIntent = new Intent(context, ActionBroadcast.class);
@@ -388,6 +393,10 @@ public class SuperdoNotificationManager {
                     if (document.exists()) {
                         deadlineTask = document.toObject(Task.class);
 
+                        if (deadlineTask.isTaskCompleted()) {
+                            return;
+                        }
+
                         Log.e(TAG, "postNotificationDeadline: deadline executed" );
 
                         SimpleNotification notification = new SimpleNotification();
@@ -428,7 +437,7 @@ public class SuperdoNotificationManager {
 
         int requestCode = deadlineTask.getDeadline().getDeadlineRequestCode();
 
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, Splash.class);
         intent.putExtra(Constants.key_taskid, deadlineTask.getDocumentId());
 
         Intent actionMarkDoneIntent = new Intent(context, ActionBroadcast.class);

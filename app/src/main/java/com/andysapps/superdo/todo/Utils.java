@@ -772,12 +772,12 @@ public class Utils {
 
     public static String getNoTasksText() {
 
-        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 12 ) {
-            return "No tasks for you today \n Enjoy afternoon";
+        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 19 || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 5) {
+            return "No tasks for you today. \n Have a great night";
         } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 15) {
             return "No tasks for you today \n Enjoy your evening";
-        } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 19 || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 5) {
-            return "No tasks for you today. \n Have a great night";
+        } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 12 ) {
+            return "No tasks for you today \n Enjoy afternoon";
         }
 
         return "Try adding some tasks today!";
@@ -785,12 +785,12 @@ public class Utils {
 
     public static int getNoTasksImg() {
 
-        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 12 ) {
-            return R.drawable.img_boy_girl_coffee;
+        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 19) {
+            return R.drawable.illust_boy_wtih_coffee;
         } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 15) {
             return R.drawable.img_girl_with_cycle;
-        } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 19) {
-            return R.drawable.illust_boy_wtih_coffee;
+        } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 12 ) {
+            return R.drawable.img_boy_girl_coffee;
         }
 
         return R.drawable.img_girl_with_coffee;

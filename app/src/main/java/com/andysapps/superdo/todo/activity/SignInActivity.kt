@@ -183,7 +183,7 @@ class SignInActivity : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         Log.d(TAG, "createUserWithEmail:success")
-                        FirestoreManager.getInstance().fetchUser()
+                        FirestoreManager.getInstance().fetchUser(null, false)
                     }
                 }.addOnFailureListener {
                     stopLoading()
@@ -256,7 +256,7 @@ class SignInActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        FirestoreManager.getInstance().fetchUser()
+                        FirestoreManager.getInstance().fetchUser(null, false)
                     } else {
                         toastError()
                     }

@@ -268,7 +268,7 @@ class SignUpActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        FirestoreManager.getInstance().fetchUser()
+                        FirestoreManager.getInstance().fetchUser(null, false)
                     } else {
                         toastError()
                     }

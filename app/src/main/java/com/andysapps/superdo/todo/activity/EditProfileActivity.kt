@@ -93,7 +93,7 @@ class EditProfileActivity : AppCompatActivity() {
                         user!!.firstName = et_firstname.text.toString().trim()
                         user!!.lastName = et_lastname.text.toString().trim()
                         SharedPrefsManager.saveUserName(baseContext, user!!.firstName, user!!.lastName)
-                        FirestoreManager.getInstance().createOrUpdateUser(user)
+                        FirestoreManager.getInstance().updateUser(user)
                     }
                 }
             }

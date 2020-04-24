@@ -3,6 +3,7 @@
     package="com.andysapps.superdo.todo">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name=".SuperdoApplication"
@@ -43,7 +44,11 @@
         <receiver
             android:name=".BackgroundBroadcast"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

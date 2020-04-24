@@ -88,7 +88,7 @@ class TomorrowFragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: FetchTasksEvent) {
-        updateUi()
+        updateList()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
