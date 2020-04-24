@@ -47,6 +47,8 @@ public class TaskOrganiser {
 
     public List<Bucket> bucketList;
 
+    public TaskListing userListingClicked;
+
     public static TaskOrganiser getInstance() {
         return ourInstance;
     }
@@ -74,6 +76,8 @@ public class TaskOrganiser {
         remindingTasks = new ArrayList<>();
         pendingTaskList = new ArrayList<>();
         deletedTaskList = new ArrayList<>();
+
+        userListingClicked = TaskListing.TODAY;
     }
 
     public void organiseAllTasks() {

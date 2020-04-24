@@ -30,6 +30,7 @@ import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.fragments.bucket.BucketFragment;
 import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.thekhaeng.pushdownanim.PushDownAnim;
@@ -92,7 +93,6 @@ public class AllTasksFragment extends Fragment {
     Typeface fontBold;
     Typeface fontRegular;
 
-    TaskListing listing;
 
     TaskListing lasttaskListing;
 
@@ -137,13 +137,13 @@ public class AllTasksFragment extends Fragment {
 
                 switch (i) {
                     case 0:
-                        listing = TaskListing.TODAY;
+                        TaskOrganiser.getInstance().userListingClicked = TaskListing.TODAY;
                         break;
                     case 1:
-                        listing = TaskListing.TOMORROW;
+                        TaskOrganiser.getInstance().userListingClicked = TaskListing.TOMORROW;
                         break;
                     case 2:
-                        listing = TaskListing.UPCOMING;
+                        TaskOrganiser.getInstance().userListingClicked = TaskListing.UPCOMING;
                         break;
                 }
 
@@ -157,14 +157,22 @@ public class AllTasksFragment extends Fragment {
                 .setScale(MODE_SCALE, 0.96f  )
                 .setOnClickListener(view -> EventBus.getDefault().post(new OpenFragmentEvent(new BucketFragment(), true, BucketFragment.TAG)));
 
-        clickToday();
 
-        listing= TaskListing.TODAY;
-        lasttaskListing = TaskListing.TOMORROW;
-        updateUi();
-        lasttaskListing = TaskListing.UPCOMING;
-        updateUi();
+        zoomAnimation(1.2f, 1.0f, tvToday, 0.3f);
+        zoomAnimation(1.2f, 1.0f, tvTomorrow, 0.3f);
+        zoomAnimation(1.2f, 1.0f, tvSomeday, 0.3f);
 
+        switch (TaskOrganiser.getInstance().userListingClicked) {
+            case TODAY:
+                clickToday();
+                break;
+            case TOMORROW:
+                clickTomorrow();
+                break;
+                case UPCOMING:
+                clickUpcoming();
+                break;
+        }
     }
 
     public void updateUi() {
@@ -187,21 +195,21 @@ public class AllTasksFragment extends Fragment {
 
     @OnClick(R.id.btn_today)
     public void clickToday() {
-        listing = TaskListing.TODAY;
+        TaskOrganiser.getInstance().userListingClicked = TaskListing.TODAY;
         viewPagerTasks.setCurrentItem(0);
         updateUi();
     }
 
     @OnClick(R.id.btn_tomorrow)
     public void clickTomorrow() {
-        listing = TaskListing.TOMORROW;
+        TaskOrganiser.getInstance().userListingClicked = TaskListing.TOMORROW;
         viewPagerTasks.setCurrentItem(1);
         updateUi();
     }
 
     @OnClick(R.id.btn_someday)
     public void clickUpcoming() {
-        listing = TaskListing.UPCOMING;
+        TaskOrganiser.getInstance().userListingClicked = TaskListing.UPCOMING;
         viewPagerTasks.setCurrentItem(2);
         //EventBus.getDefault().post(new UpdateTaskListEvent(TaskListing.UPCOMING));
         updateUi();
@@ -277,7 +285,7 @@ public class AllTasksFragment extends Fragment {
         float red =  1.0f;
         float grey =  0.3f;
 
-        if (lasttaskListing != null && listing != lasttaskListing) {
+        if (lasttaskListing != null && TaskOrganiser.getInstance().userListingClicked != lasttaskListing) {
             switch (lasttaskListing) {
                 case TODAY:
                     zoomAnimation(1.2f, 1.0f, tvToday, grey);
@@ -291,8 +299,8 @@ public class AllTasksFragment extends Fragment {
             }
         }
 
-        if (listing != lasttaskListing) {
-            switch (listing) {
+        if (TaskOrganiser.getInstance().userListingClicked != lasttaskListing) {
+            switch (TaskOrganiser.getInstance().userListingClicked) {
                 case TODAY:
                     zoomAnimation(1.0f, 1.2f, tvToday, red);
                     break;
@@ -305,7 +313,7 @@ public class AllTasksFragment extends Fragment {
             }
         }
 
-        lasttaskListing = listing;
+        lasttaskListing = TaskOrganiser.getInstance().userListingClicked;
     }
 
     public void zoomAnimation(float start, float end, View view, float alpha) {
