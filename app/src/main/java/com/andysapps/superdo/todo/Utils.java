@@ -14,6 +14,7 @@ import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
+import com.andysapps.superdo.todo.model.taskfeatures.Deadline;
 import com.andysapps.superdo.todo.model.taskfeatures.Repeat;
 
 import java.text.SimpleDateFormat;
@@ -210,6 +211,11 @@ public class Utils {
     }
 
     public static boolean isBothDateAreSameDay(Calendar date1, Calendar date2 ) {
+
+        if (date1 == null || date2 == null) {
+            return false;
+        }
+
         if (date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
                 && date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH)
                 && date1.get(Calendar.DAY_OF_MONTH) == date2.get(Calendar.DAY_OF_MONTH)) {
@@ -347,6 +353,8 @@ public class Utils {
          SuperDate startDate = task.getRepeat().getStartDate();
          SuperDate lastCompletedDate = task.getRepeat().getLastCompletedDate();
 
+
+
          switch (RepeatType.valueOf(task.getRepeat().getRepeatType())) {
              case Day:
 
@@ -379,19 +387,30 @@ public class Utils {
                          superDate = new SuperDate(intervalDate);
                      }
 
+
+
                  break;
              case Week:
 
                  Log.e(TAG, "setNextDoDate: setting next do date Weekly ");
 
-                 Calendar calendar1 = Calendar.getInstance();
+                 Calendar calendar1;
+
+                 if (isSuperDateIsPast(startDate)) {
+                     calendar1 = Calendar.getInstance();
+                 } else {
+                     calendar1 = getCalenderFromSuperDate(startDate);
+                 }
+
                  calendar1.set(Calendar.HOUR_OF_DAY, task.getRepeat().getStartDate().getHours());
                  calendar1.set(Calendar.MINUTE, task.getRepeat().getStartDate().getMinutes());
 
                  for (int i = 0 ; i < 15 ; i++) {
-                     if (isWeeklyRepeatFallsThisDate(calendar1, task.getRepeat()) && !isSuperDateToday(lastCompletedDate)) {
-                         task.setDoDate(new SuperDate(calendar1));
-                         break;
+                     if (isWeeklyRepeatFallsThisDate(calendar1, task.getRepeat())) {
+                         if (!isBothDateAreSameDay(calendar1, getCalenderFromSuperDate(lastCompletedDate))) {
+                             task.setDoDate(new SuperDate(calendar1));
+                             break;
+                         }
                      }
                      calendar1.add(Calendar.DAY_OF_MONTH, 1);
                  }
@@ -456,31 +475,6 @@ public class Utils {
         int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
         int year = Calendar.getInstance().get(Calendar.YEAR);
 
-       /* int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-        int remainingDaysInThisWeek = 7 - today;
-
-        if (remainingDaysInThisWeek < 2) {
-            // this should give next week date
-        }
-
-        List<Integer> weekDays = new ArrayList<>();
-
-        for (int i = 1 ; i <= remainingDaysInThisWeek ; i++) {
-            weekDays.add(getIncrementedDay(i).get(Calendar.DAY_OF_MONTH));
-        }
-
-        SuperDate superdate = new SuperDate(date, month, year, 0, 0);
-
-        for (Integer int1 : weekDays) {
-            superdate.setDoDate(int1, month, year);
-            if (!isSuperDateToday(superdate)
-                    && !isSuperDateTomorrow(superdate)
-                    && superdate.getYear() == Calendar.getInstance().get(Calendar.YEAR)
-                    && superdate.getMonth() - 1 == Calendar.getInstance().get(Calendar.MONTH) ) {
-               return superdate;
-            }
-        } */
-
         return new SuperDate(date, month, year, 0, 0);
     }
 
@@ -510,6 +504,14 @@ public class Utils {
         }
 
         return false;
+    }
+
+    public static SuperDate getSuperdateFromDeadline(Deadline deadline) {
+        return new SuperDate(deadline.date,
+                deadline.month,
+                deadline.year,
+                deadline.hours,
+                deadline.minutes);
     }
 
     public static String getMonthString(int month) {

@@ -202,6 +202,9 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.tab_1)
     public void clickToday() {
+        if (mainTabs == MainTabs.TODAY_TASKS) {
+            return;
+        }
         setMainFragments(new TasksFragment(), TasksFragment.TAG);
         mainTabs = MainTabs.TODAY_TASKS;
         updateTabUi(mainTabs);
@@ -212,6 +215,9 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.tab_3)
     public void clickProfile() {
+        if (mainTabs == MainTabs.PROFILE) {
+            return;
+        }
         setMainFragments(new ProfileFragment(), ProfileFragment.TAG);
         mainTabs = MainTabs.PROFILE;
         updateTabUi(mainTabs);
@@ -410,6 +416,8 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ShowSnakeBarEvent event) {
 
+
+
         Snackbar snackbar = Snackbar.make(fragmentContainerMoonBtn, event.getSnackbarTitle(), Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundColor(Color.WHITE);
         TextView tv = (TextView) snackbar.getView().findViewById(R.id.snackbar_text);
@@ -417,27 +425,6 @@ public class MainActivity extends AppCompatActivity {
 
         snackbar.setActionTextColor(getResources().getColor(R.color.lightRed));
         snackbar.setAction("Undo", event.getOnClickListener());
-        /*snackbar.setAction("Undo", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (event.getUndoType()) {
-                    case TASK_COMPLETED:
-                        if (event.getTasksRecyclerAdapter() != null) {
-                            event.getTasksRecyclerAdapter().undoTaskCompleted(event.getTask(), event.getPosition());
-                        } else if (event.getUpcomingRecyclerAdapter() != null) {
-                            event.getUpcomingRecyclerAdapter().undoTaskCompleted(event.getTask(), event.getPosition());
-                        }
-                        break;
-                    case MOVED_TO_BIN:
-                        if (event.getTasksRecyclerAdapter() != null) {
-                            event.getTasksRecyclerAdapter().undoMovedToBin(event.getTask(), event.getPosition());
-                        } else if (event.getUpcomingRecyclerAdapter() != null) {
-                            event.getUpcomingRecyclerAdapter().undoMovedToBin(event.getTask(), event.getPosition());
-                        }
-                        break;
-                }
-            }
-        });*/
 
         snackbar.show();
     }

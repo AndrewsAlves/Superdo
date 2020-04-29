@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +22,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.enums.CPMD;
 import com.andysapps.superdo.todo.enums.UndoType;
@@ -32,6 +34,7 @@ import com.andysapps.superdo.todo.events.update.UpdateUiCPMDEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
+import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
@@ -116,7 +119,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
     public void undoTaskCompleted(Task task,int position) {
         taskList.add(position, task);
         EventBus.getDefault().post(new UpdateUiCPMDEvent());
-        task.setTaskAction(false);
+        task.setTaskCompletedAction(false);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
     }
@@ -124,7 +127,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
     public void undoTaskNotCompleted(Task task,int position) {
         taskList.add(position, task);
         EventBus.getDefault().post(new UpdateUiCPMDEvent());
-        task.setTaskAction(true);
+        task.setTaskCompletedAction(true);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
     }
@@ -177,37 +180,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
 
         h.lottieCheckView.playAnimation();
 
-        h.ivRepeat.setVisibility(View.GONE);
-        h.ivDeadline.setVisibility(View.GONE);
-        h.ivSubtasks.setVisibility(View.GONE);
-        h.ivRemind.setVisibility(View.GONE);
-        h.ivFocus.setVisibility(View.GONE);
-        h.parentIcons.setVisibility(View.GONE);
-
-        if (task.getRepeat() != null) {
-            h.ivRepeat.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
-        }
-
-        if (task.getDeadline() != null) {
-            h.ivDeadline.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
-        }
-
-        if (task.getSubtasks() != null) {
-            h.ivSubtasks.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
-        }
-
-        if (task.isToRemind()) {
-            h.ivRemind.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
-        }
-
-        if (task.getFocus() != null) {
-            h.ivFocus.setVisibility(View.VISIBLE);
-            h.parentIcons.setVisibility(View.VISIBLE);
-        }
+        updateTaskBottomUi(h, task);
 
         h.ivCheck.setImageResource(R.drawable.img_oval_thin_grey3);
 
@@ -216,20 +189,6 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
                 LottieProperty.COLOR_FILTER,
                 frameInfo -> new PorterDuffColorFilter(context.getResources().getColor(R.color.grey4), PorterDuff.Mode.SRC_ATOP)
         );
-
-        if (!isSeleting) {
-            h.cbSelection.setOnCheckedChangeListener(null);
-        } else {
-            h.cbSelection.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    selectedTask.put(taskList.get(position).getDocumentId(), taskList.get(position));
-                    EventBus.getDefault().post(new UpdateCpmdTitleEvent());
-                } else {
-                    selectedTask.remove(taskList.get(position).getDocumentId());
-                    EventBus.getDefault().post(new UpdateCpmdTitleEvent());
-                }
-            });
-        }
 
         h.btnTaskCompleted.setOnClickListener(v -> {
 
@@ -249,7 +208,7 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
                 SuperdoAudioManager.getInstance().playTaskCompleted();
             }
 
-            task.setTaskAction(h.isChecked);
+            task.setTaskCompletedAction(h.isChecked);
 
             FirestoreManager.getInstance().updateTask(task);
             TaskOrganiser.getInstance().organiseAllTasks();
@@ -291,6 +250,20 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             h.cbSelection.setVisibility(View.GONE);
         }
 
+        if (!isSeleting) {
+            h.cbSelection.setOnCheckedChangeListener(null);
+        } else {
+            h.cbSelection.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    selectedTask.put(taskList.get(position).getDocumentId(), taskList.get(position));
+                    EventBus.getDefault().post(new UpdateCpmdTitleEvent());
+                } else {
+                    selectedTask.remove(taskList.get(position).getDocumentId());
+                    EventBus.getDefault().post(new UpdateCpmdTitleEvent());
+                }
+            });
+        }
+
         if (selectedTask.containsKey(taskList.get(position).getDocumentId())) {
             h.cbSelection.setChecked(true);
             Log.e(TAG, "item selected:");
@@ -304,12 +277,77 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             }
             isSeleting = true;
             selectedTask.clear();
-            h.cbSelection.setChecked(true);
+            selectedTask.put(taskList.get(position).getDocumentId(), taskList.get(position));
             notifyDataSetChanged();
             EventBus.getDefault().post(new SelectProfileTaskEvent(true));
             EventBus.getDefault().post(new UpdateCpmdTitleEvent());
             return true;
         });
+    }
+
+    public void updateTaskBottomUi(TaskViewHolder h, Task task) {
+
+        h.ivRepeat.setVisibility(View.GONE);
+        h.ivDeadline.setVisibility(View.GONE);
+        h.ivSubtasks.setVisibility(View.GONE);
+        h.ivRemind.setVisibility(View.GONE);
+        h.ivFocus.setVisibility(View.GONE);
+        h.parentIcons.setVisibility(View.VISIBLE);
+        h.ivDoDate.setVisibility(View.GONE);
+
+        h.tvDoDate.setVisibility(View.VISIBLE);
+
+        if (cpmd == CPMD.COMPLETED || cpmd == CPMD.DELETED) {
+            h.parentIcons.setVisibility(View.GONE);
+            return;
+        }
+
+        if (task.getDoDate() != null) {
+            if (Utils.isSuperDateIsPast(task.getDoDate())) {
+                h.ivDoDate.setVisibility(View.VISIBLE);
+                h.ivDoDate.setImageResource(R.drawable.ic_missed_mini);
+                h.tvDoDate.setTextColor(context.getResources().getColor(R.color.lightRed));
+                h.tvDoDate.setText(task.getDoDate().getSuperDateString());
+            } else {
+                h.tvDoDate.setTextColor(context.getResources().getColor(R.color.grey2));
+                h.tvDoDate.setText("Do " + task.getDoDate().getSuperDateString());
+            }
+        } else {
+            h.tvDoDate.setText("Do Someday");
+        }
+
+        if (task.getRepeat() != null) {
+            h.ivRepeat.setVisibility(View.VISIBLE);
+            h.parentIcons.setVisibility(View.VISIBLE);
+        }
+
+        if (task.getDeadline() != null) {
+            h.ivDeadline.setVisibility(View.VISIBLE);
+            SuperDate deadlineDate = Utils.getSuperdateFromDeadline(task.getDeadline());
+
+            if (!Utils.isSuperDateIsFuture(deadlineDate) || Utils.isSuperDateTomorrow(deadlineDate)){
+                h.ivDeadline.setImageResource(R.drawable.ic_mini_deadlined_today);
+            } else {
+                h.ivDeadline.setImageResource(R.drawable.ic_mini_deadline);
+            }
+
+            h.parentIcons.setVisibility(View.VISIBLE);
+        }
+
+        if (task.getSubtasks() != null && task.getSubtasks().subtaskList.size() > 0) {
+            h.ivSubtasks.setVisibility(View.VISIBLE);
+            h.parentIcons.setVisibility(View.VISIBLE);
+        }
+
+        if (task.isToRemind()) {
+            h.ivRemind.setVisibility(View.VISIBLE);
+            h.parentIcons.setVisibility(View.VISIBLE);
+        }
+
+        if (task.getFocus() != null) {
+            h.ivFocus.setVisibility(View.VISIBLE);
+            h.parentIcons.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setTaskCompleted(int position, Task task) {
@@ -431,6 +469,12 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
 
         @BindView(R.id.cb_selected)
         public CheckBox cbSelection;
+
+        @BindView(R.id.tv_task_dodate)
+        public TextView tvDoDate;
+
+        @BindView(R.id.iv_date)
+        public ImageView ivDoDate;
 
         StrikeThroughPainting painting;
 

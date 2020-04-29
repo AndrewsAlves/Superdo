@@ -22,6 +22,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Tools;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
@@ -30,6 +31,7 @@ import com.andysapps.superdo.todo.events.update.UpdateUiAllTasksEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
+import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
@@ -41,6 +43,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.grpc.okhttp.internal.Util;
 import lib.mozidev.me.extextview.ExTextView;
 import lib.mozidev.me.extextview.StrikeThroughPainting;
 
@@ -96,7 +99,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
     public void undoTaskCompleted(Task task,int position) {
         taskList.add(position, task);
-        task.setTaskAction(false);
+        task.setTaskCompletedAction(false);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
@@ -166,6 +169,14 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
         if (task.getDeadline() != null) {
             h.ivDeadline.setVisibility(View.VISIBLE);
+            SuperDate deadlineDate = Utils.getSuperdateFromDeadline(task.getDeadline());
+
+            if (!Utils.isSuperDateIsFuture(deadlineDate) || Utils.isSuperDateTomorrow(deadlineDate)){
+                h.ivDeadline.setImageResource(R.drawable.ic_mini_deadlined_today);
+            } else {
+                h.ivDeadline.setImageResource(R.drawable.ic_mini_deadline);
+            }
+
             h.parentIcons.setVisibility(View.VISIBLE);
         }
 
@@ -207,7 +218,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 }
                 h.lottieCheckView.playAnimation();
 
-                task.setTaskAction(h.isChecked);
+                task.setTaskCompletedAction(h.isChecked);
 
                 if (h.isChecked) {
                     viewUpdateHandler.postDelayed(new Runnable() {
@@ -233,7 +244,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         notifyItemRemoved(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
-        EventBus.getDefault().post(new ShowSnakeBarEvent(context.getString(R.string.snackbar_taskcompleted), v -> undoTaskCompleted(task, position)));
+        EventBus.getDefault().post(new ShowSnakeBarEvent(Tools.getSnackBarString(context, task), v -> undoTaskCompleted(task, position)));
     }
 
     private void strikeOutText(TaskViewHolder holder, int speed) {

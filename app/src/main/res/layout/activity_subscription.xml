@@ -17,7 +17,7 @@
         android:visibility="visible">
 
         <ImageButton
-            android:id="@+id/ib_close_editprofile"
+            android:id="@+id/ib_back_subscription"
             style="@style/ripple_background"
             android:layout_width="25dp"
             android:layout_height="25dp"

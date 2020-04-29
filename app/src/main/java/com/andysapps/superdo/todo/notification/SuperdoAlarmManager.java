@@ -127,7 +127,7 @@ public class SuperdoAlarmManager {
         PendingIntent pendingIntent;
 
         if (task.getRemindRequestCode() == 0) {
-            task.generateNewRequestCode();
+            task.generateNewRemindRequestCode();
         }
 
         if (Utils.isSuperDateToday(task.getDoDate())) {

@@ -27,7 +27,6 @@ import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.adapters.LongItemTouchHelperCallback
 import com.andysapps.superdo.todo.adapters.taskrecyclers.SubtasksRecyclerAdapter
 import com.andysapps.superdo.todo.dialog.SelectBucketDialogFragment
-import com.andysapps.superdo.todo.dialog.SelectSideKickDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DeadlineDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.DoDateDialog
 import com.andysapps.superdo.todo.dialog.sidekicks.RepeatDialog
@@ -38,8 +37,6 @@ import com.andysapps.superdo.todo.events.sidekick.SetDeadlineEvent
 import com.andysapps.superdo.todo.events.sidekick.SetDoDateEvent
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
 import com.andysapps.superdo.todo.events.sidekick.UpdateSubtasksEvent
-import com.andysapps.superdo.todo.events.ui.SideKicksSelectedEvent
-import com.andysapps.superdo.todo.events.update.UpdateUiEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.SuperdoAudioManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
@@ -161,9 +158,10 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
                 editTask_lottie_anim.progress = 1.0f
             }
 
-            task.setTaskAction(isChecked)
+            task.setTaskCompletedAction(isChecked)
             FirestoreManager.getInstance().updateTask(task)
             TaskOrganiser.getInstance().organiseAllTasks()
+            updateDoDateUi()
 
             if (task.isTaskCompleted) {
                 SuperdoAudioManager.getInstance().playTaskCompleted()
@@ -277,15 +275,7 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         //////////////
         //// DO DATE
 
-        if (task.doDate != null) {
-            editTask_iv_do_date.setImageResource(R.drawable.ic_do_date_on)
-            editTask_tv_do_date.text = task.doDateString2
-            editTask_tv_do_date.setTextColor(resources.getColor(R.color.grey4))
-        } else {
-            editTask_iv_do_date.setImageResource(R.drawable.ic_do_date_off)
-            editTask_tv_do_date.text = task.doDateString2
-            editTask_tv_do_date.setTextColor(resources.getColor(R.color.grey2))
-        }
+        updateDoDateUi()
 
         //if (task.remind == null) {
         //    task.remind = Repeat(true)
@@ -344,6 +334,18 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
         }
     }
 
+    public fun updateDoDateUi() {
+        if (task.doDate != null) {
+            editTask_iv_do_date.setImageResource(R.drawable.ic_do_date_on)
+            editTask_tv_do_date.text = task.doDateString2
+            editTask_tv_do_date.setTextColor(resources.getColor(R.color.grey4))
+        } else {
+            editTask_iv_do_date.setImageResource(R.drawable.ic_do_date_off)
+            editTask_tv_do_date.text = task.doDateString2
+            editTask_tv_do_date.setTextColor(resources.getColor(R.color.grey2))
+        }
+    }
+
     private fun initClicks() {
 
         PushDownAnim.setPushDownAnimTo(editTask_rl_btn_do_date,
@@ -387,11 +389,6 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
 
             task.isToRemind = !task.isToRemind
 
-            updateUi()
-            FirestoreManager.getInstance().updateTask(task)
-            TaskOrganiser.getInstance().organiseAllTasks()
-            updateTasks()
-
             if (task.isToRemind) {
                 lv_remind.setMinAndMaxProgress(0.20f, 0.50f) // on
                 setTaskReminder()
@@ -403,6 +400,11 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
             }
 
             lv_remind.playAnimation()
+
+            updateUi()
+            FirestoreManager.getInstance().updateTask(task)
+            TaskOrganiser.getInstance().organiseAllTasks()
+            updateTasks()
         }
 
         ///// DELETE task
@@ -551,10 +553,12 @@ class EditTaskFragment : Fragment(), View.OnFocusChangeListener {
     @Subscribe
     fun onMeessageEvent(event : SetRepeatEvent) {
         task.repeat = event.repeat.clone()
-        Utils.setNextDoDate(task)
         if (event.deleted) {
             task.repeat = null
+        } else {
+            Utils.setNextDoDate(task)
         }
+        task.setTaskCompletedAction(false)
         FirestoreManager.getInstance().updateTask(task)
         TaskOrganiser.getInstance().organiseAllTasks()
         updateUi()

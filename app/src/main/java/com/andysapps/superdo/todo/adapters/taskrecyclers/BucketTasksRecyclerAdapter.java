@@ -22,19 +22,18 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Tools;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.ItemTouchHelperAdapter;
-import com.andysapps.superdo.todo.enums.CPMD;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksUiEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
-import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.update.UpdateUiAllTasksEvent;
-import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
@@ -104,7 +103,7 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
 
     public void undoTaskCompleted(Task task,int position) {
         taskList.add(position, task);
-        task.setTaskAction(false);
+        task.setTaskCompletedAction(false);
         notifyItemInserted(position);
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
@@ -169,6 +168,13 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
 
         h.lottieCheckView.playAnimation();
 
+
+
+        h.ivRepeat.setVisibility(View.GONE);
+        h.ivDeadline.setVisibility(View.GONE);
+        h.ivSubtasks.setVisibility(View.GONE);
+        h.ivRemind.setVisibility(View.GONE);
+        h.ivFocus.setVisibility(View.GONE);
         h.parentIcons.setVisibility(View.VISIBLE);
         h.ivDoDate.setVisibility(View.GONE);
         h.tvDoDate.setVisibility(View.VISIBLE);
@@ -180,20 +186,12 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
                 h.tvDoDate.setTextColor(context.getResources().getColor(R.color.lightRed));
                 h.tvDoDate.setText(task.getDoDate().getSuperDateString());
             } else {
-                h.ivDoDate.setImageResource(R.drawable.ic_dodate_mini);
                 h.tvDoDate.setTextColor(context.getResources().getColor(R.color.grey2));
                 h.tvDoDate.setText("Do " + task.getDoDate().getSuperDateString());
             }
         } else {
-            h.ivDoDate.setImageResource(R.drawable.ic_dodate_mini);
             h.tvDoDate.setText("Do Someday");
         }
-
-        h.ivRepeat.setVisibility(View.GONE);
-        h.ivDeadline.setVisibility(View.GONE);
-        h.ivSubtasks.setVisibility(View.GONE);
-        h.ivRemind.setVisibility(View.GONE);
-        h.ivFocus.setVisibility(View.GONE);
 
         if (task.getRepeat() != null) {
             h.ivRepeat.setVisibility(View.VISIBLE);
@@ -201,6 +199,15 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
 
         if (task.getDeadline() != null) {
             h.ivDeadline.setVisibility(View.VISIBLE);
+            SuperDate deadlineDate = Utils.getSuperdateFromDeadline(task.getDeadline());
+
+            if (!Utils.isSuperDateIsFuture(deadlineDate) || Utils.isSuperDateTomorrow(deadlineDate)){
+                h.ivDeadline.setImageResource(R.drawable.ic_mini_deadlined_today);
+            } else {
+                h.ivDeadline.setImageResource(R.drawable.ic_mini_deadline);
+            }
+
+            h.parentIcons.setVisibility(View.VISIBLE);
         }
 
         if (task.getSubtasks() != null && task.getSubtasks().subtaskList.size() > 0) {
@@ -238,7 +245,7 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
                 }
                 h.lottieCheckView.playAnimation();
 
-                task.setTaskAction(h.isChecked);
+                task.setTaskCompletedAction(h.isChecked);
 
                 if (h.isChecked) {
                     viewUpdateHandler.postDelayed(new Runnable() {
@@ -265,7 +272,7 @@ public class BucketTasksRecyclerAdapter extends RecyclerView.Adapter<BucketTasks
         FirestoreManager.getInstance().updateTask(task);
         TaskOrganiser.getInstance().organiseAllTasks();
         EventBus.getDefault().post(new UpdateBucketTasksUiEvent());
-        EventBus.getDefault().post(new ShowSnakeBarEvent(context.getString(R.string.snackbar_taskcompleted), v -> undoTaskCompleted(task, position)));
+        EventBus.getDefault().post(new ShowSnakeBarEvent(Tools.getSnackBarString(context, task), v -> undoTaskCompleted(task, position)));
     }
 
     private void strikeOutText(TaskViewHolder holder, int speed) {

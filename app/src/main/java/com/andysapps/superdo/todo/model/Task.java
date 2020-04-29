@@ -288,7 +288,7 @@ public class Task implements Cloneable {
     //////////// OTHER FUNCTIONS
     //////////////////////////////////
 
-    public void setTaskAction(boolean taskCompleted) {
+    public void setTaskCompletedAction(boolean taskCompleted) {
         isTaskCompleted = taskCompleted;
 
         if (taskCompleted) {
@@ -297,7 +297,8 @@ public class Task implements Cloneable {
             calculateEspritPoints();
 
             if (getRepeat() != null) {
-                getRepeat().setLastCompletedDate(getDoDate());
+                getRepeat().setLastCompletedDate(new SuperDate(Calendar.getInstance()));
+                Utils.setNextDoDate(this);
             }
 
         } else {
@@ -306,6 +307,7 @@ public class Task implements Cloneable {
 
             if (getRepeat() != null) {
                 getRepeat().setLastCompletedDate(null);
+                Utils.setNextDoDate(this);
             }
         }
     }
@@ -318,7 +320,7 @@ public class Task implements Cloneable {
         }
     }
 
-    public int generateNewRequestCode() {
+    public int generateNewRemindRequestCode() {
         Random random = new Random();
         remindRequestCode = random.nextInt(1000) * random.nextInt(10);
         Log.e("Task", "generateNewRequestCode: " + remindRequestCode);
@@ -375,23 +377,6 @@ public class Task implements Cloneable {
         FirestoreManager.getInstance().addEspritScore(espritPoints);
     }
 
-    public String getDoDateString() {
-
-        if (doDate == null) {
-            return "No Date";
-        }
-
-        String duedate;
-
-        if (doDate.getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
-            duedate = doDate.getMonthString() + " "+ doDate.getDate() + ", " + doDate.getYear();
-        } else {
-            duedate = doDate.getMonthString() + " "+ doDate.getDate();
-        }
-
-        return duedate;
-    }
-
     public String getDoDateString2() {
 
         if (doDate == null) {
@@ -400,32 +385,10 @@ public class Task implements Cloneable {
 
         if (repeat != null) {
             if (!Utils.isSuperDateToday(doDate) && !Utils.isSuperDateTomorrow(doDate)) {
-                return "Repeat next" + doDate.getSuperDateString() + " by " + doDate.getTimeString();
+                return "Repeats " + doDate.getSuperDateString() + " by " + doDate.getTimeString();
             }
         }
 
         return "Do " + doDate.getSuperDateString() + " by " + doDate.getTimeString();
-    }
-
-    public  String getTimeString() {
-
-        if (doDate == null) {
-            return "No Time";
-        }
-
-        int hours = doDate.hours;
-        String meridien = " AM";
-
-        if (hours >= 12) {
-            if (hours != 12) {
-                hours = doDate.hours - 12;
-            }
-            meridien = " PM";
-        }
-
-        // format to two decimal
-        String min =  new DecimalFormat("00").format(doDate.minutes);
-
-        return hours + " : " + min + meridien;
     }
 }

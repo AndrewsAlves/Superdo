@@ -180,7 +180,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
 
     public void undoTaskCompleted(Task task,int position) {
         taskList.add(position, task);
-        task.setTaskAction(false);
+        task.setTaskCompletedAction(false);
         notifyItemInserted(position);
         reaarageGroupTasks(-1);
         FirestoreManager.getInstance().updateTask(task);
@@ -333,7 +333,7 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
             }
 
             Log.e(TAG, "onClick: clicked task completed in upcoming manager");
-            task.setTaskAction(h.isChecked);
+            task.setTaskCompletedAction(h.isChecked);
 
             //// SET TASK COMPLETED
             if (h.isChecked) {

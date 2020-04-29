@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo;
 
 import android.app.Application;
 import android.content.Intent;
+import android.util.Log;
 
 import com.andysapps.superdo.todo.activity.MainActivity;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
@@ -21,6 +22,8 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 public class SuperdoApplication extends Application {
 
+    public static final String TAG = "SuperdoApplication";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -33,6 +36,8 @@ public class SuperdoApplication extends Application {
         SuperdoAudioManager.init(this);
         SuperdoAlarmManager.initialise(this);
         SuperdoNotificationManager.initialise(this);
+
+        Log.e(TAG, "Startup : INITIALISED ALL INSTANCES");
     }
 
 }

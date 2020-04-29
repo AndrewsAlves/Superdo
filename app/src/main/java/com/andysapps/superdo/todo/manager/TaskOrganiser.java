@@ -142,10 +142,15 @@ public class TaskOrganiser {
             }*/
 
             if (task.getRepeat() != null) {
-                Utils.setNextDoDate(task);
+                //Utils.setNextDoDate(task);
                 recurringTask.add(task);
+                if (!Utils.isSuperDateToday(task.getRepeat().getLastCompletedDate())) {
+                    task.setTaskCompleted(false);
+                }
                 if (Utils.isSuperDateToday(task.getDoDate())) {
-                    todayTaskList.add(task);
+                    if (!task.isTaskCompleted()) {
+                        todayTaskList.add(task);
+                    }
                 }
                 continue;
             }

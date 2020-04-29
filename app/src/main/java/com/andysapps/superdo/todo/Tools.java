@@ -1,5 +1,9 @@
 package com.andysapps.superdo.todo;
 
+import android.content.Context;
+
+import com.andysapps.superdo.todo.model.Task;
+
 import java.util.Calendar;
 
 /**
@@ -13,4 +17,15 @@ public class Tools {
 
         return c;
     }
+
+    public static String getSnackBarString(Context context, Task task) {
+        if (task.getRepeat() != null) {
+            return "Done for today, Repeats " + task.getDoDate().getSuperDateString();
+        } else {
+            return context.getString(R.string.snackbar_taskcompleted);
+        }
+    }
+
+
+
 }

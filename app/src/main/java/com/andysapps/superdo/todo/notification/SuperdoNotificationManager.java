@@ -322,13 +322,13 @@ public class SuperdoNotificationManager {
                             SimpleNotification notification = new SimpleNotification();
 
                             if (Utils.isReminderMissed(remindTask.getDoDate())) {
-                                notification.setContentTitle("Hey " + SharedPrefsManager.getUserFirstName(context) + ", " + "Missed reminder for you today");
+                                notification.setContextBigText("Hey " + SharedPrefsManager.getUserFirstName(context) + "!. " + "Missed reminder for you today");
                             } else {
-                                notification.setContentTitle("Superdo Reminder," + SharedPrefsManager.getUserFirstName(context) + "," +  " Done with this task!");
+                                notification.setContextBigText("Hey " + SharedPrefsManager.getUserFirstName(context) + "!. " +  " Done with this task!");
                             }
 
-                            notification.setContentText(remindTask.getTitle());
-                            notification.setContextBigText(remindTask.getTitle());
+                            notification.setContentTitle(remindTask.getTitle());
+                            notification.setContentText(notification.getContextBigText());
 
                             pushRemindNotification(context, notification , remindTask);
 
@@ -380,6 +380,10 @@ public class SuperdoNotificationManager {
              return;
          }
 
+        if (intent.getExtras().getString(intent_key_notification_deadline_type) == null) {
+            return;
+        }
+
          FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
          DocumentReference snapshot  = firestore.collection(DB_USER).document(user.getUid()).collection(DB_TASKS).document(taskDocId);
@@ -400,25 +404,22 @@ public class SuperdoNotificationManager {
                         Log.e(TAG, "postNotificationDeadline: deadline executed" );
 
                         SimpleNotification notification = new SimpleNotification();
-                        notification.setContentText(deadlineTask.getTitle());
-                        notification.setContextBigText(deadlineTask.getTitle());
-
-                        if (intent.getExtras().getString(intent_key_notification_deadline_type) == null) {
-                            return;
-                        }
 
                         switch (intent.getExtras().getString(intent_key_notification_deadline_type)) {
 
                             case notification_id_deadline_morning:
-                                notification.setContentTitle("Hi " + SharedPrefsManager.getUserFirstName(context) + "," + " you have a deadline today.");
+                                notification.setContextBigText("Hi " + SharedPrefsManager.getUserFirstName(context) + "!. " + " you have a deadline today.");
                                 break;
                             case notification_id_deadline_daybefore:
-                                notification.setContentTitle("Hey " + SharedPrefsManager.getUserFirstName(context) + "," + " you have a deadline tomorrow");
+                                notification.setContextBigText("Hey " + SharedPrefsManager.getUserFirstName(context) + "!. " + " you have a deadline tomorrow");
                                 break;
                             case notification_id_deadline_done:
-                                notification.setContentTitle("Hey " + SharedPrefsManager.getUserFirstName(context) + "," + " Have you done your deadline task?");
+                                notification.setContextBigText("Hey " + SharedPrefsManager.getUserFirstName(context) + "!.  " + " Have you done your deadline task?");
                                 break;
                         }
+
+                        notification.setContentTitle(deadlineTask.getTitle());
+                        notification.setContentText(notification.getContextBigText());
 
                         pushDeadlineNotification(context, notification, deadlineTask);
 

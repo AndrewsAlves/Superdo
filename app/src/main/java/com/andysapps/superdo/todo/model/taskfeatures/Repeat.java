@@ -210,22 +210,11 @@ public class Repeat implements Cloneable{
         }
 
         if (repeatType.equals(RepeatType.Week.name())) {
-            if (daysInterval != 1 && daysInterval != 0) {
-                if (startDate.hasDate) {
-                    repeatString = "Every " + daysInterval + " Weeks at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
-                } else {
-                    repeatString = "Every " + daysInterval + " Weeks at " + startDate.getTimeString();
-                }
-
-                return repeatString;
+            if (startDate.hasDate) {
+                repeatString = "Every week at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
             } else {
-                if (startDate.hasDate) {
-                    repeatString = "Every week at " + startDate.getTimeString() + " from " + startDate.getSuperDateString();
-                } else {
-                    repeatString = "Every week at " + startDate.getTimeString();
-                }
+                repeatString = "Every week at " + startDate.getTimeString();
             }
-
             return repeatString;
         }
 

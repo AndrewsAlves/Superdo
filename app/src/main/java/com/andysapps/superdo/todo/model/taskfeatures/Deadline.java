@@ -12,6 +12,7 @@ import java.util.Random;
 /**
  * Created by Andrews on 12,November,2019
  */
+
 public class Deadline implements Cloneable {
 
     public int hours;

@@ -10,6 +10,7 @@ import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.andysapps.superdo.todo.notification.SuperdoNotificationManager;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_notification_id;
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_task_id;
@@ -35,8 +36,11 @@ public class BackgroundBroadcast extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (SuperdoAlarmManager.getInstance() == null) {
-            SuperdoAlarmManager.initialise(context);
+
+        if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+            Log.e("Super do Boot", "Registering alarms");
+            registerAlarms(context);
+            return;
         }
 
         if (intent.getExtras() == null) {
@@ -46,30 +50,44 @@ public class BackgroundBroadcast extends BroadcastReceiver {
         String bgProcessId = intent.getExtras().getString(key_id_background_process);
 
         if (bgProcessId!= null) {
-            if (bgProcessId.equals(id_process_register_daily_alarms)) {
-
-                if (TaskOrganiser.getInstance() == null) {
-                    TaskOrganiser.initialise();
-                }
-
-                SuperdoNotificationManager.initialise(context);
-                SuperdoAlarmManager.initialise(context);
-                SuperdoAlarmManager.getInstance().registerBackgroundProcesses(context, true);
-
-                if (FirestoreManager.getInstance() == null) {
-                    FirestoreManager.initialiseAndRegisterAlarms(context);
-                } else {
-                    SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders(context);
-                }
-
-                SuperdoNotificationManager.getInstance().createNotification(context,new Intent(context, MainActivity.class),
-                        CHANNEL_REMINDER,
-                        R.drawable.ic_notification,
-                        "Registering reminders",
-                        "Tap to view your tasks!",
-                        "",
-                        101);
+            if (bgProcessId.equals(id_process_register_daily_alarms) ) {
+                registerAlarms(context);
             }
         }
+    }
+
+    public void registerAlarms(Context context) {
+
+        if (TaskOrganiser.getInstance() == null) {
+            TaskOrganiser.initialise();
+        }
+
+        if (SuperdoAlarmManager.getInstance() == null) {
+            SuperdoAlarmManager.initialise(context);
+        }
+
+        if (SuperdoNotificationManager.getInstance() == null) {
+            SuperdoNotificationManager.initialise(context);
+        }
+
+        SuperdoAlarmManager.getInstance().registerBackgroundProcesses(context, true);
+
+        if (FirestoreManager.getInstance() == null) {
+            FirestoreManager.initialiseAndRegisterAlarms(context);
+        } else if (FirestoreManager.getInstance().user == null) {
+            FirestoreManager.initialiseAndRegisterAlarms(context);
+        } else {
+            SuperdoAlarmManager.getInstance().registerDailyNotificationsAndReminders(context);
+        }
+
+        //FirestoreManager.initialiseAndRegisterAlarms(context);
+
+        SuperdoNotificationManager.getInstance().createNotification(context,new Intent(context, Splash.class),
+                CHANNEL_REMINDER,
+                R.drawable.ic_notification,
+                "Registering reminders",
+                "Tap to view your tasks!",
+                "",
+                103);
     }
 }

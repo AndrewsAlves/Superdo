@@ -107,7 +107,7 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
         }
 
         dlg_repeat_delete_repeat.setOnClickListener {
-            EventBus.getDefault().post(SetRepeatEvent(repeat, false))
+            EventBus.getDefault().post(SetRepeatEvent(repeat, true))
             dismiss()
         }
 

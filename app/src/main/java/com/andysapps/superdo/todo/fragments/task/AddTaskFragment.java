@@ -370,6 +370,7 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
         if (validate()) {
 
             Task uploadingTask = new Task();
+            uploadingTask.setDocumentId(FirestoreManager.getInstance().getNewTaskDocumentId());
             uploadingTask.setUserId(FirestoreManager.getInstance().user.getUserId());
             uploadingTask.setTitle(etTaskName.getText().toString().trim());
             uploadingTask.setBucketId(task.getBucketId());
@@ -378,16 +379,16 @@ public class AddTaskFragment extends BottomSheetDialogFragment implements DatePi
             } else {
                 uploadingTask.setDoDate(new SuperDate(Utils.getCalenderFromSuperDate(task.getDoDate())));
             }
-
             uploadingTask.setListedIn(Utils.getTaskListed(task.getDoDate()));
             uploadingTask.setTaskIndex(TaskOrganiser.getInstance().getTasks(uploadingTask.getListedIn()).size());
             uploadingTask.setToRemind(task.isToRemind());
             uploadingTask.setCreated(Calendar.getInstance().getTime());
 
-            String id = FirestoreManager.getInstance().uploadTask(uploadingTask);
             if (task.isToRemind()) {
                 SuperdoAlarmManager.getInstance().setRemind(getContext(), uploadingTask);
             }
+
+            FirestoreManager.getInstance().uploadTask(uploadingTask);
         }
     }
 

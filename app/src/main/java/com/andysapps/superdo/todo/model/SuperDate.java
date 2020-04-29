@@ -175,10 +175,14 @@ public class SuperDate implements Cloneable {
             return Utils.getWeekDayStr(this, true);
         }
 
+        if (Utils.isSuperdateThisMonth(this)) {
+            return Utils.getDateStr(this) +" "+ Utils.getWeekDayStr(this, false);
+        }
+
         if (getYear() != Calendar.getInstance().get(Calendar.YEAR)) {
             duedate = Utils.getDateStr(this) + ", " + getMonthStringLong()  + ", " + getYear();
         } else {
-            duedate = Utils.getDateStr(this) +" "+ Utils.getWeekDayStr(this, false) +  ", " + getMonthStringLong();
+            duedate = getMonthStringLong() + " " + Utils.getDateStr(this) +" "+ Utils.getWeekDayStr(this, false);
         }
 
         return duedate;
