@@ -15,6 +15,8 @@ public class AnimationManager {
 
     boolean isMoonButtonHidded;
 
+    public boolean animateTitle = false;
+
     public static AnimationManager getInstance() {
         return ourInstance;
     }
@@ -52,6 +54,7 @@ public class AnimationManager {
                 .decelerate()
                 .duration(200)
                 .start();
+
         isMoonButtonHidded = false;
     }
 
@@ -80,5 +83,9 @@ public class AnimationManager {
                 .decelerate()
                 .duration(100)
                 .start();
+    }
+
+    public void animateAllTasksTitle(View view) {
+
     }
 }

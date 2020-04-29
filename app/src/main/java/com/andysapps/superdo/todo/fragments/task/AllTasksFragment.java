@@ -18,20 +18,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
+import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.adapters.viewpageradapter.TasksDayPagerAdapter;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.enums.TaskListing;
 import com.andysapps.superdo.todo.enums.TaskUpdateType;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
-import com.andysapps.superdo.todo.events.UpdateTaskListEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
-import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.fragments.bucket.BucketFragment;
 import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment;
+import com.andysapps.superdo.todo.manager.AnimationManager;
+import com.andysapps.superdo.todo.manager.FirestoreManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.andysapps.superdo.todo.views.GradientTextView;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
@@ -54,7 +56,7 @@ public class AllTasksFragment extends Fragment {
     private static final String TAG = "AllTasksFragment";
 
     @BindView(R.id.tv_bucket_title)
-    TextView tvTitle;
+    GradientTextView tvTitle;
 
     @BindView(R.id.btn_today)
     TextView tvToday;
@@ -112,7 +114,7 @@ public class AllTasksFragment extends Fragment {
         EventBus.getDefault().register(this);
         EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
         initUi();
-
+        animateViews();
         return v;
     }
 
@@ -172,6 +174,16 @@ public class AllTasksFragment extends Fragment {
                 case UPCOMING:
                 clickUpcoming();
                 break;
+        }
+    }
+
+    public void animateViews() {
+        if (!AnimationManager.getInstance().animateTitle) {
+            AnimationManager.getInstance().animateTitle = true;
+            tvTitle.setTextAndAnimate(Utils.getUserWish() + FirestoreManager.getInstance().user.getFirstName());
+            tvTitle.postDelayed(() -> tvTitle.setTextAndAnimate("have a great day!"), 1500);
+            //tvTitle.postDelayed(() -> tvTitle.setTextAndAnimate("You have " + TaskOrganiser.getInstance().todayTaskList.size() + " tasks"), 3000);
+            tvTitle.postDelayed(() -> tvTitle.setTextAndAnimate("All Tasks"), 8000);
         }
     }
 

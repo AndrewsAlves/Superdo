@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.andysapps.superdo.todo.BuildConfig;
 import com.andysapps.superdo.todo.Tools;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.BucketColors;
@@ -20,6 +21,7 @@ import com.andysapps.superdo.todo.events.firestore.FetchBucketEvent;
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.model.Bucket;
+import com.andysapps.superdo.todo.model.Performance;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.User;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
@@ -107,6 +109,13 @@ public class FirestoreManager {
 
     public HashMap<String, Bucket> getHasMapBucket() {
         return bucketHashMap;
+    }
+
+    public boolean isUserPremium() {
+        if (BuildConfig.DEBUG) {
+            //return true;
+        }
+        return FirestoreManager.getInstance().user.isUserPremium();
     }
 
     public static Bucket getAllTasksBucket() {

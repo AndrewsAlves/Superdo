@@ -1,6 +1,7 @@
 package com.andysapps.superdo.todo.dialog.sidekicks
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,8 +16,11 @@ import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
 import com.andysapps.superdo.todo.Utils
 import com.andysapps.superdo.todo.Utils.monthDates
+import com.andysapps.superdo.todo.activity.SubscriptionActivity
 import com.andysapps.superdo.todo.enums.RepeatType
 import com.andysapps.superdo.todo.events.sidekick.SetRepeatEvent
+import com.andysapps.superdo.todo.manager.FirestoreManager
+import com.andysapps.superdo.todo.manager.PurchaseManager
 import com.andysapps.superdo.todo.model.SuperDate
 import com.andysapps.superdo.todo.model.taskfeatures.Repeat
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
@@ -254,6 +258,16 @@ class RepeatDialog : DialogFragment(), OnItemSelectedListener, View.OnClickListe
     override fun onNothingSelected(parent: AdapterView<*>?) { }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+        if (repeatType[position] == RepeatType.Week.name || repeatType[position] == RepeatType.Month.name) {
+
+            if (!FirestoreManager.getInstance().isUserPremium) {
+                dlg_repeat_spinner_dwm.setSelection(0)
+                startActivity(Intent(context, SubscriptionActivity::class.java))
+                return
+            }
+        }
+
         repeat.repeatType = repeatType[position]
         if (repeat.repeatType == RepeatType.Week.name) {
             updateWeedaysUi()

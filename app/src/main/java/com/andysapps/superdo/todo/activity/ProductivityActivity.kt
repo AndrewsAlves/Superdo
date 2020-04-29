@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_productivity.*
 
 class ProductivityActivity : AppCompatActivity() , AdapterView.OnItemSelectedListener {
 
-    val statType = arrayOf("This Week", "This Month", "Last Week",  "Last Month")
+    val statType = arrayOf("This Week", "Last Week", "This Month", "Last Month")
     var selectedStat = statType[0]
 
     var espritStatistics : EspritStatistics? = null
@@ -141,6 +141,15 @@ class ProductivityActivity : AppCompatActivity() , AdapterView.OnItemSelectedLis
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+        if (statType[position] != Constants.thisWeek) {
+            if (!FirestoreManager.getInstance().isUserPremium) {
+                productivity_stat_spinner.setSelection(0)
+                startActivity(Intent(baseContext, SubscriptionActivity::class.java))
+                return
+            }
+        }
+
         ChartProgressBarMain.selectBar(0)
         selectedStat = statType[position]
         espritStatistics = TaskOrganiser.getInstance().getEspritStatistics(selectedStat)

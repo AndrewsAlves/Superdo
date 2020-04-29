@@ -558,6 +558,7 @@
                     android:background="@drawable/bg_capsul_white">
 
                     <com.andysapps.superdo.todo.views.GradientTextView
+                        android:id="@+id/title_montly"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -566,6 +567,16 @@
                         android:fontFamily="@font/montserrat_bold"
                         android:textColor="@color/black"
                         android:text="Monthy" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Become a Superdo Pro"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textColor="@color/grey3"
+                        android:textSize="10sp"
+                        android:layout_below="@id/title_montly"
+                        android:layout_marginStart="20dp"/>
 
                     <com.andysapps.superdo.todo.views.GradientTextView
                         android:layout_width="wrap_content"
@@ -592,91 +603,39 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:layout_marginEnd="100dp"
                         android:layout_marginBottom="20dp"
                         android:layout_alignParentBottom="true"
                         android:layout_marginStart="20dp">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:scaleType="fitCenter"
+                            android:visibility="visible"
+                            android:src="@drawable/ic_dlg_remind_on" />
 
-                            <ImageButton
-                                style="@style/ripple_background"
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:scaleType="fitCenter"
-                                android:visibility="visible"
-                                android:src="@drawable/ic_dlg_remind_on"
-                                android:layout_centerVertical="true"
-                                android:layout_alignParentStart="true" />
+                        <ImageView
+                            android:layout_marginStart="15dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_mini_deadlined_today" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_regular"
-                                android:layout_marginStart="25dp"
-                                android:text="Unlimited reminders"
-                                android:layout_centerVertical="true"
-                                android:textColor="@color/black"
-                                android:textSize="10sp" />
+                        <ImageView
+                            android:layout_marginStart="15dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_repeating_tasks" />
 
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp">
-
-                            <ImageButton
-                                style="@style/ripple_background"
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:scaleType="fitCenter"
-                                android:visibility="visible"
-                                android:src="@drawable/ic_notification_deadline"
-                                android:layout_centerVertical="true"
-                                android:layout_alignParentStart="true" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_regular"
-                                android:layout_marginStart="25dp"
-                                android:text="Unlimited Deadline"
-                                android:layout_centerVertical="true"
-                                android:textColor="@color/black"
-                                android:textSize="10sp" />
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp">
-
-                            <ImageButton
-                                style="@style/ripple_background"
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:scaleType="fitCenter"
-                                android:visibility="visible"
-                                android:src="@drawable/ic_repeating_tasks"
-                                android:layout_centerVertical="true"
-                                android:layout_alignParentStart="true" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_regular"
-                                android:layout_marginStart="25dp"
-                                android:text="Repeat task as you wish"
-                                android:layout_centerVertical="true"
-                                android:textColor="@color/black"
-                                android:textSize="9sp" />
-
-                        </RelativeLayout>
+                        <ImageView
+                            android:layout_marginStart="15dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_esprit_progress" />
 
                     </LinearLayout>
 
@@ -692,6 +651,7 @@
                     android:background="@drawable/bg_capsul_white">
 
                     <com.andysapps.superdo.todo.views.GradientTextView
+                        android:id="@+id/title_yearly"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -700,6 +660,16 @@
                         android:fontFamily="@font/montserrat_bold"
                         android:textColor="@color/black"
                         android:text="Yearly" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Become a Superdo Pro"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:textColor="@color/grey3"
+                        android:textSize="10sp"
+                        android:layout_below="@id/title_yearly"
+                        android:layout_marginStart="20dp"/>
 
                     <com.andysapps.superdo.todo.views.GradientTextView
                         android:layout_width="wrap_content"
@@ -726,91 +696,39 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:layout_marginEnd="100dp"
                         android:layout_marginBottom="20dp"
                         android:layout_alignParentBottom="true"
                         android:layout_marginStart="20dp">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:scaleType="fitCenter"
+                            android:visibility="visible"
+                            android:src="@drawable/ic_dlg_remind_on" />
 
-                            <ImageButton
-                                style="@style/ripple_background"
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:scaleType="fitCenter"
-                                android:visibility="visible"
-                                android:src="@drawable/ic_dlg_remind_on"
-                                android:layout_centerVertical="true"
-                                android:layout_alignParentStart="true" />
+                        <ImageView
+                            android:layout_marginStart="15dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_mini_deadlined_today" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_regular"
-                                android:layout_marginStart="25dp"
-                                android:text="Unlimited reminders"
-                                android:layout_centerVertical="true"
-                                android:textColor="@color/black"
-                                android:textSize="10sp" />
+                        <ImageView
+                            android:layout_marginStart="15dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_repeating_tasks" />
 
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp">
-
-                            <ImageButton
-                                style="@style/ripple_background"
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:scaleType="fitCenter"
-                                android:visibility="visible"
-                                android:src="@drawable/ic_notification_deadline"
-                                android:layout_centerVertical="true"
-                                android:layout_alignParentStart="true" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_regular"
-                                android:layout_marginStart="25dp"
-                                android:text="Unlimited Deadline"
-                                android:layout_centerVertical="true"
-                                android:textColor="@color/black"
-                                android:textSize="10sp" />
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp">
-
-                            <ImageButton
-                                style="@style/ripple_background"
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:scaleType="fitCenter"
-                                android:visibility="visible"
-                                android:src="@drawable/ic_repeating_tasks"
-                                android:layout_centerVertical="true"
-                                android:layout_alignParentStart="true" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/montserrat_regular"
-                                android:layout_marginStart="25dp"
-                                android:text="Repeat task as you wish"
-                                android:layout_centerVertical="true"
-                                android:textColor="@color/black"
-                                android:textSize="9sp" />
-
-                        </RelativeLayout>
+                        <ImageView
+                            android:layout_marginStart="15dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_esprit_progress" />
 
                     </LinearLayout>
 

@@ -739,6 +739,21 @@ public class Utils {
         return R.drawable.ic_time_off;
     }
 
+    public static String getUserWish() {
+
+        int hours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+
+        if (hours <= 12) {
+            return "Good Morning ";
+        } else if (hours <= 17) {
+            return "Hi, ";
+        } else if (hours <= 24 ) {
+            return "Hello, ";
+        }
+
+        return "Hi, ";
+    }
+
 
 
     public static int getColor(Context context, String colors) {
