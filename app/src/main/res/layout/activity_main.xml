@@ -144,6 +144,7 @@
             </RelativeLayout>
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_today_msg"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"

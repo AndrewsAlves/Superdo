@@ -46,5 +46,9 @@ public class SharedPrefsManager {
         return getSharedPreferences(context).getLong(PREF_BACKGROUND_PROCESS_STARTED, 0);
     }
 
+    public static void deleteAllData(Context context) {
+        getSharedPreferences(context).edit().clear().apply();
+    }
+
 
 }

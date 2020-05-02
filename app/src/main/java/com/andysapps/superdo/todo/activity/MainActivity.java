@@ -23,6 +23,7 @@ import com.andysapps.superdo.todo.enums.MainTabs;
 import com.andysapps.superdo.todo.enums.MoonButtonType;
 import com.andysapps.superdo.todo.events.OpenBottomFragmentEvent;
 import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
+import com.andysapps.superdo.todo.events.TasksFragmentBackPressed;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
@@ -30,6 +31,7 @@ import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
 import com.andysapps.superdo.todo.fragments.ProfileFragment;
 import com.andysapps.superdo.todo.fragments.bucket.BucketFragment;
+import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment;
 import com.andysapps.superdo.todo.fragments.task.AddTaskFragment;
 import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment;
 import com.andysapps.superdo.todo.fragments.task.AllTasksFragment;
@@ -38,6 +40,7 @@ import com.andysapps.superdo.todo.fragments.task.EditTaskFragment;
 import com.andysapps.superdo.todo.fragments.task.TasksFragment;
 import com.andysapps.superdo.todo.manager.AnimationManager;
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
+import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
@@ -197,6 +200,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        if (TaskOrganiser.getInstance().isBucketClicked) {
+            EventBus.getDefault().post(new TasksFragmentBackPressed());
+            return;
+        }
+
         super.onBackPressed();
     }
 
@@ -265,27 +273,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateTabUi(MainTabs tabs) {
 
-        imgDayNight.setImageResource(R.drawable.ic_today_tasks_off);
-        //imgTasks.setImageResource(R.drawable.ic_bucket_tasks_off);
+        imgDayNight.setImageResource(R.drawable.ic_tasks_off);
         imgProfile.setImageResource(R.drawable.ic_profile_off);
-
-        tvMsg.setText(" ");
-
-        if (isNight) {
-            imgDayNight.setImageResource(R.drawable.ic_night_off);
-        }
 
         switch (tabs) {
             case TODAY_TASKS:
-                imgDayNight.setImageResource(R.drawable.ic_today_tasks_on);
-                if (isNight) {
-                    imgDayNight.setImageResource(R.drawable.ic_night_on);
-                }
-
+                imgDayNight.setImageResource(R.drawable.ic_tasks_on);
                 break;
-           // case BUCKET_TASKS:
-            //    imgTasks.setImageResource(R.drawable.ic_bucket_tasks_on);
-           //     break;
             case PROFILE:
                 imgProfile.setImageResource(R.drawable.ic_profile_on);
                 break;

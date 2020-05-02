@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.andysapps.superdo.todo.R;
@@ -85,6 +86,8 @@ public class AllTasksFragment extends Fragment {
     @BindView(R.id.ll_today_tomorrow_later)
     LinearLayout parentTodayTomorrow;
 
+    @BindView(R.id.progress_loadingtasks)
+    ProgressBar progressAllTasks;
 
     TasksDayPagerAdapter viewPagerAdapter;
 
@@ -99,8 +102,6 @@ public class AllTasksFragment extends Fragment {
     TaskListing lasttaskListing;
 
     Bucket bucket;
-
-    boolean isEditing = false;
 
     public AllTasksFragment() {
         // Required empty public constructor
@@ -178,11 +179,11 @@ public class AllTasksFragment extends Fragment {
     }
 
     public void animateViews() {
-        if (!AnimationManager.getInstance().animateTitle) {
+        if (!AnimationManager.getInstance().animateTitle && Utils.isMorning()) {
             AnimationManager.getInstance().animateTitle = true;
             tvTitle.setTextAndAnimate(Utils.getUserWish() + FirestoreManager.getInstance().user.getFirstName());
-            tvTitle.postDelayed(() -> tvTitle.setTextAndAnimate("have a great day!"), 1500);
-            //tvTitle.postDelayed(() -> tvTitle.setTextAndAnimate("You have " + TaskOrganiser.getInstance().todayTaskList.size() + " tasks"), 3000);
+            tvTitle.postDelayed(() -> tvTitle.setTextAndAnimate("You have " + TaskOrganiser.getInstance().todayTaskList.size() + " tasks"), 3000);
+            tvTitle.postDelayed(() -> tvTitle.setTextAndAnimate("have a nice day :)"), 5500);
             tvTitle.postDelayed(() -> tvTitle.setTextAndAnimate("All Tasks"), 8000);
         }
     }
@@ -195,11 +196,10 @@ public class AllTasksFragment extends Fragment {
         btnSave.setVisibility(View.GONE);
         btnClose.setVisibility(View.GONE);
         btnBucketList.setVisibility(View.VISIBLE);
+        progressAllTasks.setVisibility(View.GONE);
 
-        if (isEditing) {
-            btnSave.setVisibility(View.VISIBLE);
-            btnClose.setVisibility(View.VISIBLE);
-            btnBucketList.setVisibility(View.GONE);
+        if (FirestoreManager.getInstance().isFetching) {
+            progressAllTasks.setVisibility(View.VISIBLE);
         }
 
         animateTodayViews();

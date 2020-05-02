@@ -20,6 +20,7 @@ import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.events.update.UpdateUiAllTasksEvent
+import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Task
 import kotlinx.android.synthetic.main.fragment_today.*
@@ -68,6 +69,11 @@ class TodayFragment : Fragment()  {
     }
 
     fun updateUi() {
+
+        if (FirestoreManager.getInstance().isFetching) {
+            return
+        }
+
         if (adapter!!.taskList == null || adapter!!.taskList.isEmpty()) {
             ll_notasks.visibility = View.VISIBLE
             tv_no_tasks.text = Utils.getNoTasksText()

@@ -7,10 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.R
-import com.andysapps.superdo.todo.enums.BucketUpdateType
 import com.andysapps.superdo.todo.events.DeleteBucketEvent
 import com.andysapps.superdo.todo.events.SetTasksFragment
-import com.andysapps.superdo.todo.events.firestore.BucketUpdatedEvent
+import com.andysapps.superdo.todo.events.TasksFragmentBackPressed
 import com.andysapps.superdo.todo.fragments.bucket.BucketTasksFragment
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.model.Bucket
@@ -64,10 +63,13 @@ class TasksFragment : Fragment() {
         taskBucket = event.bucket
 
         val ft = fragmentManager!!.beginTransaction()
+        ft.setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_fade_out)
 
         if (event.bucket == null) {
+            TaskOrganiser.getInstance().isBucketClicked = false
             ft.replace(R.id.fl_fragment_container_tasks, AllTasksFragment(), BucketTasksFragment.TAG)
         } else {
+            TaskOrganiser.getInstance().isBucketClicked = true
             ft.replace(R.id.fl_fragment_container_tasks, BucketTasksFragment.getInstance(event.bucket), BucketTasksFragment.TAG)
         }
 
@@ -79,6 +81,11 @@ class TasksFragment : Fragment() {
         if (taskBucket!!.documentId == event.bucket.documentId) {
             onMessageEvent(SetTasksFragment(null))
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: TasksFragmentBackPressed) {
+        onMessageEvent(SetTasksFragment(null))
     }
 
 }

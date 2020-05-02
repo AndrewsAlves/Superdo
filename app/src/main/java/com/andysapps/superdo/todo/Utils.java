@@ -754,6 +754,17 @@ public class Utils {
         return "Hi, ";
     }
 
+    public static boolean isMorning() {
+
+        int hours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+
+        if (hours <= 12) {
+            return true;
+        }
+
+        return false;
+    }
+
 
 
     public static int getColor(Context context, String colors) {
@@ -803,7 +814,7 @@ public class Utils {
     public static int getNoTasksImg() {
 
         if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 19) {
-            return R.drawable.illust_boy_wtih_coffee;
+            return R.drawable.img_sleep;
         } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 15) {
             return R.drawable.img_girl_with_cycle;
         } else if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 12 ) {

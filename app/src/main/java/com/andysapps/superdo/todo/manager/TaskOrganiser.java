@@ -48,6 +48,7 @@ public class TaskOrganiser {
     public List<Bucket> bucketList;
 
     public TaskListing userListingClicked;
+    public boolean isBucketClicked;
 
     public static TaskOrganiser getInstance() {
         return ourInstance;

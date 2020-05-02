@@ -20,6 +20,7 @@ import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent
 import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment
 import com.andysapps.superdo.todo.manager.FirestoreManager
+import com.andysapps.superdo.todo.manager.SharedPrefsManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
 import com.andysapps.superdo.todo.notification.SuperdoNotificationManager
@@ -171,7 +172,7 @@ class ProfileFragment : Fragment() {
         TaskOrganiser.destroy()
         SuperdoAlarmManager.destroy()
         SuperdoNotificationManager.destroy()
-
+        SharedPrefsManager.deleteAllData(context)
         FirebaseAuth.getInstance().signOut()
         var intent = Intent(context, WelcomeActivity::class.java)
         startActivity(intent)

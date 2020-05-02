@@ -27,6 +27,7 @@ import com.andysapps.superdo.todo.model.User;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -37,6 +38,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.Source;
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -140,6 +143,7 @@ public class FirestoreManager {
         bucket.setId(user.getUserId());
         bucket.setBucketIcon(BucketType.personal.getValue());
         bucket.setTagColor(BucketColors.Red.toString()); // light Red
+        bucket.setCreated(Calendar.getInstance().getTime());
 
         return bucket;
     }
@@ -192,6 +196,8 @@ public class FirestoreManager {
 
     public void fetchUserData(Context context, boolean registerReminders) {
 
+        isFetching = true;
+
         Source source = Source.DEFAULT;
 
         Log.e(TAG, "fetchUserData() called with: user id " + user.getUserId());
@@ -220,9 +226,13 @@ public class FirestoreManager {
                 return;
             }
 
-            EventBus.getDefault().post(new FetchTasksEvent(true));
-        }).addOnFailureListener(e -> EventBus.getDefault().post(new FetchTasksEvent(false)));
+            isFetching = false;
 
+            EventBus.getDefault().post(new FetchTasksEvent(true));
+        }).addOnFailureListener(e -> {
+            isFetching = false;
+            EventBus.getDefault().post(new FetchTasksEvent(false));
+        });
 
         if (registerReminders) {
             return;
