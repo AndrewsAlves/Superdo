@@ -18,12 +18,10 @@ import com.andysapps.superdo.todo.enums.CPMD
 import com.andysapps.superdo.todo.enums.MoonButtonType
 import com.andysapps.superdo.todo.enums.TaskUpdateType
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType
-import com.andysapps.superdo.todo.events.UpdateTaskListEvent
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksUiEvent
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent
-import com.andysapps.superdo.todo.events.ui.SetBucketTaskListEvent
 import com.andysapps.superdo.todo.fragments.bucket.CreateNewBucketFragment.Companion.instance
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment
 import com.andysapps.superdo.todo.manager.FirestoreManager
@@ -91,8 +89,8 @@ class BucketTasksFragment : Fragment() {
 
         taskList = ArrayList()
 
-        if (!TaskOrganiser.getInstance().getBucketTasks(bucket, false).isEmpty()) {
-            taskList!!.addAll(TaskOrganiser.getInstance().getBucketTasks(bucket, false))
+        if (!TaskOrganiser.getInstance().getTasksInBucket(bucket, false).isEmpty()) {
+            taskList!!.addAll(TaskOrganiser.getInstance().getTasksInBucket(bucket, false))
         }
 
         recyclerView_task_list.layoutManager = LinearLayoutManager(context)
@@ -174,7 +172,7 @@ class BucketTasksFragment : Fragment() {
         Log.e(javaClass.name, "updateUi: $isEditing")
         ll_notasks.visibility = View.GONE
 
-        tv_completetask_count.text = TaskOrganiser.getInstance().getBucketTasks(bucket,true).size.toString()
+        tv_completetask_count.text = TaskOrganiser.getInstance().getTasksInBucket(bucket,true).size.toString()
 
         if (adapter!!.taskList == null || adapter!!.taskList.isEmpty()) {
             ll_notasks.visibility = View.VISIBLE
@@ -183,7 +181,7 @@ class BucketTasksFragment : Fragment() {
     }
 
     fun updateList() {
-        adapter!!.updateList(TaskOrganiser.getInstance().getBucketTasks(bucket, false))
+        adapter!!.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket, false))
         updateUi()
     }
 
@@ -191,7 +189,7 @@ class BucketTasksFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: UpdateBucketTasksEvent?) {
         isEditing = false
-        adapter!!.updateList(TaskOrganiser.getInstance().getBucketTasks(bucket, false))
+        adapter!!.updateList(TaskOrganiser.getInstance().getTasksInBucket(bucket, false))
         updateUi()
     }
 
@@ -212,7 +210,7 @@ class BucketTasksFragment : Fragment() {
 
         when (event.documentChange) {
             TaskUpdateType.Added -> {
-                var pos = TaskOrganiser.getInstance().getBucketTasks(bucket, false).indexOf(event.task)
+                var pos = TaskOrganiser.getInstance().getTasksInBucket(bucket, false).indexOf(event.task)
                 adapter!!.addTask(event.task, pos)
             }
             TaskUpdateType.Deleted -> {

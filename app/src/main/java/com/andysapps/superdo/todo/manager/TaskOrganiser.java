@@ -330,7 +330,23 @@ public class TaskOrganiser {
     /////////////////////
     //// BUCKET TASKS
 
-    public List<Task> getBucketTasks(Bucket bucket, boolean completedTasks) {
+    public List<Task> getAllTasksInBucket(Bucket bucket) {
+        List<Task> bucketList = new ArrayList<>();
+
+        if (bucket.getDocumentId().equals("all_tasks")) {
+            return allTaskList;
+        }
+
+        for (Task task : allTaskList) {
+            if (task.getBucket() != null && task.getBucket().getDocumentId().equals(bucket.getDocumentId())) {
+                bucketList.add(task);
+            }
+        }
+
+        return bucketList;
+    }
+
+    public List<Task> getTasksInBucket(Bucket bucket, boolean completedTasks) {
 
         List<Task> bucketList = new ArrayList<>();
 
