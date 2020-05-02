@@ -256,6 +256,7 @@ class SignUpActivity : AppCompatActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
+                googleSignInClient!!.signOut()
             } catch (e: ApiException) {
                 toastError()
                 Log.w(TAG, "Google sign in failed", e)

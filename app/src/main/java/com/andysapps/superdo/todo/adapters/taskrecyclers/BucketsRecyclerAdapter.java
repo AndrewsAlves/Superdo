@@ -94,8 +94,7 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
 
         holder.ivBucketIcon.setImageResource(Constants.bucketIcons[bucket.getBucketIcon()]);
 
-
-        int totalTasks = TaskOrganiser.getInstance().getTasksInBucket(bucket,false).size();
+        int totalTasks = TaskOrganiser.getInstance().getAllTasksInBucket(bucket).size();
         int completeTasks = TaskOrganiser.getInstance().getTasksInBucket(bucket,true).size();
         String taskDone = completeTasks + " / " + totalTasks;
 
