@@ -14,7 +14,6 @@ import com.andysapps.superdo.todo.adapters.taskrecyclers.CPMDRecyclerAdapter
 import com.andysapps.superdo.todo.dialog.alert.DeleteTaskDialog
 import com.andysapps.superdo.todo.dialog.alert.RestoreTaskDialog
 import com.andysapps.superdo.todo.enums.CPMD
-import com.andysapps.superdo.todo.enums.TaskListing
 import com.andysapps.superdo.todo.enums.UndoType
 import com.andysapps.superdo.todo.events.*
 import com.andysapps.superdo.todo.events.bucket.UpdateBucketTasksEvent
@@ -125,7 +124,7 @@ class CPMDTasksFragment : Fragment() {
         when(cpmd) {
             CPMD.COMPLETED -> {
                 if (bucket != null) {
-                    taskList = TaskOrganiser.getInstance().getBucketTasks(bucket,true)
+                    taskList = TaskOrganiser.getInstance().getTasksInBucket(bucket,true)
                 } else {
                     taskList = TaskOrganiser.getInstance().getCompletedTaskList()
                 }
