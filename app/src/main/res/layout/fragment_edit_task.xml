@@ -16,7 +16,7 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp">
@@ -27,13 +27,12 @@
                 android:layout_width="match_parent"
                 android:layout_marginEnd="130dp"
                 android:layout_marginStart="40dp"
+                android:layout_marginTop="10dp"
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/montserrat_medium"
                 android:hint="Do something..."
                 android:textColor="@color/black"
                 android:textSize="20dp"
-                android:maxLines="2"
-                android:maxLength="40"
                 android:inputType="textMultiLine|textCapSentences"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,8 +47,7 @@
                 android:scaleType="center"
                 android:src="@drawable/ic_move_to_bin_orange"
                 android:layout_marginTop="5dp"
-                app:layout_constraintEnd_toStartOf="@+id/editTask_close"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_toStartOf="@id/editTask_close"
                 android:layout_marginEnd="10dp"/>
 
             <ImageButton
@@ -62,8 +60,7 @@
                 android:scaleType="center"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_close_mini"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:layout_alignParentEnd="true" />
 
             <ImageButton
                 android:visibility="gone"
@@ -75,11 +72,10 @@
                 android:scaleType="center"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_tick_red"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:layout_alignParentEnd="true" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"

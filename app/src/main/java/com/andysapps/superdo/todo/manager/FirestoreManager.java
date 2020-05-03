@@ -39,8 +39,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.Source;
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Andrews on 29,October,2019
@@ -132,9 +134,9 @@ public class FirestoreManager {
         return bucket;
     }
 
-    public Bucket getDefaultPersonalbucket() {
+    public Bucket getDefaultPersonalbucket(String documentId) {
         Bucket bucket = new Bucket();
-        bucket.setDocumentId(user.getUserId());
+        bucket.setDocumentId(documentId);
         if (user.getFirstName() != null) {
             bucket.setName(user.getFirstName() + " Tasks");
         } else {
@@ -375,6 +377,10 @@ public class FirestoreManager {
         return getUserTaskCollection().document().getId();
     }
 
+    public String getNewBucketDocumentId() {
+        return getUserBucketCollection().document().getId();
+    }
+
     public void uploadTask(Task task) {
         getUserTaskCollection().document(task.getDocumentId()).set(task)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot : Task uploadedAccount successfully written!"))
@@ -465,6 +471,50 @@ public class FirestoreManager {
                 }
             }
         });
+    }
+
+    public void createSignupTasksAndBucket() {
+
+        String documentId = getNewBucketDocumentId();
+        FirestoreManager.getInstance().updateBucket(FirestoreManager.getInstance().getDefaultPersonalbucket(documentId));
+
+        List<Task> newTaskList = new ArrayList<>();
+
+        Task task = new Task();
+        task.setDocumentId(getNewTaskDocumentId());
+        task.setTitle("Welcome to Superdo ");
+        task.setDoDate(Utils.getSuperdateToday());
+        task.setBucketId(documentId);
+        task.setCreated(Calendar.getInstance().getTime());
+        newTaskList.add(task);
+
+        task = new Task();
+        task.setDocumentId(getNewTaskDocumentId());
+        task.setTitle("Create your first task");
+        task.setDoDate(Utils.getSuperdateToday());
+        task.setBucketId(documentId);
+        task.setCreated(Calendar.getInstance().getTime());
+        newTaskList.add(task);
+
+        task = new Task();
+        task.setDocumentId(getNewTaskDocumentId());
+        task.setTitle("Create your first bucket like family, finance etc");
+        task.setDoDate(Utils.getSuperdateToday());
+        task.setBucketId(documentId);
+        task.setCreated(Calendar.getInstance().getTime());
+        newTaskList.add(task);
+
+        task = new Task();
+        task.setDocumentId(getNewTaskDocumentId());
+        task.setTitle("Explorer Superdo for more features :)");
+        task.setDoDate(Utils.getSuperdateToday());
+        task.setBucketId(documentId);
+        task.setCreated(Calendar.getInstance().getTime());
+        newTaskList.add(task);
+
+        for (Task task1 : newTaskList) {
+            uploadTask(task1);
+        }
     }
 
 }

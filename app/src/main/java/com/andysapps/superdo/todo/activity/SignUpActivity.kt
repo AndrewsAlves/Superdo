@@ -16,6 +16,7 @@ import com.andysapps.superdo.todo.events.CreateOrUpdateUserSuccessEvent
 import com.andysapps.superdo.todo.events.FetchUserFailureEvent
 import com.andysapps.superdo.todo.events.FetchUserSuccessEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
+import com.andysapps.superdo.todo.manager.SharedPrefsManager
 import com.andysapps.superdo.todo.model.User
 import com.andysapps.superdo.todo.views.IndeterminantProgressBar
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -77,6 +78,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        googleSignInClient!!.signOut()
         EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
@@ -256,7 +258,6 @@ class SignUpActivity : AppCompatActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
-                googleSignInClient!!.signOut()
             } catch (e: ApiException) {
                 toastError()
                 Log.w(TAG, "Google sign in failed", e)
@@ -286,7 +287,7 @@ class SignUpActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event : CreateOrUpdateUserSuccessEvent) {
-        FirestoreManager.getInstance().updateBucket(FirestoreManager.getInstance().defaultPersonalbucket)
+        FirestoreManager.getInstance().createSignupTasksAndBucket()
         val intent = Intent(this, ProfileInfoActivity::class.java)
         startActivity(intent)
         finish()
@@ -300,6 +301,8 @@ class SignUpActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: FetchUserSuccessEvent?) {
+        val user = FirestoreManager.getInstance().user
+        SharedPrefsManager.saveUserName(baseContext, user.firstName, user.lastName)
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()

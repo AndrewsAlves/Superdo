@@ -211,48 +211,23 @@ public class TaskOrganiser {
     }
 
     public void sortTasks() {
-        Collections.sort(todayTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getTaskIndex() - o2.getTaskIndex();
+        sortThisTaskList(todayTaskList);
+        sortThisTaskList(tomorrowTaskList);
+        sortThisTaskList(weekTaskList);
+        sortThisTaskList(monthTaskList);
+        sortThisTaskList(upcomingTaskList);
+        Collections.sort(completedTaskList, (o1, o2) -> o2.getTaskCompletedDate().compareTo(o1.getTaskCompletedDate()));
+    }
+
+    public void sortThisTaskList(List<Task> taskList) {
+        Collections.sort(taskList, (o1, o2) -> {
+            int diff = o1.getTaskIndex() - o2.getTaskIndex();
+            if (diff == 0) {
+                return o1.getCreated().compareTo(o2.getCreated());
+            } else {
+                return diff;
             }
         });
-
-        Collections.sort(tomorrowTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getTaskIndex() - o2.getTaskIndex();
-            }
-        });
-
-        Collections.sort(weekTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getTaskIndex() - o2.getTaskIndex();
-            }
-        });
-
-        Collections.sort(monthTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getTaskIndex() - o2.getTaskIndex();
-            }
-        });
-
-        Collections.sort(upcomingTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getTaskIndex() - o2.getTaskIndex();
-            }
-        });
-
-        Collections.sort(completedTaskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o2.getTaskCompletedDate().compareTo(o1.getTaskCompletedDate());
-            }
-        });
-
     }
 
     public void organiseBuckets() {

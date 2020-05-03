@@ -91,11 +91,15 @@ public class BucketsRecyclerAdapter extends RecyclerView.Adapter<BucketsRecycler
         }
 
         holder.tvBucketName.setText(bucket.getName());
-
         holder.ivBucketIcon.setImageResource(Constants.bucketIcons[bucket.getBucketIcon()]);
 
         int totalTasks = TaskOrganiser.getInstance().getAllTasksInBucket(bucket).size();
         int completeTasks = TaskOrganiser.getInstance().getTasksInBucket(bucket,true).size();
+
+        if (position == 0) {
+            completeTasks = TaskOrganiser.getInstance().getCompletedTaskList().size();
+        }
+
         String taskDone = completeTasks + " / " + totalTasks;
 
         holder.tvNoTasks.setText(taskDone);

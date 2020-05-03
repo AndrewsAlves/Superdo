@@ -840,7 +840,6 @@ public class Utils {
 
     public static ArrayList<String> getHealthSuggestionList() {
         ArrayList<String> health = new ArrayList<>();
-
         health.add("Eat six small, healthful meals a day");
         health.add("Reduce your sugar intake");
         health.add("Work out for a total of an hour a day, five days a week");
