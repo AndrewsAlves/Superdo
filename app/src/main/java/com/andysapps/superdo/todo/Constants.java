@@ -5,6 +5,10 @@ package com.andysapps.superdo.todo;
  */
 public class Constants {
 
+    public static final int UNSPECIFIED = 0;
+    public static final int PURCHASED = 1;
+    public static final int PENDING = 2;
+
     public static final int[] trophySrc = {R.drawable.trophy1, R.drawable.trophy2, R.drawable.trophy3, R.drawable.trophy4, R.drawable.trophy5,
             R.drawable.trophy6, R.drawable.trophy7, R.drawable.trophy8, R.drawable.trophy9, R.drawable.trophy10};
 

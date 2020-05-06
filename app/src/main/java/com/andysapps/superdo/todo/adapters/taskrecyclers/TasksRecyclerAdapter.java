@@ -76,7 +76,6 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     public void addTask(Task task) {
         taskList.add(task.getTaskIndex(), task);
         notifyItemInserted(task.getTaskIndex());
-        //updateTasksIndexes();
     }
 
     public void removeTask(Task task) {
@@ -236,6 +235,11 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 .setOnClickListener(v -> {
                     EventBus.getDefault().post(new OpenEditTaskEvent(task));
                 });
+
+        h.itemView.setOnLongClickListener(v -> {
+            SuperdoAudioManager.getInstance().vibrate();
+            return true;
+        });
     }
 
     public void setTaskCompleted(int position, Task task) {

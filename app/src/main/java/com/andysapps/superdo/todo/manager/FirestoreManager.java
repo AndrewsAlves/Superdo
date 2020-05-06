@@ -5,7 +5,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.andysapps.superdo.todo.BuildConfig;
+
+import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.Tools;
 import com.andysapps.superdo.todo.Utils;
 import com.andysapps.superdo.todo.enums.BucketColors;
@@ -117,10 +118,22 @@ public class FirestoreManager {
     }
 
     public boolean isUserPremium() {
-        if (BuildConfig.DEBUG) {
-            //return true;
+
+        if (user.getPurchaseDetails() == null) {
+            return false;
         }
-        return FirestoreManager.getInstance().user.isUserPremium();
+
+        if (user.getPurchaseDetails().getSkyId().equals(PurchaseManager.sku_monthly) &&
+                user.getPurchaseDetails().getStatus() == Constants.PURCHASED) {
+            return true;
+        }
+
+        if (user.getPurchaseDetails().getSkyId().equals(PurchaseManager.sku_yearly) &&
+                user.getPurchaseDetails().getStatus() == Constants.PURCHASED) {
+            return true;
+        }
+
+        return false;
     }
 
     public static Bucket getAllTasksBucket() {

@@ -12,7 +12,6 @@
 
     <color name="lightOrange">#FF8B57</color>
     <color name="lightOrange_whitish">#FFDFD1</color>
-    <color name="lightOrange_a30">#30FF8B57</color>
 
     <color name="bg_white1">#F8F8F8</color>
     <color name="bg_white2">#F2F2F2</color>
@@ -24,20 +23,15 @@
     <color name="grey4">#303030</color>
 
     <color name="black">#000000</color>
-    <color name="black_a6">#10000000</color>
-    <color name="black_a20">#20000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="white_a50">#50FFFFFF</color>
     <color name="transparent">#00ffffff</color>
 
     <color name="whitish_light_red">#522d5b</color>
 
     ///// bucket color pallet
-    <color name="yellow">#F0F64F</color>
     <color name="green">#4FF660</color>
     <color name="skyblue">#4FD4F6</color>
     <color name="inkBlue">#2D2E51</color>
-    <color name="rose">#F64FF6</color>
     <color name="orange">#FF8B57</color>
 
 </resources>

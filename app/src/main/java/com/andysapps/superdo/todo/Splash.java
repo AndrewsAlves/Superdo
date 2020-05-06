@@ -12,6 +12,7 @@ import com.andysapps.superdo.todo.activity.WelcomeActivity;
 import com.andysapps.superdo.todo.events.FetchUserFailureEvent;
 import com.andysapps.superdo.todo.events.FetchUserSuccessEvent;
 import com.andysapps.superdo.todo.manager.FirestoreManager;
+import com.andysapps.superdo.todo.manager.PurchaseManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -41,6 +42,8 @@ public class Splash extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+
+
 
         auth = FirebaseAuth.getInstance();
 

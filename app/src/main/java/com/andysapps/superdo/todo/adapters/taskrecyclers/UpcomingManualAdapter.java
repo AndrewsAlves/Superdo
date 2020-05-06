@@ -354,6 +354,11 @@ public class UpcomingManualAdapter extends RecyclerView.Adapter<UpcomingManualAd
                 .setOnClickListener(v -> {
                     EventBus.getDefault().post(new OpenEditTaskEvent(task));
                 });
+
+        h.itemView.setOnLongClickListener(v -> {
+            SuperdoAudioManager.getInstance().vibrate();
+            return true;
+        });
     }
 
     public void setTaskCompleted(int position, Task task) {

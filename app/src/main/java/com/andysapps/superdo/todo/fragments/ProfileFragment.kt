@@ -1,11 +1,15 @@
 package com.andysapps.superdo.todo.fragments
 
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.andysapps.superdo.todo.Constants
 import com.andysapps.superdo.todo.R
@@ -20,15 +24,14 @@ import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent
 import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
 import com.andysapps.superdo.todo.fragments.task.CPMDTasksFragment
 import com.andysapps.superdo.todo.manager.FirestoreManager
+import com.andysapps.superdo.todo.manager.PurchaseManager
 import com.andysapps.superdo.todo.manager.SharedPrefsManager
 import com.andysapps.superdo.todo.manager.TaskOrganiser
 import com.andysapps.superdo.todo.notification.SuperdoAlarmManager
 import com.andysapps.superdo.todo.notification.SuperdoNotificationManager
 import com.google.firebase.auth.FirebaseAuth
 import com.hadiidbouk.charts.BarData
-import com.hadiidbouk.charts.ChartProgressBar
 import com.thekhaeng.pushdownanim.PushDownAnim
-import kotlinx.android.synthetic.main.activity_subscription.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -88,7 +91,8 @@ class ProfileFragment : Fragment() {
                     startActivity(Intent(context, ProductivityActivity::class.java))
                 })
 
-        PushDownAnim.setPushDownAnimTo(profile_btn_sub_monthy)
+        PushDownAnim.setPushDownAnimTo(profile_btn_sub_monthy,
+                profile_btn_sub_yearly)
                 .setScale(PushDownAnim.MODE_SCALE, 0.96f)
                 .setOnClickListener(fun(view: View) {
                     startActivity(Intent(context, SubscriptionActivity::class.java))
@@ -100,6 +104,32 @@ class ProfileFragment : Fragment() {
 
         profile_btn_logout.setOnClickListener {
             LogoutAlertDialog().show(fragmentManager!!, "alert_logout")
+        }
+
+        profile_btn_support.setOnClickListener {
+            val emailIntent = Intent(Intent.ACTION_SEND)
+            emailIntent.setDataAndType(Uri.parse("actioonsapps@gmail.com"), "text/html")
+            val pm: PackageManager = context!!.packageManager
+            val matches = pm.queryIntentActivities(emailIntent, 0)
+            var className: String? = null
+            for (info in matches) {
+                if (info.activityInfo.packageName == "com.google.android.gm") {
+                    className = info.activityInfo.name
+                    if (className != null && !className.isEmpty()) {
+                        break
+                    }
+                }
+            }
+
+            if (className != null) {
+                emailIntent.setClassName("com.google.android.gm", className)
+
+                try {
+                    startActivity(emailIntent)
+                } catch (e: ActivityNotFoundException) {
+                    Toast.makeText(context, "Gmail not fount!", Toast.LENGTH_LONG).show()
+                }
+            }
         }
 
         var barlist : ArrayList<BarData> = ArrayList()
@@ -115,7 +145,17 @@ class ProfileFragment : Fragment() {
             profile_tv_account_name.text = FirestoreManager.getInstance().user.firstName
         }
 
-        profile_tv_email.text = FirestoreManager.getInstance().user.email
+        profile_iv_premium.visibility = View.GONE
+        if (FirestoreManager.getInstance().isUserPremium) {
+            val user = FirestoreManager.getInstance().user
+            if ( user.purchaseDetails.status == Constants.PURCHASED) {
+                profile_iv_premium.visibility = View.VISIBLE
+                when(user.purchaseDetails.skyId) {
+                    PurchaseManager.sku_monthly -> profile_iv_premium.setImageResource(R.drawable.ic_crown_monthly)
+                    PurchaseManager.sku_yearly -> profile_iv_premium.setImageResource(R.drawable.ic_crown_yearly)
+                }
+            }
+        }
 
         when (FirestoreManager.getInstance().user!!.avatarIndex) {
             0 -> profile_iv_avatar.setImageResource(R.drawable.img_avatar_1)
@@ -159,6 +199,28 @@ class ProfileFragment : Fragment() {
         ChartProgressBar.setMaxValue(max)
         ChartProgressBar.setDataList(barlist)
         ChartProgressBar.build()
+
+
+        ////////////
+        //// UPDATE IN APP SUBS
+        ////////////
+        if (FirestoreManager.getInstance().isUserPremium) {
+            tv_go_premium.visibility = View.GONE
+            hsv_go_premium.visibility = View.GONE
+            return
+        }
+
+        tv_go_premium.visibility = View.VISIBLE
+        hsv_go_premium.visibility = View.VISIBLE
+
+        if (PurchaseManager.getInstance().skuMonthly != null) {
+            tv_price_monthy.text = PurchaseManager.getInstance().skuMonthly.price
+        }
+
+        if (PurchaseManager.getInstance().skuYearly != null) {
+            tv_price_yearly.text = PurchaseManager.getInstance().skuYearly.price
+        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

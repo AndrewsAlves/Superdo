@@ -24,7 +24,7 @@ public enum BucketType {
     pets(14);
 
     private int value;
-    private static Map map = new HashMap<>();
+    private static HashMap<Integer, BucketType> map = new HashMap<>();
 
     private BucketType(int value) {
         this.value = value;

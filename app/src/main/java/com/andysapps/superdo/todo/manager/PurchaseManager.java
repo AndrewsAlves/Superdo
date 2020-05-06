@@ -2,6 +2,7 @@ package com.andysapps.superdo.todo.manager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -15,22 +16,29 @@ import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
-import com.android.billingclient.api.SkuDetailsResponseListener;
+import com.andysapps.superdo.todo.model.PurchaseDetails;
+import com.andysapps.superdo.todo.model.User;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PurchaseManager implements PurchasesUpdatedListener{
 
+    public static final String TAG = "PurchaseManager";
+
     private static PurchaseManager ourInstance;
 
-    public static final String sku_monthly = "superdo_monthy";
-    public static final String sku_yearly = "superdo_yearly";
+    public static final String sku_monthly = "superdo_premium_monthy";
+    public static final String sku_yearly = "superdo_premium_yearly";
 
-    SkuDetails skuMonthly;
-    SkuDetails skuYearly;
+    public SkuDetails skuMonthly;
+    public SkuDetails skuYearly;
 
     private BillingClient billingClient;
+
+    public boolean isUserPremium;
 
     private AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener;
 
@@ -47,7 +55,11 @@ public class PurchaseManager implements PurchasesUpdatedListener{
             public void onBillingSetupFinished(BillingResult billingResult) {
                 if (billingResult.getResponseCode() ==  BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
+                    Log.d(TAG, "onBillingSetupFinished: BillingClient setup finised");
                     querySubscriptions();
+                    queryPurchase();
+                } else {
+                    Log.e(TAG,  billingResult.getDebugMessage());
                 }
             }
             @Override
@@ -57,11 +69,8 @@ public class PurchaseManager implements PurchasesUpdatedListener{
             }
         });
 
-        acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
-            @Override
-            public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
-
-            }
+        acknowledgePurchaseResponseListener = billingResult -> {
+            Log.d(TAG, "PurchaseManager() called with: context = [" + context + "]");
         };
 
     }
@@ -71,6 +80,8 @@ public class PurchaseManager implements PurchasesUpdatedListener{
     }
 
     public void querySubscriptions() {
+
+        Log.d(TAG, "querySubscriptions() called");
 
         List<String> skuList = new ArrayList<>();
         skuList.add(sku_monthly);
@@ -85,8 +96,12 @@ public class PurchaseManager implements PurchasesUpdatedListener{
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
                     && skuDetailsList != null) {
 
+                Log.d(TAG, "querySubscriptions: query successful");
+
                 for (SkuDetails skuDetails : skuDetailsList) {
                     String sku = skuDetails.getSku();
+
+                    Log.e(TAG, "querySubscriptions: sku deatils" + skuDetails.getTitle());
 
                     if (sku.equals(sku_monthly)) {
                         skuMonthly = skuDetails;
@@ -96,31 +111,52 @@ public class PurchaseManager implements PurchasesUpdatedListener{
 
                 }
 
+            } else {
+                Log.e(TAG,  billingResult.getDebugMessage());
             }
 
         });
     }
 
-    public void purchaseSubMonthly(Activity activity) {
+    public void queryPurchase() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Purchase.PurchasesResult queryPurchasesSubs = billingClient.queryPurchases(BillingClient.SkuType.SUBS);
+                if (queryPurchasesSubs.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+                    return;
+                }
 
+                for (Purchase purchase : queryPurchasesSubs.getPurchasesList()) {
+                    if (purchase.getSku().equals(sku_monthly) || purchase.getSku().equals(sku_yearly)) {
+                        isUserPremium = true;
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public void purchaseSubMonthly(Activity activity) {
+        Log.d(TAG, "purchaseSubMonthly: Purchase monthy executed");
         BillingFlowParams flowParams = BillingFlowParams.newBuilder()
                 .setSkuDetails(skuMonthly)
                 .build();
         billingClient.launchBillingFlow(activity, flowParams);
-
     }
 
     public void purchaseSubYearly(Activity activity) {
-
+        Log.d(TAG, "purchaseSubMonthly: Purchase yearly executed");
         BillingFlowParams flowParams = BillingFlowParams.newBuilder()
                 .setSkuDetails(skuYearly)
                 .build();
         billingClient.launchBillingFlow(activity, flowParams);
-
     }
 
     @Override
     public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases) {
+
+        Log.d(TAG, "onPurchasesUpdated() called with: billingResult = [" + billingResult + "], purchases = [" + purchases + "]");
+
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
                 && purchases != null) {
             for (Purchase purchase : purchases) {
@@ -138,7 +174,8 @@ public class PurchaseManager implements PurchasesUpdatedListener{
         // once purchased acknowledge the purchase
 
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-            // Grant entitlement to the user.
+
+            Log.e(TAG, "handlePurchase: User purchased : " + purchase.getSku());
 
             // Acknowledge the purchase if it hasn't already been acknowledged.
             if (!purchase.isAcknowledged()) {
@@ -148,8 +185,28 @@ public class PurchaseManager implements PurchasesUpdatedListener{
                                 .build();
                 billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
             }
-        } else if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
 
+            User user = FirestoreManager.getInstance().user;
+            if (user.getPurchaseDetails() != null) {
+                if (user.getPurchaseDetails().getPurchaseToken().equals(purchase.getPurchaseToken())) {
+                    Log.e(TAG, "handlePurchase: Purchase already exits");
+                    return;
+                }
+            }
+
+            PurchaseDetails purchaseDetails = new PurchaseDetails();
+            purchaseDetails.setSkyId(purchase.getSku());
+            purchaseDetails.setPurchaseToken(purchase.getPurchaseToken());
+            purchaseDetails.setOrderId(purchase.getOrderId());
+            purchaseDetails.setStatus(purchase.getPurchaseState());
+            purchaseDetails.setPurchaseTime(new Date(purchase.getPurchaseTime()));
+            user.setPurchaseDetails(purchaseDetails);
+            FirestoreManager.getInstance().updateUser(user);
+
+        } else if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
+            Log.e(TAG, "handlePurchase: User purchase pending : " + purchase.getSku());
+        } else {
+            Log.e(TAG, "handlePurchase: User purchase status unspecified : " + purchase.getSku());
         }
 
     }

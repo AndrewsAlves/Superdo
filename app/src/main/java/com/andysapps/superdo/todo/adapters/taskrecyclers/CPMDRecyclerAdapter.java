@@ -275,12 +275,14 @@ public class CPMDRecyclerAdapter extends RecyclerView.Adapter<CPMDRecyclerAdapte
             if (isSeleting) {
                 return false;
             }
+
             isSeleting = true;
             selectedTask.clear();
             selectedTask.put(taskList.get(position).getDocumentId(), taskList.get(position));
             notifyDataSetChanged();
             EventBus.getDefault().post(new SelectProfileTaskEvent(true));
             EventBus.getDefault().post(new UpdateCpmdTitleEvent());
+            SuperdoAudioManager.getInstance().vibrate();
             return true;
         });
     }

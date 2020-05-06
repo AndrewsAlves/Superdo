@@ -40,6 +40,7 @@ import com.andysapps.superdo.todo.fragments.task.EditTaskFragment;
 import com.andysapps.superdo.todo.fragments.task.TasksFragment;
 import com.andysapps.superdo.todo.manager.AnimationManager;
 import com.andysapps.superdo.todo.manager.SharedPrefsManager;
+import com.andysapps.superdo.todo.manager.SuperdoAudioManager;
 import com.andysapps.superdo.todo.manager.TaskOrganiser;
 import com.andysapps.superdo.todo.manager.TimeManager;
 import com.andysapps.superdo.todo.model.Bucket;
@@ -171,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        //SuperdoAudioManager.getInstance().releaseSoundPlayer();
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -200,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (TaskOrganiser.getInstance().isBucketClicked) {
+        if (TaskOrganiser.getInstance().isBucketClicked && canGoBackToAllTasks()) {
             EventBus.getDefault().post(new TasksFragmentBackPressed());
             return;
         }
@@ -309,6 +311,24 @@ public class MainActivity extends AppCompatActivity {
     /////// EVENTS
     /////////////////////
 
+    public boolean canGoBackToAllTasks() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            if (fragment.getTag() != null) {
+                switch (fragment.getTag()) {
+                    case CreateNewBucketFragment.TAG:
+                    case BucketFragment.TAG:
+                    case EditTaskFragment.TAG:
+                    case CPMDTasksFragment.TAG:
+                        return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(RemoveFragmentEvents events) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -325,7 +345,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-
 
        /* if (fragmentManager.findFragmentById(R.id.fl_fragment_container) != null) {
 

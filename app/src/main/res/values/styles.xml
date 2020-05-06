@@ -56,28 +56,4 @@
     //// FOREGROUND
     ///////////////
 
-    <style name="ripple_foreground">
-        <item name="android:theme">@style/SelectedBackground</item>
-        <item name="android:foreground">?selectableItemBackgroundBorderless</item>
-    </style>
-
-    <style name="ripple_foreground_boredered">
-        <item name="android:theme">@style/SelectedBackground</item>
-        <item name="android:foreground">?selectableItemBackground</item>
-    </style>
-
-    <style name="SelectedBackgroundWhite">
-        <item name="colorControlHighlight">@color/white_a50</item>
-    </style>
-
-    <style name="ripple_background_white">
-        <item name="android:theme">@style/SelectedBackgroundWhite</item>
-        <item name="android:background">?selectableItemBackgroundBorderless</item>
-    </style>
-
-    <style name="ripple_foreground_boredered_white">
-        <item name="android:theme">@style/SelectedBackgroundWhite</item>
-        <item name="android:foreground">?selectableItemBackground</item>
-    </style>
-
 </resources>

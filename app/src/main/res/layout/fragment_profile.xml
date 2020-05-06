@@ -32,29 +32,38 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="30dp"/>
 
-            <TextView
-                android:id="@+id/profile_tv_account_name"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:textSize="18sp"
                 android:layout_toEndOf="@+id/profile_iv_avatar"
                 android:layout_centerVertical="true"
-                android:fontFamily="@font/montserrat_medium"
-                android:textColor="@color/black"
-                android:text="Andrews" />
+                android:layout_marginEnd="40dp"
+                android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/profile_tv_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:textSize="10sp"
-                android:layout_toEndOf="@+id/profile_iv_avatar"
-                android:layout_below="@id/profile_tv_account_name"
-                android:fontFamily="@font/montserrat_medium"
-                android:textColor="@color/grey2"
-                android:text="Your email" />
+                <TextView
+                    android:id="@+id/profile_tv_account_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="@color/black"
+                    android:maxLines="1"
+                    android:maxLength="15"
+                    android:ellipsize="end"
+                    android:text="Andrews" />
+
+                <ImageView
+                    android:id="@+id/profile_iv_premium"
+                    style="@style/ripple_background_grey"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:scaleType="center"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/ic_crown_yearly"/>
+
+            </LinearLayout>
+
 
 
             <ImageView
@@ -529,6 +538,7 @@
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/tv_go_premium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
@@ -539,6 +549,7 @@
             android:layout_marginTop="20dp"/>
 
         <HorizontalScrollView
+            android:id="@+id/hsv_go_premium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none">
@@ -579,13 +590,14 @@
                         android:layout_marginStart="20dp"/>
 
                     <com.andysapps.superdo.todo.views.GradientTextView
+                        android:id="@+id/tv_price_monthy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="20dp"
-                        android:fontFamily="@font/montserrat_bold"
+                        android:fontFamily="@font/montserrat_regular"
                         android:text="$ 4.99"
                         android:textAlignment="textEnd"
                         android:textColor="@color/black"
@@ -672,13 +684,14 @@
                         android:layout_marginStart="20dp"/>
 
                     <com.andysapps.superdo.todo.views.GradientTextView
+                        android:id="@+id/tv_price_yearly"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="20dp"
-                        android:fontFamily="@font/montserrat_bold"
+                        android:fontFamily="@font/montserrat_regular"
                         android:text="$ 12.99"
                         android:textAlignment="textEnd"
                         android:textColor="@color/black"

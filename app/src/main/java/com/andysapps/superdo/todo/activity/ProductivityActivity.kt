@@ -102,7 +102,7 @@ class ProductivityActivity : AppCompatActivity() , AdapterView.OnItemSelectedLis
         }*/
 
 
-        if (selectedStat == statType[1] || selectedStat == statType[3]) {
+        if (selectedStat == statType[2] || selectedStat == statType[3]) {
             ll_month_date_title.visibility = View.VISIBLE
         } else {
             ll_month_date_title.visibility = View.GONE

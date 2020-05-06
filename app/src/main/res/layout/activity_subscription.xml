@@ -416,6 +416,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_price_yearly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_regular"
@@ -465,6 +466,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_price_monthy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_regular"

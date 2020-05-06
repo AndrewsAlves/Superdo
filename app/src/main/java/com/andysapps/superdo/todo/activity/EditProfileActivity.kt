@@ -16,7 +16,17 @@ import com.andysapps.superdo.todo.events.update.UpdateProfileEvent
 import com.andysapps.superdo.todo.manager.FirestoreManager
 import com.andysapps.superdo.todo.manager.SharedPrefsManager
 import com.andysapps.superdo.todo.model.User
+import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.activity_profile_info.*
+import kotlinx.android.synthetic.main.activity_profile_info.btn_iv_avatar1
+import kotlinx.android.synthetic.main.activity_profile_info.btn_iv_avatar2
+import kotlinx.android.synthetic.main.activity_profile_info.btn_iv_avatar3
+import kotlinx.android.synthetic.main.activity_profile_info.btn_iv_avatar4
+import kotlinx.android.synthetic.main.activity_profile_info.btn_iv_avatar5
+import kotlinx.android.synthetic.main.activity_profile_info.btn_iv_avatar6
+import kotlinx.android.synthetic.main.activity_profile_info.et_firstname
+import kotlinx.android.synthetic.main.activity_profile_info.et_lastname
+import kotlinx.android.synthetic.main.activity_profile_info.ib_save_profileinfo
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -116,6 +126,8 @@ class EditProfileActivity : AppCompatActivity() {
             4 -> btn_iv_avatar5.background = getDrawable(R.drawable.bg_avatar)
             5 -> btn_iv_avatar6.background = getDrawable(R.drawable.bg_avatar)
         }
+
+        tv_your_email.text = FirestoreManager.getInstance().user.email
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

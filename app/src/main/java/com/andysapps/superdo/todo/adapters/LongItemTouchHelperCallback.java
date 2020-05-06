@@ -57,5 +57,4 @@ public class LongItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
 
 
-
 }
