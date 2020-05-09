@@ -16,9 +16,12 @@ import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
+import com.andysapps.superdo.todo.Constants;
+import com.andysapps.superdo.todo.events.PremiumPurchaseUpdateEvent;
 import com.andysapps.superdo.todo.model.PurchaseDetails;
 import com.andysapps.superdo.todo.model.User;
-import com.google.firebase.auth.FirebaseUser;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -203,10 +206,15 @@ public class PurchaseManager implements PurchasesUpdatedListener{
             user.setPurchaseDetails(purchaseDetails);
             FirestoreManager.getInstance().updateUser(user);
 
+            EventBus.getDefault().post(new PremiumPurchaseUpdateEvent(Constants.PURCHASED));
+
+
         } else if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
             Log.e(TAG, "handlePurchase: User purchase pending : " + purchase.getSku());
+            EventBus.getDefault().post(new PremiumPurchaseUpdateEvent(Constants.PENDING));
         } else {
             Log.e(TAG, "handlePurchase: User purchase status unspecified : " + purchase.getSku());
+            EventBus.getDefault().post(new PremiumPurchaseUpdateEvent(Constants.UNSPECIFIED));
         }
 
     }
