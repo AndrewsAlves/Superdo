@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 
+import com.andysapps.superdo.todo.BuildConfig;
 import com.andysapps.superdo.todo.Constants;
 import com.andysapps.superdo.todo.Tools;
 import com.andysapps.superdo.todo.Utils;
@@ -23,6 +24,7 @@ import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.firestore.TaskUpdatedEvent;
 import com.andysapps.superdo.todo.model.Bucket;
 import com.andysapps.superdo.todo.model.Performance;
+import com.andysapps.superdo.todo.model.SuperDate;
 import com.andysapps.superdo.todo.model.Task;
 import com.andysapps.superdo.todo.model.User;
 import com.andysapps.superdo.todo.model.notification_reminders.SimpleNotification;
@@ -102,6 +104,14 @@ public class FirestoreManager {
         ourInstance = new FirestoreManager(context);
     }
 
+    public static String getUserDB() {
+        if (BuildConfig.DEBUG) {
+            return "users_debug";
+        } else {
+            return DB_USER;
+        }
+    }
+
     public void clearUserData() {
         taskHashMap.clear();
         taskHashMap = null;
@@ -125,12 +135,32 @@ public class FirestoreManager {
 
         if (user.getPurchaseDetails().getSkyId().equals(PurchaseManager.sku_monthly) &&
                 user.getPurchaseDetails().getStatus() == Constants.PURCHASED) {
-            return true;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(user.getPurchaseDetails().getPurchaseTime());
+            calendar.add(Calendar.DAY_OF_MONTH, +31);
+
+            Log.e(TAG, "isUserPremium: expire date : " + new SuperDate(calendar).getSuperDateString());
+
+            if (Utils.isSuperDateIsPast(new SuperDate(calendar))) {
+                return false;
+            } else {
+                return true;
+            }
         }
 
         if (user.getPurchaseDetails().getSkyId().equals(PurchaseManager.sku_yearly) &&
                 user.getPurchaseDetails().getStatus() == Constants.PURCHASED) {
-            return true;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(user.getPurchaseDetails().getPurchaseTime());
+            calendar.add(Calendar.DAY_OF_MONTH, +365);
+
+            Log.e(TAG, "isUserPremium: expire date : " + new SuperDate(calendar).getSuperDateString());
+
+            if (Utils.isSuperDateIsPast(new SuperDate(calendar))) {
+                return false;
+            } else {
+                return true;
+            }
         }
 
         return false;
@@ -166,7 +196,7 @@ public class FirestoreManager {
     public void fetchUser(Context context, boolean remindAlarms) {
         Log.e(TAG, "fetchUser() called user id " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        firestore.collection(DB_USER).document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+        firestore.collection(getUserDB()).document(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .get(Source.DEFAULT)
                 .addOnCompleteListener(task -> {
 
@@ -198,13 +228,13 @@ public class FirestoreManager {
     }
 
     public CollectionReference getUserTaskCollection() {
-        return firestore.collection(DB_USER)
+        return firestore.collection(getUserDB())
                 .document(user.getUserId())
                 .collection(DB_TASKS);
     }
 
     public CollectionReference getUserBucketCollection() {
-        return firestore.collection(DB_USER)
+        return firestore.collection(getUserDB())
                 .document(user.getUserId())
                 .collection(DB_BUCKETS);
     }
@@ -363,7 +393,7 @@ public class FirestoreManager {
     }
 
     public void createOrUpdateUser(User user) {
-        firestore.collection(DB_USER).document(user.getUserId())
+        firestore.collection(getUserDB()).document(user.getUserId())
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
                     this.user = user;
@@ -376,7 +406,7 @@ public class FirestoreManager {
     }
 
     public void updateUser(User user) {
-        firestore.collection(DB_USER).document(user.getUserId())
+        firestore.collection(getUserDB()).document(user.getUserId())
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
                     EventBus.getDefault().post(new CreateOrUpdateUserSuccessEvent());
@@ -445,7 +475,7 @@ public class FirestoreManager {
         }
 
         user.setEspritPoints(points);
-        firestore.collection(DB_USER).document(user.getUserId()).update("espritPoints", user.getEspritPoints());
+        firestore.collection(getUserDB()).document(user.getUserId()).update("espritPoints", user.getEspritPoints());
     }
 
     public boolean isLeveUp(int oldPoint, int newPoint) {
@@ -465,7 +495,7 @@ public class FirestoreManager {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        DocumentReference docRef = firestore.collection(DB_USER).document(user.getUid()).collection(DB_TASKS).document(taskDocumentId);
+        DocumentReference docRef = firestore.collection(getUserDB()).document(user.getUid()).collection(DB_TASKS).document(taskDocumentId);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
@@ -493,10 +523,12 @@ public class FirestoreManager {
 
         List<Task> newTaskList = new ArrayList<>();
 
+        SuperDate today = new SuperDate(Calendar.getInstance());
+
         Task task = new Task();
         task.setDocumentId(getNewTaskDocumentId());
         task.setTitle("Welcome to Superdo ");
-        task.setDoDate(Utils.getSuperdateToday());
+        task.setDoDate(today);
         task.setBucketId(documentId);
         task.setCreated(Calendar.getInstance().getTime());
         newTaskList.add(task);
@@ -504,7 +536,7 @@ public class FirestoreManager {
         task = new Task();
         task.setDocumentId(getNewTaskDocumentId());
         task.setTitle("Create your first task");
-        task.setDoDate(Utils.getSuperdateToday());
+        task.setDoDate(today);
         task.setBucketId(documentId);
         task.setCreated(Calendar.getInstance().getTime());
         newTaskList.add(task);
@@ -512,15 +544,15 @@ public class FirestoreManager {
         task = new Task();
         task.setDocumentId(getNewTaskDocumentId());
         task.setTitle("Create your first bucket like family, finance etc");
-        task.setDoDate(Utils.getSuperdateToday());
+        task.setDoDate(today);
         task.setBucketId(documentId);
         task.setCreated(Calendar.getInstance().getTime());
         newTaskList.add(task);
 
         task = new Task();
         task.setDocumentId(getNewTaskDocumentId());
-        task.setTitle("Explorer Superdo for more features :)");
-        task.setDoDate(Utils.getSuperdateToday());
+        task.setTitle("Explore Superdo for more features");
+        task.setDoDate(today);
         task.setBucketId(documentId);
         task.setCreated(Calendar.getInstance().getTime());
         newTaskList.add(task);

@@ -27,6 +27,9 @@
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
+-keep class com.andysapps.superdo.todo.events.** {*;}
+
+
 # BUTTER KNIFE
 -keep public class * implements butterknife.Unbinder { public <init>(**, android.view.View); }
 

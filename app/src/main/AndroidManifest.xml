@@ -17,16 +17,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.PointRulesActivity"/>
-        <activity android:name=".activity.ProductivityActivity" />
-        <activity android:name=".activity.SubscriptionActivity" />
-        <activity android:name=".activity.ProfileInfoActivity" />
-        <activity android:name=".activity.EditProfileActivity" />
-        <activity android:name=".activity.SignInActivity" />
-        <activity android:name=".activity.SignUpActivity" />
-        <activity android:name=".activity.WelcomeActivity" />
+        <activity android:name=".activity.PointRulesActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ProductivityActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.SubscriptionActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ProfileInfoActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.EditProfileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.SignInActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.SignUpActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.WelcomeActivity" android:screenOrientation="portrait"/>
 
-        <activity android:name=".Splash">
+        <activity android:name=".Splash"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,7 +37,8 @@
 
         <activity
             android:name=".activity.MainActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"/>
         <activity android:name=".activity.FocusActivity" />
 
         <receiver

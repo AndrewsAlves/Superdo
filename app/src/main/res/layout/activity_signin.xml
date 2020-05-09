@@ -99,10 +99,11 @@
         <TextView
             android:id="@+id/btn_tv_forgotpassword"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
             android:layout_gravity="end"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
+            style="@style/ripple_background_bordered_grey"
             android:fontFamily="@font/montserrat_medium"
             android:text="Forgot password?"
             android:textColor="@color/grey2"

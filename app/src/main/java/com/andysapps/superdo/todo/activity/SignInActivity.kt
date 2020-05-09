@@ -26,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_signin.*
 import org.greenrobot.eventbus.EventBus
@@ -121,6 +122,44 @@ class SignInActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        btn_tv_forgotpassword.setOnClickListener {
+
+            emailSignup = true
+            updateUi()
+
+            var email = et_email.text.toString()
+
+            if (email.trim().isEmpty()) {
+                et_email.error = "Enter Email id"
+                et_email.requestFocus()
+                stopLoading()
+                return@setOnClickListener
+            }
+
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email).addOnCompleteListener {
+                stopLoading()
+                if (it.isSuccessful) {
+                    Toast.makeText(this, "We have send reset password link to your email address", Toast.LENGTH_LONG).show();
+                } else {
+                    it.exception!!.printStackTrace()
+                    try {
+                        var ex = it as FirebaseAuthInvalidUserException
+                        when (ex.errorCode) {
+                            "ERROR_USER_NOT_FOUND" -> {
+                                et_email.error = "Email not found"
+                                et_email.requestFocus()
+                            }
+                        }
+                    } catch (ex: Exception) {
+                        et_email.error = "Email error"
+                        et_email.requestFocus()
+                        ex.printStackTrace()
+                    }
+                }
+            }.addOnFailureListener {
+            }
+        }
     }
 
     fun updateUi() {
@@ -173,11 +212,13 @@ class SignInActivity : AppCompatActivity() {
         if (email.trim().isEmpty()) {
             et_email.error = "Enter Email id"
             et_email.requestFocus()
+            stopLoading()
             return
         }
         if (password.trim().isEmpty()) {
-            et_email.error = "Enter password"
-            et_email.requestFocus()
+            et_password.error = "Enter password"
+            et_password.requestFocus()
+            stopLoading()
             return
         }
 
@@ -193,6 +234,10 @@ class SignInActivity : AppCompatActivity() {
 
                     when (ex.errorCode) {
                         "ERROR_INVALID_CREDENTIAL" -> Toast.makeText(this, "Wrong email or password", Toast.LENGTH_LONG).show()
+                        "ERROR_USER_NOT_FOUND" -> {
+                            et_email.error = "Email not found"
+                            et_email.requestFocus()
+                        }
                         "ERROR_INVALID_EMAIL" -> {
                             et_email.error = "The email address is badly formatted."
                             et_email.requestFocus()
@@ -202,6 +247,7 @@ class SignInActivity : AppCompatActivity() {
                              et_password.requestFocus()
                          }
                         "ERROR_USER_DISABLED" -> Toast.makeText(this, "The user account has been disabled by an administrator.", Toast.LENGTH_LONG).show()
+
                         else -> {
                             toastError()
                         }
@@ -266,6 +312,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     fun toastError() {
+        stopLoading()
         Toast.makeText(this, "Error signing up", Toast.LENGTH_LONG).show()
     }
 
@@ -279,7 +326,6 @@ class SignInActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event : CreateOrUpdateUserFailureEvent) {
-        stopLoading()
         toastError()
     }
 

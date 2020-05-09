@@ -83,11 +83,12 @@
 
                 <lib.mozidev.me.extextview.ExTextView
                     android:id="@+id/tv_tasks_name"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="This is a task"
                     android:textSize="15sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:fontFamily="@font/montserrat_medium"
                     android:textColor="@color/grey3"

@@ -41,7 +41,6 @@ import java.util.Random;
 
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_NOTIFICATIONS;
 import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_TASKS;
-import static com.andysapps.superdo.todo.manager.FirestoreManager.DB_USER;
 import static com.andysapps.superdo.todo.notification.SuperdoAlarmManager.intent_key_notification_deadline_type;
 
 /**
@@ -298,7 +297,7 @@ public class SuperdoNotificationManager {
          
          FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-         DocumentReference snapshot  = firestore.collection(DB_USER).document(user.getUid()).collection(DB_TASKS).document(taskDocId);
+         DocumentReference snapshot  = firestore.collection(FirestoreManager.getUserDB()).document(user.getUid()).collection(DB_TASKS).document(taskDocId);
          snapshot.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
@@ -386,7 +385,7 @@ public class SuperdoNotificationManager {
 
          FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-         DocumentReference snapshot  = firestore.collection(DB_USER).document(user.getUid()).collection(DB_TASKS).document(taskDocId);
+         DocumentReference snapshot  = firestore.collection(FirestoreManager.getUserDB()).document(user.getUid()).collection(DB_TASKS).document(taskDocId);
          snapshot.get().addOnCompleteListener(task -> {
 
             Task deadlineTask;

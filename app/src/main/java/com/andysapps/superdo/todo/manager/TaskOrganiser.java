@@ -150,6 +150,7 @@ public class TaskOrganiser {
                 }
                 if (Utils.isSuperDateToday(task.getDoDate())) {
                     if (!task.isTaskCompleted()) {
+                        task.setListedIn(TaskListing.TODAY);
                         todayTaskList.add(task);
                     }
                 }
