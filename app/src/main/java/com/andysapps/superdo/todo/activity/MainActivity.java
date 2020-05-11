@@ -26,6 +26,7 @@ import com.andysapps.superdo.todo.events.ShowSnakeBarEvent;
 import com.andysapps.superdo.todo.events.TasksFragmentBackPressed;
 import com.andysapps.superdo.todo.events.UpdateMoonButtonType;
 import com.andysapps.superdo.todo.events.firestore.AddNewBucketEvent;
+import com.andysapps.superdo.todo.events.firestore.FetchTasksEvent;
 import com.andysapps.superdo.todo.events.ui.OpenEditTaskEvent;
 import com.andysapps.superdo.todo.events.ui.OpenFragmentEvent;
 import com.andysapps.superdo.todo.events.ui.RemoveFragmentEvents;
@@ -188,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (fragmentManager.findFragmentByTag(BucketFragment.TAG) != null) {
             BucketFragment fragment = (BucketFragment) fragmentManager.findFragmentByTag(BucketFragment.TAG);
-            if (!fragment.animationEnded) {
+            if (fragment != null && !fragment.animationEnded) {
                 fragment.exitCircularReveal();
                 return;
             }
@@ -196,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (fragmentManager.findFragmentByTag(CPMDTasksFragment.TAG)  != null) {
             CPMDTasksFragment fragment = (CPMDTasksFragment)fragmentManager.findFragmentByTag(CPMDTasksFragment.TAG);
-            if (fragment.getSelectingTasks()) {
+            if (fragment != null && fragment.getSelectingTasks()) {
                 fragment.clearSelection();
                 return;
             }
@@ -427,9 +428,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(FetchTasksEvent event) {
+        event.isSuccess();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ShowSnakeBarEvent event) {
-
-
 
         Snackbar snackbar = Snackbar.make(fragmentContainerMoonBtn, event.getSnackbarTitle(), Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundColor(Color.WHITE);

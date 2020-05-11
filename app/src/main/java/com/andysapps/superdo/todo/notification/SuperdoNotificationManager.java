@@ -193,6 +193,10 @@ public class SuperdoNotificationManager {
                     notificationList.add(documentSnapshot.toObject(SimpleNotification.class));
                 }
 
+                if (notificationList.isEmpty()) {
+                    return;
+                }
+
                 SimpleNotification notification = getSimpleNotificationForDaily(notificationList);
 
                 createNotification(context,new Intent(context, Splash.class),
@@ -499,7 +503,6 @@ public class SuperdoNotificationManager {
         int index = random.nextInt(notifications.size());
         return notifications.get(index);
     }
-
 
     public void uploadDailyNotifications() {
         String[] titleMorning ={"Plan", "Savour life", "Productivity"};

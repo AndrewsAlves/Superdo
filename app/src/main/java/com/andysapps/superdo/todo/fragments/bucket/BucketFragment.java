@@ -118,6 +118,7 @@ public class BucketFragment extends Fragment{
     
     @Override
     public void onDestroyView() {
+        animationEnded = true;
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
         EventBus.getDefault().post(new UpdateMoonButtonType(MoonButtonType.ADD_TASK));
